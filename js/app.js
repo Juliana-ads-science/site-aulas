@@ -8,7 +8,8 @@
 const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-const fmt = s => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>").replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>");
+/* `código` e **negrito**; o negrito só vale fora do código (ex.: `**kwargs` fica intacto) */
+const fmt = s => esc(s).split(/`([^`]+)`/).map((p, i) => i % 2 ? `<code>${p}</code>` : p.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")).join("");
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const semAcento = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 const poucoMovimento = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -158,11 +159,24 @@ const rotaPadrao = () => {
   return k ? `#/trilha/${k.id}` : "#/progresso";
 };
 
-/* ---------- realce de sintaxe (Python) ---------- */
-const KW = new Set("if elif else for while in def return import from as and or not True False None class try except with break continue pass".split(" "));
-const FN = new Set("print input int str float len range type list dict".split(" "));
+/* ---------- realce de sintaxe ----------
+   A linguagem vem da trilha ("linguagem" no indice.json); o padrão é Python. */
+const LINGUAGENS = {
+  python: {
+    kw: new Set("if elif else for while in def return import from as and or not True False None class try except with break continue pass lambda global".split(" ")),
+    fn: new Set("print input int str float len range type list dict".split(" ")),
+    re: /(#.*$)|([fF]?"(?:[^"\\]|\\.)*"|[fF]?'(?:[^'\\]|\\.)*')|(\b\d+(?:\.\d+)?\b)|([A-Za-z_]\w*)/g
+  },
+  javascript: {
+    kw: new Set("let const var if else while do for break continue function return true false null undefined new typeof of in".split(" ")),
+    fn: new Set("console log prompt Number String Math isNaN".split(" ")),
+    re: /(\/\/.*$)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`)|(\b\d+(?:\.\d+)?\b)|([A-Za-z_$][\w$]*)/g
+  }
+};
+let linguagemAtual = "python";
 function hl(src) {
-  const re = /(#.*$)|([fF]?"(?:[^"\\]|\\.)*"|[fF]?'(?:[^'\\]|\\.)*')|(\b\d+(?:\.\d+)?\b)|([A-Za-z_]\w*)/g;
+  const L = LINGUAGENS[linguagemAtual] || LINGUAGENS.python, KW = L.kw, FN = L.fn;
+  const re = new RegExp(L.re.source, "g");
   let out = "", last = 0, m;
   while ((m = re.exec(src))) {
     out += esc(src.slice(last, m.index));
@@ -487,8 +501,8 @@ function viewTrilha(T) {
       const pend = pendente(T, A);
       const txt = nFeitas === es.length ? "Revisar" : nFeitas ? "Continuar" : "Começar";
       return `<li class="aula-item">
-        <span class="aula-num ${nFeitas === es.length ? "ok" : ""}">${nFeitas === es.length ? "✓" : i + 1}</span>
-        <div><h3>${esc(A.titulo)}</h3><span class="muted" style="font-size:.9rem">${esc(A.duracao || "")}</span>
+        <span class="aula-num ${nFeitas === es.length ? "ok" : ""}">${nFeitas === es.length ? "✓" : (A.numero || i + 1)}</span>
+        <div><h3>${A.numero ? `Aula ${A.numero}: ` : ""}${esc(A.titulo)}</h3><span class="muted" style="font-size:.9rem">${esc(A.duracao || "")}</span>
           <div class="chips">${es.map(e => `<span class="chip ${feito(T.id, A.id, e.id) ? "ok" : ""}">${esc(e.nome)}</span>`).join("")}</div></div>
         <a class="btn ${ehKids(T) ? "sol" : ""}" href="${link(T.id, A.id, pend ? pend.e.id : es[0].id)}">${txt}</a>
       </li>`;
@@ -506,6 +520,7 @@ function atualizarRail(T, A, eid) { const r = $("#rail"); if (r) r.innerHTML = r
 
 function viewAula(T, A, eid) {
   document.body.classList.toggle("kids", ehKids(T));
+  linguagemAtual = T.linguagem || "python";
   salvarUltima(`${T.id}/${A.id}/${eid}`);
   const ps = passos(T);
   const idx = ps.findIndex(p => p.A === A && p.e.id === eid);
@@ -633,7 +648,8 @@ function viewCodigo(T, A, etapa, box) {
 }
 
 /* Simulação (teste de mesa): o código roda passo a passo, mostrando memória e tela.
-   Cada passo: { linha (1 = primeira; 0 = fim), explica, memoria?: {nome: [valor, tipo]}, tela?: "texto" } */
+   Cada passo: { linha (1 = primeira; 0 = fim), explica, memoria?: {nome: [valor, tipo] | null}, tela?: "texto", limparTela? }
+   A etapa pode trocar o nome da caixa de saída com "rotuloTela" (ex.: "Console"). */
 function viewSimulacao(T, A, etapa, box) {
   const C = etapa.codigo, S = etapa.passos; let k = 0;
   box.innerHTML = `${etapa.intro ? `<div class="leitura">${blocos([].concat(etapa.intro))}</div>` : ""}
@@ -641,7 +657,7 @@ function viewSimulacao(T, A, etapa, box) {
       <div class="code" aria-label="Código">${C.map((l, i) => `<div class="ln" data-i="${i}"><span class="num">${i + 1}</span><span class="src">${hl(l) || " "}</span></div>`).join("")}</div>
       <div class="sim-lado">
         <div class="sim-caixa"><h3>Memória</h3><div id="simMem"></div></div>
-        <div class="sim-caixa"><h3>Tela</h3><pre class="console" id="simTela"></pre></div>
+        <div class="sim-caixa"><h3>${esc(etapa.rotuloTela || "Tela")}</h3><pre class="console" id="simTela"></pre></div>
       </div>
     </div>
     <div class="explain sim-exp" aria-live="polite"><div class="qual" id="simQual"></div><p id="simTexto"></p>
@@ -650,7 +666,11 @@ function viewSimulacao(T, A, etapa, box) {
     const mem = {}, tela = [];
     let mudou = [];
     S.slice(0, k + 1).forEach((p, j) => {
-      if (p.memoria) { Object.assign(mem, p.memoria); if (j === k) mudou = Object.keys(p.memoria); }
+      if (p.memoria) {   // valor null = a variável deixou de existir (ex.: local de uma função que terminou)
+        for (const [nome, v] of Object.entries(p.memoria)) v === null ? delete mem[nome] : (mem[nome] = v);
+        if (j === k) mudou = Object.keys(p.memoria);
+      }
+      if (p.limparTela) tela.length = 0;   // ex.: o Streamlit redesenha a página a cada re-execução
       if (p.tela != null) tela.push(p.tela);
     });
     const p = S[k];
@@ -658,7 +678,7 @@ function viewSimulacao(T, A, etapa, box) {
     const nomes = Object.keys(mem);
     $("#simMem").innerHTML = nomes.length
       ? `<table class="tabela mem"><thead><tr><th>Variável</th><th>Valor</th><th>Tipo</th></tr></thead><tbody>${nomes.map(n =>
-          `<tr class="${mudou.includes(n) ? "mudou" : ""}"><td><code>${esc(n)}</code></td><td><code>${esc(mem[n][0])}</code></td><td>${esc(mem[n][1] || "")}</td></tr>`).join("")}</tbody></table>`
+          `<tr class="${mudou.includes(n) ? "mudou" : ""}"><td><code>${esc(n).replace(/\./g, ".<wbr>")}</code></td><td><code>${esc(mem[n][0])}</code></td><td>${esc(mem[n][1] || "")}</td></tr>`).join("")}</tbody></table>`
       : `<p class="muted">Nenhuma variável ainda.</p>`;
     $("#simTela").textContent = tela.join("\n");
     $("#simQual").textContent = `Passo ${k + 1} de ${S.length}${p.linha ? ` · linha ${p.linha}` : " · fim do programa"}`;

@@ -1,0 +1,779 @@
+{
+  "numero": 8,
+  "titulo": "Funções I",
+  "duracao": "3 h",
+  "etapas": [
+    {
+      "id": "definicoes",
+      "tipo": "leitura",
+      "nome": "Definições",
+      "blocos": [
+        "Uma **função** é um bloco de código com nome que executa uma tarefa específica e pode ser reutilizado quantas vezes for preciso. Funciona como uma máquina: recebe uma entrada, processa e devolve uma saída.",
+        {
+          "tabela": [
+            [
+              "Termo",
+              "O que significa"
+            ],
+            [
+              "Função",
+              "Bloco de código reutilizável que faz uma tarefa"
+            ],
+            [
+              "`def`",
+              "Palavra-chave que define (cria) uma função"
+            ],
+            [
+              "Definição",
+              "Escrever a \"receita\"; a função ainda **não** roda"
+            ],
+            [
+              "Chamada",
+              "Executar a função, escrevendo o nome + `()`"
+            ],
+            [
+              "Parâmetro",
+              "Variável na definição que espera um valor: `def saudar(nome):`"
+            ],
+            [
+              "Argumento",
+              "Valor concreto enviado na chamada: `saudar(\"João\")`"
+            ],
+            [
+              "`return`",
+              "Devolve um valor para quem chamou e encerra a função"
+            ],
+            [
+              "`None`",
+              "Valor que a função devolve quando não tem `return`"
+            ],
+            [
+              "Parâmetro posicional",
+              "Recebe o argumento pela ordem"
+            ],
+            [
+              "Parâmetro nomeado (keyword)",
+              "Recebe o argumento pelo nome: `idade=20`"
+            ],
+            [
+              "Valor padrão",
+              "Valor usado se nenhum argumento for passado: `texto=\"Olá\"`"
+            ],
+            [
+              "`*args`",
+              "Recebe qualquer quantidade de argumentos posicionais, numa tupla"
+            ],
+            [
+              "`**kwargs`",
+              "Recebe qualquer quantidade de argumentos nomeados, num dicionário"
+            ],
+            [
+              "Escopo local",
+              "Variáveis criadas dentro da função; só existem ali"
+            ],
+            [
+              "Escopo global",
+              "Variáveis criadas fora das funções; visíveis no programa todo"
+            ],
+            [
+              "`global`",
+              "Palavra-chave que permite alterar uma variável global dentro da função"
+            ],
+            [
+              "Lambda",
+              "Função anônima de uma linha: `lambda x: x * 2`"
+            ],
+            [
+              "Docstring",
+              "Texto entre `\"\"\"` logo abaixo do `def` que documenta a função"
+            ]
+          ]
+        },
+        {
+          "h": "Para que, como e quando usamos"
+        },
+        "Usamos funções para não reescrever o mesmo cálculo em vários pontos do programa. Se precisamos da média de 30 alunos, escrevemos a conta uma vez e chamamos a função 30 vezes.",
+        "**Para que:** evitar repetição, organizar o programa em partes, facilitar manutenção (corrige em um lugar só) e permitir trabalho em equipe (cada pessoa cria funções independentes).",
+        "**Como:** definimos com `def`, damos um nome descritivo, listamos os parâmetros e escrevemos o corpo indentado. Depois chamamos pelo nome com `()`.",
+        "**Quando:**",
+        {
+          "tabela": [
+            [
+              "Situação",
+              "O que usar"
+            ],
+            [
+              "Um trecho de código se repete",
+              "Crie uma função"
+            ],
+            [
+              "Precisa usar o resultado depois (guardar, somar, comparar)",
+              "Função com `return`"
+            ],
+            [
+              "Só quer mostrar algo na tela (separador, aviso)",
+              "Função sem retorno, com `print`"
+            ],
+            [
+              "A função quase sempre usa o mesmo valor",
+              "Parâmetro com valor padrão"
+            ],
+            [
+              "Não sabe quantos valores virão",
+              "`*args` ou `**kwargs`"
+            ],
+            [
+              "Operação curtíssima usada uma vez, dentro de `sorted`, `map`, `filter`",
+              "`lambda`"
+            ],
+            [
+              "Lógica longa ou com vários passos",
+              "`def`, nunca `lambda`"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "estruturas",
+      "tipo": "leitura",
+      "nome": "Estruturas",
+      "blocos": [
+        {
+          "h": "Sem parâmetros e sem retorno"
+        },
+        "Só executa uma ação.",
+        {
+          "codigo": "def linha():\n    print(\"-\" * 30)\n\nlinha()"
+        },
+        {
+          "h": "Com parâmetros"
+        },
+        "O comportamento muda conforme a entrada.",
+        {
+          "codigo": "def saudar_personalizado(nome):\n    print(f\"Olá, {nome}! Bem-vindo ao curso.\")\n\nsaudar_personalizado(\"Maria\")"
+        },
+        {
+          "h": "Com retorno"
+        },
+        "Devolve um valor que pode ser guardado e reaproveitado.",
+        {
+          "codigo": "def calcular_media(nota1, nota2):\n    return (nota1 + nota2) / 2\n\nmedia = calcular_media(8.5, 7.0)    # 7.75"
+        },
+        {
+          "h": "Retorno múltiplo"
+        },
+        "Devolve vários valores numa tupla.",
+        {
+          "codigo": "def estatisticas(lista):\n    return min(lista), max(lista), sum(lista) / len(lista)\n\nprint(estatisticas([5, 8, 2, 9]))    # (2, 9, 6.0)"
+        },
+        {
+          "h": "Parâmetros nomeados"
+        },
+        "A ordem não importa quando usamos o nome.",
+        {
+          "codigo": "def apresentar(nome, idade):\n    print(f\"{nome} tem {idade} anos.\")\n\napresentar(idade=20, nome=\"Carlos\")"
+        },
+        {
+          "h": "Valor padrão"
+        },
+        "Obrigatórios primeiro, opcionais depois.",
+        {
+          "codigo": "def cadastrar_usuario(nome, idade, ativo=True):\n    print(f\"Usuário: {nome}, Idade: {idade}, Ativo: {ativo}\")\n\ncadastrar_usuario(\"João\", 27)"
+        },
+        {
+          "h": "*args e **kwargs"
+        },
+        "Quantidade variável de argumentos.",
+        {
+          "codigo": "def somar(*numeros):              # numeros é uma tupla\n    return sum(numeros)\n\ndef exibir_info(**dados):         # dados é um dicionário\n    for chave, valor in dados.items():\n        print(f\"{chave}: {valor}\")\n\nprint(somar(1, 2, 3, 4))          # 10\nexibir_info(nome=\"Ana\", idade=25, cidade=\"Salvador\")"
+        },
+        {
+          "h": "Lambda"
+        },
+        "Função anônima de uma expressão.",
+        {
+          "codigo": "dobrar = lambda x: x * 2\n\nalunos = [(\"Ana\", 8), (\"Carlos\", 6), (\"Beatriz\", 9)]\nordenados = sorted(alunos, key=lambda x: x[1])\npares = list(filter(lambda x: x % 2 == 0, [10, 15, 20, 25, 30]))\ndobrados = list(map(lambda x: x * 2, [1, 2, 3, 4]))"
+        }
+      ]
+    },
+    {
+      "id": "sintaxe",
+      "tipo": "leitura",
+      "nome": "Sintaxe e símbolos",
+      "blocos": [
+        {
+          "codigo": "def nome_da_funcao(parametro1, parametro2=\"padrão\"):\n    \"\"\"Explica o que a função faz.\"\"\"\n    resultado = parametro1 + parametro2\n    return resultado\n\nvalor = nome_da_funcao(\"a\", \"b\")"
+        },
+        {
+          "tabela": [
+            [
+              "Símbolo",
+              "Nome",
+              "O que faz",
+              "Por que existe"
+            ],
+            [
+              "`def`",
+              "palavra-chave",
+              "Começa a definição",
+              "Avisa ao Python que ali nasce uma função"
+            ],
+            [
+              "`nome_da_funcao`",
+              "identificador",
+              "Nome da função",
+              "Em snake_case (minúsculas + `_`), de preferência um verbo: `calcular_media`"
+            ],
+            [
+              "`( )` na definição",
+              "parênteses",
+              "Guardam os parâmetros",
+              "Mostram o que a função espera receber; ficam vazios se não espera nada"
+            ],
+            [
+              "`( )` na chamada",
+              "parênteses",
+              "Executam a função",
+              "Sem eles, o Python só se refere à função, não a roda"
+            ],
+            [
+              "`,`",
+              "vírgula",
+              "Separa parâmetros/argumentos",
+              "Diz onde termina um valor e começa outro"
+            ],
+            [
+              "`:`",
+              "dois-pontos",
+              "Abre o bloco da função",
+              "Indica que as próximas linhas indentadas pertencem a ela"
+            ],
+            [
+              "indentação (4 espaços)",
+              "recuo",
+              "Delimita o corpo",
+              "Em Python, o recuo substitui as `{ }` de outras linguagens"
+            ],
+            [
+              "`=` no parâmetro",
+              "valor padrão",
+              "Define valor se nada for passado",
+              "Deixa o argumento opcional"
+            ],
+            [
+              "`=` na chamada",
+              "argumento nomeado",
+              "Liga valor a um parâmetro pelo nome",
+              "Permite passar fora de ordem"
+            ],
+            [
+              "`return`",
+              "palavra-chave",
+              "Devolve valor e encerra a função",
+              "Liga o resultado ao código que chamou"
+            ],
+            [
+              "`\"\"\" \"\"\"`",
+              "docstring",
+              "Documentação",
+              "Ferramentas e `help()` conseguem ler"
+            ],
+            [
+              "`#`",
+              "comentário",
+              "Ignorado pelo Python",
+              "Explicar para pessoas"
+            ],
+            [
+              "`*` antes do parâmetro",
+              "desempacotamento",
+              "Junta posicionais numa tupla",
+              "Aceitar qualquer quantidade"
+            ],
+            [
+              "`**` antes do parâmetro",
+              "desempacotamento",
+              "Junta nomeados num dicionário",
+              "Aceitar chaves variáveis"
+            ],
+            [
+              "`f\"...{x}...\"`",
+              "f-string",
+              "Coloca variáveis dentro do texto",
+              "Formatar mensagens sem concatenar"
+            ],
+            [
+              "`lambda x:`",
+              "lambda",
+              "Cria função sem nome",
+              "Funções curtas descartáveis"
+            ],
+            [
+              "`global`",
+              "palavra-chave",
+              "Usa a variável global",
+              "Sem ela, atribuir dentro da função cria uma local"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logica",
+      "tipo": "leitura",
+      "nome": "A lógica por trás",
+      "blocos": [
+        "**Definir não é executar.** O `def` só guarda a receita. O código dentro dela roda apenas quando a função é chamada.",
+        "**\"Pula e volta\":** na chamada, o Python pula para o corpo da função, executa tudo e volta para a linha de onde a chamada saiu. Se houver `return`, o valor devolvido ocupa o lugar da chamada: `media = calcular_media(8, 6)` vira `media = 7.0`.",
+        {
+          "fluxograma": "flowchart TD\n    A[\"media = calcular_media(8, 6)\"] -- pula --> B[\"nota1 ← 8, nota2 ← 6\"]\n    B --> C[\"return (8 + 6) / 2 → 7.0\"]\n    C -- volta com 7.0 --> D[\"media = 7.0\"]",
+          "legenda": "Na próxima etapa você acompanha esse caminho passo a passo."
+        },
+        {
+          "h": "print × return"
+        },
+        {
+          "tabela": [
+            [
+              "",
+              "`print`",
+              "`return`"
+            ],
+            [
+              "O que faz",
+              "Mostra na tela",
+              "Devolve o valor ao programa"
+            ],
+            [
+              "Dá para guardar em variável?",
+              "Não (a variável recebe `None`)",
+              "Sim"
+            ],
+            [
+              "Encerra a função?",
+              "Não",
+              "Sim, na hora"
+            ],
+            [
+              "Use para",
+              "Mostrar ao usuário",
+              "Reaproveitar em cálculos"
+            ]
+          ]
+        },
+        {
+          "h": "Escopo"
+        },
+        "Variáveis criadas dentro da função são **locais**. Nascem na chamada e somem quando a função termina, então não interferem no resto do programa. Variáveis globais podem ser lidas dentro da função, mas se você **atribuir** a elas (`x = x + 1`), o Python considera `x` local e dá `UnboundLocalError`. A solução técnica é `global x`; a boa prática é receber por parâmetro e devolver com `return`.",
+        {
+          "h": "Erros comuns"
+        },
+        {
+          "lista": [
+            "Esquecer os `()` na chamada: a função não roda.",
+            "Usar `print` achando que devolve o valor.",
+            "Passar número errado de argumentos: `TypeError`.",
+            "Colocar parâmetro com valor padrão **antes** de um obrigatório: `SyntaxError`.",
+            "Função que faz duas coisas (`calcular_e_salvar`): divida em duas.",
+            "Lambda com lógica complicada: use `def`."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "pula-e-volta",
+      "tipo": "simulacao",
+      "nome": "Teste de mesa: pula e volta",
+      "intro": "Acompanhe a chamada de uma função: o Python pula para dentro dela, cria os parâmetros, calcula e volta com o resultado.",
+      "codigo": [
+        "def calcular_media(nota1, nota2):",
+        "    return (nota1 + nota2) / 2",
+        "",
+        "media_aluno1 = calcular_media(8.5, 7.0)",
+        "print(f\"Aluno 1: Média = {media_aluno1}\")"
+      ],
+      "passos": [
+        {
+          "linha": 1,
+          "explica": "O `def` cria a função `calcular_media` com dois parâmetros. **Nada roda ainda**: o Python só guarda a receita e pula o corpo.",
+          "memoria": {
+            "calcular_media": [
+              "função",
+              "function"
+            ]
+          }
+        },
+        {
+          "linha": 4,
+          "explica": "Primeira linha executada de fato. Para calcular o lado direito, o Python precisa **chamar** a função com os argumentos 8.5 e 7.0."
+        },
+        {
+          "linha": 1,
+          "explica": "**Pula** para a função. Os parâmetros recebem os argumentos pela ordem: `nota1 = 8.5` e `nota2 = 7.0`. Essas variáveis são **locais**: só existem durante esta chamada.",
+          "memoria": {
+            "nota1": [
+              "8.5",
+              "float, local"
+            ],
+            "nota2": [
+              "7.0",
+              "float, local"
+            ]
+          }
+        },
+        {
+          "linha": 2,
+          "explica": "Os parênteses garantem que a soma venha antes da divisão: `(8.5 + 7.0) / 2` dá `7.75`. O `return` devolve esse valor e **encerra** a função."
+        },
+        {
+          "linha": 4,
+          "explica": "**Volta** para a linha da chamada. O valor devolvido ocupa o lugar da chamada: é como se estivesse escrito `media_aluno1 = 7.75`. As variáveis locais `nota1` e `nota2` somem.",
+          "memoria": {
+            "nota1": null,
+            "nota2": null,
+            "media_aluno1": [
+              "7.75",
+              "float"
+            ]
+          }
+        },
+        {
+          "linha": 5,
+          "explica": "A f-string troca `{media_aluno1}` por 7.75 e o `print` mostra a frase.",
+          "tela": "Aluno 1: Média = 7.75"
+        }
+      ]
+    },
+    {
+      "id": "print-vs-return",
+      "tipo": "codigo",
+      "nome": "Código comentado: print vs return",
+      "linhas": [
+        {
+          "linha": "def saudacao(nome):",
+          "explica": "Função com o parâmetro `nome`."
+        },
+        {
+          "linha": "    print(f\"Olá, {nome}!\")",
+          "explica": "Só **mostra** o texto; não há `return`."
+        },
+        {
+          "linha": "",
+          "explica": "Linha em branco: separa a definição do uso."
+        },
+        {
+          "linha": "mensagem = saudacao(\"Ana\")",
+          "explica": "A chamada imprime \"Olá, Ana!\" e devolve `None`, que vai para `mensagem`."
+        },
+        {
+          "linha": "print(mensagem)",
+          "explica": "Imprime `None`. Troque a linha 2 por `return f\"Olá, {nome}!\"` e a saída passa a ser só `Olá, Ana!`."
+        }
+      ]
+    },
+    {
+      "id": "escopo-global",
+      "tipo": "codigo",
+      "nome": "Código comentado: escopo e global",
+      "linhas": [
+        {
+          "linha": "x = 5",
+          "explica": "Cria `x` global com 5."
+        },
+        {
+          "linha": "def alterar():",
+          "explica": "Define a função."
+        },
+        {
+          "linha": "    global x",
+          "explica": "`global x` avisa: \"use o `x` de fora, não crie um novo\". Sem esta linha → `UnboundLocalError`."
+        },
+        {
+          "linha": "    x = x + 1",
+          "explica": "Lê 5, soma 1 e guarda 6 no `x` global."
+        },
+        {
+          "linha": "alterar()",
+          "explica": "Chama a função."
+        },
+        {
+          "linha": "print(x)    # 6",
+          "explica": "Mostra 6."
+        }
+      ]
+    },
+    {
+      "id": "sorted-lambda",
+      "tipo": "codigo",
+      "nome": "Código comentado: sorted com lambda",
+      "linhas": [
+        {
+          "linha": "alunos = [(\"Ana\", 8), (\"Carlos\", 6), (\"Beatriz\", 9)]",
+          "explica": "Lista de tuplas (nome, nota)."
+        },
+        {
+          "linha": "ordenados = sorted(alunos, key=lambda x: x[1])",
+          "explica": "`sorted` ordena; `key` diz **o que** comparar. A lambda recebe cada tupla `x` e devolve `x[1]`, a nota (índice 1)."
+        },
+        {
+          "linha": "print(ordenados)",
+          "explica": "`[('Carlos', 6), ('Ana', 8), ('Beatriz', 9)]`: nota crescente."
+        }
+      ]
+    },
+    {
+      "id": "boletim",
+      "tipo": "leitura",
+      "nome": "Como aplicar: boletim da turma",
+      "blocos": [
+        "O programa abaixo separa cada tarefa numa função de responsabilidade única: calcular, classificar, exibir e resumir.",
+        {
+          "codigo": "def calcular_media(*notas):\n    \"\"\"Recebe qualquer quantidade de notas e devolve a média.\"\"\"\n    return sum(notas) / len(notas)\n\ndef situacao(media, corte=7.0):\n    \"\"\"Devolve 'Aprovado' ou 'Recuperação' conforme a nota de corte.\"\"\"\n    if media >= corte:\n        return \"Aprovado\"\n    return \"Recuperação\"\n\ndef linha():\n    print(\"-\" * 30)\n\ndef exibir_aluno(nome, media):\n    print(f\"{nome:<10} {media:>5.2f}   {situacao(media)}\")\n\nturma = {\n    \"Ana\": calcular_media(8.5, 7.0, 9.0),\n    \"Carlos\": calcular_media(6.0, 5.5),\n    \"Beatriz\": calcular_media(9.0, 8.5, 10.0, 9.5),\n}\n\nlinha()\nfor nome, media in sorted(turma.items(), key=lambda item: item[1], reverse=True):\n    exibir_aluno(nome, media)\nlinha()\n\naprovados = list(filter(lambda n: situacao(turma[n]) == \"Aprovado\", turma))\nprint(f\"Aprovados: {', '.join(aprovados)}\")"
+        },
+        {
+          "h": "O que cada parte ensina"
+        },
+        {
+          "lista": [
+            "`*notas` aceita quantas notas vierem.",
+            "`corte=7.0` é valor padrão.",
+            "`return` permite usar a média em `situacao()`.",
+            "`sorted` + `lambda` ordena pela média.",
+            "`filter` + `lambda` separa os aprovados.",
+            "Formatação: `{nome:<10}` alinha à esquerda em 10 casas; `{media:>5.2f}` alinha à direita com 2 decimais."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quiz",
+      "tipo": "quiz",
+      "nome": "Quiz de código",
+      "perguntas": [
+        {
+          "pergunta": "O que aparece na tela?",
+          "codigo": "def dobro(n):\n    print(n * 2)\n\nr = dobro(4)\nprint(r)",
+          "opcoes": [
+            "8 e 8",
+            "8 e `None`",
+            "Só 8",
+            "Erro"
+          ],
+          "correta": 1,
+          "dica": "A função tem `return`?",
+          "acerto": "Isso! Sem return, a variável recebe None.",
+          "erro": "Olhe de novo: print mostra, mas não devolve.",
+          "explicacao": "A chamada imprime 8 e devolve `None`, que é impresso na linha seguinte."
+        },
+        {
+          "pergunta": "O que acontece?",
+          "codigo": "def ola():\n    print(\"Oi!\")\n\nola",
+          "opcoes": [
+            "Imprime \"Oi!\"",
+            "Erro de sintaxe",
+            "Nada é impresso",
+            "Imprime `None`"
+          ],
+          "correta": 2,
+          "dica": "Como se **chama** uma função?",
+          "acerto": "Exato! Faltaram os parênteses.",
+          "erro": "Sem () a função não executa.",
+          "explicacao": "`ola` sem `()` só se refere ao objeto função; ela não roda."
+        },
+        {
+          "pergunta": "Qual linha dá erro?",
+          "codigo": "x = 10\ndef muda():\n    x = x + 5\nmuda()",
+          "opcoes": [
+            "Linha 1",
+            "Linha 3, `UnboundLocalError`",
+            "Linha 4, `TypeError`",
+            "Nenhuma, x vira 15"
+          ],
+          "correta": 1,
+          "dica": "Atribuir a `x` dentro da função faz o Python achar que ela é local.",
+          "acerto": "Mandou bem! É o erro clássico de escopo.",
+          "erro": "Pense: o x de dentro é o mesmo de fora?",
+          "explicacao": "O Python trata `x` como local e tenta ler antes de existir. Resolve com `global x` ou, melhor, parâmetro + `return`."
+        },
+        {
+          "pergunta": "Qual a saída?",
+          "codigo": "def mult(a, b=2):\n    return a * b\n\nprint(mult(3), mult(3, 4))",
+          "opcoes": [
+            "`6 12`",
+            "`6 6`",
+            "`12 12`",
+            "Erro"
+          ],
+          "correta": 0,
+          "dica": "Quando o valor padrão é usado?",
+          "acerto": "Perfeito! O padrão só vale se nada for passado.",
+          "erro": "Na segunda chamada, o 4 substitui o padrão.",
+          "explicacao": "`mult(3)` usa `b=2` → 6; `mult(3, 4)` usa `b=4` → 12."
+        },
+        {
+          "pergunta": "O que é impresso?",
+          "codigo": "def conta(*itens):\n    return len(itens)\n\nprint(conta(\"a\", \"b\", \"c\"))",
+          "opcoes": [
+            "`1`",
+            "`3`",
+            "`('a', 'b', 'c')`",
+            "Erro"
+          ],
+          "correta": 1,
+          "dica": "O `*` junta tudo em qual estrutura?",
+          "acerto": "Isso! Três itens na tupla.",
+          "erro": "*itens vira uma tupla com todos os argumentos.",
+          "explicacao": "`itens = ('a', 'b', 'c')`; `len` devolve 3."
+        },
+        {
+          "pergunta": "Qual o resultado?",
+          "codigo": "print(list(map(lambda x: x + 1, [1, 2, 3])))",
+          "opcoes": [
+            "`[1, 2, 3]`",
+            "`[2, 3, 4]`",
+            "`6`",
+            "`[1, 2, 3, 1]`"
+          ],
+          "correta": 1,
+          "dica": "O `map` aplica a lambda em cada item.",
+          "acerto": "Isso! Cada número ganhou +1.",
+          "erro": "O map transforma cada elemento, um por um.",
+          "explicacao": "1→2, 2→3, 3→4."
+        }
+      ]
+    },
+    {
+      "id": "atividades",
+      "tipo": "atividades",
+      "nome": "Atividades práticas",
+      "intro": [
+        "São 9 atividades em três níveis.",
+        "Escreva ou cole a sua tentativa no campo de cada atividade para liberar a solução. Outras soluções também valem, desde que passem nos testes do enunciado."
+      ],
+      "itens": [
+        {
+          "n": 1,
+          "nivel": "Fácil",
+          "titulo": "Boas-vindas",
+          "enunciado": [
+            "Crie `boas_vindas()` sem parâmetros que imprima \"Bem-vindo ao sistema!\" e chame-a duas vezes."
+          ],
+          "solucao": [
+            {
+              "codigo": "def boas_vindas():\n    print(\"Bem-vindo ao sistema!\")\n\nboas_vindas()\nboas_vindas()"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "nivel": "Fácil",
+          "titulo": "Área do quadrado",
+          "enunciado": [
+            "Crie `area_quadrado(lado)` que **retorne** a área. Guarde o resultado de `area_quadrado(5)` numa variável e imprima."
+          ],
+          "solucao": [
+            {
+              "codigo": "def area_quadrado(lado):\n    return lado * lado\n\narea = area_quadrado(5)\nprint(area)    # 25"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "nivel": "Fácil",
+          "titulo": "É par?",
+          "enunciado": [
+            "Crie `eh_par(n)` que retorne `True` se o número for par e `False` se for ímpar."
+          ],
+          "solucao": [
+            {
+              "codigo": "def eh_par(n):\n    return n % 2 == 0"
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "nivel": "Médio",
+          "titulo": "Desconto",
+          "enunciado": [
+            "Crie `calcular_desconto(preco, taxa=0.1)` que retorne o preço final. Teste com e sem passar a taxa."
+          ],
+          "solucao": [
+            {
+              "codigo": "def calcular_desconto(preco, taxa=0.1):\n    return preco - preco * taxa\n\nprint(calcular_desconto(100))          # 90.0\nprint(calcular_desconto(100, 0.25))    # 75.0"
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "nivel": "Médio",
+          "titulo": "Maior de todos",
+          "enunciado": [
+            "Crie `maior_de_todos(*numeros)` que retorne o maior número recebido, sem usar `max()`."
+          ],
+          "solucao": [
+            {
+              "codigo": "def maior_de_todos(*numeros):\n    maior = numeros[0]\n    for n in numeros:\n        if n > maior:\n            maior = n\n    return maior\n\nprint(maior_de_todos(4, 17, 9, 2))    # 17"
+            }
+          ]
+        },
+        {
+          "n": 6,
+          "nivel": "Médio",
+          "titulo": "Ficha",
+          "enunciado": [
+            "Crie `ficha(**dados)` que imprima cada informação no formato `chave -> valor`."
+          ],
+          "solucao": [
+            {
+              "codigo": "def ficha(**dados):\n    for chave, valor in dados.items():\n        print(f\"{chave} -> {valor}\")\n\nficha(nome=\"Ana\", curso=\"FullStack\", turma=3)"
+            }
+          ]
+        },
+        {
+          "n": 7,
+          "nivel": "Difícil",
+          "titulo": "Conversor de temperatura",
+          "enunciado": [
+            "Crie `converter_temperatura(valor, para=\"F\")` que converta Celsius para Fahrenheit (`para=\"F\"`) ou Fahrenheit para Celsius (`para=\"C\"`). Fórmulas: F = C × 9/5 + 32 e C = (F − 32) × 5/9."
+          ],
+          "solucao": [
+            {
+              "codigo": "def converter_temperatura(valor, para=\"F\"):\n    if para == \"F\":\n        return valor * 9 / 5 + 32\n    return (valor - 32) * 5 / 9\n\nprint(converter_temperatura(30))         # 86.0\nprint(converter_temperatura(86, \"C\"))    # 30.0"
+            }
+          ]
+        },
+        {
+          "n": 8,
+          "nivel": "Difícil",
+          "titulo": "Produtos com sorted e filter",
+          "enunciado": [
+            "Dada a lista `produtos = [(\"Caneta\", 2.5), (\"Caderno\", 18.0), (\"Mochila\", 120.0), (\"Borracha\", 1.0)]`, use `sorted` com `lambda` para ordenar do mais caro ao mais barato e `filter` com `lambda` para listar só os que custam mais de R$ 10."
+          ],
+          "solucao": [
+            {
+              "codigo": "produtos = [(\"Caneta\", 2.5), (\"Caderno\", 18.0), (\"Mochila\", 120.0), (\"Borracha\", 1.0)]\n\ncaros_primeiro = sorted(produtos, key=lambda p: p[1], reverse=True)\nacima_de_10 = list(filter(lambda p: p[1] > 10, produtos))\n\nprint(caros_primeiro)\n# [('Mochila', 120.0), ('Caderno', 18.0), ('Caneta', 2.5), ('Borracha', 1.0)]\nprint(acima_de_10)\n# [('Caderno', 18.0), ('Mochila', 120.0)]"
+            }
+          ]
+        },
+        {
+          "n": 9,
+          "nivel": "Difícil",
+          "titulo": "Responsabilidade única",
+          "enunciado": [
+            "Reescreva a função abaixo em duas funções de responsabilidade única e explique por que ficou melhor.",
+            {
+              "codigo": "def calcular_e_mostrar(lista):\n    media = sum(lista) / len(lista)\n    print(f\"A média é {media}\")"
+            }
+          ],
+          "solucao": [
+            {
+              "codigo": "def calcular_media(lista):\n    return sum(lista) / len(lista)\n\ndef mostrar_media(media):\n    print(f\"A média é {media}\")\n\nmostrar_media(calcular_media([7, 8, 9]))"
+            },
+            "Ficou melhor porque cada função faz uma coisa. A média agora pode ser reaproveitada (salvar, comparar, arredondar) sem ser obrigatoriamente impressa, e cada parte é testada separadamente."
+          ]
+        }
+      ]
+    }
+  ]
+}

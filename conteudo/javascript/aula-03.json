@@ -1,0 +1,814 @@
+{
+  "numero": 3,
+  "titulo": "Laços de repetição: while e do while",
+  "duracao": "3 h",
+  "etapas": [
+    {
+      "id": "definicoes",
+      "tipo": "leitura",
+      "nome": "Definições",
+      "blocos": [
+        "Um **laço de repetição** (loop) executa o mesmo bloco de código várias vezes enquanto uma condição for verdadeira. Nesta aula vemos os dois laços condicionais do JavaScript: `while` e `do while`.",
+        {
+          "tabela": [
+            [
+              "Termo",
+              "O que significa"
+            ],
+            [
+              "Laço / loop",
+              "Estrutura que repete um bloco de instruções"
+            ],
+            [
+              "Iteração",
+              "Cada \"volta\" (execução) do bloco dentro do laço"
+            ],
+            [
+              "Condição",
+              "Expressão que resulta em `true` ou `false` e decide se o laço continua"
+            ],
+            [
+              "Variável de controle",
+              "Variável usada na condição; precisa mudar dentro do laço para ele terminar"
+            ],
+            [
+              "`while` (enquanto)",
+              "Testa a condição **antes** de executar. Laço de pré-teste: pode rodar zero vezes"
+            ],
+            [
+              "`do while` (faça enquanto)",
+              "Executa o bloco e **só depois** testa a condição. Laço de pós-teste: roda pelo menos uma vez"
+            ],
+            [
+              "Loop infinito",
+              "Laço cuja condição nunca fica falsa; trava o programa"
+            ],
+            [
+              "Flag (bandeira)",
+              "Variável auxiliar (geralmente booleana) que indica um estado e controla o laço"
+            ],
+            [
+              "Contador",
+              "Variável que aumenta ou diminui de 1 em 1 para contar repetições"
+            ],
+            [
+              "Acumulador",
+              "Variável que soma (ou junta) valores a cada iteração"
+            ],
+            [
+              "`break`",
+              "Sai do laço imediatamente"
+            ],
+            [
+              "`continue`",
+              "Pula o resto da iteração atual e volta para a condição"
+            ]
+          ]
+        },
+        {
+          "h": "Para que, como e quando usamos"
+        },
+        "Usamos laços para não repetir código à mão. Escrever `console.log(\"Bem-vindo\")` cem vezes é ineficiente; um laço faz isso em 4 linhas.",
+        "**Para que:** automatizar tarefas repetidas, processar listas de dados, esperar uma resposta válida do usuário, criar menus e contagens.",
+        "**Como:** definimos uma condição e um bloco de código. O bloco repete enquanto a condição for `true`. Algo dentro do bloco precisa mudar a condição até ela virar `false`.",
+        "**Quando usar cada um:**",
+        {
+          "tabela": [
+            [
+              "Situação",
+              "Use",
+              "Por quê"
+            ],
+            [
+              "O bloco só deve rodar se a condição já for verdadeira",
+              "`while`",
+              "Testa antes; se for falsa, pula o bloco"
+            ],
+            [
+              "Número de repetições desconhecido (ex.: ler dados enquanto houver)",
+              "`while`",
+              "O teste inicial protege contra executar sem necessidade"
+            ],
+            [
+              "O bloco precisa rodar pelo menos uma vez",
+              "`do while`",
+              "Testa depois da primeira execução"
+            ],
+            [
+              "Menu que precisa aparecer antes da escolha",
+              "`do while`",
+              "O usuário vê as opções antes de decidir sair"
+            ],
+            [
+              "Validar uma entrada (pedir senha até acertar)",
+              "`do while`",
+              "Primeiro pede, depois verifica"
+            ]
+          ]
+        },
+        "**Resumo:** a diferença está no local do teste. `while` testa no início (pré-teste); `do while` testa no final (pós-teste)."
+      ]
+    },
+    {
+      "id": "estruturas",
+      "tipo": "leitura",
+      "nome": "Estruturas",
+      "blocos": [
+        "Todo laço baseado em contagem tem três partes: **inicialização** da variável de controle, **condição** de término e **atualização** (incremento ou decremento) dentro do corpo. Esquecer a terceira gera loop infinito.",
+        {
+          "h": "Contador progressivo"
+        },
+        "Conta para cima até um limite.",
+        {
+          "codigo": "let item = 1;                // inicialização\nwhile (item <= 5) {          // condição\n    console.log(\"Item \" + item);\n    item++;                  // atualização\n}"
+        },
+        {
+          "h": "Contagem regressiva"
+        },
+        "Começa alto e decrementa até o limite inferior.",
+        {
+          "codigo": "let foguete = 5;\nwhile (foguete > 0) {\n    console.log(foguete + \" segundos...\");\n    foguete--;\n}\nconsole.log(\"0 - Decolagem!\");"
+        },
+        {
+          "h": "Acumulador"
+        },
+        "Soma valores a cada volta. Inicializado **fora** do laço, geralmente com 0.",
+        {
+          "codigo": "let soma = 0;\nlet numero = 1;\nwhile (numero <= 4) {\n    soma += numero;   // soma = soma + numero\n    numero++;\n}\nconsole.log(soma); // 10"
+        },
+        {
+          "h": "Flag (bandeira)"
+        },
+        "O laço depende de um estado, não de uma contagem.",
+        {
+          "codigo": "let desejaContinuar = true;\nlet rodada = 1;\ndo {\n    console.log(\"Rodada \" + rodada);\n    if (rodada >= 3) {\n        desejaContinuar = false;\n    }\n    rodada++;\n} while (desejaContinuar);"
+        },
+        {
+          "h": "Validação de entrada"
+        },
+        "Repete o pedido enquanto a resposta for inválida.",
+        {
+          "codigo": "let senha;\ndo {\n    senha = prompt(\"Digite a senha:\");\n} while (senha !== \"12345\");"
+        },
+        {
+          "h": "Laços aninhados"
+        },
+        "Um laço dentro de outro. Para cada volta do externo, o interno roda completo. Externo 2 × interno 3 = 6 execuções.",
+        {
+          "codigo": "let linha = 1;\nwhile (linha <= 2) {\n    let coluna = 1;\n    while (coluna <= 3) {\n        console.log(\"Célula (\" + linha + \", \" + coluna + \")\");\n        coluna++;\n    }\n    linha++;\n}"
+        }
+      ]
+    },
+    {
+      "id": "sintaxe",
+      "tipo": "leitura",
+      "nome": "Sintaxe e símbolos",
+      "blocos": [
+        "Sintaxe do `while`:",
+        {
+          "codigo": "while (condicao) {\n    // bloco que repete\n}"
+        },
+        "Sintaxe do `do while`:",
+        {
+          "codigo": "do {\n    // bloco que repete (roda pelo menos 1 vez)\n} while (condicao);"
+        },
+        {
+          "tabela": [
+            [
+              "Símbolo",
+              "Nome",
+              "O que faz",
+              "Por que existe"
+            ],
+            [
+              "`while`",
+              "palavra-chave",
+              "Inicia o laço \"enquanto\"",
+              "Diz ao JavaScript que o bloco deve se repetir"
+            ],
+            [
+              "`do`",
+              "palavra-chave",
+              "Marca o início do bloco que roda antes do teste",
+              "Garante a primeira execução"
+            ],
+            [
+              "`( )`",
+              "parênteses",
+              "Envolvem a condição",
+              "Separam a pergunta (condição) do resto do código"
+            ],
+            [
+              "`{ }`",
+              "chaves",
+              "Delimitam o bloco que repete",
+              "Mostram onde o laço começa e termina"
+            ],
+            [
+              "`;`",
+              "ponto e vírgula",
+              "Encerra uma instrução",
+              "No `do while` é obrigatório depois do `)` final, porque o `while (...)` fecha a instrução inteira"
+            ],
+            [
+              "`let`",
+              "declaração",
+              "Cria variável que pode mudar",
+              "A variável de controle precisa mudar a cada volta"
+            ],
+            [
+              "`const`",
+              "declaração",
+              "Cria valor que não muda",
+              "Bom para limites fixos (ex.: `const limite = 60`)"
+            ],
+            [
+              "`++` / `--`",
+              "incremento / decremento",
+              "Soma ou subtrai 1",
+              "Atalho para `i = i + 1` / `i = i - 1`"
+            ],
+            [
+              "`+=` / `-=`",
+              "atribuição composta",
+              "Soma/subtrai e guarda na mesma variável",
+              "Atalho para acumuladores: `soma += x` = `soma = soma + x`"
+            ],
+            [
+              "`<` `>` `<=` `>=`",
+              "comparação",
+              "Comparam valores e retornam `true` / `false`",
+              "Montam a condição de parada"
+            ],
+            [
+              "`===` / `!==`",
+              "igualdade / diferença estrita",
+              "Comparam valor **e** tipo",
+              "Evitam conversões automáticas (`\"5\" == 5` é `true`, `\"5\" === 5` é `false`)"
+            ],
+            [
+              "`+` com texto",
+              "concatenação",
+              "Junta textos",
+              "Monta mensagens: `\"Item \" + 3` → `\"Item 3\"`"
+            ],
+            [
+              "`//`",
+              "comentário",
+              "Texto ignorado pelo computador",
+              "Explicar o código para pessoas"
+            ],
+            [
+              "`break`",
+              "comando",
+              "Sai do laço na hora",
+              "Interromper quando já achou o que procurava"
+            ],
+            [
+              "`continue`",
+              "comando",
+              "Pula para a próxima volta",
+              "Ignorar itens que não interessam"
+            ]
+          ]
+        },
+        {
+          "nota": "Atenção: no `while` normal **não** se coloca `;` depois do `)`. `while (x < 5);` cria um laço vazio e, como `x` nunca muda, vira loop infinito."
+        }
+      ]
+    },
+    {
+      "id": "logica",
+      "tipo": "leitura",
+      "nome": "A lógica por trás",
+      "blocos": [
+        {
+          "h": "Fluxo do while (pré-teste)"
+        },
+        {
+          "passos": [
+            "Avalia a condição.",
+            "Se `true` → executa o bloco e volta ao passo 1.",
+            "Se `false` → pula o bloco e segue para a linha depois do `}`."
+          ]
+        },
+        {
+          "h": "Fluxo do do while (pós-teste)"
+        },
+        {
+          "passos": [
+            "Executa o bloco.",
+            "Avalia a condição.",
+            "Se `true` → volta ao passo 1. Se `false` → segue para depois do `;`."
+          ]
+        },
+        "Os dois fluxos lado a lado: no `while` o losango vem primeiro; no `do while`, o bloco vem primeiro.",
+        {
+          "fluxograma": "flowchart LR\n    subgraph W [while]\n    direction TB\n    A{condição?} -- true --> B[bloco]\n    B --> A\n    A -- false --> C([segue])\n    end\n    subgraph D [do while]\n    direction TB\n    E[bloco] --> F{condição?}\n    F -- true --> E\n    F -- false --> G([segue])\n    end"
+        },
+        "**Prova da diferença:** com `let deveExecutar = false;`, o `while (deveExecutar)` não imprime nada, e o `do { ... } while (deveExecutar);` imprime uma vez.",
+        {
+          "h": "Loop infinito: por que acontece"
+        },
+        {
+          "lista": [
+            "A variável de controle não muda dentro do laço (esqueceu o `i++`).",
+            "A condição nunca pode ficar falsa (ex.: um contador que só aumenta com a condição `i > 0`)."
+          ]
+        },
+        "O programa consome 100% do processador e trava. Antes de rodar, pergunte: (1) minha condição pode ficar falsa? (2) estou mudando a variável na direção certa?",
+        {
+          "h": "break e continue"
+        },
+        {
+          "lista": [
+            "`break` interrompe o laço mais interno na hora; o programa segue na linha após o bloco. Use com moderação, porque a saída deixa de estar só no cabeçalho.",
+            "`continue` pula o resto da iteração atual e volta para a condição. Cuidado: no `while`, se o incremento estiver **depois** do `continue`, ele nunca acontece e vira loop infinito. Por isso, nos exemplos, o `i++` vem antes do `continue`."
+          ]
+        },
+        {
+          "h": "Escopo"
+        },
+        "Variáveis criadas com `let`/`const` dentro das `{ }` só existem ali dentro. A variável de controle deve ser declarada **antes** do laço, para a condição conseguir lê-la e para o código depois do laço saber o valor final."
+      ]
+    },
+    {
+      "id": "velocidade",
+      "tipo": "simulacao",
+      "nome": "Teste de mesa: limite de velocidade",
+      "rotuloTela": "Console",
+      "intro": "Acompanhe o `while` volta a volta. Repare em quando a condição fica falsa.",
+      "codigo": [
+        "let velocidade = 50;",
+        "const limite = 60;",
+        "while (velocidade < limite) {",
+        "    console.log(\"Velocidade atual: \" + velocidade + \" km/h\");",
+        "    velocidade += 5;",
+        "}",
+        "console.log(\"Limite de velocidade atingido ou ultrapassado.\");"
+      ],
+      "passos": [
+        {
+          "linha": 1,
+          "explica": "Cria a variável de controle com 50. `let` porque ela vai mudar.",
+          "memoria": {
+            "velocidade": [
+              "50",
+              "number"
+            ]
+          }
+        },
+        {
+          "linha": 2,
+          "explica": "Cria o limite fixo. `const` porque não muda.",
+          "memoria": {
+            "limite": [
+              "60",
+              "number"
+            ]
+          }
+        },
+        {
+          "linha": 3,
+          "explica": "Pergunta: 50 < 60? Sim → entra no bloco."
+        },
+        {
+          "linha": 4,
+          "explica": "Mostra a velocidade. O `+` junta texto e número.",
+          "tela": "Velocidade atual: 50 km/h"
+        },
+        {
+          "linha": 5,
+          "explica": "Soma 5 → 55. É o que faz o laço caminhar para o fim.",
+          "memoria": {
+            "velocidade": [
+              "55",
+              "number"
+            ]
+          }
+        },
+        {
+          "linha": 6,
+          "explica": "Fim do bloco; volta para a linha 3."
+        },
+        {
+          "linha": 3,
+          "explica": "55 < 60? Sim → repete."
+        },
+        {
+          "linha": 4,
+          "explica": "Mostra 55.",
+          "tela": "Velocidade atual: 55 km/h"
+        },
+        {
+          "linha": 5,
+          "explica": "Soma 5 → 60.",
+          "memoria": {
+            "velocidade": [
+              "60",
+              "number"
+            ]
+          }
+        },
+        {
+          "linha": 3,
+          "explica": "60 < 60? **Não** → sai do laço. O bloco rodou 2 vezes."
+        },
+        {
+          "linha": 7,
+          "explica": "Roda uma vez, depois do laço.",
+          "tela": "Limite de velocidade atingido ou ultrapassado."
+        }
+      ]
+    },
+    {
+      "id": "numero-secreto",
+      "tipo": "codigo",
+      "nome": "Código comentado: do while",
+      "linhas": [
+        {
+          "linha": "let chute = 10;",
+          "explica": "Chute inicial errado."
+        },
+        {
+          "linha": "const numeroSecreto = 5;",
+          "explica": "Valor que o usuário precisa acertar."
+        },
+        {
+          "linha": "do {",
+          "explica": "Entra no bloco **sem testar nada**."
+        },
+        {
+          "linha": "    console.log(\"Tentativa de chute: \" + chute);",
+          "explica": "Mostra \"Tentativa de chute: 10\"."
+        },
+        {
+          "linha": "    console.log(\"O número não é 5.\");",
+          "explica": "Mensagem de erro."
+        },
+        {
+          "linha": "    chute = 5;",
+          "explica": "Simula o usuário digitando 5."
+        },
+        {
+          "linha": "} while (chute !== numeroSecreto);",
+          "explica": "Testa **agora**: 5 é diferente de 5? Não (`false`) → sai. O `;` é obrigatório aqui."
+        },
+        {
+          "linha": "console.log(\"Número secreto descoberto!\");",
+          "explica": "Mensagem final."
+        }
+      ]
+    },
+    {
+      "id": "break-busca",
+      "tipo": "codigo",
+      "nome": "Código comentado: break na busca",
+      "linhas": [
+        {
+          "linha": "let numeroBusca = 1;",
+          "explica": "Cria o contador da busca (1)."
+        },
+        {
+          "linha": "let encontrado = false;",
+          "explica": "Cria a flag `encontrado` (false)."
+        },
+        {
+          "linha": "while (numeroBusca <= 10) {",
+          "explica": "Laço planejado para ir de 1 a 10."
+        },
+        {
+          "linha": "    if (numeroBusca === 7) {",
+          "explica": "Verifica se o número atual é 7 (`===` compara valor e tipo)."
+        },
+        {
+          "linha": "        encontrado = true;",
+          "explica": "Marca a flag como `true`."
+        },
+        {
+          "linha": "        break;",
+          "explica": "`break` sai do laço na hora; as linhas 8 e 9 não rodam nessa volta."
+        },
+        {
+          "linha": "    }",
+          "explica": "Fecha o bloco do `if`."
+        },
+        {
+          "linha": "    console.log(\"Procurando... \" + numeroBusca);",
+          "explica": "Mostra \"Procurando... N\" para 1 a 6."
+        },
+        {
+          "linha": "    numeroBusca++;",
+          "explica": "Avança para o próximo número."
+        },
+        {
+          "linha": "}",
+          "explica": "Fecha o laço."
+        },
+        {
+          "linha": "if (encontrado) {",
+          "explica": "Depois do laço, usa a flag para saber se achou."
+        },
+        {
+          "linha": "    console.log(\"Número 7 encontrado em: \" + numeroBusca);",
+          "explica": "Mostra 7: como o `break` saiu antes do `numeroBusca++`, o valor ficou em 7."
+        },
+        {
+          "linha": "}",
+          "explica": "Fecha o `if`."
+        }
+      ]
+    },
+    {
+      "id": "continue",
+      "tipo": "codigo",
+      "nome": "Código comentado: continue",
+      "linhas": [
+        {
+          "linha": "let i = 0;",
+          "explica": "Começa em 0."
+        },
+        {
+          "linha": "while (i < 5) {",
+          "explica": "Repete enquanto `i < 5`."
+        },
+        {
+          "linha": "    i++;",
+          "explica": "Incrementa **antes** de qualquer `continue`, evitando loop infinito."
+        },
+        {
+          "linha": "    if (i === 3) {",
+          "explica": "Se `i` vale 3..."
+        },
+        {
+          "linha": "        console.log(\"Pulando o número 3...\");",
+          "explica": "...avisa..."
+        },
+        {
+          "linha": "        continue;",
+          "explica": "...e `continue` volta direto para a linha 2."
+        },
+        {
+          "linha": "    }",
+          "explica": "Fecha o `if`."
+        },
+        {
+          "linha": "    console.log(\"Número processado: \" + i);",
+          "explica": "Para 1, 2, 4 e 5 mostra \"Número processado\"."
+        },
+        {
+          "linha": "}",
+          "explica": "Fecha o laço."
+        }
+      ]
+    },
+    {
+      "id": "caixa-eletronico",
+      "tipo": "leitura",
+      "nome": "Como aplicar: caixa eletrônico",
+      "blocos": [
+        "Este exemplo junta tudo: `do while` para o menu, flag para sair, acumulador para o saldo, validação de entrada e `continue`. Rode no console do navegador (tecla **F12**), porque usa `prompt()`.",
+        {
+          "codigo": "let saldo = 100;\nlet continuar = true;\n\ndo {\n    let opcao = prompt(\"1-Saldo  2-Sacar  3-Depositar  0-Sair\");\n\n    if (opcao === \"0\") {\n        continuar = false;\n    } else if (opcao === \"1\") {\n        console.log(\"Saldo: R$ \" + saldo);\n    } else if (opcao === \"2\") {\n        let valor = Number(prompt(\"Valor do saque:\"));\n        if (valor <= 0 || valor > saldo) {\n            console.log(\"Valor inválido.\");\n            continue;\n        }\n        saldo -= valor;\n        console.log(\"Saque feito. Saldo: R$ \" + saldo);\n    } else if (opcao === \"3\") {\n        let valor = Number(prompt(\"Valor do depósito:\"));\n        saldo += valor;\n        console.log(\"Depósito feito. Saldo: R$ \" + saldo);\n    } else {\n        console.log(\"Opção inválida.\");\n    }\n} while (continuar);\n\nconsole.log(\"Obrigado por usar o caixa!\");"
+        },
+        {
+          "h": "Pontos de atenção"
+        },
+        {
+          "lista": [
+            "`prompt()` sempre devolve texto, por isso comparamos com `\"0\"` (entre aspas) e usamos `Number()` para converter valores.",
+            "O `continue` dentro de um `do while` pula para o teste `while (continuar)`, que ainda é `true`, então o menu volta."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quiz",
+      "tipo": "quiz",
+      "nome": "Quiz de código",
+      "perguntas": [
+        {
+          "pergunta": "Quantas vezes aparece \"Olá\"?",
+          "codigo": "let n = 5;\nwhile (n < 5) {\n    console.log(\"Olá\");\n    n++;\n}",
+          "opcoes": [
+            "0",
+            "1",
+            "5",
+            "Infinitas"
+          ],
+          "correta": 0,
+          "dica": "O `while` testa antes ou depois?",
+          "acerto": "Isso! O while nem entrou.",
+          "erro": "Quase! Olhe o valor inicial de n.",
+          "explicacao": "`5 < 5` é `false` logo no início, então o bloco nunca executa."
+        },
+        {
+          "pergunta": "E agora, com `do while`?",
+          "codigo": "let n = 5;\ndo {\n    console.log(\"Olá\");\n    n++;\n} while (n < 5);",
+          "opcoes": [
+            "0",
+            "1",
+            "5",
+            "Infinitas"
+          ],
+          "correta": 1,
+          "dica": "Quando a condição é testada no `do while`?",
+          "acerto": "Perfeito! Pós-teste roda pelo menos uma vez.",
+          "erro": "Não foi dessa vez. O do while executa antes de testar.",
+          "explicacao": "Imprime uma vez, `n` vira 6, `6 < 5` é `false` e o laço termina."
+        },
+        {
+          "pergunta": "O que está errado?",
+          "codigo": "let i = 1;\nwhile (i <= 3) {\n    console.log(i);\n}",
+          "opcoes": [
+            "Falta `;` depois do `)`",
+            "A variável `i` nunca muda → loop infinito",
+            "Deveria ser `do while`",
+            "Nada, imprime 1, 2, 3"
+          ],
+          "correta": 1,
+          "dica": "Procure a terceira parte de todo laço de contagem.",
+          "acerto": "Exato! Faltou o i++.",
+          "erro": "Revise: o que faz a condição ficar falsa?",
+          "explicacao": "Sem `i++`, `i` fica 1 para sempre e `1 <= 3` é sempre `true`."
+        },
+        {
+          "pergunta": "Qual o valor final de `soma`?",
+          "codigo": "let soma = 0;\nlet x = 2;\nwhile (x <= 6) {\n    soma += x;\n    x += 2;\n}",
+          "opcoes": [
+            "6",
+            "10",
+            "12",
+            "20"
+          ],
+          "correta": 2,
+          "dica": "`x` vale 2, depois 4, depois 6.",
+          "acerto": "Mandou bem no acumulador!",
+          "erro": "Some cada valor de x que entrou no laço.",
+          "explicacao": "2 + 4 + 6 = 12. Quando `x` vira 8, a condição falha."
+        },
+        {
+          "pergunta": "O que é impresso?",
+          "codigo": "let i = 0;\nwhile (i < 4) {\n    i++;\n    if (i === 2) continue;\n    console.log(i);\n}",
+          "opcoes": [
+            "`1 2 3 4`",
+            "`1 3 4`",
+            "`0 1 3`",
+            "`1 3`"
+          ],
+          "correta": 1,
+          "dica": "O `continue` pula só a volta atual.",
+          "acerto": "Isso! O 2 foi pulado.",
+          "erro": "Lembre: continue não encerra o laço.",
+          "explicacao": "`i` vira 1, 2, 3, 4; o 2 é pulado."
+        },
+        {
+          "pergunta": "Quantas vezes \"*\" é impresso?",
+          "codigo": "let a = 1;\nwhile (a <= 3) {\n    let b = 1;\n    while (b <= 4) {\n        console.log(\"*\");\n        b++;\n    }\n    a++;\n}",
+          "opcoes": [
+            "3",
+            "4",
+            "7",
+            "12"
+          ],
+          "correta": 3,
+          "dica": "Multiplique as voltas.",
+          "acerto": "Isso! 3 × 4 = 12.",
+          "erro": "O laço interno roda inteiro a cada volta do externo.",
+          "explicacao": "3 voltas externas × 4 internas = 12."
+        }
+      ]
+    },
+    {
+      "id": "atividades",
+      "tipo": "atividades",
+      "nome": "Atividades práticas",
+      "intro": [
+        "São 9 atividades em três níveis. Rode os códigos no console do navegador (F12) ou num editor como o VS Code.",
+        "Escreva ou cole a sua tentativa no campo de cada atividade para liberar a solução. Outras soluções também valem, desde que passem nos testes do enunciado."
+      ],
+      "itens": [
+        {
+          "n": 1,
+          "nivel": "Fácil",
+          "titulo": "De 1 a 10",
+          "enunciado": [
+            "Use `while` para imprimir os números de 1 a 10."
+          ],
+          "solucao": [
+            {
+              "codigo": "let i = 1;\nwhile (i <= 10) {\n    console.log(i);\n    i++;\n}"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "nivel": "Fácil",
+          "titulo": "Feliz Ano Novo",
+          "enunciado": [
+            "Faça uma contagem regressiva de 10 até 1 e, no final, imprima \"Feliz Ano Novo!\"."
+          ],
+          "solucao": [
+            {
+              "codigo": "let t = 10;\nwhile (t >= 1) {\n    console.log(t);\n    t--;\n}\nconsole.log(\"Feliz Ano Novo!\");"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "nivel": "Fácil",
+          "titulo": "Tabuada do 7",
+          "enunciado": [
+            "Imprima a tabuada do 7 (7 × 1 até 7 × 10) com `while`."
+          ],
+          "solucao": [
+            {
+              "codigo": "let m = 1;\nwhile (m <= 10) {\n    console.log(\"7 x \" + m + \" = \" + (7 * m));\n    m++;\n}"
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "nivel": "Médio",
+          "titulo": "Soma dos pares",
+          "enunciado": [
+            "Some todos os números pares de 1 a 100 usando um acumulador."
+          ],
+          "dica": "Comece em 2 e some de 2 em 2.",
+          "solucao": [
+            "Resultado: 2550.",
+            {
+              "codigo": "let soma = 0;\nlet n = 2;\nwhile (n <= 100) {\n    soma += n;\n    n += 2;\n}\nconsole.log(soma);"
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "nivel": "Médio",
+          "titulo": "Idade válida",
+          "enunciado": [
+            "Com `do while`, peça ao usuário uma idade até ele digitar um número entre 0 e 120."
+          ],
+          "solucao": [
+            {
+              "codigo": "let idade;\ndo {\n    idade = Number(prompt(\"Sua idade (0 a 120):\"));\n} while (isNaN(idade) || idade < 0 || idade > 120);\nconsole.log(\"Idade válida: \" + idade);"
+            }
+          ]
+        },
+        {
+          "n": 6,
+          "nivel": "Médio",
+          "titulo": "Sem múltiplos de 3",
+          "enunciado": [
+            "Percorra os números de 1 a 20 e use `continue` para imprimir apenas os que **não** são múltiplos de 3."
+          ],
+          "solucao": [
+            {
+              "codigo": "let k = 0;\nwhile (k < 20) {\n    k++;\n    if (k % 3 === 0) continue;\n    console.log(k);\n}"
+            }
+          ]
+        },
+        {
+          "n": 7,
+          "nivel": "Difícil",
+          "titulo": "Jogo de adivinhação",
+          "enunciado": [
+            "Sorteie um número de 1 a 50 (`Math.floor(Math.random() * 50) + 1`), peça palpites com `do while`, diga \"maior\" ou \"menor\" e conte as tentativas."
+          ],
+          "solucao": [
+            {
+              "codigo": "const secreto = Math.floor(Math.random() * 50) + 1;\nlet palpite;\nlet tentativas = 0;\ndo {\n    palpite = Number(prompt(\"Palpite (1 a 50):\"));\n    tentativas++;\n    if (palpite < secreto) console.log(\"Maior!\");\n    else if (palpite > secreto) console.log(\"Menor!\");\n} while (palpite !== secreto);\nconsole.log(\"Acertou em \" + tentativas + \" tentativas!\");"
+            }
+          ]
+        },
+        {
+          "n": 8,
+          "nivel": "Difícil",
+          "titulo": "Triângulo de asteriscos",
+          "enunciado": [
+            "Com laços aninhados, desenhe no console um triângulo de asteriscos de 5 linhas (linha 1 com `*`, linha 5 com `*****`)."
+          ],
+          "solucao": [
+            {
+              "codigo": "let linha = 1;\nwhile (linha <= 5) {\n    let estrelas = \"\";\n    let c = 1;\n    while (c <= linha) {\n        estrelas += \"*\";\n        c++;\n    }\n    console.log(estrelas);\n    linha++;\n}"
+            }
+          ]
+        },
+        {
+          "n": 9,
+          "nivel": "Difícil",
+          "titulo": "Passando de 1000",
+          "enunciado": [
+            "Some números a partir de 1 (1 + 2 + 3...) até o total passar de 1000. Mostre qual foi o último número somado e o total."
+          ],
+          "solucao": [
+            "Resultado: último número 45, total 1035.",
+            {
+              "codigo": "let total = 0;\nlet num = 0;\nwhile (total <= 1000) {\n    num++;\n    total += num;\n}\nconsole.log(\"Último: \" + num + \" | Total: \" + total);"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

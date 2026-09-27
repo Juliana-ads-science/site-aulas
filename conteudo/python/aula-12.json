@@ -1,0 +1,865 @@
+{
+  "numero": 12,
+  "titulo": "Interface gráfica com Streamlit I",
+  "duracao": "3 h",
+  "etapas": [
+    {
+      "id": "definicoes",
+      "tipo": "leitura",
+      "nome": "Definições",
+      "blocos": [
+        "**Streamlit** é uma biblioteca Python de código aberto que transforma um script Python em um aplicativo web interativo, sem precisar escrever HTML, CSS ou JavaScript. A filosofia é \"Data Apps as Scripts\".",
+        {
+          "tabela": [
+            [
+              "Termo",
+              "O que significa"
+            ],
+            [
+              "Streamlit",
+              "Biblioteca que gera a interface web a partir de chamadas `st.`"
+            ],
+            [
+              "`st`",
+              "Apelido padrão da biblioteca: `import streamlit as st`"
+            ],
+            [
+              "Widget",
+              "Elemento interativo: caixa de texto, botão, slider, seleção"
+            ],
+            [
+              "Re-execução (rerun)",
+              "A cada interação com um widget, o script roda de novo do início ao fim"
+            ],
+            [
+              "Ciclo de vida",
+              "Interação → re-execução → página reconstruída com os novos valores"
+            ],
+            [
+              "`st.session_state`",
+              "\"Dicionário\" que guarda valores entre re-execuções"
+            ],
+            [
+              "`@st.cache_data`",
+              "Decorador que memoriza o resultado de uma função para não recalcular"
+            ],
+            [
+              "Hot Reload",
+              "Ao salvar o `.py`, o app atualiza sozinho no navegador"
+            ],
+            [
+              "`streamlit run`",
+              "Comando de terminal que inicia o servidor local (porta 8501)"
+            ],
+            [
+              "Ambiente virtual (venv)",
+              "Pasta isolada com as bibliotecas de um projeto, evitando conflitos"
+            ],
+            [
+              "Sidebar",
+              "Barra lateral à esquerda para filtros e controles"
+            ],
+            [
+              "DataFrame",
+              "Tabela do Pandas; exibida com `st.dataframe()` ou `st.table()`"
+            ]
+          ]
+        },
+        {
+          "h": "Para que, como e quando usamos"
+        },
+        "Usamos Streamlit para mostrar dados, modelos e ferramentas Python em uma página web em minutos, com poucas linhas de código.",
+        "**Para que:** painéis de controle (dashboards), visualização de dados, demonstração de modelos de machine learning, ferramentas internas para a equipe e protótipos rápidos para clientes.",
+        "**Como:** escrevemos um script `.py` comum, chamamos funções `st.` na ordem em que queremos que os elementos apareçam, e rodamos `streamlit run app.py`. **A ordem no código é a ordem na tela**, de cima para baixo.",
+        "**Quando usar (e quando não):**",
+        {
+          "tabela": [
+            [
+              "Situação",
+              "Streamlit é uma boa?"
+            ],
+            [
+              "Mostrar uma análise de dados ou um modelo para alguém",
+              "Sim"
+            ],
+            [
+              "Protótipo rápido de ferramenta interna",
+              "Sim"
+            ],
+            [
+              "Quem programa sabe Python, mas não sabe front-end",
+              "Sim"
+            ],
+            [
+              "Site com muitas páginas, design sob medida e muitos usuários simultâneos",
+              "Melhor Flask, Django ou um front-end próprio"
+            ],
+            [
+              "Sistema com lógica complexa de telas e rotas",
+              "Melhor um framework web completo"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "estruturas",
+      "tipo": "leitura",
+      "nome": "Estruturas",
+      "blocos": [
+        {
+          "h": "Instalação e execução"
+        },
+        "Estes comandos são do **terminal**, não são código Python:",
+        {
+          "codigo": "python -m venv streamlit_env          # 1. cria o ambiente virtual\nsource streamlit_env/bin/activate     # 2. ativa (Linux/Mac)\nstreamlit_env\\Scripts\\activate        # 2. ativa (Windows)\npip install streamlit                 # 3. instala\nstreamlit run app.py                  # 4. roda o app em localhost:8501"
+        },
+        {
+          "h": "Exibir texto"
+        },
+        {
+          "codigo": "st.title(\"Título principal\")\nst.header(\"Seção\")\nst.subheader(\"Subseção\")\nst.write(\"Mostra quase qualquer coisa: texto, lista, DataFrame\")\nst.text(\"Texto simples, sem formatação\")\nst.markdown(\"**negrito**, *itálico*, - listas e [links](https://docs.streamlit.io)\")"
+        },
+        {
+          "h": "Entradas do usuário"
+        },
+        {
+          "tabela": [
+            [
+              "Widget",
+              "Devolve",
+              "Uso típico"
+            ],
+            [
+              "`st.text_input(\"Nome\")`",
+              "texto (`str`)",
+              "Nome, e-mail, busca"
+            ],
+            [
+              "`st.number_input(\"Qtd\")`",
+              "número",
+              "Quantidade, valor"
+            ],
+            [
+              "`st.selectbox(\"Escolha\", opcoes)`",
+              "1 item",
+              "Lista longa (menu suspenso)"
+            ],
+            [
+              "`st.radio(\"Escolha\", opcoes)`",
+              "1 item",
+              "Poucas opções visíveis"
+            ],
+            [
+              "`st.multiselect(\"Escolha\", opcoes)`",
+              "lista de itens",
+              "Várias escolhas"
+            ],
+            [
+              "`st.checkbox(\"Aceito\")`",
+              "`True` / `False`",
+              "Sim/não, mostrar/ocultar"
+            ],
+            [
+              "`st.slider(\"Idade\", 0, 120, 30)`",
+              "número ou tupla (intervalo)",
+              "Faixa numérica"
+            ],
+            [
+              "`st.date_input(\"Data\")`",
+              "`datetime.date`",
+              "Datas"
+            ],
+            [
+              "`st.button(\"Ok\")`",
+              "`True` só no clique",
+              "Disparar uma ação"
+            ]
+          ]
+        },
+        {
+          "h": "Feedback ao usuário"
+        },
+        {
+          "codigo": "st.success(\"Deu certo!\")          # caixa verde\nst.info(\"Processando...\")         # caixa azul\nst.warning(\"Atenção!\")            # caixa amarela\nst.error(\"Falhou.\")               # caixa vermelha\nst.code(\"print('oi')\", language=\"python\")\nst.json({\"nome\": \"Ana\", \"idade\": 25})"
+        },
+        {
+          "h": "Layout"
+        },
+        {
+          "codigo": "with st.sidebar:\n    filtro = st.selectbox(\"Filtro\", [\"A\", \"B\"])\n\nst.title(\"Página principal\")\nst.divider()   # linha horizontal"
+        },
+        {
+          "h": "Tabelas"
+        },
+        {
+          "codigo": "st.dataframe(df)   # interativa: ordena ao clicar, rola, boa para dados grandes\nst.table(df)       # estática: mostra tudo de uma vez, boa para tabelas pequenas"
+        },
+        {
+          "h": "Cache"
+        },
+        {
+          "codigo": "@st.cache_data\ndef carregar_dados():\n    return pd.read_csv(\"dados.csv\")   # lê o arquivo só na primeira vez"
+        },
+        {
+          "h": "Estado entre re-execuções"
+        },
+        {
+          "codigo": "if \"contador\" not in st.session_state:\n    st.session_state.contador = 0\n\nif st.button(\"Somar 1\"):\n    st.session_state.contador += 1\n\nst.write(st.session_state.contador)"
+        }
+      ]
+    },
+    {
+      "id": "sintaxe",
+      "tipo": "leitura",
+      "nome": "Sintaxe e símbolos",
+      "blocos": [
+        {
+          "tabela": [
+            [
+              "Símbolo / comando",
+              "O que faz",
+              "Por que existe"
+            ],
+            [
+              "`import streamlit as st`",
+              "Importa a biblioteca com o apelido `st`",
+              "Escrever `st.` em vez de `streamlit.` toda vez"
+            ],
+            [
+              "`st.` (ponto)",
+              "Acessa uma função da biblioteca",
+              "O ponto significa \"função que pertence a `st`\""
+            ],
+            [
+              "`st.funcao(\"texto\")`",
+              "Chama a função com um argumento",
+              "Cada chamada vira um elemento na tela"
+            ],
+            [
+              "`variavel = st.widget(...)`",
+              "Guarda o valor que o usuário escolheu",
+              "O widget devolve o valor atual a cada re-execução"
+            ],
+            [
+              "`if st.button(\"Ok\"):`",
+              "Roda o bloco só no clique",
+              "O botão devolve `True` apenas na re-execução do clique"
+            ],
+            [
+              "`with st.sidebar:`",
+              "Abre um contexto",
+              "Tudo indentado dentro dele vai para a barra lateral"
+            ],
+            [
+              "`:` + indentação",
+              "Delimita o bloco do `if`, `with` ou `def`",
+              "Regra do Python para blocos"
+            ],
+            [
+              "`@st.cache_data`",
+              "Decorador",
+              "O `@` \"embrulha\" a função logo abaixo, adicionando o cache"
+            ],
+            [
+              "`st.session_state.chave`",
+              "Lê/grava um valor persistente",
+              "Variáveis comuns são zeradas a cada re-execução"
+            ],
+            [
+              "`\"chave\" not in st.session_state`",
+              "Verifica se o valor já existe",
+              "Inicializar só na primeira execução"
+            ],
+            [
+              "`(\"A\", \"B\", \"C\")` / `[\"A\", \"B\"]`",
+              "Tupla / lista de opções",
+              "Opções de `selectbox`, `radio`, `multiselect`"
+            ],
+            [
+              "`value=(25, 75)` no slider",
+              "Valor inicial em tupla",
+              "Uma tupla de dois valores cria um slider de intervalo"
+            ],
+            [
+              "`valores[0]`, `valores[1]`",
+              "Índices da tupla",
+              "Início e fim do intervalo"
+            ],
+            [
+              "`f\"Olá, {nome}!\"`",
+              "f-string",
+              "Mostrar o valor do widget no texto"
+            ],
+            [
+              "`\"\"\" \"\"\"` em `st.markdown`",
+              "Texto de várias linhas",
+              "Escrever parágrafos e listas em Markdown"
+            ],
+            [
+              "`**texto**` dentro do markdown",
+              "Negrito",
+              "Sintaxe Markdown"
+            ],
+            [
+              "`#` no terminal",
+              "Comentário no terminal",
+              "Explicar comandos sem executá-los"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logica",
+      "tipo": "leitura",
+      "nome": "A lógica por trás",
+      "blocos": [
+        "**O script é a única fonte da verdade.** A tela não guarda nada sozinha: ela é o resultado da última execução do script.",
+        {
+          "h": "Ciclo de vida, passo a passo"
+        },
+        {
+          "passos": [
+            "O usuário abre o app → o script roda do início ao fim e desenha a página.",
+            "O usuário interage com um widget → o Streamlit detecta a mudança.",
+            "O script inteiro roda de novo, agora com os novos valores dos widgets.",
+            "A página é reconstruída e mostra o novo estado."
+          ]
+        },
+        {
+          "fluxograma": "flowchart TD\n    A([Usuário abre o app]) --> B[Script roda do início ao fim]\n    B --> C[/Página desenhada/]\n    C --> D{Usuário mexeu em um widget?}\n    D -- Sim --> B",
+          "legenda": "O mesmo ciclo se repete a cada interação."
+        },
+        {
+          "h": "Quando a re-execução acontece"
+        },
+        {
+          "tabela": [
+            [
+              "Widget",
+              "Re-executa quando"
+            ],
+            [
+              "`st.slider`",
+              "Ao soltar o controle (não enquanto arrasta)"
+            ],
+            [
+              "`st.text_input`",
+              "Ao apertar Enter ou sair do campo"
+            ],
+            [
+              "`st.button`",
+              "Imediatamente no clique"
+            ],
+            [
+              "`st.selectbox`, `st.radio`, `st.checkbox`",
+              "Ao mudar a escolha"
+            ]
+          ]
+        },
+        {
+          "h": "Por que o botão \"esquece\""
+        },
+        "`st.button` devolve `True` só na re-execução causada pelo clique. Na próxima interação com qualquer outro widget, ele volta a `False` e o que estava dentro do `if` some. Solução: guardar o resultado em `st.session_state`.",
+        {
+          "h": "Por que variáveis comuns zeram"
+        },
+        "A cada re-execução, `contador = 0` roda de novo. Só `st.session_state` sobrevive entre execuções. Por isso inicializamos com `if \"contador\" not in st.session_state:`.",
+        {
+          "h": "Por que o cache é necessário"
+        },
+        "Se toda interação roda tudo de novo, ler um CSV grande a cada clique deixaria o app lento. `@st.cache_data` guarda o resultado da função; enquanto os argumentos forem os mesmos, o Streamlit devolve o resultado guardado sem recalcular."
+      ]
+    },
+    {
+      "id": "ciclo-de-vida",
+      "tipo": "simulacao",
+      "nome": "Teste de mesa: ciclo de vida",
+      "rotuloTela": "Página no navegador",
+      "intro": "Acompanhe o script `app_ciclo_de_vida.py` rodando duas vezes: quando o app abre e depois de um clique no botão. Repare no que sobrevive entre as execuções.",
+      "codigo": [
+        "import streamlit as st",
+        "",
+        "st.title('Demonstração do Ciclo de Vida')",
+        "",
+        "if 'count' not in st.session_state:",
+        "    st.session_state.count = 0",
+        "",
+        "if st.button('Clique para re-executar'):",
+        "    st.session_state.count += 1",
+        "",
+        "st.write(f'O script foi executado {st.session_state.count} vezes.')"
+      ],
+      "passos": [
+        {
+          "linha": 1,
+          "explica": "**Execução 1** (o usuário abriu o app). Importa o Streamlit com o apelido `st`."
+        },
+        {
+          "linha": 3,
+          "explica": "Desenha o título, o primeiro elemento da página.",
+          "tela": "# Demonstração do Ciclo de Vida"
+        },
+        {
+          "linha": 5,
+          "explica": "Pergunta se `count` já existe na memória da sessão. Ainda não existe: a condição é `True`."
+        },
+        {
+          "linha": 6,
+          "explica": "Só na primeira execução: cria `count` com 0.",
+          "memoria": {
+            "st.session_state.count": [
+              "0",
+              "int"
+            ]
+          }
+        },
+        {
+          "linha": 8,
+          "explica": "Desenha o botão. Ninguém clicou nesta execução, então ele devolve `False` e a linha 9 é pulada.",
+          "tela": "[ Clique para re-executar ]"
+        },
+        {
+          "linha": 11,
+          "explica": "Mostra o valor atual. Fim da execução 1: a página fica parada esperando o usuário.",
+          "tela": "O script foi executado 0 vezes."
+        },
+        {
+          "linha": 1,
+          "explica": "O usuário **clicou** no botão. O Streamlit roda o script **inteiro de novo**, do início, e a página é reconstruída do zero. É a **execução 2**.",
+          "limparTela": true
+        },
+        {
+          "linha": 3,
+          "explica": "Desenha o título de novo.",
+          "tela": "# Demonstração do Ciclo de Vida"
+        },
+        {
+          "linha": 5,
+          "explica": "Agora `count` **já existe** no `session_state`: a condição é `False` e a linha 6 é pulada. Por isso o valor não volta a 0."
+        },
+        {
+          "linha": 8,
+          "explica": "Desenha o botão. Desta vez ele devolve `True`, porque esta execução foi causada pelo clique.",
+          "tela": "[ Clique para re-executar ]"
+        },
+        {
+          "linha": 9,
+          "explica": "Soma 1 ao valor guardado. Como está no `session_state`, não zera na próxima execução.",
+          "memoria": {
+            "st.session_state.count": [
+              "1",
+              "int"
+            ]
+          }
+        },
+        {
+          "linha": 11,
+          "explica": "Mostra o valor atual. A cada clique, o número sobe.",
+          "tela": "O script foi executado 1 vezes."
+        }
+      ]
+    },
+    {
+      "id": "estrutura-basica",
+      "tipo": "codigo",
+      "nome": "Código comentado: estrutura básica",
+      "linhas": [
+        {
+          "linha": "import streamlit as st",
+          "explica": "Importa o Streamlit com o apelido `st`."
+        },
+        {
+          "linha": "",
+          "explica": "Linha em branco: separa a importação do resto."
+        },
+        {
+          "linha": "st.title('Estrutura de um App Streamlit')",
+          "explica": "Primeiro elemento da página: o título grande."
+        },
+        {
+          "linha": "st.header('Bem-vindo!')",
+          "explica": "Cabeçalho logo abaixo."
+        },
+        {
+          "linha": "st.write('Este aplicativo demonstra a estrutura básica do Streamlit.')",
+          "explica": "Parágrafo de texto."
+        },
+        {
+          "linha": "",
+          "explica": "Linha em branco."
+        },
+        {
+          "linha": "nome = st.text_input('Digite seu nome:')",
+          "explica": "Desenha a caixa de texto e guarda o que foi digitado em `nome` (vazio na primeira execução)."
+        },
+        {
+          "linha": "if nome:",
+          "explica": "Texto vazio conta como `False`; só entra se o usuário digitou algo."
+        },
+        {
+          "linha": "    st.write(f'Olá, {nome}!')",
+          "explica": "Mostra a saudação com o nome."
+        },
+        {
+          "linha": "",
+          "explica": "Linha em branco."
+        },
+        {
+          "linha": "st.text('Isso é um texto simples no final.')",
+          "explica": "Texto final; aparece por último porque está por último no código."
+        }
+      ]
+    },
+    {
+      "id": "sidebar",
+      "tipo": "codigo",
+      "nome": "Código comentado: sidebar",
+      "linhas": [
+        {
+          "linha": "import streamlit as st",
+          "explica": "Importa o Streamlit com o apelido `st`."
+        },
+        {
+          "linha": "",
+          "explica": "Linha em branco."
+        },
+        {
+          "linha": "with st.sidebar:",
+          "explica": "Abre o contexto da barra lateral."
+        },
+        {
+          "linha": "    st.header('Opções')",
+          "explica": "Indentado → aparece na sidebar."
+        },
+        {
+          "linha": "    selecao = st.selectbox('Escolha uma opção:', ('A', 'B', 'C'))",
+          "explica": "Também na sidebar. `selecao` guarda \"A\", \"B\" ou \"C\"."
+        },
+        {
+          "linha": "    st.button('Aplicar Filtro')",
+          "explica": "Último elemento da sidebar."
+        },
+        {
+          "linha": "",
+          "explica": "Linha em branco."
+        },
+        {
+          "linha": "st.title('Página Principal')",
+          "explica": "Sem indentação → volta para a área principal."
+        },
+        {
+          "linha": "st.write(f'Você selecionou a opção: {selecao}')",
+          "explica": "Usa o valor escolhido na sidebar para montar o texto."
+        },
+        {
+          "linha": "st.divider()",
+          "explica": "Linha horizontal separando seções."
+        },
+        {
+          "linha": "st.header('Resultados')",
+          "explica": "Cabeçalho da seção de resultados."
+        }
+      ]
+    },
+    {
+      "id": "cache",
+      "tipo": "codigo",
+      "nome": "Código comentado: cache",
+      "linhas": [
+        {
+          "linha": "import streamlit as st",
+          "explica": "Importa o Streamlit."
+        },
+        {
+          "linha": "import pandas as pd",
+          "explica": "Importa o Pandas, para criar o DataFrame."
+        },
+        {
+          "linha": "import numpy as np",
+          "explica": "Importa o NumPy, que gera os números aleatórios. Sem esta linha, `np.random.randn` daria `NameError`."
+        },
+        {
+          "linha": "",
+          "explica": "Linha em branco."
+        },
+        {
+          "linha": "@st.cache_data",
+          "explica": "Decorador: liga o cache à função abaixo."
+        },
+        {
+          "linha": "def carregar_dados():",
+          "explica": "Define a função que cria os dados."
+        },
+        {
+          "linha": "    dados = pd.DataFrame(np.random.randn(20, 2), columns=['x', 'y'])",
+          "explica": "Cria 20 linhas × 2 colunas de números aleatórios."
+        },
+        {
+          "linha": "    return dados",
+          "explica": "Devolve a tabela."
+        },
+        {
+          "linha": "",
+          "explica": "Linha em branco."
+        },
+        {
+          "linha": "dados_df = carregar_dados()",
+          "explica": "Primeira execução: roda a função. Próximas: devolve do cache (os números não mudam a cada clique)."
+        },
+        {
+          "linha": "st.dataframe(dados_df)",
+          "explica": "Mostra a tabela interativa."
+        }
+      ]
+    },
+    {
+      "id": "painel",
+      "tipo": "leitura",
+      "nome": "Como aplicar: painel de notas",
+      "blocos": [
+        "Este app junta texto, sidebar, filtros, tabela, feedback, cache e `session_state`. Salve como `painel.py` e rode `streamlit run painel.py`.",
+        {
+          "codigo": "import streamlit as st\nimport pandas as pd\n\n@st.cache_data\ndef carregar_turma():\n    return pd.DataFrame({\n        \"Aluno\": [\"Ana\", \"Carlos\", \"Beatriz\", \"Diego\", \"Elisa\"],\n        \"Módulo\": [\"Python\", \"JavaScript\", \"Python\", \"Streamlit\", \"JavaScript\"],\n        \"Nota\": [8.5, 6.0, 9.5, 7.0, 5.5],\n    })\n\nif \"favoritos\" not in st.session_state:\n    st.session_state.favoritos = []\n\ndf = carregar_turma()\n\nwith st.sidebar:\n    st.header(\"Filtros\")\n    modulos = st.multiselect(\"Módulos\", df[\"Módulo\"].unique(), default=list(df[\"Módulo\"].unique()))\n    nota_min = st.slider(\"Nota mínima\", 0.0, 10.0, 0.0, step=0.5)\n\nst.title(\"Painel de Notas da Turma\")\nfiltrado = df[(df[\"Módulo\"].isin(modulos)) & (df[\"Nota\"] >= nota_min)]\n\nif filtrado.empty:\n    st.warning(\"Nenhum aluno com esses filtros.\")\nelse:\n    st.dataframe(filtrado)\n    media = filtrado[\"Nota\"].mean()\n    if media >= 7:\n        st.success(f\"Média do grupo: {media:.2f}\")\n    else:\n        st.error(f\"Média do grupo: {media:.2f}\")\n\nst.divider()\naluno = st.selectbox(\"Marcar aluno como destaque\", df[\"Aluno\"])\nif st.button(\"Adicionar destaque\"):\n    if aluno not in st.session_state.favoritos:\n        st.session_state.favoritos.append(aluno)\n\nst.write(\"Destaques:\", st.session_state.favoritos)"
+        },
+        {
+          "h": "Por que funciona"
+        },
+        {
+          "lista": [
+            "O **cache** evita recriar a tabela a cada clique.",
+            "O **filtro com colchetes** seleciona só as linhas que atendem às duas condições (`&` = \"e\").",
+            "A **lista de destaques** fica no `session_state`, então não some quando o usuário mexe no slider."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "quiz",
+      "tipo": "quiz",
+      "nome": "Quiz de código",
+      "perguntas": [
+        {
+          "pergunta": "Em que ordem os elementos aparecem na tela?",
+          "codigo": "st.write(\"B\")\nst.title(\"A\")\nst.header(\"C\")",
+          "opcoes": [
+            "A, B, C (título sempre no topo)",
+            "B, A, C",
+            "A, C, B",
+            "Aleatória"
+          ],
+          "correta": 1,
+          "dica": "O Streamlit segue a ordem do script.",
+          "acerto": "Isso! Ordem do código = ordem da tela.",
+          "erro": "st.title não sobe sozinho para o topo.",
+          "explicacao": "Os elementos são desenhados de cima para baixo, na ordem das chamadas."
+        },
+        {
+          "pergunta": "O usuário clica 3 vezes. O que aparece?",
+          "codigo": "contador = 0\nif st.button(\"Somar\"):\n    contador += 1\nst.write(contador)",
+          "opcoes": [
+            "3",
+            "1",
+            "0",
+            "Erro"
+          ],
+          "correta": 1,
+          "dica": "O que acontece com `contador = 0` a cada re-execução?",
+          "acerto": "Exato! A variável zera a cada rerun.",
+          "erro": "Lembre: o script roda do zero a cada clique.",
+          "explicacao": "Cada clique roda tudo de novo; `contador` volta a 0 e vira 1. Para acumular, use `st.session_state`."
+        },
+        {
+          "pergunta": "O que `st.multiselect` devolve?",
+          "codigo": "frutas = st.multiselect(\"Frutas\", [\"Maçã\", \"Uva\", \"Banana\"], [\"Maçã\", \"Uva\"])",
+          "opcoes": [
+            "`\"Maçã\"`",
+            "`[\"Maçã\", \"Uva\"]` antes de qualquer mudança",
+            "`True`",
+            "Um número"
+          ],
+          "correta": 1,
+          "dica": "\"multi\" = várias.",
+          "acerto": "Isso! Uma lista com os selecionados.",
+          "erro": "multiselect sempre devolve lista.",
+          "explicacao": "O terceiro argumento é o padrão, então começa com Maçã e Uva."
+        },
+        {
+          "pergunta": "Onde aparece o slider?",
+          "codigo": "with st.sidebar:\n    st.header(\"Filtros\")\nidade = st.slider(\"Idade\", 0, 100)",
+          "opcoes": [
+            "Na barra lateral",
+            "Na área principal",
+            "Nos dois lugares",
+            "Não aparece"
+          ],
+          "correta": 1,
+          "dica": "Repare na indentação.",
+          "acerto": "Perfeito! Fora do with, fora da sidebar.",
+          "erro": "Só vai para a sidebar o que está indentado no with.",
+          "explicacao": "O slider não está recuado, então pertence à página principal."
+        },
+        {
+          "pergunta": "Para que serve este `@`?",
+          "codigo": "@st.cache_data\ndef ler():\n    return pd.read_csv(\"grande.csv\")",
+          "opcoes": [
+            "Comentar a função",
+            "Ler o arquivo só uma vez e reaproveitar o resultado",
+            "Mostrar a tabela na tela",
+            "Salvar o arquivo"
+          ],
+          "correta": 1,
+          "dica": "O app roda tudo de novo a cada clique.",
+          "acerto": "Isso! O cache poupa trabalho repetido.",
+          "erro": "O decorador adiciona memória à função.",
+          "explicacao": "Com os mesmos argumentos, o Streamlit devolve o resultado guardado."
+        },
+        {
+          "pergunta": "Qual a diferença?",
+          "codigo": "st.dataframe(df)\nst.table(df)",
+          "opcoes": [
+            "Nenhuma",
+            "`dataframe` é interativa (ordena, rola); `table` é estática",
+            "`table` é interativa; `dataframe` é estática",
+            "`table` só aceita listas"
+          ],
+          "correta": 1,
+          "dica": "Qual deixa clicar no cabeçalho?",
+          "acerto": "Mandou bem!",
+          "erro": "Teste as duas e clique no cabeçalho.",
+          "explicacao": "`st.dataframe` é a escolha padrão para DataFrames; `st.table` serve para tabelas pequenas e fixas."
+        }
+      ]
+    },
+    {
+      "id": "atividades",
+      "tipo": "atividades",
+      "nome": "Atividades práticas",
+      "intro": [
+        "São 9 atividades em três níveis. Todas começam com `import streamlit as st` (e `import pandas as pd` quando usam DataFrame). Rode cada app com `streamlit run nome_do_arquivo.py`.",
+        "Escreva ou cole a sua tentativa no campo de cada atividade para liberar a solução. Outras soluções também valem, desde que passem nos testes do enunciado."
+      ],
+      "itens": [
+        {
+          "n": 1,
+          "nivel": "Fácil",
+          "titulo": "Cartão de visita",
+          "enunciado": [
+            "Crie um app com título \"Meu Cartão de Visita\", um cabeçalho com seu nome e um parágrafo em Markdown com sua profissão em negrito."
+          ],
+          "solucao": [
+            {
+              "codigo": "import streamlit as st\n\nst.title(\"Meu Cartão de Visita\")\nst.header(\"Juliana Carvalho\")\nst.markdown(\"Profissão: **Instrutora de Programação**\")"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "nivel": "Fácil",
+          "titulo": "Saudação",
+          "enunciado": [
+            "Peça o nome com `st.text_input` e, se foi digitado algo, mostre `st.success(\"Olá, <nome>!\")`."
+          ],
+          "solucao": [
+            {
+              "codigo": "import streamlit as st\n\nnome = st.text_input(\"Seu nome:\")\nif nome:\n    st.success(f\"Olá, {nome}!\")"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "nivel": "Fácil",
+          "titulo": "Tabela de produtos",
+          "enunciado": [
+            "Mostre um DataFrame com 3 produtos e seus preços usando `st.dataframe` e, abaixo, o mesmo com `st.table`."
+          ],
+          "solucao": [
+            {
+              "codigo": "import streamlit as st\nimport pandas as pd\n\ndf = pd.DataFrame({\"Produto\": [\"Caneta\", \"Caderno\", \"Mochila\"], \"Preço\": [2.5, 18.0, 120.0]})\nst.dataframe(df)\nst.table(df)"
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "nivel": "Médio",
+          "titulo": "Calculadora de IMC",
+          "enunciado": [
+            "Dois `st.number_input` (peso em kg e altura em m) e um botão \"Calcular\". Mostre o IMC com 2 casas e use `st.warning` se for acima de 25."
+          ],
+          "solucao": [
+            {
+              "codigo": "import streamlit as st\n\npeso = st.number_input(\"Peso (kg)\", min_value=0.0)\naltura = st.number_input(\"Altura (m)\", min_value=0.0)\nif st.button(\"Calcular\"):\n    if altura > 0:\n        imc = peso / altura ** 2\n        st.write(f\"IMC: {imc:.2f}\")\n        if imc > 25:\n            st.warning(\"Acima de 25.\")\n    else:\n        st.error(\"Informe a altura.\")"
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "nivel": "Médio",
+          "titulo": "Tema na sidebar",
+          "enunciado": [
+            "Coloque na sidebar um `st.radio` com \"Claro\" e \"Escuro\" e, na área principal, escreva qual tema foi escolhido."
+          ],
+          "solucao": [
+            {
+              "codigo": "import streamlit as st\n\nwith st.sidebar:\n    tema = st.radio(\"Tema\", (\"Claro\", \"Escuro\"))\nst.write(f\"Tema escolhido: {tema}\")"
+            }
+          ]
+        },
+        {
+          "n": 6,
+          "nivel": "Médio",
+          "titulo": "Pares no intervalo",
+          "enunciado": [
+            "Crie um `st.slider` de intervalo (0 a 100) e mostre quantos números pares existem dentro do intervalo escolhido."
+          ],
+          "solucao": [
+            {
+              "codigo": "import streamlit as st\n\ninicio, fim = st.slider(\"Intervalo\", 0, 100, (10, 30))\npares = [n for n in range(inicio, fim + 1) if n % 2 == 0]\nst.write(f\"Existem {len(pares)} pares entre {inicio} e {fim}.\")"
+            }
+          ]
+        },
+        {
+          "n": 7,
+          "nivel": "Difícil",
+          "titulo": "Lista de tarefas",
+          "enunciado": [
+            "Um `st.text_input` e um botão \"Adicionar\". Guarde as tarefas em `st.session_state` e mostre todas numeradas. Adicione um botão \"Limpar tudo\"."
+          ],
+          "solucao": [
+            {
+              "codigo": "import streamlit as st\n\nif \"tarefas\" not in st.session_state:\n    st.session_state.tarefas = []\n\nnova = st.text_input(\"Nova tarefa\")\nif st.button(\"Adicionar\") and nova:\n    st.session_state.tarefas.append(nova)\nif st.button(\"Limpar tudo\"):\n    st.session_state.tarefas = []\n\nfor i, t in enumerate(st.session_state.tarefas, start=1):\n    st.write(f\"{i}. {t}\")"
+            }
+          ]
+        },
+        {
+          "n": 8,
+          "nivel": "Difícil",
+          "titulo": "Notas com cache e filtro",
+          "enunciado": [
+            "Crie uma função `carregar_notas()` com `@st.cache_data` que devolva um DataFrame (Aluno, Nota). Use `st.multiselect` para escolher alunos e mostre só esses, com a média do grupo selecionado."
+          ],
+          "solucao": [
+            {
+              "codigo": "import streamlit as st\nimport pandas as pd\n\n@st.cache_data\ndef carregar_notas():\n    return pd.DataFrame({\"Aluno\": [\"Ana\", \"Carlos\", \"Beatriz\"], \"Nota\": [8.5, 6.0, 9.5]})\n\ndf = carregar_notas()\nescolhidos = st.multiselect(\"Alunos\", df[\"Aluno\"], default=list(df[\"Aluno\"]))\nsel = df[df[\"Aluno\"].isin(escolhidos)]\nst.dataframe(sel)\nif not sel.empty:\n    st.write(f\"Média: {sel['Nota'].mean():.2f}\")"
+            }
+          ]
+        },
+        {
+          "n": 9,
+          "nivel": "Difícil",
+          "titulo": "O botão que esquece",
+          "enunciado": [
+            "Explique, com suas palavras e um código de exemplo, por que um resultado dentro de `if st.button(...)` some quando o usuário mexe em outro widget, e mostre como resolver."
+          ],
+          "solucao": [
+            "**Resposta esperada:** o botão devolve `True` só na execução do clique. Quando outro widget muda, o script roda de novo, o botão agora vale `False` e o bloco do `if` não é executado, então o resultado some. Solução: guardar em `st.session_state`.",
+            {
+              "codigo": "import streamlit as st\n\nif \"mostrar\" not in st.session_state:\n    st.session_state.mostrar = False\n\nif st.button(\"Mostrar resultado\"):\n    st.session_state.mostrar = True\n\nst.slider(\"Outro widget\", 0, 10)\n\nif st.session_state.mostrar:\n    st.success(\"Continuo aqui mesmo mexendo no slider!\")"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

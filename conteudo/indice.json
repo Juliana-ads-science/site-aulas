@@ -4,13 +4,27 @@
       "id": "python",
       "pasta": "python",
       "publico": "adulto",
+      "linguagem": "python",
       "titulo": "Python",
-      "descricao": "Da lógica de programação aos laços: algoritmos, decisões, repetições e listas, com exercícios em quatro níveis.",
+      "descricao": "Da lógica de programação às interfaces: algoritmos, decisões, repetições, listas, funções e apps com Streamlit.",
       "aulas": [
         "aula-01",
         "aula-02",
         "aula-03",
-        "aula-04"
+        "aula-04",
+        "aula-08",
+        "aula-12"
+      ]
+    },
+    {
+      "id": "javascript",
+      "pasta": "javascript",
+      "publico": "adulto",
+      "linguagem": "javascript",
+      "titulo": "JavaScript",
+      "descricao": "A linguagem da web: laços de repetição, decisões e lógica aplicada no navegador.",
+      "aulas": [
+        "aula-03"
       ]
     }
   ]

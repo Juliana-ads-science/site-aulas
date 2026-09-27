@@ -269,18 +269,17 @@ body.kids .aula-num.ok{background:var(--sun);color:var(--navy)}
 .fluxo figcaption{font-size:.92rem;color:var(--muted);margin-top:10px;text-align:center}
 
 /* ---------- simulação (teste de mesa) ---------- */
-.simulador{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:20px;margin-top:18px;align-items:start}
+.simulador{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;margin-top:18px}
 .simulador .ln{cursor:default;font-size:.84rem}
 .simulador .ln .num{width:38px;padding-right:12px}
-.sim-lado{display:flex;flex-direction:column;gap:14px}
+.sim-lado{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:start}
 .sim-caixa{border:1.5px solid var(--line);border-radius:12px;padding:14px 16px}
 .sim-caixa h3{font-size:.95rem;margin-bottom:8px}
 .sim-caixa p{margin:0}
-.tabela.mem{table-layout:fixed}
+.tabela.mem{font-size:.88rem}
 .tabela.mem td,.tabela.mem th{padding:7px 6px}
-.tabela.mem th:nth-child(1){width:34%}.tabela.mem th:nth-child(3){width:20%}
-.tabela.mem{font-size:.9rem}
-.tabela.mem td:nth-child(2) code{word-break:break-all}
+.tabela.mem td:nth-child(1) code{word-break:keep-all;overflow-wrap:normal}
+.tabela.mem td:nth-child(2) code{overflow-wrap:break-word}
 .tabela.mem tr.mudou td{background:var(--sun-2)}
 .console{margin:0;min-height:5.2em;background:#0B1B30;color:#D8E4F5;border-radius:8px;padding:10px 12px;font-family:'JetBrains Mono',monospace;font-size:.88rem;white-space:pre-wrap}
 .sim-exp{position:static;margin-top:18px}
@@ -295,6 +294,9 @@ body.kids .aula-num.ok{background:var(--sun);color:var(--navy)}
 .tag.nivel-intermediario{background:var(--sky);color:var(--navy-2)}
 .tag.nivel-avancado{background:#E4E1F5;color:#433A8A}
 .tag.nivel-desafio{background:var(--sun);color:var(--navy)}
+.tag.nivel-facil{background:var(--ok-bg);color:var(--ok)}
+.tag.nivel-medio{background:var(--sky);color:var(--navy-2)}
+.tag.nivel-dificil{background:#E4E1F5;color:#433A8A}
 .testes{background:var(--sky);border-radius:8px;padding:12px 16px;margin:0 0 14px;max-width:68ch}
 .testes p,.testes ul{margin:4px 0 0}
 .rascunho{display:block;width:100%;padding:12px 14px;border:1.5px solid var(--line);border-radius:8px;font-family:'JetBrains Mono',monospace;font-size:.9rem;color:var(--navy);resize:vertical;tab-size:4}
@@ -315,6 +317,7 @@ body.kids .aula-num.ok{background:var(--sun);color:var(--navy)}
 /* ---------- responsivo ---------- */
 @media (max-width:960px){
   .explorer,.jogo,.simulador{grid-template-columns:1fr}
+  .sim-lado{grid-template-columns:minmax(0,1fr)}
   .explain{position:static}
   .aula-layout{grid-template-columns:1fr}
   .rail{position:static}

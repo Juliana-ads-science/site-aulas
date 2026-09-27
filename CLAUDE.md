@@ -98,7 +98,9 @@ A professora entrega o documento **completo, com as respostas**. Cabe ao Claude 
 - Supabase: `supabase/1-configuracao.sql` (tabelas `turmas`, `perfis`, `progresso`, RLS, gatilho que valida o código da turma, função `privado.criar_conta_kids`) e `supabase/2-comandos-da-professora.sql`.
 - Contas kids: login só com apelido; o site completa com `@kids.linhaalinha.com.br` (domínio reservado, nenhum e-mail real). Criadas pela professora via `select privado.criar_conta_kids(...)`.
 - Material bruto da professora fica em `materiais/` (no `.gitignore`, nunca vai para o GitHub). Ler `materiais/LEIA-ME.md` antes de converter uma aula. `prototipo/` também fica fora do repositório.
-- Trilha **Python** (`conteudo/python/`, id `python`), conforme `materiais/LEIA-ME.md`. Aulas 1 a 4 publicadas, feitas só a partir dos PDFs de `materiais/python/` (os slides não são fonte).
+- Trilha **Python** (`conteudo/python/`, id `python`): aulas 1, 2, 3, 4, 8 e 12. Trilha **JavaScript** (`conteudo/javascript/`, id `javascript`): aula 3. Tudo feito só a partir dos PDFs de `materiais/` (os slides não são fonte). Faltam no material: Python 5 a 7 e 9 a 11, JavaScript 1 e 2.
+- Cada aula tem o campo `numero` (a trilha tem lacunas; a lista mostra "Aula 8", não a posição). A trilha tem `linguagem` no `indice.json` (`python` ou `javascript`), que define o realce de sintaxe.
+- Simulação: `memoria` com valor `null` remove a variável (ex.: locais de uma função que terminou); `limparTela` recomeça a saída (ex.: rerun do Streamlit); `rotuloTela` troca o nome da caixa ("Console" no JavaScript).
 - Regras do LEIA-ME: não publicar "Na correção", "Observação para o slide", "Ajustes em alguns exemplos dos slides" nem instruções do tipo "peça que o aluno"; gabaritos só atrás de "Ver solução". Nas aulas 1 a 4 (formato Material Complementar), as mensagens de acerto/erro dos quizzes são escritas por Claude, curtas. As aulas 8 e 12 (Python) e a 3 (JavaScript) já trazem essas mensagens.
 
 ## Decisões pendentes
