@@ -1,0 +1,1060 @@
+{
+  "titulo": "Repetição com for e listas",
+  "duracao": "3 h",
+  "etapas": [
+    {
+      "id": "conceito",
+      "tipo": "leitura",
+      "nome": "O laço for",
+      "blocos": [
+        "O `for` repete um bloco uma vez para cada item de uma sequência, entregando o item da vez numa variável. Ele sabe sozinho quando parar: quando os itens acabam.",
+        {
+          "h": "Definição"
+        },
+        "Enquanto o `while` pergunta \"ainda devo continuar?\", o `for` diz \"faça isto para cada um\". Em Python, o `for` é um laço de iteração sobre coleções: ele percorre listas, strings, tuplas, dicionários, conjuntos e sequências geradas por `range()`. Tudo que pode ser percorrido assim se chama **iterável**.",
+        {
+          "h": "Para que usamos"
+        },
+        {
+          "lista": [
+            "**Processar todos os itens de uma coleção:** somar notas, validar cadastros, formatar nomes.",
+            "**Repetir um número conhecido de vezes:** tabuada, 10 tentativas, 5 perguntas.",
+            "**Analisar texto caractere a caractere:** contar vogais, validar uma sequência de DNA.",
+            "**Filtrar e transformar dados:** montar uma lista só com os aprovados.",
+            "**Percorrer tabelas** (listas de listas) com laços aninhados."
+          ]
+        },
+        {
+          "h": "Quando usar for ou while"
+        },
+        {
+          "tabela": [
+            [
+              "Pergunta",
+              "Se a resposta for sim"
+            ],
+            [
+              "Tenho uma coleção e quero passar por todos os itens?",
+              "`for item in colecao`"
+            ],
+            [
+              "Sei quantas vezes repetir antes de começar?",
+              "`for i in range(n)`"
+            ],
+            [
+              "A parada depende de algo que só se sabe durante a execução (resposta do usuário, senha, saldo)?",
+              "`while`"
+            ]
+          ]
+        },
+        "Regra prática: o `for` é a primeira escolha. Ele não tem atualização manual, então não sofre com o loop infinito por esquecimento.",
+        {
+          "h": "Sintaxe"
+        },
+        {
+          "codigo": "for variavel in iteravel:\n    # bloco que roda uma vez para cada item\n    # a cada volta, variavel recebe o próximo item"
+        },
+        {
+          "h": "Símbolos e palavras-chave"
+        },
+        {
+          "tabela": [
+            [
+              "Símbolo",
+              "Função",
+              "Por que é assim"
+            ],
+            [
+              "`for`",
+              "Abre o laço",
+              "\"Para\" (cada), em inglês"
+            ],
+            [
+              "`in`",
+              "Liga a variável à coleção",
+              "\"Em\": \"para cada nome em nomes\". O mesmo `in` testa pertencimento num `if`"
+            ],
+            [
+              "variável de controle",
+              "Recebe o item da vez",
+              "Nome livre; use o singular da coleção (`nome` em `nomes`)"
+            ],
+            [
+              "`:` e indentação",
+              "Delimitam o bloco",
+              "Mesma regra de `if` e `while`"
+            ],
+            [
+              "`range()`",
+              "Gera uma sequência de inteiros",
+              "\"Intervalo\", em inglês"
+            ],
+            [
+              "`[ ]`",
+              "Cria lista ou acessa posição (`lista[0]`)",
+              "Colchetes indicam índice desde a matemática (a₀, a₁)"
+            ],
+            [
+              "`( )`",
+              "Cria tupla",
+              "Parênteses já agrupam valores na matemática: o par (x, y)"
+            ],
+            [
+              "`{ }`",
+              "Cria dicionário ou conjunto",
+              "Chaves lembram a notação de conjuntos da matemática: {1, 2, 3}"
+            ],
+            [
+              "`.`",
+              "Chama um método do objeto (`lista.append(4)`)",
+              "\"A lista, faça append\": o ponto liga a ação a quem executa"
+            ],
+            [
+              "`len()`",
+              "Tamanho da coleção",
+              "Abreviação de *length*"
+            ]
+          ]
+        },
+        {
+          "h": "Como o for funciona por dentro"
+        },
+        "O `for` conversa com a coleção por meio de um **iterador**, um objeto que entrega um item por vez. Dá para ver isso no modo interativo:",
+        {
+          "codigo": ">>> it = iter([\"Ana\", \"Carlos\"])\n>>> next(it)\n'Ana'\n>>> next(it)\n'Carlos'\n>>> next(it)\nStopIteration"
+        },
+        "O `for` faz exatamente isso: pede um iterador com `iter()`, chama `next()` a cada volta, guarda o resultado na variável de controle e, quando recebe o sinal `StopIteration`, encerra o laço sem erro. Por isso não existe condição nem atualização para esquecer.",
+        "Para comparar, o mesmo laço escrito com `while` precisa de três coisas que o `for` faz sozinho:",
+        {
+          "codigo": "nomes = [\"Ana\", \"Carlos\", \"João\"]\n\n# com for\nfor nome in nomes:\n    print(nome)\n\n# equivalente com while\ni = 0                      # inicialização\nwhile i < len(nomes):      # condição\n    nome = nomes[i]\n    print(nome)\n    i += 1                 # atualização"
+        },
+        {
+          "h": "range() em detalhe"
+        },
+        {
+          "tabela": [
+            [
+              "Forma",
+              "Gera",
+              "Tamanho"
+            ],
+            [
+              "`range(5)`",
+              "0, 1, 2, 3, 4",
+              "5"
+            ],
+            [
+              "`range(2, 6)`",
+              "2, 3, 4, 5",
+              "4"
+            ],
+            [
+              "`range(0, 10, 2)`",
+              "0, 2, 4, 6, 8",
+              "5"
+            ],
+            [
+              "`range(1, 10, 3)`",
+              "1, 4, 7",
+              "3"
+            ],
+            [
+              "`range(5, 0, -1)`",
+              "5, 4, 3, 2, 1",
+              "5"
+            ],
+            [
+              "`range(10, 0, 2)`",
+              "nada",
+              "0"
+            ],
+            [
+              "`range(3, 3)`",
+              "nada",
+              "0"
+            ]
+          ]
+        },
+        "O **fim é sempre obrigatório**. Quando `range` recebe um único número, esse número é o fim, e o início assume 0. Não existe `range()` vazio.",
+        "Para ver os números gerados de uma vez, converta em lista: `print(list(range(2, 11, 3)))` mostra `[2, 5, 8]`.",
+        {
+          "h": "Por que o fim nunca é incluído?"
+        },
+        "Parece estranho no começo, mas a escolha tem três vantagens:",
+        {
+          "lista": [
+            "**O tamanho é óbvio:** `range(n)` tem exatamente n números, e `range(a, b)` tem b − a números.",
+            "**Combina com os índices:** uma lista de 5 itens tem índices 0 a 4, exatamente `range(5)` ou `range(len(lista))`.",
+            "**Intervalos se encaixam sem sobreposição:** `range(0, 5)` seguido de `range(5, 10)` cobre 0 a 9, sem repetir o 5."
+          ]
+        },
+        {
+          "nota": "Dica: para incluir o último número, some 1 ao fim. De 1 a 10 é `range(1, 11)`."
+        }
+      ]
+    },
+    {
+      "id": "colecoes",
+      "tipo": "leitura",
+      "nome": "Coleções: listas e dicionários",
+      "blocos": [
+        "O `for` funciona igual para qualquer coleção; o que muda é o que cada coleção guarda e permite.",
+        {
+          "h": "As coleções lado a lado"
+        },
+        {
+          "tabela": [
+            [
+              "Coleção",
+              "Sintaxe",
+              "Tem ordem?",
+              "Pode alterar?",
+              "Aceita repetidos?",
+              "O for entrega",
+              "Uso típico"
+            ],
+            [
+              "Lista",
+              "`[1, 2, 3]`",
+              "Sim",
+              "Sim",
+              "Sim",
+              "Cada item",
+              "Dados que crescem ou mudam"
+            ],
+            [
+              "Tupla",
+              "`(1, 2, 3)`",
+              "Sim",
+              "Não",
+              "Sim",
+              "Cada item",
+              "Dados fixos (coordenadas, opções)"
+            ],
+            [
+              "Conjunto (set)",
+              "`{1, 2, 3}`",
+              "Não garantida",
+              "Sim",
+              "Não",
+              "Cada item, ordem imprevisível",
+              "Remover duplicatas, testar pertencimento"
+            ],
+            [
+              "Dicionário",
+              "`{\"nome\": \"Ana\"}`",
+              "Sim, ordem de inserção",
+              "Sim",
+              "Chaves não",
+              "Cada chave",
+              "Dados com rótulo"
+            ],
+            [
+              "String",
+              "`\"Python\"`",
+              "Sim",
+              "Não",
+              "Sim",
+              "Cada caractere",
+              "Texto"
+            ]
+          ]
+        },
+        "Pegadinha: `{}` vazio cria um **dicionário**, não um conjunto. Conjunto vazio é `set()`.",
+        {
+          "h": "Listas: índices e operações"
+        },
+        "O índice começa em 0 porque ele mede a **distância a partir do início**: o primeiro item está a 0 passos do começo. Índices negativos contam do fim.",
+        {
+          "codigo": "frutas = [\"maçã\", \"banana\", \"uva\", \"kiwi\"]\n#            0        1        2      3     (índices)\n#           -4       -3       -2     -1     (índices negativos)\n\nprint(frutas[0])        # maçã\nprint(frutas[-1])       # kiwi, o último, sem precisar saber o tamanho\nprint(frutas[1:3])      # ['banana', 'uva'], fatia: do 1 até antes do 3\nprint(len(frutas))      # 4\nprint(\"uva\" in frutas)  # True"
+        },
+        "A fatia `[1:3]` segue a mesma regra do `range`: o fim não é incluído.",
+        {
+          "tabela": [
+            [
+              "Operação",
+              "Exemplo",
+              "Efeito"
+            ],
+            [
+              "`append(x)`",
+              "`frutas.append(\"pera\")`",
+              "Adiciona no fim"
+            ],
+            [
+              "`insert(i, x)`",
+              "`frutas.insert(0, \"caju\")`",
+              "Adiciona na posição i"
+            ],
+            [
+              "`remove(x)`",
+              "`frutas.remove(\"uva\")`",
+              "Remove a primeira ocorrência do valor"
+            ],
+            [
+              "`pop(i)`",
+              "`frutas.pop(1)`",
+              "Remove pela posição e devolve o item. Sem argumento, remove o último"
+            ],
+            [
+              "`lista[i] = x`",
+              "`frutas[0] = \"manga\"`",
+              "Substitui o item da posição i"
+            ],
+            [
+              "`sum`, `max`, `min`",
+              "`sum(notas)`",
+              "Soma, maior e menor de uma lista numérica"
+            ],
+            [
+              "`sorted(lista)`",
+              "`sorted(notas)`",
+              "Nova lista ordenada, sem alterar a original"
+            ]
+          ]
+        },
+        "Acessar uma posição que não existe gera `IndexError: list index out of range`.",
+        {
+          "h": "Dicionários: três formas de percorrer"
+        },
+        {
+          "codigo": "aluno = {\"nome\": \"Ana\", \"idade\": 20, \"curso\": \"FullStack com IA\"}\n\nfor chave in aluno:                  # só as chaves\n    print(chave)\n\nfor valor in aluno.values():         # só os valores\n    print(valor)\n\nfor chave, valor in aluno.items():   # os pares\n    print(f\"{chave}: {valor}\")"
+        },
+        "O `for chave, valor in ...` usa **desempacotamento**: cada par `(\"nome\", \"Ana\")` é separado em duas variáveis ao mesmo tempo, igual ao `a, b = 1, 2` da Aula 1."
+      ]
+    },
+    {
+      "id": "codigo-padroes",
+      "tipo": "codigo",
+      "nome": "Código comentado: padrões com for",
+      "intro": "Os padrões da Aula 3 (contador, acumulador, maior/menor) continuam valendo, agora mais curtos. Explore cada linha.",
+      "linhas": [
+        {
+          "linha": "notas = [7.5, 9.0, 4.0, 8.5, 6.0]",
+          "explica": "Uma **lista** com 5 notas. Os colchetes criam a lista e as vírgulas separam os itens."
+        },
+        {
+          "linha": "",
+          "explica": "Linha em branco."
+        },
+        {
+          "linha": "# Acumulador",
+          "explica": "Primeiro padrão: somar tudo."
+        },
+        {
+          "linha": "soma = 0",
+          "explica": "O acumulador começa no elemento neutro da soma."
+        },
+        {
+          "linha": "for nota in notas:",
+          "explica": "A cada volta, `nota` recebe o próximo item: 7.5, depois 9.0, e assim por diante. Sem inicialização nem atualização manual: o `for` cuida disso."
+        },
+        {
+          "linha": "    soma += nota",
+          "explica": "Soma a nota da vez. No fim, `soma` vale 35.0."
+        },
+        {
+          "linha": "",
+          "explica": "Linha em branco."
+        },
+        {
+          "linha": "# Contador com condição",
+          "explica": "Segundo padrão: contar só quem atende a uma regra."
+        },
+        {
+          "linha": "aprovados = 0",
+          "explica": "Contador começa em 0."
+        },
+        {
+          "linha": "for nota in notas:",
+          "explica": "Percorre a lista de novo, do começo."
+        },
+        {
+          "linha": "    if nota >= 7:",
+          "explica": "Um `if` dentro do laço: a decisão é tomada para cada nota."
+        },
+        {
+          "linha": "        aprovados += 1",
+          "explica": "Só conta quem passou. Resultado: 3 (7.5, 9.0 e 8.5)."
+        },
+        {
+          "linha": "",
+          "explica": "Linha em branco."
+        },
+        {
+          "linha": "# Filtro: montar uma nova lista",
+          "explica": "Terceiro padrão: separar alguns itens numa lista nova."
+        },
+        {
+          "linha": "recuperacao = []",
+          "explica": "Uma lista vazia, que vai crescer."
+        },
+        {
+          "linha": "for nota in notas:",
+          "explica": "Percorre as notas."
+        },
+        {
+          "linha": "    if 5 <= nota < 7:",
+          "explica": "Comparação encadeada: nota entre 5 (inclusive) e 7 (exclusive)."
+        },
+        {
+          "linha": "        recuperacao.append(nota)",
+          "explica": "`append` adiciona no fim da lista nova. A lista original não muda. Resultado: `[6.0]`."
+        },
+        {
+          "linha": "",
+          "explica": "Linha em branco."
+        },
+        {
+          "linha": "# Maior valor",
+          "explica": "Quarto padrão: encontrar o máximo."
+        },
+        {
+          "linha": "maior = notas[0]",
+          "explica": "Começa com o **primeiro item**, e não com 0, pelo mesmo motivo da Aula 3: se todos fossem negativos, 0 daria a resposta errada."
+        },
+        {
+          "linha": "for nota in notas:",
+          "explica": "Compara cada nota com o maior visto até agora."
+        },
+        {
+          "linha": "    if nota > maior:",
+          "explica": "Achou uma nota maior?"
+        },
+        {
+          "linha": "        maior = nota",
+          "explica": "Então ela passa a ser o maior. Resultado: 9.0."
+        },
+        {
+          "linha": "",
+          "explica": "Linha em branco."
+        },
+        {
+          "linha": "print(soma, aprovados, recuperacao, maior)",
+          "explica": "Mostra `35.0 3 [6.0] 9.0`. Na prática, `sum(notas)` e `max(notas)` fazem o mesmo em uma linha, mas vale saber escrever o laço para entender o que as funções prontas fazem por dentro."
+        }
+      ]
+    },
+    {
+      "id": "padroes",
+      "tipo": "leitura",
+      "nome": "enumerate, zip e laços aninhados",
+      "blocos": [
+        {
+          "h": "enumerate e zip"
+        },
+        {
+          "codigo": "aulas = [\"Lógica\", \"Condicional\", \"While\", \"For\"]\n\nfor numero, aula in enumerate(aulas, start=1):\n    print(f\"Aula {numero} - {aula}\")"
+        },
+        "O parâmetro `start=1` faz a contagem começar em 1, dispensando o `i + 1`.",
+        "O `zip` percorre duas listas em paralelo, par a par:",
+        {
+          "codigo": "nomes = [\"Ana\", \"Bruno\", \"Carla\"]\nnotas = [8.5, 6.0, 9.2]\n\nfor nome, nota in zip(nomes, notas):\n    print(f\"{nome}: {nota}\")"
+        },
+        {
+          "h": "break, continue e for-else"
+        },
+        "`break` e `continue` funcionam no `for` exatamente como no `while`. O `for` também aceita `else`, que roda quando a coleção termina **sem nenhum `break`**. É perfeito para buscas:",
+        {
+          "codigo": "numeros = [3, 5, 7, 9]\nfor n in numeros:\n    if n % 2 == 0:\n        print(f\"Primeiro par: {n}\")\n        break\nelse:\n    print(\"Nenhum número par na lista\")"
+        },
+        {
+          "h": "Laços aninhados"
+        },
+        "No laço aninhado, o laço de dentro roda **inteiro** a cada volta do de fora. Se o externo roda 3 vezes e o interno 4, o bloco interno executa 3 × 4 = 12 vezes.",
+        {
+          "codigo": "for linha in range(1, 4):\n    for coluna in range(1, 5):\n        print(f\"({linha},{coluna})\", end=\" \")\n    print()   # quebra de linha ao fim de cada linha"
+        },
+        "O interno pode depender do externo, formando triângulos: com `for j in range(i)`, a linha 0 tem 0 itens, a linha 1 tem 1, e assim por diante.",
+        {
+          "h": "Armadilhas"
+        },
+        "**1. Remover itens da lista que está sendo percorrida.** Trocar valores (`lista[i] = x`) durante o laço é seguro, mas remover ou adicionar itens bagunça a contagem interna do `for`. Veja isso acontecendo na próxima etapa, passo a passo. A solução é montar uma lista nova com o filtro:",
+        {
+          "codigo": "nums = [1, 2, 2, 3]\nsem_dois = []\nfor n in nums:\n    if n != 2:\n        sem_dois.append(n)\nprint(sem_dois)   # [1, 3]"
+        },
+        "**2. Mudar a variável de controle não afeta o laço.** Em `for i in range(5): i = 10`, na volta seguinte `i` recebe o próximo número do `range` normalmente. Quem manda na sequência é o iterador.",
+        "**3. A variável de controle continua existindo depois do laço**, com o último valor. Depois de `for i in range(3)`, `i` vale 2.",
+        "**4. Conjuntos não têm ordem garantida.** Um conjunto como `{1, 2, 3}` pode aparecer ordenado por coincidência (números inteiros pequenos). Com textos, a ordem muda entre execuções.",
+        {
+          "h": "Um passo além: list comprehension"
+        },
+        "A lista dos números pares de 0 a 20 pode ser escrita em uma linha:",
+        {
+          "codigo": "pares = [n for n in range(21) if n % 2 == 0]"
+        },
+        "Lê-se: \"n, para cada n em `range(21)`, se n for par\". É só uma forma compacta do padrão filtro. Nas atividades, pratique o laço completo."
+      ]
+    },
+    {
+      "id": "armadilha-remove",
+      "tipo": "simulacao",
+      "nome": "Teste de mesa: remover durante o for",
+      "intro": "O objetivo deste código é tirar todos os 2 da lista. Acompanhe o `for` e a posição que ele está lendo para descobrir por que um 2 escapa.",
+      "codigo": [
+        "nums = [1, 2, 2, 3]",
+        "for n in nums:",
+        "    if n == 2:",
+        "        nums.remove(n)",
+        "print(nums)"
+      ],
+      "passos": [
+        {
+          "linha": 1,
+          "explica": "A lista começa com 4 itens: posições 0 a 3.",
+          "memoria": {
+            "nums": [
+              "[1, 2, 2, 3]",
+              "list"
+            ]
+          }
+        },
+        {
+          "linha": 2,
+          "explica": "O `for` pede ao iterador o item da **posição 0**: `n` recebe 1.",
+          "memoria": {
+            "n": [
+              "1",
+              "int"
+            ],
+            "posição": [
+              "0",
+              ""
+            ]
+          }
+        },
+        {
+          "linha": 3,
+          "explica": "`1 == 2` é `False`: nada a remover. Volta para o `for`."
+        },
+        {
+          "linha": 2,
+          "explica": "O iterador anda para a **posição 1**: `n` recebe 2.",
+          "memoria": {
+            "n": [
+              "2",
+              "int"
+            ],
+            "posição": [
+              "1",
+              ""
+            ]
+          }
+        },
+        {
+          "linha": 3,
+          "explica": "`2 == 2` é `True`."
+        },
+        {
+          "linha": 4,
+          "explica": "`remove(2)` tira o **primeiro** 2. Todos os itens seguintes andam uma posição para trás: o segundo 2 agora está na posição 1, que o iterador **já leu**.",
+          "memoria": {
+            "nums": [
+              "[1, 2, 3]",
+              "list"
+            ]
+          }
+        },
+        {
+          "linha": 2,
+          "explica": "O iterador anda para a **posição 2**, que agora guarda o 3. O segundo 2 foi pulado!",
+          "memoria": {
+            "n": [
+              "3",
+              "int"
+            ],
+            "posição": [
+              "2",
+              ""
+            ]
+          }
+        },
+        {
+          "linha": 3,
+          "explica": "`3 == 2` é `False`."
+        },
+        {
+          "linha": 2,
+          "explica": "Não existe posição 3 (a lista agora tem 3 itens): o iterador sinaliza `StopIteration` e o laço termina."
+        },
+        {
+          "linha": 5,
+          "explica": "Mostra `[1, 2, 3]`: um 2 escapou. A solução é montar uma lista nova com o filtro, como na etapa anterior.",
+          "tela": "[1, 2, 3]"
+        }
+      ]
+    },
+    {
+      "id": "quiz-1",
+      "tipo": "quiz",
+      "nome": "Quiz 1: estrutura do for",
+      "perguntas": [
+        {
+          "pergunta": "Quais números `range(5)` gera?",
+          "opcoes": [
+            "1, 2, 3, 4, 5",
+            "0, 1, 2, 3, 4",
+            "0, 1, 2, 3, 4, 5",
+            "5"
+          ],
+          "correta": 1,
+          "dica": "O fim nunca entra, e o início padrão é 0.",
+          "acerto": "Isso mesmo!",
+          "erro": "Não foi dessa vez.",
+          "explicacao": "Começa em 0 e para antes do 5: são 5 números."
+        },
+        {
+          "pergunta": "Quantas linhas o código imprime?",
+          "codigo": "for letra in \"sol\":\n    print(letra)",
+          "opcoes": [
+            "1",
+            "2",
+            "3",
+            "Erro, strings não são percorríveis"
+          ],
+          "correta": 2,
+          "dica": "O `for` entrega um caractere por volta.",
+          "acerto": "Exato!",
+          "erro": "Quase!",
+          "explicacao": "Uma linha por caractere: s, o, l."
+        },
+        {
+          "pergunta": "Qual método adiciona um item no fim de uma lista?",
+          "opcoes": [
+            "`add()`",
+            "`insert()`",
+            "`push()`",
+            "`append()`"
+          ],
+          "correta": 3,
+          "dica": "Em inglês, \"anexar ao final\".",
+          "acerto": "Acertou!",
+          "erro": "Ainda não.",
+          "explicacao": "`append` adiciona no fim; `insert` precisa da posição; `add` é de conjuntos; `push` não existe em listas Python."
+        },
+        {
+          "pergunta": "Com `cores = [\"azul\", \"verde\", \"rosa\"]`, o que é `cores[0]`?",
+          "opcoes": [
+            "`\"azul\"`",
+            "`\"verde\"`",
+            "`\"rosa\"`",
+            "Erro"
+          ],
+          "correta": 0,
+          "dica": "Onde começa a contagem dos índices?",
+          "acerto": "Perfeito!",
+          "erro": "Olhe de novo.",
+          "explicacao": "O primeiro item tem índice 0."
+        },
+        {
+          "pergunta": "Ao fazer `for x in dicionario:`, o que `x` recebe a cada volta?",
+          "opcoes": [
+            "Os valores",
+            "As chaves",
+            "Os pares (chave, valor)",
+            "Os índices"
+          ],
+          "correta": 1,
+          "dica": "Para receber os pares, seria preciso um método específico.",
+          "acerto": "Mandou bem!",
+          "erro": "Não é essa.",
+          "explicacao": "Por padrão, o `for` percorre as chaves. Para pares, use `.items()`."
+        }
+      ]
+    },
+    {
+      "id": "quiz-2",
+      "tipo": "quiz",
+      "nome": "Quiz 2: prever a saída",
+      "perguntas": [
+        {
+          "pergunta": "O que `print(list(range(2, 11, 3)))` mostra?",
+          "opcoes": [
+            "`[2, 5, 8]`",
+            "`[2, 5, 8, 11]`",
+            "`[3, 6, 9]`",
+            "`[2, 3, 4]`"
+          ],
+          "correta": 0,
+          "dica": "Comece no 2 e some 3 até passar do limite.",
+          "acerto": "Isso mesmo!",
+          "erro": "Não foi dessa vez.",
+          "explicacao": "2, 5, 8; o próximo seria 11, que não é menor que o fim."
+        },
+        {
+          "pergunta": "Qual é o último número impresso por `for i in range(5, 0, -1): print(i)`?",
+          "opcoes": [
+            "0",
+            "1",
+            "5",
+            "-1"
+          ],
+          "correta": 1,
+          "dica": "Com passo negativo, o fim também não é incluído.",
+          "acerto": "Exato!",
+          "erro": "Quase!",
+          "explicacao": "Vai de 5 até antes do 0: 5, 4, 3, 2, 1."
+        },
+        {
+          "pergunta": "O que o código imprime?",
+          "codigo": "nums = [3, 8, 1]\nmaior = nums[0]\nfor n in nums:\n    if n > maior:\n        maior = n\nprint(maior)",
+          "opcoes": [
+            "3",
+            "8",
+            "1",
+            "12"
+          ],
+          "correta": 1,
+          "dica": "Faça o teste de mesa com `maior` começando em 3.",
+          "acerto": "Acertou!",
+          "erro": "Ainda não.",
+          "explicacao": "`maior` começa em 3, vira 8 e o 1 não muda nada."
+        },
+        {
+          "pergunta": "O que o código imprime?",
+          "codigo": "contagem = 0\nfor letra in \"banana\":\n    if letra == \"a\":\n        contagem += 1\nprint(contagem)",
+          "opcoes": [
+            "1",
+            "2",
+            "3",
+            "6"
+          ],
+          "correta": 2,
+          "dica": "Soletre b-a-n-a-n-a.",
+          "acerto": "Perfeito!",
+          "erro": "Olhe de novo.",
+          "explicacao": "São três letras \"a\" em banana."
+        },
+        {
+          "pergunta": "O que o código imprime?",
+          "codigo": "nums = [10, 20, 30]\nnums.pop(1)\nprint(nums)",
+          "opcoes": [
+            "`[20, 30]`",
+            "`[10, 30]`",
+            "`[10, 20]`",
+            "`[10, 20, 30]`"
+          ],
+          "correta": 1,
+          "dica": "`pop` recebe uma posição, não um valor.",
+          "acerto": "Mandou bem!",
+          "erro": "Não é essa.",
+          "explicacao": "Remove o item da posição 1, que é o 20."
+        }
+      ]
+    },
+    {
+      "id": "quiz-3",
+      "tipo": "quiz",
+      "nome": "Quiz 3: a lógica por trás",
+      "perguntas": [
+        {
+          "pergunta": "O que o código imprime?",
+          "codigo": "nums = [1, 2, 2, 3]\nfor n in nums:\n    if n == 2:\n        nums.remove(n)\nprint(nums)",
+          "opcoes": [
+            "`[1, 3]`",
+            "`[1, 2, 3]`",
+            "`[1, 2, 2, 3]`",
+            "Erro"
+          ],
+          "correta": 1,
+          "dica": "O que acontece com as posições quando um item é removido no meio do percurso?",
+          "acerto": "Isso mesmo!",
+          "erro": "Não foi dessa vez.",
+          "explicacao": "Ao remover o primeiro 2, os itens andam uma posição e o `for` pula o segundo 2."
+        },
+        {
+          "pergunta": "O que o código imprime?",
+          "codigo": "for n in [3, 5, 7]:\n    if n % 2 == 0:\n        print(\"par achado\")\n        break\nelse:\n    print(\"nenhum par\")",
+          "opcoes": [
+            "par achado",
+            "nenhum par",
+            "Nada",
+            "Erro, `for` não tem `else`"
+          ],
+          "correta": 1,
+          "dica": "O `else` roda quando o laço termina sem `break`.",
+          "acerto": "Exato!",
+          "erro": "Quase!",
+          "explicacao": "Nenhum número é par, o `break` nunca roda, então o `else` é executado."
+        },
+        {
+          "pergunta": "O que o código imprime?",
+          "codigo": "for i in range(3):\n    print(i)\n    i = 10",
+          "opcoes": [
+            "0 1 2",
+            "0 10 10",
+            "0 e para",
+            "Loop infinito"
+          ],
+          "correta": 0,
+          "dica": "Quem decide o próximo valor de i, o código do bloco ou o `range`?",
+          "acerto": "Acertou!",
+          "erro": "Ainda não.",
+          "explicacao": "A cada volta, o `range` entrega o próximo número; a atribuição `i = 10` é descartada."
+        },
+        {
+          "pergunta": "Quantos asteriscos são impressos?",
+          "codigo": "for i in range(3):\n    for j in range(i):\n        print(\"*\", end=\"\")",
+          "opcoes": [
+            "0",
+            "3",
+            "6",
+            "9"
+          ],
+          "correta": 1,
+          "dica": "Conte quantas voltas o laço interno faz quando i vale 0, 1 e 2.",
+          "acerto": "Perfeito!",
+          "erro": "Olhe de novo.",
+          "explicacao": "O interno roda 0 + 1 + 2 = 3 vezes no total."
+        },
+        {
+          "pergunta": "O que `print(list(range(10, 0, 2)))` mostra?",
+          "opcoes": [
+            "`[10, 8, 6, 4, 2]`",
+            "`[0, 2, 4, 6, 8]`",
+            "`[]`",
+            "Erro"
+          ],
+          "correta": 2,
+          "dica": "Dá para ir de 10 até 0 somando 2?",
+          "acerto": "Mandou bem!",
+          "erro": "Não é essa.",
+          "explicacao": "Com passo positivo e início maior que o fim, a sequência é vazia."
+        }
+      ]
+    },
+    {
+      "id": "atividades",
+      "tipo": "atividades",
+      "nome": "Atividades práticas",
+      "intro": [
+        "São 10 atividades em quatro níveis, usando `for`, `range` e coleções. Sempre que o enunciado permitir, escreva o laço antes de usar funções prontas como `sum()` e `max()`.",
+        "Escreva ou cole a sua tentativa no campo de cada atividade para liberar a solução. Outras soluções também valem, desde que passem nos testes do enunciado."
+      ],
+      "itens": [
+        {
+          "n": 1,
+          "nivel": "Básico",
+          "titulo": "Tabuada com for",
+          "enunciado": [
+            "Leia um número e mostre a tabuada de 1 a 10, agora com `for`.",
+            "Compare com a versão `while` da Aula 3: quantas linhas a menos?"
+          ],
+          "dica": "Qual `range` gera de 1 a 10, incluindo o 10?",
+          "solucao": [
+            {
+              "codigo": "numero = int(input(\"Tabuada de: \"))\n\nfor i in range(1, 11):\n    print(f\"{numero} x {i} = {numero * i}\")"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "nivel": "Básico",
+          "titulo": "Contar vogais",
+          "enunciado": [
+            "Leia uma frase e mostre quantas vogais ela tem, aceitando maiúsculas e vogais acentuadas."
+          ],
+          "testes": [
+            "\"Olá, Mundo\" → 4 vogais."
+          ],
+          "dica": "`if letra in \"aeiouáéíóúâêôãõ\":` resolve o teste de vogal numa linha.",
+          "solucao": [
+            {
+              "codigo": "frase = input(\"Frase: \").lower()\n\nvogais = 0\nfor letra in frase:\n    if letra in \"aeiouáéíóúâêôãõ\":\n        vogais += 1\n\nprint(f\"A frase tem {vogais} vogais.\")"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "nivel": "Básico",
+          "titulo": "Soma de 1 a N",
+          "enunciado": [
+            "Leia N e mostre a soma 1 + 2 + ... + N com `for`. Depois, confira o resultado com a fórmula N × (N + 1) / 2.",
+            {
+              "nota": "Curiosidade: diz-se que o matemático Gauss, ainda criança, calculou a soma de 1 a 100 em segundos percebendo que 1 + 100, 2 + 99, 3 + 98... sempre dão 101, e há 50 desses pares."
+            }
+          ],
+          "testes": [
+            "N = 100 → 5050."
+          ],
+          "dica": "O acumulador começa em 0 e o `range` precisa incluir o N.",
+          "solucao": [
+            {
+              "codigo": "n = int(input(\"N: \"))\n\nsoma = 0\nfor i in range(1, n + 1):\n    soma += i\n\nformula = n * (n + 1) // 2\nprint(f\"Soma com laço: {soma} | Soma pela fórmula: {formula}\")"
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "nivel": "Intermediário",
+          "titulo": "Estatísticas da turma",
+          "enunciado": [
+            "Pergunte quantas notas serão digitadas, leia todas numa lista e mostre: média, maior nota, menor nota e quantas ficaram acima da média."
+          ],
+          "dica": "São dois laços. O primeiro lê e guarda; o segundo só pode contar \"acima da média\" depois que a média existe.",
+          "solucao": [
+            {
+              "codigo": "qtd = int(input(\"Quantas notas? \"))\n\nif qtd <= 0:\n    print(\"É preciso ao menos uma nota.\")\nelse:\n    notas = []\n    for i in range(qtd):\n        nota = float(input(f\"Nota {i + 1}: \").replace(\",\", \".\"))\n        notas.append(nota)\n\n    soma = 0\n    maior = notas[0]\n    menor = notas[0]\n    for nota in notas:\n        soma += nota\n        if nota > maior:\n            maior = nota\n        if nota < menor:\n            menor = nota\n    media = soma / len(notas)\n\n    acima = 0\n    for nota in notas:\n        if nota > media:\n            acima += 1\n\n    print(f\"Média: {media:.2f} | Maior: {maior} | Menor: {menor}\")\n    print(f\"Notas acima da média: {acima}\")"
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "nivel": "Intermediário",
+          "titulo": "Pares e ímpares",
+          "enunciado": [
+            "A partir da lista `numeros = [12, 7, 4, 19, 22, 3, 8, 15]`, monte duas listas novas, uma com os pares e outra com os ímpares, e mostre as duas com seus tamanhos."
+          ],
+          "dica": "Comece com duas listas vazias e use `append` dentro de um `if`/`else`.",
+          "solucao": [
+            {
+              "codigo": "numeros = [12, 7, 4, 19, 22, 3, 8, 15]\n\npares = []\nimpares = []\nfor n in numeros:\n    if n % 2 == 0:\n        pares.append(n)\n    else:\n        impares.append(n)\n\nprint(f\"Pares ({len(pares)}): {pares}\")\nprint(f\"Ímpares ({len(impares)}): {impares}\")"
+            },
+            "Saída: `Pares (4): [12, 4, 22, 8]` e `Ímpares (4): [7, 19, 3, 15]`."
+          ]
+        },
+        {
+          "n": 6,
+          "nivel": "Intermediário",
+          "titulo": "Palíndromo",
+          "enunciado": [
+            "Leia uma frase e diga se ela é um palíndromo (lida igual de trás para frente), ignorando espaços e maiúsculas."
+          ],
+          "testes": [
+            "\"arara\" (sim), \"Socorram me subi no onibus em Marrocos\" (sim), \"python\" (não)."
+          ],
+          "dica": "Monte uma string sem espaços com um laço. Para inverter, use outro laço que coloca cada letra na frente do acumulador: `invertida = letra + invertida`.",
+          "solucao": [
+            {
+              "codigo": "frase = input(\"Frase: \").lower()\n\nlimpa = \"\"\nfor letra in frase:\n    if letra != \" \":\n        limpa += letra\n\ninvertida = \"\"\nfor letra in limpa:\n    invertida = letra + invertida\n\nif limpa == invertida:\n    print(\"É palíndromo\")\nelse:\n    print(\"Não é palíndromo\")"
+            },
+            "Teste de mesa da inversão com a palavra \"sol\" (um palíndromo não mostraria a inversão acontecendo):",
+            {
+              "tabela": [
+                [
+                  "Volta",
+                  "letra",
+                  "invertida"
+                ],
+                [
+                  "1",
+                  "s",
+                  "s"
+                ],
+                [
+                  "2",
+                  "o",
+                  "os"
+                ],
+                [
+                  "3",
+                  "l",
+                  "los"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "n": 7,
+          "nivel": "Avançado",
+          "titulo": "Estoque do laboratório",
+          "enunciado": [
+            "Use o dicionário abaixo, com a quantidade em estoque de cada item, e um estoque mínimo de 10 unidades:",
+            {
+              "codigo": "estoque = {\n    \"Hematoxilina (frasco)\": 12,\n    \"Eosina (frasco)\": 4,\n    \"Xilol (litro)\": 0,\n    \"Lâminas (caixa)\": 8,\n    \"Álcool 70% (litro)\": 25,\n}"
+            },
+            "Mostre cada item abaixo do mínimo com quantas unidades faltam, marque como \"ESGOTADO\" os que estão em 0 e, no fim, diga quantos itens precisam de reposição. Se nenhum precisar, mostre \"Estoque OK\"."
+          ],
+          "dica": "`for item, qtd in estoque.items():` entrega os dois de uma vez. Use um contador para o total de itens a repor.",
+          "solucao": [
+            {
+              "codigo": "estoque = {\n    \"Hematoxilina (frasco)\": 12,\n    \"Eosina (frasco)\": 4,\n    \"Xilol (litro)\": 0,\n    \"Lâminas (caixa)\": 8,\n    \"Álcool 70% (litro)\": 25,\n}\nESTOQUE_MINIMO = 10\n\na_repor = 0\nfor item, qtd in estoque.items():\n    if qtd == 0:\n        print(f\"{item}: ESGOTADO (repor {ESTOQUE_MINIMO})\")\n        a_repor += 1\n    elif qtd < ESTOQUE_MINIMO:\n        print(f\"{item}: {qtd} em estoque, faltam {ESTOQUE_MINIMO - qtd}\")\n        a_repor += 1\n\nif a_repor == 0:\n    print(\"Estoque OK\")\nelse:\n    print(f\"\\n{a_repor} item(ns) precisam de reposição.\")"
+            },
+            "Saída esperada: Eosina (faltam 6), Xilol (ESGOTADO), Lâminas (faltam 2), e \"3 item(ns) precisam de reposição\"."
+          ]
+        },
+        {
+          "n": 8,
+          "nivel": "Avançado",
+          "titulo": "Triângulos de asteriscos",
+          "enunciado": [
+            "Leia uma altura e desenhe, com laços aninhados, um triângulo crescente e depois um decrescente.",
+            {
+              "codigo": "Altura: 4\n*\n**\n***\n****\n****\n***\n**\n*"
+            }
+          ],
+          "dica": "O laço externo controla as linhas; o interno imprime `*` com `end=\"\"`. Para o decrescente, use um `range` com passo -1.",
+          "solucao": [
+            {
+              "codigo": "altura = int(input(\"Altura: \"))\n\n# crescente\nfor linha in range(1, altura + 1):\n    for coluna in range(linha):\n        print(\"*\", end=\"\")\n    print()\n\n# decrescente\nfor linha in range(altura, 0, -1):\n    for coluna in range(linha):\n        print(\"*\", end=\"\")\n    print()"
+            }
+          ]
+        },
+        {
+          "n": 9,
+          "nivel": "Avançado",
+          "titulo": "Tábua de multiplicação",
+          "enunciado": [
+            "Mostre a tábua completa de 1 a 10 em formato de tabela, com as colunas alinhadas."
+          ],
+          "dica": "Laço dentro de laço. Para alinhar, use a formatação da Aula 1: `f\"{valor:4}\"` reserva 4 posições para cada número.",
+          "solucao": [
+            {
+              "codigo": "for i in range(1, 11):\n    for j in range(1, 11):\n        print(f\"{i * j:4}\", end=\"\")\n    print()"
+            }
+          ]
+        },
+        {
+          "n": 10,
+          "nivel": "Desafio",
+          "titulo": "Análise de sequência de DNA",
+          "enunciado": [
+            "Leia uma sequência de DNA e mostre:",
+            {
+              "passos": [
+                "Se ela é válida (só pode conter A, T, C e G; aceite minúsculas e espaços nas pontas).",
+                "A contagem de cada base, usando um dicionário.",
+                "O conteúdo GC em porcentagem: (G + C) ÷ total × 100.",
+                "A fita complementar reversa, escrita no sentido 5' → 3' (A pareia com T, C pareia com G, e a leitura é de trás para frente)."
+              ]
+            },
+            {
+              "tabela": [
+                [
+                  "Teste",
+                  "Entrada",
+                  "Resultado esperado"
+                ],
+                [
+                  "1",
+                  "ATGCGATACG",
+                  "A: 3, T: 2, C: 2, G: 3 · GC: 50,0% · complementar reversa: CGTATCGCAT"
+                ],
+                [
+                  "2",
+                  "atgc",
+                  "A: 1, T: 1, C: 1, G: 1 · GC: 50,0% · complementar reversa: GCAT"
+                ],
+                [
+                  "3",
+                  "ATGX",
+                  "Sequência inválida"
+                ]
+              ]
+            },
+            {
+              "nota": "Curiosidade: o conteúdo GC é usado na prática, por exemplo, para estimar a estabilidade de primers de PCR, porque o par G–C tem três ligações de hidrogênio e o par A–T tem duas. É um ponto onde a programação encontra a bioinformática."
+            }
+          ],
+          "dica": "A complementar reversa sai num único laço se cada base complementar for colocada na frente do acumulador, igual ao palíndromo. Um dicionário `{\"A\": \"T\", \"T\": \"A\", \"C\": \"G\", \"G\": \"C\"}` faz o pareamento.",
+          "solucao": [
+            {
+              "codigo": "sequencia = input(\"Sequência de DNA: \").strip().upper()\n\nvalida = sequencia != \"\"\nfor base in sequencia:\n    if base not in \"ATCG\":\n        valida = False\n        break\n\nif not valida:\n    print(\"Sequência inválida: use apenas A, T, C e G.\")\nelse:\n    contagem = {\"A\": 0, \"T\": 0, \"C\": 0, \"G\": 0}\n    for base in sequencia:\n        contagem[base] += 1\n\n    gc = (contagem[\"G\"] + contagem[\"C\"]) / len(sequencia) * 100\n\n    complemento = {\"A\": \"T\", \"T\": \"A\", \"C\": \"G\", \"G\": \"C\"}\n    complementar_reversa = \"\"\n    for base in sequencia:\n        complementar_reversa = complemento[base] + complementar_reversa\n\n    for base, qtd in contagem.items():\n        print(f\"{base}: {qtd}\")\n    print(f\"Conteúdo GC: {gc:.1f}%\")\n    print(f\"Complementar reversa: 5'-{complementar_reversa}-3'\")"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

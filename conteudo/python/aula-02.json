@@ -1,0 +1,886 @@
+{
+  "titulo": "Estruturas condicionais",
+  "duracao": "3 h",
+  "etapas": [
+    {
+      "id": "conceito",
+      "tipo": "leitura",
+      "nome": "Conceito e sintaxe",
+      "blocos": [
+        "Uma estrutura condicional faz o programa escolher um caminho a partir de uma expressão que vale `True` ou `False`. É o princípio da decisão visto na Aula 1, agora com todas as ferramentas que o Python oferece.",
+        {
+          "h": "Definição"
+        },
+        "Uma condicional é formada por duas partes: uma **condição** (a pergunta) e um ou mais **blocos** (o que fazer conforme a resposta). Sem condicionais, o programa faria sempre a mesma coisa, independentemente dos dados recebidos.",
+        {
+          "h": "Para que usamos"
+        },
+        {
+          "lista": [
+            "**Validar dados:** a idade digitada é negativa? O campo ficou vazio?",
+            "**Aplicar regras de negócio:** o cliente tem direito a frete grátis?",
+            "**Controlar acesso:** a senha está correta? O usuário é administrador?",
+            "**Classificar:** a nota é Excelente, Bom, Regular ou Reprovado?",
+            "**Evitar erros:** só dividir se o divisor for diferente de zero."
+          ]
+        },
+        {
+          "h": "Quando usamos"
+        },
+        "Sempre que o enunciado do problema tiver palavras que indicam decisão. Antes de programar, procure essas palavras:",
+        {
+          "tabela": [
+            [
+              "No enunciado",
+              "Estrutura em Python"
+            ],
+            [
+              "\"se\", \"somente se\", \"apenas quando\"",
+              "`if`"
+            ],
+            [
+              "\"senão\", \"caso contrário\"",
+              "`else`"
+            ],
+            [
+              "\"se não for isso, mas for aquilo\", faixas de valores",
+              "`elif`"
+            ],
+            [
+              "\"e também\", \"desde que\"",
+              "`and`"
+            ],
+            [
+              "\"ou\", \"basta que\"",
+              "`or`"
+            ],
+            [
+              "\"exceto\", \"a menos que\", \"não\"",
+              "`not`"
+            ]
+          ]
+        },
+        {
+          "h": "Como funciona por dentro"
+        },
+        "Quando o interpretador chega a um `if`, ele faz três coisas:",
+        {
+          "passos": [
+            "Calcula a expressão da condição (`idade >= 18` vira `True` ou `False`).",
+            "Converte o resultado para booleano, se ainda não for (a regra de truthiness da Aula 1: `0`, `\"\"` e `None` viram `False`).",
+            "Salta: se deu `True`, executa o bloco indentado; se deu `False`, pula o bloco inteiro e continua do próximo comando no mesmo nível de indentação."
+          ]
+        },
+        "Numa cadeia `if`/`elif`/`else`, o Python testa de cima para baixo e **para no primeiro verdadeiro**. As condições de baixo nem chegam a ser calculadas.",
+        {
+          "fluxograma": "flowchart TD\n    A([Início]) --> B{condição 1?}\n    B -- True --> C[bloco do if]\n    B -- False --> D{condição 2?}\n    D -- True --> E[bloco do elif]\n    D -- False --> F[bloco do else]\n    C --> G[próximo comando]\n    E --> G\n    F --> G"
+        },
+        {
+          "h": "Sintaxe completa"
+        },
+        {
+          "codigo": "if condicao_1:\n    # roda se condicao_1 for verdadeira\nelif condicao_2:\n    # roda se condicao_1 for falsa e condicao_2 verdadeira\nelif condicao_3:\n    # quantos elif forem necessários\nelse:\n    # roda se nenhuma condição acima for verdadeira"
+        },
+        "Regras: o `if` é obrigatório e vem sempre primeiro; `elif` e `else` são opcionais; pode haver vários `elif`, mas no máximo um `else`, sempre por último.",
+        {
+          "h": "Símbolos e palavras-chave"
+        },
+        {
+          "tabela": [
+            [
+              "Símbolo",
+              "Função",
+              "Por que é assim"
+            ],
+            [
+              "`if`",
+              "Abre a decisão",
+              "\"Se\" em inglês"
+            ],
+            [
+              "`elif`",
+              "Testa outra condição se as anteriores falharam",
+              "Abreviação de *else if*. Em C se escreve `else if`; o Python juntou numa palavra para evitar que cada teste novo exigisse mais um nível de indentação"
+            ],
+            [
+              "`else`",
+              "Caminho padrão, sem condição própria",
+              "\"Senão\". Não tem condição porque cobre \"todo o resto\""
+            ],
+            [
+              "`:`",
+              "Anuncia que um bloco vai começar",
+              "Como na escrita: \"se chover, faça o seguinte:\""
+            ],
+            [
+              "Indentação",
+              "Define quais linhas pertencem a cada bloco",
+              "Substitui as chaves `{ }` de outras linguagens e obriga o código a ser legível"
+            ],
+            [
+              "`==`, `!=`, `>`, `<`, `>=`, `<=`",
+              "Comparam valores e devolvem booleano",
+              "Vistos na Aula 1"
+            ],
+            [
+              "`and`, `or`, `not`",
+              "Combinam ou invertem booleanos",
+              "Palavras em inglês no lugar de `&&`, `||` e `!` do C, para ler como frase"
+            ],
+            [
+              "`( )`",
+              "Forçam a ordem de avaliação",
+              "Mesma regra da matemática"
+            ],
+            [
+              "`in`",
+              "Testa se um valor está dentro de uma coleção",
+              "\"Está em\": `letra in \"aeiou\"`"
+            ]
+          ]
+        },
+        {
+          "h": "As formas de uma condicional"
+        },
+        {
+          "tabela": [
+            [
+              "Forma",
+              "Quantos blocos podem rodar",
+              "Quando usar",
+              "Exemplo"
+            ],
+            [
+              "`if` sozinho",
+              "0 ou 1",
+              "Ação opcional",
+              "Avisar se a bateria está baixa"
+            ],
+            [
+              "`if` + `else`",
+              "Exatamente 1",
+              "Duas saídas opostas",
+              "Aprovado ou reprovado"
+            ],
+            [
+              "`if` + `elif` (+ `else`)",
+              "0 ou 1 (exatamente 1 com `else`)",
+              "Faixas ou várias categorias",
+              "Classificação de nota"
+            ],
+            [
+              "Aninhado (`if` dentro de `if`)",
+              "Depende",
+              "Uma verificação só faz sentido se outra passou",
+              "Checar permissão só de usuário ativo"
+            ],
+            [
+              "Expressão condicional (ternário)",
+              "Devolve 1 de 2 valores",
+              "Escolher um valor em uma linha",
+              "`status = \"Maior\" if idade >= 18 else \"Menor\"`"
+            ]
+          ]
+        },
+        "A expressão condicional (última linha) é muito usada. Ela não executa blocos: apenas escolhe um valor. Lê-se como frase: \"status é Maior se idade ≥ 18, senão Menor\".",
+        {
+          "nota": "Curiosidade: desde o Python 3.10 existe o `match`/`case`, parecido com o `switch` de outras linguagens. Para esta aula, `if`/`elif`/`else` resolve tudo."
+        }
+      ]
+    },
+    {
+      "id": "ordem-elif",
+      "tipo": "simulacao",
+      "nome": "Teste de mesa: a ordem do elif",
+      "intro": "Como o Python para no primeiro verdadeiro, as condições precisam ir da **mais restritiva para a menos restritiva**. Acompanhe este código, que está com as condições na ordem errada, e veja o que ele imprime para a nota 9.",
+      "codigo": [
+        "nota = 9",
+        "",
+        "# ERRADO: nota >= 5 captura tudo antes",
+        "if nota >= 5:",
+        "    print(\"Regular\")",
+        "elif nota >= 7:",
+        "    print(\"Bom\")",
+        "elif nota >= 9:",
+        "    print(\"Excelente\")"
+      ],
+      "passos": [
+        {
+          "linha": 1,
+          "explica": "A variável `nota` recebe o inteiro 9.",
+          "memoria": {
+            "nota": [
+              "9",
+              "int"
+            ]
+          }
+        },
+        {
+          "linha": 3,
+          "explica": "Comentário: o interpretador ignora."
+        },
+        {
+          "linha": 4,
+          "explica": "O `if` calcula a condição: `9 >= 5` é `True`. Como deu verdadeiro, o Python entra no bloco do `if`."
+        },
+        {
+          "linha": 5,
+          "explica": "O bloco do `if` roda e mostra `Regular`, mesmo a nota sendo 9.",
+          "tela": "Regular"
+        },
+        {
+          "linha": 0,
+          "explica": "Fim. Os dois `elif` **nem foram testados**: numa cadeia, depois do primeiro verdadeiro o Python pula o resto. Para corrigir, inverta a ordem: teste `nota >= 9` primeiro, depois `nota >= 7`, depois `nota >= 5`."
+        }
+      ]
+    },
+    {
+      "id": "logica",
+      "tipo": "leitura",
+      "nome": "A lógica por trás das decisões",
+      "blocos": [
+        "A maioria dos erros com condicionais não é de sintaxe, é de lógica: ordem errada, parênteses faltando ou uma condição que o Python lê de um jeito diferente do que a gente imagina.",
+        {
+          "h": "Precedência: not antes de and, and antes de or"
+        },
+        "O Python avalia os operadores lógicos nesta ordem: primeiro `not`, depois `and`, por último `or`. É como na matemática, em que a multiplicação vem antes da soma.",
+        "Imagine a regra: \"frete grátis para compras acima de R$ 200, desde que o cliente tenha fidelidade **ou** a campanha esteja ativa\". Veja por que os parênteses importam:",
+        {
+          "codigo": "valor_compra = 50\nfidelidade = False\ncampanha = True\n\n# Com parênteses (correto): valor > 200 E (fidelidade OU campanha)\nprint(valor_compra > 200 and (fidelidade or campanha))    # False\n\n# Sem parênteses: o Python lê (valor > 200 E fidelidade) OU campanha\nprint(valor_compra > 200 and fidelidade or campanha)      # True -> bug!"
+        },
+        "Sem os parênteses, qualquer cliente da campanha ganharia frete grátis, mesmo comprando R$ 50.",
+        "Já numa regra de desconto como `vip or (idade > 18 and cadastrado)`, os parênteses não mudam o resultado, porque o `and` já seria avaliado antes. Mesmo assim, vale mantê-los: deixam a regra de negócio explícita para quem lê.",
+        {
+          "h": "A ordem do elif muda o resultado"
+        },
+        "Você viu isso no teste de mesa anterior: com `nota >= 5` no topo, a nota 9 é classificada como Regular. As condições precisam ir da mais restritiva para a menos restritiva.",
+        {
+          "h": "Vários if ou if/elif?"
+        },
+        {
+          "tabela": [
+            [
+              "",
+              "Vários `if` separados",
+              "`if` / `elif`"
+            ],
+            [
+              "Quantos blocos podem rodar",
+              "Todos os que forem verdadeiros",
+              "No máximo um"
+            ],
+            [
+              "Condições testadas",
+              "Todas, sempre",
+              "Até achar a primeira verdadeira"
+            ],
+            [
+              "Use quando",
+              "As verificações são independentes (listar todos os problemas de um cadastro)",
+              "As opções são mutuamente exclusivas (uma única classificação)"
+            ]
+          ]
+        },
+        {
+          "codigo": "n = 10\nif n > 5:\n    print(\"maior que 5\")\nif n > 8:\n    print(\"maior que 8\")    # os dois são impressos"
+        },
+        {
+          "h": "Leis de De Morgan: negando condições compostas"
+        },
+        "Negar uma condição com `and` ou `or` troca um pelo outro:",
+        {
+          "tabela": [
+            [
+              "Expressão",
+              "Equivale a"
+            ],
+            [
+              "`not (a and b)`",
+              "`not a or not b`"
+            ],
+            [
+              "`not (a or b)`",
+              "`not a and not b`"
+            ]
+          ]
+        },
+        "Exemplo do dia a dia: \"não pode dirigir\" é o contrário de \"maior de idade e com carteira\". Então não pode dirigir quem é menor de idade **ou** não tem carteira.",
+        {
+          "codigo": "if not (idade >= 18 and tem_carteira):\n    print(\"Não pode dirigir\")\n\n# mesma coisa, sem o not na frente:\nif idade < 18 or not tem_carteira:\n    print(\"Não pode dirigir\")"
+        },
+        {
+          "h": "Aninhamento ou condições planas?"
+        },
+        "Uma verificação em três níveis (idade → carteira → carro), com um `if` dentro do outro, pode ser reescrita sem pirâmide, testando primeiro os motivos de recusa:",
+        {
+          "codigo": "if idade < 18:\n    print(\"Menor de idade\")\nelif not tem_carteira:\n    print(\"Precisa de carteira\")\nelif not tem_carro:\n    print(\"Precisa de carro\")\nelse:\n    print(\"Pode dirigir\")"
+        },
+        "As mensagens e o comportamento são os mesmos, mas tudo fica no mesmo nível de indentação. Essa técnica se chama **cláusula de guarda**: tratar os casos de exceção primeiro e deixar o caso de sucesso por último.",
+        "Regra prática: aninhe quando a segunda pergunta só faz sentido se a primeira passou. Caso contrário, prefira `and` ou uma cadeia `elif`.",
+        {
+          "h": "Indentação: o que o Python realmente exige"
+        },
+        {
+          "lista": [
+            "Tecnicamente, o Python aceita qualquer quantidade de espaços, desde que seja a mesma dentro do bloco. Os **4 espaços** são a convenção oficial (PEP 8), e é essa que vamos seguir.",
+            "Misturar tabs e espaços no mesmo bloco gera `TabError: inconsistent use of tabs and spaces in indentation`. No VS Code, o canto inferior direito mostra \"Spaces: 4\"; clicando ali é possível converter o arquivo inteiro.",
+            "O `else` pertence ao `if` que está no **mesmo nível de indentação**, não necessariamente ao mais próximo na tela:"
+          ]
+        },
+        {
+          "codigo": "x = 5\nif x > 0:\n    if x > 10:\n        print(\"A\")\nelse:\n    print(\"B\")    # este else é do if x > 0, então nada é impresso"
+        },
+        {
+          "h": "Armadilhas de truthiness e comparação de texto"
+        },
+        "**1. O bug do `or` com texto.** Este é talvez o erro mais comum de iniciantes:",
+        {
+          "codigo": "resposta = \"n\"\nif resposta == \"s\" or \"S\":\n    print(\"Sim\")    # sempre imprime Sim!"
+        },
+        "O Python lê `(resposta == \"s\") or (\"S\")`. A primeira parte é `False`, mas `\"S\"` é uma string não vazia, logo é verdadeira. Correções:",
+        {
+          "codigo": "if resposta == \"s\" or resposta == \"S\":    # comparação completa dos dois lados\nif resposta in (\"s\", \"S\"):                # com o operador in\nif resposta.lower() == \"s\":               # convertendo para minúscula"
+        },
+        "**2. Maiúsculas e espaços.** `\"Sim\" == \"sim\"` é `False` e `\"sim \" == \"sim\"` também. Para entradas do usuário, padronize antes de comparar: `input(...).strip().lower()`. O `.strip()` remove espaços do início e do fim; o `.lower()` converte para minúsculas.",
+        "**3. Zero é falso.** `if nota:` parece checar \"a nota foi informada\", mas uma nota 0 válida cai no `else`. Quando zero é um valor possível, compare explicitamente: `if nota >= 0:`."
+      ]
+    },
+    {
+      "id": "codigo-frete",
+      "tipo": "codigo",
+      "nome": "Código comentado: frete grátis",
+      "linhas": [
+        {
+          "linha": "valor_compra = 50",
+          "explica": "Valor da compra: R$ 50. A regra é frete grátis acima de R$ 200, com fidelidade ou campanha."
+        },
+        {
+          "linha": "fidelidade = False",
+          "explica": "O cliente **não** tem fidelidade. Booleanos começam com maiúscula: `False`."
+        },
+        {
+          "linha": "campanha = True",
+          "explica": "A campanha está ativa."
+        },
+        {
+          "linha": "",
+          "explica": "Linha em branco: separa os dados das verificações."
+        },
+        {
+          "linha": "# Com parênteses (correto): valor > 200 E (fidelidade OU campanha)",
+          "explica": "Comentário explicando a regra. O `#` faz o interpretador ignorar a linha."
+        },
+        {
+          "linha": "print(valor_compra > 200 and (fidelidade or campanha))",
+          "explica": "Os parênteses são calculados primeiro: `False or True` dá `True`. Depois, `50 > 200` é `False`, e `False and True` dá `False`. Resultado correto: **sem** frete grátis."
+        },
+        {
+          "linha": "",
+          "explica": "Linha em branco."
+        },
+        {
+          "linha": "# Sem parênteses: o Python lê (valor > 200 E fidelidade) OU campanha",
+          "explica": "Sem parênteses, vale a precedência: `and` antes de `or`."
+        },
+        {
+          "linha": "print(valor_compra > 200 and fidelidade or campanha)",
+          "explica": "Primeiro o `and`: `False and False` dá `False`. Depois o `or`: `False or True` dá `True`. É um **bug**: o cliente ganharia frete grátis comprando R$ 50. Na dúvida, use parênteses."
+        }
+      ]
+    },
+    {
+      "id": "quiz-1",
+      "tipo": "quiz",
+      "nome": "Quiz 1: estrutura",
+      "perguntas": [
+        {
+          "pergunta": "O que o código imprime?",
+          "codigo": "nota = 5\nif nota >= 6:\n    print(\"Aprovado\")",
+          "opcoes": [
+            "Aprovado",
+            "Nada",
+            "Reprovado",
+            "Erro"
+          ],
+          "correta": 1,
+          "dica": "O que acontece com o bloco do `if` quando a condição é falsa e não existe `else`?",
+          "acerto": "Isso mesmo!",
+          "erro": "Não foi dessa vez.",
+          "explicacao": "Condição falsa e sem `else`: o bloco é pulado e nada aparece."
+        },
+        {
+          "pergunta": "Qual símbolo é obrigatório no fim da linha do `if`?",
+          "opcoes": [
+            "`;`",
+            "`{`",
+            "`:`",
+            "`)`"
+          ],
+          "correta": 2,
+          "dica": "É o mesmo símbolo que aparece depois do `else`.",
+          "acerto": "Exato!",
+          "erro": "Quase!",
+          "explicacao": "Os dois-pontos anunciam o início do bloco."
+        },
+        {
+          "pergunta": "Sobre o `else`, qual afirmação é verdadeira?",
+          "opcoes": [
+            "Precisa de uma condição",
+            "Pode existir sem `if`",
+            "É opcional e vem por último",
+            "Pode aparecer várias vezes na mesma cadeia"
+          ],
+          "correta": 2,
+          "dica": "Releia as regras da sintaxe completa.",
+          "acerto": "Acertou!",
+          "erro": "Ainda não.",
+          "explicacao": "O `else` não tem condição, é opcional, único e sempre o último."
+        },
+        {
+          "pergunta": "O que o código imprime?",
+          "codigo": "idade = 18\nif idade > 18:\n    print(\"A\")\nelse:\n    print(\"B\")",
+          "opcoes": [
+            "A",
+            "B",
+            "A e B",
+            "Nada"
+          ],
+          "correta": 1,
+          "dica": "18 é maior que 18?",
+          "acerto": "Perfeito!",
+          "erro": "Olhe de novo.",
+          "explicacao": "`>` não inclui o igual; para incluir seria `>=`."
+        },
+        {
+          "pergunta": "Numa cadeia `if` / `elif` / `elif` / `else`, quantos blocos são executados?",
+          "opcoes": [
+            "Todos os verdadeiros",
+            "Exatamente um",
+            "Nenhum ou um",
+            "Dois"
+          ],
+          "correta": 1,
+          "dica": "O `else` garante alguma coisa?",
+          "acerto": "Mandou bem!",
+          "erro": "Não é essa.",
+          "explicacao": "Com `else`, sempre roda exatamente um bloco. Sem `else`, seria nenhum ou um."
+        }
+      ]
+    },
+    {
+      "id": "quiz-2",
+      "tipo": "quiz",
+      "nome": "Quiz 2: prever a saída",
+      "perguntas": [
+        {
+          "pergunta": "O que o código imprime?",
+          "codigo": "nota = 9\nif nota >= 5:\n    print(\"Regular\")\nelif nota >= 7:\n    print(\"Bom\")\nelif nota >= 9:\n    print(\"Excelente\")",
+          "opcoes": [
+            "Excelente",
+            "Bom",
+            "Regular",
+            "Regular, Bom e Excelente"
+          ],
+          "correta": 2,
+          "dica": "O Python para no primeiro verdadeiro.",
+          "acerto": "Isso mesmo!",
+          "erro": "Não foi dessa vez.",
+          "explicacao": "`9 >= 5` já é verdadeiro; os `elif` nem são testados. É a ordem errada das condições."
+        },
+        {
+          "pergunta": "O que o código imprime?",
+          "codigo": "x = 0\nif x:\n    print(\"A\")\nelse:\n    print(\"B\")",
+          "opcoes": [
+            "A",
+            "B",
+            "Erro, falta comparação",
+            "Nada"
+          ],
+          "correta": 1,
+          "dica": "Lembre a lista de valores considerados falsos.",
+          "acerto": "Exato!",
+          "erro": "Quase!",
+          "explicacao": "`0` é falso em contexto booleano."
+        },
+        {
+          "pergunta": "Qual o resultado de `print(not True or True)`?",
+          "opcoes": [
+            "`True`",
+            "`False`",
+            "Erro",
+            "`None`"
+          ],
+          "correta": 0,
+          "dica": "Qual operador é avaliado primeiro, `not` ou `or`?",
+          "acerto": "Acertou!",
+          "erro": "Ainda não.",
+          "explicacao": "`not True` vira `False`; `False or True` dá `True`."
+        },
+        {
+          "pergunta": "O que o código imprime?",
+          "codigo": "n = 10\nif n > 5:\n    print(\"A\")\nif n > 8:\n    print(\"B\")",
+          "opcoes": [
+            "A",
+            "B",
+            "A e B",
+            "Nada"
+          ],
+          "correta": 2,
+          "dica": "São dois `if` independentes, não uma cadeia com `elif`.",
+          "acerto": "Perfeito!",
+          "erro": "Olhe de novo.",
+          "explicacao": "Cada `if` é testado separadamente e os dois são verdadeiros."
+        },
+        {
+          "pergunta": "Com `valor = 50`, `fidelidade = False` e `campanha = True`, qual o resultado de `print(valor > 200 and fidelidade or campanha)`?",
+          "opcoes": [
+            "`True`",
+            "`False`",
+            "Erro",
+            "`50`"
+          ],
+          "correta": 0,
+          "dica": "Sem parênteses, o `and` é resolvido antes do `or`.",
+          "acerto": "Mandou bem!",
+          "erro": "Não é essa.",
+          "explicacao": "`(False and False) or True` dá `True`. É o bug do frete grátis sem parênteses."
+        }
+      ]
+    },
+    {
+      "id": "quiz-3",
+      "tipo": "quiz",
+      "nome": "Quiz 3: a lógica por trás",
+      "perguntas": [
+        {
+          "pergunta": "O que o código imprime?",
+          "codigo": "resposta = \"n\"\nif resposta == \"s\" or \"S\":\n    print(\"Sim\")\nelse:\n    print(\"Não\")",
+          "opcoes": [
+            "Sim",
+            "Não",
+            "Erro",
+            "Nada"
+          ],
+          "correta": 0,
+          "dica": "Separe as duas partes do `or`. A segunda parte é uma comparação?",
+          "acerto": "Isso mesmo!",
+          "erro": "Não foi dessa vez.",
+          "explicacao": "O Python lê `(resposta == \"s\") or \"S\"`; a string `\"S\"` é verdadeira, então sempre imprime Sim."
+        },
+        {
+          "pergunta": "Qual expressão é equivalente a `not (a and b)`?",
+          "opcoes": [
+            "`not a and not b`",
+            "`not a or not b`",
+            "`a or b`",
+            "`not a and b`"
+          ],
+          "correta": 1,
+          "dica": "Pense em \"não pode dirigir\" como o contrário de \"maior de idade e com carteira\".",
+          "acerto": "Exato!",
+          "erro": "Quase!",
+          "explicacao": "Lei de De Morgan: negar um `and` vira `or` com as partes negadas."
+        },
+        {
+          "pergunta": "O que `print(\"Par\" if 7 % 2 == 0 else \"Ímpar\")` imprime?",
+          "opcoes": [
+            "Par",
+            "Ímpar",
+            "`True`",
+            "Erro"
+          ],
+          "correta": 1,
+          "dica": "Calcule primeiro `7 % 2`.",
+          "acerto": "Acertou!",
+          "erro": "Ainda não.",
+          "explicacao": "`7 % 2` é 1, então `1 == 0` é falso e o valor escolhido é \"Ímpar\"."
+        },
+        {
+          "pergunta": "O que o código imprime?",
+          "codigo": "x = 5\nif x > 0:\n    if x > 10:\n        print(\"A\")\nelse:\n    print(\"B\")",
+          "opcoes": [
+            "A",
+            "B",
+            "A e B",
+            "Nada"
+          ],
+          "correta": 3,
+          "dica": "Olhe o nível de indentação do `else`. A qual `if` ele pertence?",
+          "acerto": "Perfeito!",
+          "erro": "Olhe de novo.",
+          "explicacao": "O `else` é do `if x > 0`, que é verdadeiro. Dentro dele, `x > 10` é falso e não há `else` interno."
+        },
+        {
+          "pergunta": "O que `nota = 7` seguido de `print(5 <= nota < 7)` imprime?",
+          "opcoes": [
+            "`True`",
+            "`False`",
+            "Erro",
+            "`7`"
+          ],
+          "correta": 1,
+          "dica": "A comparação encadeada equivale a `5 <= nota and nota < 7`.",
+          "acerto": "Mandou bem!",
+          "erro": "Não é essa.",
+          "explicacao": "`7 < 7` é falso, então a expressão inteira é falsa."
+        }
+      ]
+    },
+    {
+      "id": "atividades",
+      "tipo": "atividades",
+      "nome": "Atividades práticas",
+      "intro": [
+        "São 10 atividades em quatro níveis, usando só o que foi visto até a Aula 2 (sem laços de repetição). Antes de programar, faça o fluxograma ou o pseudocódigo das decisões.",
+        "Escreva ou cole a sua tentativa no campo de cada atividade para liberar a solução. Outras soluções também valem, desde que passem nos testes do enunciado."
+      ],
+      "itens": [
+        {
+          "n": 1,
+          "nivel": "Básico",
+          "titulo": "Maior de dois",
+          "enunciado": [
+            "Leia dois números e diga qual é o maior, ou se são iguais."
+          ],
+          "testes": [
+            "(3, 8), (8, 3), (5, 5)."
+          ],
+          "dica": "São três resultados possíveis. Quantos blocos você vai precisar?",
+          "solucao": [
+            {
+              "codigo": "a = float(input(\"Primeiro número: \").replace(\",\", \".\"))\nb = float(input(\"Segundo número: \").replace(\",\", \".\"))\n\nif a > b:\n    print(f\"{a} é o maior\")\nelif b > a:\n    print(f\"{b} é o maior\")\nelse:\n    print(\"Os números são iguais\")"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "nivel": "Básico",
+          "titulo": "Sinal do número",
+          "enunciado": [
+            "Leia um número e diga se ele é positivo, negativo ou zero."
+          ],
+          "dica": "Zero não é positivo nem negativo. Onde ele deve ser testado?",
+          "solucao": [
+            {
+              "codigo": "numero = float(input(\"Número: \").replace(\",\", \".\"))\n\nif numero > 0:\n    print(\"Positivo\")\nelif numero < 0:\n    print(\"Negativo\")\nelse:\n    print(\"Zero\")"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "nivel": "Básico",
+          "titulo": "Login simples",
+          "enunciado": [
+            "O usuário correto é `admin` e a senha é `1234`. Leia os dois e mostre \"Acesso liberado\" ou \"Usuário ou senha incorretos\".",
+            "Aceite o usuário digitado com maiúsculas (`Admin`, `ADMIN`) ou espaços sobrando."
+          ],
+          "dica": "Os dois precisam estar certos ao mesmo tempo. E reveja, na etapa sobre a lógica das decisões, o `.strip()` e o `.lower()`.",
+          "solucao": [
+            {
+              "codigo": "usuario = input(\"Usuário: \").strip().lower()\nsenha = input(\"Senha: \")\n\nif usuario == \"admin\" and senha == \"1234\":\n    print(\"Acesso liberado\")\nelse:\n    print(\"Usuário ou senha incorretos\")"
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "nivel": "Intermediário",
+          "titulo": "Maior de três",
+          "enunciado": [
+            "Leia três números e mostre o maior, sem usar a função `max()`."
+          ],
+          "testes": [
+            "(1, 2, 3), (3, 2, 1), (2, 3, 1), (5, 5, 1)."
+          ],
+          "dica": "O primeiro é o maior se for maior ou igual aos outros dois. Se não for, basta comparar os dois restantes.",
+          "solucao": [
+            {
+              "codigo": "a = float(input(\"Primeiro: \"))\nb = float(input(\"Segundo: \"))\nc = float(input(\"Terceiro: \"))\n\nif a >= b and a >= c:\n    maior = a\nelif b >= c:\n    maior = b\nelse:\n    maior = c\n\nprint(f\"O maior é {maior}\")"
+            },
+            "Por que o `elif` testa só `b >= c`? Se chegou ali, `a` já não é o maior, então a disputa fica entre `b` e `c`."
+          ]
+        },
+        {
+          "n": 5,
+          "nivel": "Intermediário",
+          "titulo": "Faixa etária",
+          "enunciado": [
+            "Leia uma idade e classifique: criança (0 a 12), adolescente (13 a 17), adulto (18 a 59) ou idoso (60 ou mais). Idades negativas devem gerar a mensagem \"Idade inválida\"."
+          ],
+          "dica": "Se as condições forem bem ordenadas, cada `elif` precisa testar só um limite.",
+          "solucao": [
+            {
+              "codigo": "idade = int(input(\"Idade: \"))\n\nif idade < 0:\n    print(\"Idade inválida\")\nelif idade <= 12:\n    print(\"Criança\")\nelif idade <= 17:\n    print(\"Adolescente\")\nelif idade <= 59:\n    print(\"Adulto\")\nelse:\n    print(\"Idoso\")"
+            }
+          ]
+        },
+        {
+          "n": 6,
+          "nivel": "Intermediário",
+          "titulo": "Calculadora",
+          "enunciado": [
+            "Leia dois números e uma operação (`+`, `-`, `*` ou `/`) e mostre o resultado.",
+            "Trate a divisão por zero e operações inválidas com mensagens claras."
+          ],
+          "dica": "A divisão tem uma decisão dentro de outra decisão.",
+          "solucao": [
+            {
+              "codigo": "a = float(input(\"Primeiro número: \").replace(\",\", \".\"))\noperacao = input(\"Operação (+ - * /): \").strip()\nb = float(input(\"Segundo número: \").replace(\",\", \".\"))\n\nvalido = True\n\nif operacao == \"+\":\n    resultado = a + b\nelif operacao == \"-\":\n    resultado = a - b\nelif operacao == \"*\":\n    resultado = a * b\nelif operacao == \"/\":\n    if b == 0:\n        print(\"Erro: não é possível dividir por zero.\")\n        valido = False\n    else:\n        resultado = a / b\nelse:\n    print(\"Operação inválida.\")\n    valido = False\n\nif valido:\n    print(f\"{a} {operacao} {b} = {resultado}\")"
+            }
+          ]
+        },
+        {
+          "n": 7,
+          "nivel": "Avançado",
+          "titulo": "Triângulos",
+          "enunciado": [
+            "Leia três lados. Primeiro, diga se formam um triângulo: cada lado precisa ser positivo e menor que a soma dos outros dois. Se formarem, classifique em equilátero (3 lados iguais), isósceles (2 iguais) ou escaleno (todos diferentes)."
+          ],
+          "testes": [
+            "(3, 3, 3) equilátero, (3, 3, 5) isósceles, (3, 4, 5) escaleno, (1, 2, 10) não forma."
+          ],
+          "dica": "A condição de existência usa três comparações unidas por `and`. Para \"dois iguais\", pense em quais pares podem ser iguais.",
+          "solucao": [
+            {
+              "codigo": "a = float(input(\"Lado A: \"))\nb = float(input(\"Lado B: \"))\nc = float(input(\"Lado C: \"))\n\nif a > 0 and b > 0 and c > 0 and a < b + c and b < a + c and c < a + b:\n    if a == b == c:\n        print(\"Triângulo equilátero\")\n    elif a == b or b == c or a == c:\n        print(\"Triângulo isósceles\")\n    else:\n        print(\"Triângulo escaleno\")\nelse:\n    print(\"Esses lados não formam um triângulo\")"
+            }
+          ]
+        },
+        {
+          "n": 8,
+          "nivel": "Avançado",
+          "titulo": "Glicemia de jejum",
+          "enunciado": [
+            "Leia o valor da glicemia de jejum (mg/dL) e classifique pelos critérios usados pela Sociedade Brasileira de Diabetes:",
+            {
+              "tabela": [
+                [
+                  "Glicemia de jejum",
+                  "Classificação"
+                ],
+                [
+                  "Abaixo de 70",
+                  "Hipoglicemia"
+                ],
+                [
+                  "70 a 99",
+                  "Normal"
+                ],
+                [
+                  "100 a 125",
+                  "Glicemia de jejum alterada (pré-diabetes)"
+                ],
+                [
+                  "126 ou mais",
+                  "Sugestivo de diabetes (requer confirmação)"
+                ]
+              ]
+            },
+            {
+              "lista": [
+                "O programa deve recusar valores negativos ou zero.",
+                "Exiba o aviso: \"Resultado educativo, não substitui avaliação médica\"."
+              ]
+            }
+          ],
+          "dica": "Use limites contínuos (`< 100`, `< 126`) para que um valor como 99,5 não fique sem classificação.",
+          "solucao": [
+            {
+              "codigo": "glicemia = float(input(\"Glicemia de jejum (mg/dL): \").replace(\",\", \".\"))\n\nif glicemia <= 0:\n    print(\"Valor inválido\")\nelse:\n    if glicemia < 70:\n        print(\"Hipoglicemia\")\n    elif glicemia < 100:\n        print(\"Normal\")\n    elif glicemia < 126:\n        print(\"Glicemia de jejum alterada (pré-diabetes)\")\n    else:\n        print(\"Sugestivo de diabetes (requer confirmação)\")\n    print(\"Resultado educativo, não substitui avaliação médica.\")"
+            },
+            {
+              "tabela": [
+                [
+                  "Entrada",
+                  "Saída"
+                ],
+                [
+                  "65",
+                  "Hipoglicemia"
+                ],
+                [
+                  "99.5",
+                  "Normal"
+                ],
+                [
+                  "110",
+                  "Glicemia de jejum alterada"
+                ],
+                [
+                  "126",
+                  "Sugestivo de diabetes"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "n": 9,
+          "nivel": "Avançado",
+          "titulo": "Pedra, papel e tesoura",
+          "enunciado": [
+            "Leia a jogada de dois jogadores e diga quem venceu ou se deu empate.",
+            {
+              "lista": [
+                "Aceite entradas com maiúsculas ou espaços (`\" Pedra\"`).",
+                "Recuse jogadas inválidas."
+              ]
+            }
+          ],
+          "dica": "Trate primeiro o inválido, depois o empate, depois as três formas de o jogador 1 vencer. O que sobra é vitória do jogador 2.",
+          "solucao": [
+            {
+              "codigo": "j1 = input(\"Jogador 1 (pedra/papel/tesoura): \").strip().lower()\nj2 = input(\"Jogador 2 (pedra/papel/tesoura): \").strip().lower()\n\nopcoes = (\"pedra\", \"papel\", \"tesoura\")\n\nif j1 not in opcoes or j2 not in opcoes:\n    print(\"Jogada inválida\")\nelif j1 == j2:\n    print(\"Empate\")\nelif (j1 == \"pedra\" and j2 == \"tesoura\") or \\\n     (j1 == \"papel\" and j2 == \"pedra\") or \\\n     (j1 == \"tesoura\" and j2 == \"papel\"):\n    print(\"Jogador 1 venceu\")\nelse:\n    print(\"Jogador 2 venceu\")"
+            }
+          ]
+        },
+        {
+          "n": 10,
+          "nivel": "Desafio",
+          "titulo": "Checkout de e-commerce",
+          "enunciado": [
+            "Leia o valor da compra, se o cliente é VIP (s/n), se é cadastrado (s/n), a idade e um cupom (pode ficar vazio). Aplique as regras:",
+            {
+              "passos": [
+                "Desconto base: VIP ganha 15%. Não VIP, cadastrado e com 18 anos ou mais ganha 5%. Os demais, 0%.",
+                "O cupom PROMO10 soma mais 10% ao desconto, mas só para compras de R$ 100 ou mais. O cupom deve funcionar mesmo digitado em minúsculas.",
+                "O desconto total nunca passa de 20%.",
+                "Frete: grátis se o valor com desconto for de R$ 200 ou mais, ou se o cliente for VIP. Caso contrário, R$ 15.",
+                "Mostre o desconto aplicado (%), o valor com desconto, o frete e o total a pagar."
+              ]
+            },
+            {
+              "tabela": [
+                [
+                  "Teste",
+                  "Entrada",
+                  "Total esperado"
+                ],
+                [
+                  "1",
+                  "R$ 250, VIP, cupom PROMO10",
+                  "R$ 200,00 (desconto limitado a 20%, frete grátis)"
+                ],
+                [
+                  "2",
+                  "R$ 150, não VIP, cadastrado, 20 anos, cupom promo10",
+                  "R$ 142,50 (15% de desconto + R$ 15 de frete)"
+                ],
+                [
+                  "3",
+                  "R$ 80, não VIP, não cadastrado, cupom PROMO10",
+                  "R$ 95,00 (cupom não vale abaixo de R$ 100)"
+                ]
+              ]
+            }
+          ],
+          "dica": "Calcule o desconto em etapas, uma regra por bloco, guardando o percentual numa variável. O limite de 20% é uma decisão à parte, depois de somar tudo.",
+          "solucao": [
+            {
+              "codigo": "valor = float(input(\"Valor da compra: R$ \").replace(\",\", \".\"))\nvip = input(\"Cliente VIP? (s/n) \").strip().lower() == \"s\"\ncadastrado = input(\"Cliente cadastrado? (s/n) \").strip().lower() == \"s\"\nidade = int(input(\"Idade: \"))\ncupom = input(\"Cupom (Enter para nenhum): \").strip().upper()\n\n# Regra 1: desconto base\nif vip:\n    desconto = 15\nelif cadastrado and idade >= 18:\n    desconto = 5\nelse:\n    desconto = 0\n\n# Regra 2: cupom\nif cupom == \"PROMO10\":\n    if valor >= 100:\n        desconto += 10\n    else:\n        print(\"Cupom válido só para compras a partir de R$ 100.\")\nelif cupom != \"\":\n    print(\"Cupom inválido.\")\n\n# Regra 3: limite de desconto\nif desconto > 20:\n    desconto = 20\n\nvalor_com_desconto = valor * (1 - desconto / 100)\n\n# Regra 4: frete\nif valor_com_desconto >= 200 or vip:\n    frete = 0\nelse:\n    frete = 15\n\ntotal = valor_com_desconto + frete\n\n# Regra 5: resumo\nprint(f\"Desconto: {desconto}%\")\nprint(f\"Valor com desconto: R$ {valor_com_desconto:.2f}\")\nprint(f\"Frete: R$ {frete:.2f}\")\nprint(f\"Total: R$ {total:.2f}\")"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

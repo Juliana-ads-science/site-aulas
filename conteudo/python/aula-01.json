@@ -1,0 +1,1765 @@
+{
+  "titulo": "Lógica de programação e Python",
+  "duracao": "3 h",
+  "etapas": [
+    {
+      "id": "algoritmos",
+      "tipo": "leitura",
+      "nome": "Algoritmos",
+      "blocos": [
+        "Um **algoritmo** é uma sequência finita, ordenada e sem ambiguidade de passos que transforma dados de entrada em um resultado. Todo programa de computador é um algoritmo escrito em uma linguagem que a máquina consegue executar.",
+        {
+          "h": "Definição"
+        },
+        "Um algoritmo tem quatro características básicas: **finitude**, **clareza**, **objetividade** e **ordenação lógica**. A definição clássica da Ciência da Computação acrescenta mais duas:",
+        {
+          "lista": [
+            "**Entrada:** o algoritmo recebe zero ou mais dados para trabalhar.",
+            "**Saída:** o algoritmo produz pelo menos um resultado. Um algoritmo que não entrega nada não resolve problema algum."
+          ]
+        },
+        "Outro ponto importante é o **determinismo**: com a mesma entrada, o algoritmo deve produzir sempre a mesma saída.",
+        "Uma receita de suco mostra onde a linguagem humana falha. \"Adicionar água e açúcar\" não diz quanto. Uma pessoa deduz; o computador não deduz nada.",
+        {
+          "tabela": [
+            [
+              "Versão humana",
+              "Versão algorítmica"
+            ],
+            [
+              "Adicionar água e açúcar",
+              "Adicionar 200 ml de água e 2 colheres de açúcar"
+            ],
+            [
+              "Misturar",
+              "Misturar por 10 segundos"
+            ],
+            [
+              "(não prevê falhas)",
+              "Se não houver açúcar, servir sem açúcar"
+            ]
+          ]
+        },
+        {
+          "h": "Para que usamos"
+        },
+        {
+          "lista": [
+            "Organizar o raciocínio antes de programar, separando o problema da linguagem.",
+            "Comunicar a solução para outras pessoas, inclusive quem não programa.",
+            "Encontrar erros cedo, quando corrigir custa uma borracha e não horas de depuração.",
+            "Reutilizar a mesma solução em qualquer linguagem: o algoritmo de calcular média é igual em Python, Java ou JavaScript."
+          ]
+        },
+        {
+          "h": "Quando usamos"
+        },
+        "Sempre que um problema tiver mais de um passo, uma decisão ou uma repetição. Na prática: **antes de abrir o editor de código**. Quanto mais complexo o problema, mais vale escrever o algoritmo primeiro.",
+        {
+          "h": "Como construir um algoritmo"
+        },
+        {
+          "passos": [
+            "**Entenda o problema.** Reescreva o enunciado com suas palavras.",
+            "**Identifique as entradas.** Quais dados eu preciso receber?",
+            "**Identifique as saídas.** O que devo entregar no final?",
+            "**Defina o processamento.** Quais cálculos e decisões ligam a entrada à saída?",
+            "**Escreva os passos** em narrativa, pseudocódigo ou fluxograma.",
+            "**Faça o teste de mesa.** Simule o algoritmo no papel com valores reais, anotando o valor de cada variável a cada passo.",
+            "**Só então programe.**"
+          ]
+        },
+        "Exemplo de teste de mesa para \"ler dois números e mostrar a soma\", com as entradas 4 e 7:",
+        {
+          "tabela": [
+            [
+              "Passo",
+              "Instrução",
+              "a",
+              "b",
+              "soma",
+              "Tela"
+            ],
+            [
+              "1",
+              "leia a",
+              "4",
+              "",
+              "",
+              ""
+            ],
+            [
+              "2",
+              "leia b",
+              "4",
+              "7",
+              "",
+              ""
+            ],
+            [
+              "3",
+              "soma ← a + b",
+              "4",
+              "7",
+              "11",
+              ""
+            ],
+            [
+              "4",
+              "escreva soma",
+              "4",
+              "7",
+              "11",
+              "11"
+            ]
+          ]
+        },
+        {
+          "h": "Estruturas de um algoritmo"
+        },
+        "Todo algoritmo, do mais simples ao mais complexo, é montado com apenas três estruturas. Isso foi demonstrado matematicamente em 1966 por Böhm e Jacopini (o teorema da programação estruturada).",
+        {
+          "tabela": [
+            [
+              "Estrutura",
+              "O que faz",
+              "Exemplo do dia a dia",
+              "Em Python"
+            ],
+            [
+              "Sequencial",
+              "Executa um passo após o outro",
+              "Receita de suco",
+              "linhas uma embaixo da outra"
+            ],
+            [
+              "Condicional (decisão)",
+              "Escolhe um caminho conforme uma condição",
+              "Está chovendo? Levo guarda-chuva",
+              "`if`, `elif`, `else`"
+            ],
+            [
+              "Repetição (laço)",
+              "Repete passos enquanto uma condição for verdadeira",
+              "Espremer até acabar as laranjas",
+              "`while`, `for`"
+            ]
+          ]
+        },
+        "Montar um móvel parece uma tarefa simples, mas esconde decisões e repetições: \"identificar os parafusos\" é repetir \"pegar peça → comparar com o manual\" até acabarem as peças."
+      ]
+    },
+    {
+      "id": "representacao",
+      "tipo": "leitura",
+      "nome": "Formas de representação",
+      "blocos": [
+        "Antes de virar código, um algoritmo pode ser escrito de três formas.",
+        {
+          "h": "1. Descrição narrativa"
+        },
+        "Texto comum. Fácil de escrever, mas ambíguo.",
+        {
+          "h": "2. Pseudocódigo (Portugol)"
+        },
+        "Texto estruturado, próximo de uma linguagem de programação, mas em português.",
+        {
+          "codigo": "algoritmo \"Maior de dois\"\nvar\n   a, b : inteiro\ninicio\n   leia(a)\n   leia(b)\n   se a > b entao\n      escreva(\"A é maior que B\")\n   senao\n      escreva(\"B é maior ou igual a A\")\n   fimse\nfimalgoritmo"
+        },
+        "No Portugol, a atribuição é escrita com a seta `←` (ou `<-`). A seta mostra a direção do dado: o valor da direita vai para a variável da esquerda. Python usa `=` para a mesma coisa, o que explica por que a comparação de igualdade precisou de outro símbolo (`==`), como você vai ver na etapa de operadores.",
+        "Repare no `senao`: se a mensagem fosse só \"B é maior que A\", ela ficaria errada quando A e B forem iguais. Esse detalhe mostra a importância de testar **casos de borda**.",
+        {
+          "h": "3. Fluxograma"
+        },
+        "Representação visual. Os símbolos são padronizados pela norma ISO 5807.",
+        {
+          "tabela": [
+            [
+              "Símbolo",
+              "Forma",
+              "Significado",
+              "Por que essa forma"
+            ],
+            [
+              "Terminal",
+              "Oval (retângulo arredondado)",
+              "Início ou fim",
+              "Não tem cantos para \"entrar\" algo: marca as bordas do algoritmo"
+            ],
+            [
+              "Processo",
+              "Retângulo",
+              "Cálculo ou ação",
+              "Um bloco fechado: uma ação completa"
+            ],
+            [
+              "Decisão",
+              "Losango",
+              "Pergunta com resposta sim/não",
+              "As pontas servem de saídas para caminhos diferentes"
+            ],
+            [
+              "Entrada/Saída",
+              "Paralelogramo",
+              "Ler ou mostrar dados",
+              "A inclinação sugere dado \"em movimento\", entrando ou saindo"
+            ],
+            [
+              "Fluxo",
+              "Seta",
+              "Ordem de execução",
+              "Indica a direção da leitura"
+            ],
+            [
+              "Conector",
+              "Círculo pequeno",
+              "Liga partes distantes do desenho",
+              "Evita setas cruzando a página"
+            ]
+          ]
+        },
+        "Fluxograma do guarda-chuva, com os símbolos corretos:",
+        {
+          "fluxograma": "flowchart TD\n    A([Início]) --> B[/Verificar o tempo/]\n    B --> C{Está chovendo?}\n    C -- Sim --> D[Levar guarda-chuva]\n    C -- Não --> E[Sair sem guarda-chuva]\n    D --> F([Fim])\n    E --> F"
+        }
+      ]
+    },
+    {
+      "id": "logica",
+      "tipo": "leitura",
+      "nome": "Lógica de programação",
+      "blocos": [
+        "**Lógica de programação** é a habilidade de traduzir um problema em instruções que o computador executa uma de cada vez, na ordem certa. Ela é independente da linguagem: quem domina a lógica aprende qualquer linguagem nova só trocando a sintaxe.",
+        {
+          "h": "Como o computador executa um programa"
+        },
+        "O computador não \"entende\" o problema. Ele faz três coisas muito rápido:",
+        {
+          "lista": [
+            "**Guarda dados na memória (RAM).** Cada variável ocupa um espaço lá.",
+            "**Executa instruções no processador (CPU)**, uma por vez, de cima para baixo.",
+            "**Decide qual instrução vem depois**, seguindo o fluxo de controle (sequência, decisão ou repetição)."
+          ]
+        },
+        "Por isso a ordem importa. O código abaixo dá erro, porque a linha 1 tenta usar `total` antes de ele existir:",
+        {
+          "codigo": "print(total)    # NameError: name 'total' is not defined\ntotal = 10"
+        },
+        {
+          "h": "O modelo Entrada → Processamento → Saída"
+        },
+        {
+          "tabela": [
+            [
+              "Etapa",
+              "Pergunta que ela responde",
+              "Comandos típicos em Python"
+            ],
+            [
+              "Entrada",
+              "Quais dados eu recebo?",
+              "`input()`, leitura de arquivo, API"
+            ],
+            [
+              "Processamento",
+              "O que faço com eles?",
+              "operadores, `if`, `while`, funções"
+            ],
+            [
+              "Saída",
+              "O que eu entrego?",
+              "`print()`, gravação de arquivo, tela"
+            ]
+          ]
+        },
+        "Um exemplo completo, aplicado à área da saúde:",
+        {
+          "codigo": "# Entrada\npeso = float(input(\"Peso (kg): \"))\naltura = float(input(\"Altura (m): \"))\n\n# Processamento\nimc = peso / altura ** 2\n\n# Saída\nprint(f\"Seu IMC é {imc:.1f}\")"
+        },
+        {
+          "nota": "Na etapa **Teste de mesa: IMC** você vai acompanhar esse programa rodando passo a passo."
+        },
+        {
+          "h": "Os três princípios na prática"
+        },
+        "**Sequência:** as instruções rodam na ordem em que foram escritas.",
+        {
+          "codigo": "x = 5\nx = x + 1\nprint(x)    # 6"
+        },
+        "**Decisão:** o programa escolhe um caminho. Além de `if` e `else`, Python tem o `elif` (abreviação de \"else if\") para testar várias condições em sequência. Só o primeiro bloco verdadeiro é executado. Você vai explorar esse exemplo linha a linha na próxima etapa.",
+        "**Repetição:** um bloco roda várias vezes. Este é só um aperitivo para as próximas aulas.",
+        {
+          "codigo": "laranjas = 3\nwhile laranjas > 0:\n    print(\"Espremendo uma laranja\")\n    laranjas = laranjas - 1\nprint(\"Suco pronto!\")"
+        },
+        "Repare que a repetição precisa de uma condição que em algum momento vira falsa (`laranjas` chega a 0). Sem isso, o laço nunca termina e o algoritmo perde a característica de **finitude**.",
+        {
+          "h": "Decomposição e modularização"
+        },
+        "Duas técnicas ajudam com algoritmos complexos:",
+        {
+          "lista": [
+            "**Decomposição:** quebrar \"montar o móvel\" em \"separar peças\", \"montar a base\", \"montar as gavetas\".",
+            "**Modularização:** transformar cada parte em um bloco reutilizável. Em Python, esses blocos são as funções (`def`), que virão nas próximas aulas."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "codigo-decisao",
+      "tipo": "codigo",
+      "nome": "Código comentado: decisão",
+      "linhas": [
+        {
+          "linha": "luz = \"apagada\"",
+          "explica": "Guarda o texto `\"apagada\"` na variável `luz`. As aspas indicam que o valor é uma string."
+        },
+        {
+          "linha": "",
+          "explica": "Linha em branco: separa o dado da decisão e deixa o código mais fácil de ler."
+        },
+        {
+          "linha": "if luz == \"apagada\":",
+          "explica": "O `if` testa uma condição. O `==` **compara** (\"é igual a?\"); não confunda com o `=`, que guarda um valor. Os dois-pontos `:` anunciam que um bloco vai começar."
+        },
+        {
+          "linha": "    print(\"Acender a luz\")",
+          "explica": "Está recuada com 4 espaços, então pertence ao `if`: só roda se a condição for verdadeira. Aqui ela é, então esta é a mensagem que aparece."
+        },
+        {
+          "linha": "elif luz == \"piscando\":",
+          "explica": "`elif` é a abreviação de \"else if\". Só é testado se o `if` de cima deu falso. Como o `if` já foi verdadeiro, esta linha nem é avaliada."
+        },
+        {
+          "linha": "    print(\"Trocar a lâmpada\")",
+          "explica": "Rodaria apenas se `luz` valesse `\"piscando\"`."
+        },
+        {
+          "linha": "else:",
+          "explica": "O caminho que sobra: roda quando nenhuma condição acima foi verdadeira. O `else` não tem condição própria."
+        },
+        {
+          "linha": "    print(\"Nada a fazer\")",
+          "explica": "Rodaria para qualquer outro valor de `luz`, como `\"acesa\"`. Numa cadeia `if`/`elif`/`else`, só o primeiro bloco verdadeiro é executado."
+        }
+      ]
+    },
+    {
+      "id": "python",
+      "tipo": "leitura",
+      "nome": "Python, IDE e sintaxe básica",
+      "blocos": [
+        "Python é uma linguagem **interpretada**: um programa chamado interpretador lê o seu arquivo `.py` e executa as instruções na hora. Curiosidade: o nome vem do grupo de comédia Monty Python, não da cobra.",
+        {
+          "h": "Como o interpretador funciona"
+        },
+        {
+          "passos": [
+            "Você escreve o código-fonte (`programa.py`).",
+            "O interpretador verifica a sintaxe do arquivo inteiro. Se houver erro de escrita, nada roda e aparece um `SyntaxError`.",
+            "O código é traduzido para **bytecode**, uma forma intermediária mais simples.",
+            "A máquina virtual do Python executa o bytecode, instrução por instrução."
+          ]
+        },
+        "Consequência prática: erros de lógica e de tipo só aparecem quando a linha problemática é executada. Por isso é preciso testar todos os caminhos do programa.",
+        {
+          "h": "Formas de rodar Python"
+        },
+        {
+          "tabela": [
+            [
+              "Forma",
+              "Como",
+              "Quando usar"
+            ],
+            [
+              "Terminal",
+              "`python programa.py`",
+              "Rodar um arquivo completo"
+            ],
+            [
+              "Modo interativo (REPL)",
+              "Digite `python` e escreva após o `>>>`",
+              "Testar uma linha rápida"
+            ],
+            [
+              "Botão da IDE",
+              "\"Run\" no VS Code, PyCharm ou Thonny",
+              "Dia a dia do curso"
+            ],
+            [
+              "Navegador",
+              "Replit, Google Colab",
+              "Sem instalar nada"
+            ]
+          ]
+        },
+        {
+          "nota": "Dica para iniciantes: o Thonny tem um modo de depuração que mostra o valor de cada variável mudando passo a passo. É o teste de mesa feito pela máquina."
+        },
+        {
+          "h": "Regras de sintaxe que valem para tudo"
+        },
+        {
+          "tabela": [
+            [
+              "Símbolo ou regra",
+              "Função",
+              "Por que é assim"
+            ],
+            [
+              "Indentação (4 espaços)",
+              "Delimita blocos (o que está \"dentro\" do `if`)",
+              "Outras linguagens usam `{ }`. Python obriga a indentar para que o código seja legível por padrão"
+            ],
+            [
+              "`:` (dois-pontos)",
+              "Anuncia que um bloco vai começar",
+              "Funciona como na escrita: \"faça o seguinte:\""
+            ],
+            [
+              "`#`",
+              "Comentário: o interpretador ignora o resto da linha",
+              "Serve para explicar o código a humanos"
+            ],
+            [
+              "`( )`",
+              "Chama uma função e envolve seus argumentos",
+              "Herdado da notação matemática f(x)"
+            ],
+            [
+              "`\" \"` ou `' '`",
+              "Delimita um texto (string)",
+              "As aspas mostram onde o texto começa e termina. Existem dois tipos para poder escrever \"Joana d'Arc\" sem conflito"
+            ],
+            [
+              "Maiúsculas ≠ minúsculas",
+              "`nome`, `Nome` e `NOME` são três coisas diferentes",
+              "Python é case-sensitive"
+            ],
+            [
+              "Uma instrução por linha",
+              "A quebra de linha encerra o comando",
+              "Dispensa o `;` de outras linguagens"
+            ]
+          ]
+        },
+        "Erro clássico de indentação:",
+        {
+          "codigo": "if idade >= 18:\nprint(\"Maior de idade\")    # IndentationError: expected an indented block"
+        },
+        {
+          "h": "Lendo mensagens de erro"
+        },
+        "O erro não é inimigo: ele diz o tipo, a linha e o motivo. Os quatro mais comuns nesta aula:",
+        {
+          "tabela": [
+            [
+              "Erro",
+              "Causa típica",
+              "Exemplo"
+            ],
+            [
+              "`SyntaxError`",
+              "Escrita inválida: aspas ou parênteses sem fechar",
+              "`print(\"Olá)`"
+            ],
+            [
+              "`NameError`",
+              "Variável usada antes de existir ou com nome digitado errado",
+              "`print(nomee)`"
+            ],
+            [
+              "`TypeError`",
+              "Operação entre tipos incompatíveis",
+              "`\"idade: \" + 25`"
+            ],
+            [
+              "`ValueError`",
+              "Conversão impossível",
+              "`int(\"vinte\")`"
+            ]
+          ]
+        },
+        "Leia a mensagem **de baixo para cima**: a última linha diz o que aconteceu, as linhas acima dizem onde."
+      ]
+    },
+    {
+      "id": "entrada-saida",
+      "tipo": "leitura",
+      "nome": "Entrada e saída: print() e input()",
+      "blocos": [
+        "`print()` leva dados do programa para a tela e `input()` traz dados do teclado para o programa. São as duas pontas do modelo Entrada → Processamento → Saída.",
+        {
+          "h": "print(): sintaxe completa"
+        },
+        {
+          "codigo": "print(valor1, valor2, ..., sep=\" \", end=\"\\n\")"
+        },
+        {
+          "tabela": [
+            [
+              "Parte",
+              "O que é",
+              "Padrão"
+            ],
+            [
+              "`valor1, valor2, ...`",
+              "Um ou mais valores de qualquer tipo, separados por vírgula",
+              "nenhum"
+            ],
+            [
+              "`sep`",
+              "Texto colocado entre os valores",
+              "um espaço"
+            ],
+            [
+              "`end`",
+              "Texto colocado no final",
+              "`\\n` (quebra de linha)"
+            ]
+          ]
+        },
+        {
+          "codigo": "print(\"Salvador\", \"BA\")               # Salvador BA\nprint(\"Salvador\", \"BA\", sep=\" - \")    # Salvador - BA\nprint(\"Carregando\", end=\"...\")\nprint(\"pronto\")                       # Carregando...pronto"
+        },
+        "O `\\n` é um **caractere de escape**. A barra invertida avisa que o próximo caractere tem significado especial: `\\n` quebra linha, `\\t` insere tabulação e `\\\"` coloca aspas dentro do texto.",
+        {
+          "h": "Três formas de montar uma mensagem"
+        },
+        {
+          "tabela": [
+            [
+              "Forma",
+              "Exemplo",
+              "Vantagem",
+              "Cuidado"
+            ],
+            [
+              "Concatenação `+`",
+              "`print(\"Olá, \" + nome + \"!\")`",
+              "Controle total dos espaços",
+              "Só junta texto com texto"
+            ],
+            [
+              "Vírgula",
+              "`print(\"Idade:\", idade)`",
+              "Converte e separa sozinha",
+              "Sempre insere espaço"
+            ],
+            [
+              "f-string",
+              "`print(f\"{nome} tem {idade} anos\")`",
+              "Mais legível; aceita contas",
+              "Não esqueça o `f`"
+            ]
+          ]
+        },
+        "Por que `\"Idade: \" + 25` dá erro? O `+` tem dois significados: soma números e junta textos. Com um texto e um número, o Python não sabe qual aplicar e prefere avisar a adivinhar. A vírgula e a f-string convertem o número para texto automaticamente.",
+        {
+          "h": "f-strings em detalhe"
+        },
+        "O `f` antes das aspas significa *formatted*. Dentro das chaves `{ }` vale qualquer expressão Python, não só variáveis. Depois de `:` vem a formatação.",
+        {
+          "codigo": "preco = 49.9\nqtd = 3\nprint(f\"Total: R$ {preco * qtd:.2f}\")    # Total: R$ 149.70\nprint(f\"{0.8567:.1%}\")                  # 85.7%\nprint(f\"{'OK':>6}\")                     # '    OK' (alinhado à direita)"
+        },
+        {
+          "tabela": [
+            [
+              "Formato",
+              "Significado"
+            ],
+            [
+              "`:.2f`",
+              "Número com 2 casas decimais"
+            ],
+            [
+              "`:.1%`",
+              "Porcentagem com 1 casa"
+            ],
+            [
+              "`:>6` / `:<6` / `:^6`",
+              "Alinhar à direita / esquerda / centro em 6 posições"
+            ]
+          ]
+        },
+        {
+          "h": "input(): o que acontece por trás"
+        },
+        {
+          "passos": [
+            "O texto entre parênteses (o *prompt*) aparece na tela.",
+            "O programa pausa e espera o usuário digitar e apertar Enter.",
+            "Tudo o que foi digitado volta como **string**, mesmo que sejam números."
+          ]
+        },
+        "Por que sempre string? O teclado só envia caracteres. `\"25\"` são os caracteres 2 e 5, não o número vinte e cinco. Cabe ao programador dizer como interpretar.",
+        {
+          "h": "Conversão de tipos (casting)"
+        },
+        {
+          "tabela": [
+            [
+              "Função",
+              "Converte para",
+              "Exemplo",
+              "Resultado"
+            ],
+            [
+              "`int()`",
+              "inteiro",
+              "`int(\"25\")`",
+              "`25`"
+            ],
+            [
+              "`float()`",
+              "decimal",
+              "`float(\"1.75\")`",
+              "`1.75`"
+            ],
+            [
+              "`str()`",
+              "texto",
+              "`str(25)`",
+              "`\"25\"`"
+            ],
+            [
+              "`bool()`",
+              "booleano",
+              "`bool(\"\")`",
+              "`False`"
+            ]
+          ]
+        },
+        {
+          "h": "Armadilhas comuns"
+        },
+        {
+          "lista": [
+            "`int(\"3.5\")` gera `ValueError`. Use `float()` para números com casas decimais, ou `int(float(\"3.5\"))` para truncar.",
+            "Python usa **ponto** como separador decimal. Quem digita `1,75` quebra o programa. Solução: `float(input(\"Altura: \").replace(\",\", \".\"))`.",
+            "`int(input(...))` funciona de dentro para fora: primeiro o `input` lê, depois o `int` converte. Os parênteses se fecham na ordem inversa em que abriram."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "variaveis",
+      "tipo": "leitura",
+      "nome": "Variáveis, constantes e tipos",
+      "blocos": [
+        "Uma **variável** é um nome que aponta para um valor guardado na memória. Em Python, o tipo pertence ao valor, não ao nome: por isso a mesma variável pode guardar um número agora e um texto depois.",
+        {
+          "h": "A lógica por trás: caixinha ou etiqueta?"
+        },
+        "É comum imaginar a variável como uma \"caixinha\". Um passo além, mais fiel ao Python: a variável é uma **etiqueta** colada em um objeto na memória.",
+        {
+          "codigo": "nota = 7          # a etiqueta 'nota' aponta para o objeto 7\nnota = 9          # a etiqueta passa a apontar para o objeto 9\nprint(id(nota))   # id() mostra o \"endereço\" do objeto"
+        },
+        "Isso explica por que `x = x + 1` não é uma equação impossível. O Python calcula primeiro o lado direito (`x + 1`) e só depois cola a etiqueta `x` no resultado. O `=` significa \"recebe\", não \"é igual\".",
+        {
+          "h": "Tipagem dinâmica e forte"
+        },
+        {
+          "lista": [
+            "**Dinâmica:** não se declara o tipo. O Python descobre olhando o valor.",
+            "**Forte:** o Python não mistura tipos por conta própria. `\"5\" + 5` gera erro, em vez de adivinhar se o resultado deveria ser `\"55\"` ou `10`."
+          ]
+        },
+        "Para descobrir o tipo de qualquer valor, use `type()`:",
+        {
+          "codigo": "print(type(25))      # <class 'int'>\nprint(type(\"25\"))    # <class 'str'>\nprint(type(25.0))    # <class 'float'>\nprint(type(True))    # <class 'bool'>"
+        },
+        {
+          "h": "Tipos primitivos em resumo"
+        },
+        {
+          "tabela": [
+            [
+              "Tipo",
+              "Guarda",
+              "Exemplos",
+              "Detalhe que poucos contam"
+            ],
+            [
+              "`int`",
+              "Inteiros",
+              "`10`, `-3`, `0`",
+              "Não tem limite de tamanho: `2 ** 100` funciona"
+            ],
+            [
+              "`float`",
+              "Decimais",
+              "`3.14`, `2.0`, `1e3`",
+              "Tem precisão limitada (veja abaixo)"
+            ],
+            [
+              "`str`",
+              "Texto",
+              "`\"Python\"`, `'42'`",
+              "Imutável: `nome.upper()` cria uma nova string"
+            ],
+            [
+              "`bool`",
+              "Verdadeiro/falso",
+              "`True`, `False`",
+              "Sempre com inicial maiúscula"
+            ],
+            [
+              "`NoneType`",
+              "Ausência de valor",
+              "`None`",
+              "Útil para \"ainda não definido\""
+            ]
+          ]
+        },
+        {
+          "h": "Por que 0.1 + 0.2 não dá 0.3?"
+        },
+        {
+          "codigo": "print(0.1 + 0.2)    # 0.30000000000000004"
+        },
+        "O computador guarda números em binário. Assim como 1/3 vira 0,333... infinito em decimal, o número 0,1 vira uma dízima infinita em binário e precisa ser arredondado. O `float` serve para a maioria dos cálculos, mas em sistemas de dinheiro de verdade usa-se o módulo `decimal` ou valores em centavos (`int`). Para exibir, `round(valor, 2)` ou `f\"{valor:.2f}\"` resolvem.",
+        {
+          "h": "Atribuições úteis"
+        },
+        {
+          "codigo": "a, b = 1, 2      # atribuição múltipla\na, b = b, a      # troca de valores sem variável auxiliar\ncontador = 0\ncontador += 1    # o mesmo que contador = contador + 1"
+        },
+        {
+          "h": "Constantes"
+        },
+        "Python não impede a alteração de uma constante: o nome em **MAIÚSCULAS** é um combinado entre programadores, definido no guia de estilo oficial (PEP 8). Constantes costumam ficar no topo do arquivo:",
+        {
+          "codigo": "PESO_MINIMO_DOACAO = 50\nTAXA_DE_JUROS = 0.05"
+        },
+        {
+          "h": "Regras e boas práticas de nomes"
+        },
+        {
+          "tabela": [
+            [
+              "Tipo",
+              "Regra",
+              "Válido",
+              "Inválido"
+            ],
+            [
+              "Obrigatória",
+              "Começar com letra ou `_`",
+              "`nota1`, `_total`",
+              "`1nota`"
+            ],
+            [
+              "Obrigatória",
+              "Sem espaços nem hífen",
+              "`nome_aluno`",
+              "`nome aluno`, `nome-aluno`"
+            ],
+            [
+              "Obrigatória",
+              "Não ser palavra-chave",
+              "`classe`",
+              "`class`, `if`, `for`"
+            ],
+            [
+              "Convenção",
+              "snake_case para variáveis",
+              "`salario_mensal`",
+              "`SalarioMensal`"
+            ],
+            [
+              "Convenção",
+              "Sem acentos",
+              "`endereco`",
+              "`endereço` (funciona, mas evite)"
+            ]
+          ]
+        },
+        "Duas observações importantes:",
+        {
+          "lista": [
+            "`print` não é palavra reservada, é uma função pronta. Python deixa criar `print = 5`, mas a partir daí o `print()` para de funcionar. Por isso, não use nomes de funções prontas. A lista oficial de palavras reservadas aparece com `import keyword` e `print(keyword.kwlist)`.",
+            "`NomeAluno` (PascalCase) não é proibido: é o padrão para nomes de classes, que virão mais adiante no curso. Para variáveis, o padrão é `snake_case`."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "teste-de-mesa",
+      "tipo": "simulacao",
+      "nome": "Teste de mesa: IMC",
+      "intro": "Acompanhe o programa do IMC rodando linha a linha, como num teste de mesa. A pessoa vai digitar peso **62** e altura **1.60**. Observe a memória e a tela a cada passo.",
+      "codigo": [
+        "# Entrada",
+        "peso = float(input(\"Peso (kg): \"))",
+        "altura = float(input(\"Altura (m): \"))",
+        "",
+        "# Processamento",
+        "imc = peso / altura ** 2",
+        "",
+        "# Saída",
+        "print(f\"Seu IMC é {imc:.1f}\")"
+      ],
+      "passos": [
+        {
+          "linha": 1,
+          "explica": "A primeira linha é um comentário (`#`): o interpretador ignora e segue para a próxima."
+        },
+        {
+          "linha": 2,
+          "explica": "O `input()` mostra `Peso (kg): ` e espera. A pessoa digita **62** e aperta Enter. O `input` devolve a string `\"62\"`, o `float()` converte para `62.0` e a etiqueta `peso` é colada nesse valor.",
+          "tela": "Peso (kg): 62",
+          "memoria": {
+            "peso": [
+              "62.0",
+              "float"
+            ]
+          }
+        },
+        {
+          "linha": 3,
+          "explica": "Mesma coisa para a altura. A pessoa digita **1.60**, com ponto. `float(\"1.60\")` vira `1.6`.",
+          "tela": "Altura (m): 1.60",
+          "memoria": {
+            "altura": [
+              "1.6",
+              "float"
+            ]
+          }
+        },
+        {
+          "linha": 6,
+          "explica": "A potência vem antes da divisão: primeiro `altura ** 2` dá `2.5600000000000005`. É só um resultado intermediário, não fica em nenhuma variável. O \"lixo\" no final é a precisão limitada do `float`."
+        },
+        {
+          "linha": 6,
+          "explica": "Agora a divisão: `62.0 / 2.5600000000000005` dá `24.218749999999996`. Só depois de calcular o lado direito o Python cola a etiqueta `imc` no resultado.",
+          "memoria": {
+            "imc": [
+              "24.218749999999996",
+              "float"
+            ]
+          }
+        },
+        {
+          "linha": 9,
+          "explica": "A f-string troca `{imc:.1f}` pelo valor com **uma casa decimal**: `24.2`. O `print()` mostra a mensagem. O valor guardado em `imc` não muda: só a exibição foi arredondada.",
+          "tela": "Seu IMC é 24.2"
+        },
+        {
+          "linha": 0,
+          "explica": "Não há mais linhas: o programa termina. Você acabou de fazer um teste de mesa completo. Experimente repetir no papel com outros valores."
+        }
+      ]
+    },
+    {
+      "id": "operadores",
+      "tipo": "leitura",
+      "nome": "Operadores e booleanos",
+      "blocos": [
+        "Operadores são os símbolos que fazem o processamento: **aritméticos** calculam, **relacionais** comparam e **lógicos** combinam comparações. Os relacionais e lógicos sempre devolvem `True` ou `False`, que é o combustível das decisões.",
+        {
+          "h": "Por que esses símbolos?"
+        },
+        "As linguagens de programação nasceram com teclados limitados ao conjunto de caracteres ASCII, que não tem ×, ÷, ≠, ≥ nem ≤. Os símbolos atuais foram adaptações, muitas herdadas das linguagens Fortran (1957) e C (1972).",
+        {
+          "h": "Operadores aritméticos"
+        },
+        {
+          "tabela": [
+            [
+              "Símbolo",
+              "Operação",
+              "Exemplo",
+              "Resultado",
+              "Origem do símbolo"
+            ],
+            [
+              "`+`",
+              "Soma (ou junta textos)",
+              "`7 + 2`",
+              "`9`",
+              "Igual à matemática"
+            ],
+            [
+              "`-`",
+              "Subtração",
+              "`7 - 2`",
+              "`5`",
+              "Igual à matemática"
+            ],
+            [
+              "`*`",
+              "Multiplicação",
+              "`7 * 2`",
+              "`14`",
+              "O × não existe no teclado e se confundiria com a letra x"
+            ],
+            [
+              "`/`",
+              "Divisão real",
+              "`7 / 2`",
+              "`3.5`",
+              "Vem da barra de fração, pois ÷ não existe no teclado"
+            ],
+            [
+              "`//`",
+              "Divisão inteira",
+              "`7 // 2`",
+              "`3`",
+              "Barra dupla = \"divisão mais forte\", que descarta a parte decimal"
+            ],
+            [
+              "`%`",
+              "Resto da divisão",
+              "`7 % 2`",
+              "`1`",
+              "Herdado do C; lembra um sinal de divisão"
+            ],
+            [
+              "`**`",
+              "Potência",
+              "`7 ** 2`",
+              "`49`",
+              "Herdado do Fortran. O `^` já é usado para outra operação em Python"
+            ]
+          ]
+        },
+        "Detalhes que valem ouro:",
+        {
+          "lista": [
+            "`/` sempre devolve `float`, mesmo em `10 / 2` (resultado `5.0`).",
+            "`//` arredonda para baixo, não para zero: `7 // 2` dá `3`, mas `-7 // 2` dá `-4`.",
+            "`%` responde perguntas de divisibilidade: `n % 2 == 0` significa \"n é par\". Também extrai o último dígito: `1234 % 10` dá `4`.",
+            "`//` e `%` trabalham juntos: `125 // 60` dá 2 minutos e `125 % 60` dá 5 segundos.",
+            "`2 ** 0.5` calcula a raiz quadrada de 2."
+          ]
+        },
+        {
+          "h": "Precedência: quem é calculado primeiro"
+        },
+        "Igual à matemática da escola, com alguns acréscimos. Da maior para a menor prioridade:",
+        {
+          "tabela": [
+            [
+              "Ordem",
+              "Operadores",
+              "Exemplo"
+            ],
+            [
+              "1",
+              "`( )` parênteses",
+              "`(2 + 3) * 4` → `20`"
+            ],
+            [
+              "2",
+              "`**` potência",
+              "`2 * 3 ** 2` → `18`"
+            ],
+            [
+              "3",
+              "`-x` sinal negativo",
+              "`-2 ** 2` → `-4` (a potência vem antes do sinal!)"
+            ],
+            [
+              "4",
+              "`*`, `/`, `//`, `%`",
+              "`2 + 3 * 4` → `14`"
+            ],
+            [
+              "5",
+              "`+`, `-`",
+              "`10 - 2 + 1` → `9` (da esquerda para a direita)"
+            ],
+            [
+              "6",
+              "`==`, `!=`, `>`, `<`, `>=`, `<=`",
+              "`3 + 2 > 4` → `True`"
+            ],
+            [
+              "7",
+              "`not`",
+              ""
+            ],
+            [
+              "8",
+              "`and`",
+              ""
+            ],
+            [
+              "9",
+              "`or`",
+              ""
+            ]
+          ]
+        },
+        "Na dúvida, use parênteses. Eles não deixam o código mais lento e deixam a intenção clara.",
+        {
+          "h": "Operadores relacionais"
+        },
+        {
+          "tabela": [
+            [
+              "Símbolo",
+              "Pergunta",
+              "Exemplo",
+              "Resultado",
+              "Por que esse símbolo"
+            ],
+            [
+              "`==`",
+              "São iguais?",
+              "`5 == 5`",
+              "`True`",
+              "O `=` já significa atribuição, então a igualdade ganhou dois sinais"
+            ],
+            [
+              "`!=`",
+              "São diferentes?",
+              "`5 != 3`",
+              "`True`",
+              "`!` significa \"não\" desde o C: \"não igual\""
+            ],
+            [
+              "`>`",
+              "Maior que?",
+              "`5 > 3`",
+              "`True`",
+              "Igual à matemática"
+            ],
+            [
+              "`<`",
+              "Menor que?",
+              "`5 < 3`",
+              "`False`",
+              "Igual à matemática"
+            ],
+            [
+              "`>=`",
+              "Maior ou igual?",
+              "`5 >= 5`",
+              "`True`",
+              "≥ não existe no teclado. Ordem fixa: `=>` dá erro"
+            ],
+            [
+              "`<=`",
+              "Menor ou igual?",
+              "`4 <= 5`",
+              "`True`",
+              "≤ não existe no teclado"
+            ]
+          ]
+        },
+        "O erro mais comum é trocar `=` por `==`:",
+        {
+          "codigo": "idade = 18       # atribuição: \"idade recebe 18\"\nidade == 18      # comparação: \"idade é igual a 18?\" -> True\nif idade = 18:   # SyntaxError"
+        },
+        "Recursos extras:",
+        {
+          "lista": [
+            "Comparação encadeada, como na matemática: `18 <= idade <= 69` equivale a `idade >= 18 and idade <= 69`.",
+            "Textos também se comparam, em ordem alfabética pelo código Unicode de cada letra. Maiúsculas vêm antes das minúsculas: `\"Zebra\" < \"abacaxi\"` é `True`.",
+            "Evite `==` com `float`: `0.1 + 0.2 == 0.3` é `False`. Compare a diferença: `abs(a - b) < 0.0001`."
+          ]
+        },
+        {
+          "h": "Operadores lógicos e tabelas-verdade"
+        },
+        {
+          "tabela": [
+            [
+              "A",
+              "B",
+              "A and B",
+              "A or B",
+              "not A"
+            ],
+            [
+              "True",
+              "True",
+              "True",
+              "True",
+              "False"
+            ],
+            [
+              "True",
+              "False",
+              "False",
+              "True",
+              "False"
+            ],
+            [
+              "False",
+              "True",
+              "False",
+              "True",
+              "True"
+            ],
+            [
+              "False",
+              "False",
+              "False",
+              "False",
+              "True"
+            ]
+          ]
+        },
+        "Como memorizar: `and` é exigente (precisa de tudo), `or` é tolerante (basta um), `not` é do contra.",
+        {
+          "h": "A lógica por trás: avaliação em curto-circuito"
+        },
+        "O Python para de avaliar assim que já sabe a resposta:",
+        {
+          "lista": [
+            "Em `A and B`, se A é falso, o resultado já é falso e B nem é calculado.",
+            "Em `A or B`, se A é verdadeiro, o resultado já é verdadeiro e B nem é calculado."
+          ]
+        },
+        "Isso protege contra erros:",
+        {
+          "codigo": "x = 0\nif x != 0 and 10 / x > 1:    # a divisão nunca roda quando x é 0\n    print(\"Maior que 1\")"
+        },
+        "E permite valores padrão elegantes, porque `or` devolve o primeiro valor verdadeiro que encontrar:",
+        {
+          "codigo": "nome = input(\"Nome: \") or \"Visitante\"\nprint(f\"Olá, {nome}!\")    # se o usuário só apertar Enter: Olá, Visitante!"
+        },
+        {
+          "h": "Valor de verdade (truthiness)"
+        },
+        {
+          "tabela": [
+            [
+              "Considerados falsos",
+              "Considerados verdadeiros"
+            ],
+            [
+              "`False`, `None`, `0`, `0.0`, `\"\"`, `[]`, `{}`, `()`",
+              "Todo o resto, inclusive `\" \"` (um espaço), `\"0\"`, `\"False\"` e `-1`"
+            ]
+          ]
+        },
+        "Pegadinha: `bool(\"False\")` é `True`, porque a string não está vazia. E como `True` vale 1 e `False` vale 0, somar booleanos conta quantas condições deram certo:",
+        {
+          "codigo": "criterios = [idade >= 16, peso >= 50, dormiu_bem]\nprint(sum(criterios), \"de 3 critérios atendidos\")"
+        },
+        {
+          "h": "Doação de sangue: os critérios reais"
+        },
+        "Os critérios do Ministério da Saúde para doar sangue são: idade entre 16 e 69 anos (menores de 18 com autorização dos responsáveis), peso mínimo de 50 kg e pelo menos 6 horas de sono nas últimas 24 horas. Isso vira a Atividade 7, mais adiante."
+      ]
+    },
+    {
+      "id": "quiz-1",
+      "tipo": "quiz",
+      "nome": "Quiz 1: conceitos",
+      "perguntas": [
+        {
+          "pergunta": "O usuário digita 25 em `idade = input(\"Idade: \")`. Qual o tipo de `idade`?",
+          "opcoes": [
+            "`int`",
+            "`float`",
+            "`str`",
+            "`bool`"
+          ],
+          "correta": 2,
+          "dica": "Pense no que o teclado realmente envia ao programa.",
+          "acerto": "Isso mesmo!",
+          "erro": "Não foi dessa vez.",
+          "explicacao": "`input()` sempre devolve string. Para ter um inteiro, é preciso `int(input(...))`."
+        },
+        {
+          "pergunta": "Em um fluxograma, qual símbolo representa uma decisão?",
+          "opcoes": [
+            "Retângulo",
+            "Losango",
+            "Oval",
+            "Paralelogramo"
+          ],
+          "correta": 1,
+          "dica": "O símbolo precisa ter \"pontas\" para dois caminhos diferentes.",
+          "acerto": "Exato!",
+          "erro": "Quase!",
+          "explicacao": "O losango tem uma entrada e saídas para \"sim\" e \"não\"."
+        },
+        {
+          "pergunta": "Qual nome de variável é válido e segue as boas práticas do Python?",
+          "opcoes": [
+            "`2nota`",
+            "`nota final`",
+            "`nota_final`",
+            "`NotaFinal`"
+          ],
+          "correta": 2,
+          "dica": "Uma opção quebra a regra do primeiro caractere, outra tem espaço, outra é o padrão de classes.",
+          "acerto": "Acertou!",
+          "erro": "Ainda não.",
+          "explicacao": "`2nota` começa com número; `nota final` tem espaço; `NotaFinal` é o padrão para classes."
+        },
+        {
+          "pergunta": "Qual o resultado de `print(10 / 2)`?",
+          "opcoes": [
+            "`5`",
+            "`5.0`",
+            "`2`",
+            "Erro"
+          ],
+          "correta": 1,
+          "dica": "O operador `/` tem um comportamento fixo quanto ao tipo do resultado.",
+          "acerto": "Perfeito!",
+          "erro": "Olhe de novo.",
+          "explicacao": "A divisão `/` sempre devolve `float`, mesmo quando a conta é exata."
+        },
+        {
+          "pergunta": "Qual característica garante que um algoritmo termina?",
+          "opcoes": [
+            "Clareza",
+            "Objetividade",
+            "Finitude",
+            "Ordenação lógica"
+          ],
+          "correta": 2,
+          "dica": "A palavra tem a mesma raiz de \"fim\".",
+          "acerto": "Mandou bem!",
+          "erro": "Não é essa.",
+          "explicacao": "Finitude: o algoritmo precisa acabar após um número limitado de passos."
+        }
+      ]
+    },
+    {
+      "id": "quiz-2",
+      "tipo": "quiz",
+      "nome": "Quiz 2: prever a saída",
+      "perguntas": [
+        {
+          "pergunta": "Qual a saída de `print(7 // 2, 7 % 2)`?",
+          "opcoes": [
+            "`3.5 1`",
+            "`3 1`",
+            "`3 0.5`",
+            "`1 3`"
+          ],
+          "correta": 1,
+          "dica": "7 dividido por 2 dá quanto, e sobra quanto?",
+          "acerto": "Isso mesmo!",
+          "erro": "Não foi dessa vez.",
+          "explicacao": "`//` dá o quociente inteiro (3) e `%` dá o resto (1); a vírgula separa com espaço."
+        },
+        {
+          "pergunta": "Qual a saída de `print(\"5\" + \"3\")`?",
+          "opcoes": [
+            "`8`",
+            "`53`",
+            "`\"8\"`",
+            "Erro"
+          ],
+          "correta": 1,
+          "dica": "Olhe as aspas. Que tipo de dado é esse?",
+          "acerto": "Exato!",
+          "erro": "Quase!",
+          "explicacao": "Duas strings: o `+` concatena, não soma."
+        },
+        {
+          "pergunta": "O que acontece ao executar o código abaixo, se o usuário digitar 20?",
+          "codigo": "idade = input(\"Idade: \")\nprint(idade + 1)",
+          "opcoes": [
+            "Mostra `21`",
+            "Mostra `201`",
+            "`TypeError`",
+            "`ValueError`"
+          ],
+          "correta": 2,
+          "dica": "Qual o tipo de `idade`, e o `+` sabe juntar esse tipo com um número?",
+          "acerto": "Acertou!",
+          "erro": "Ainda não.",
+          "explicacao": "`idade` é a string `\"20\"`; somar string com `int` gera `TypeError`."
+        },
+        {
+          "pergunta": "Qual a saída de `print(2 + 3 * 2 ** 2)`?",
+          "opcoes": [
+            "`14`",
+            "`20`",
+            "`38`",
+            "`100`"
+          ],
+          "correta": 0,
+          "dica": "Resolva na ordem potência, multiplicação, soma.",
+          "acerto": "Perfeito!",
+          "erro": "Olhe de novo.",
+          "explicacao": "`2 ** 2` = 4, depois `3 * 4` = 12, depois `2 + 12` = 14."
+        },
+        {
+          "pergunta": "Qual a saída de `print(bool(\" \"))`? (há um espaço entre as aspas)",
+          "opcoes": [
+            "`True`",
+            "`False`",
+            "`None`",
+            "Erro"
+          ],
+          "correta": 0,
+          "dica": "A string está realmente vazia?",
+          "acerto": "Mandou bem!",
+          "erro": "Não é essa.",
+          "explicacao": "Um espaço é um caractere; só a string vazia `\"\"` é falsa."
+        }
+      ]
+    },
+    {
+      "id": "quiz-3",
+      "tipo": "quiz",
+      "nome": "Quiz 3: a lógica por trás",
+      "perguntas": [
+        {
+          "pergunta": "Qual a saída de `print(-7 // 2)`?",
+          "opcoes": [
+            "`-3`",
+            "`-3.5`",
+            "`-4`",
+            "`3`"
+          ],
+          "correta": 2,
+          "dica": "A divisão inteira arredonda sempre para baixo na reta numérica. Quem está \"abaixo\" de -3,5?",
+          "acerto": "Isso mesmo!",
+          "erro": "Não foi dessa vez.",
+          "explicacao": "-7 / 2 = -3,5; arredondando para baixo (em direção a -∞) chega-se a -4."
+        },
+        {
+          "pergunta": "Qual a saída de `print(0.1 + 0.2 == 0.3)`?",
+          "opcoes": [
+            "`True`",
+            "`False`",
+            "`0.3`",
+            "Erro"
+          ],
+          "correta": 1,
+          "dica": "Lembre como o computador guarda números decimais em binário.",
+          "acerto": "Exato!",
+          "erro": "Quase!",
+          "explicacao": "`0.1 + 0.2` vale `0.30000000000000004` por causa do arredondamento binário."
+        },
+        {
+          "pergunta": "Qual a saída de `print(True + True * 3)`?",
+          "opcoes": [
+            "`True`",
+            "`4`",
+            "`6`",
+            "Erro"
+          ],
+          "correta": 1,
+          "dica": "Qual o valor numérico de `True`? E qual operação vem primeiro?",
+          "acerto": "Acertou!",
+          "erro": "Ainda não.",
+          "explicacao": "`True` vale 1; a multiplicação vem primeiro: 1 + (1 * 3) = 4."
+        },
+        {
+          "pergunta": "O que o código abaixo mostra?",
+          "codigo": "x = 0\nresultado = x != 0 and 10 / x\nprint(resultado)",
+          "opcoes": [
+            "`ZeroDivisionError`",
+            "`0`",
+            "`False`",
+            "`True`"
+          ],
+          "correta": 2,
+          "dica": "O `and` precisa mesmo calcular a divisão se a primeira parte já for falsa?",
+          "acerto": "Perfeito!",
+          "erro": "Olhe de novo.",
+          "explicacao": "`x != 0` é `False`; pelo curto-circuito, o `and` devolve esse `False` sem calcular a divisão."
+        },
+        {
+          "pergunta": "Qual a saída de `print(\"\" or \"Visitante\")`?",
+          "opcoes": [
+            "`\"\"`",
+            "`False`",
+            "`True`",
+            "`Visitante`"
+          ],
+          "correta": 3,
+          "dica": "O `or` não devolve necessariamente True ou False. Ele devolve um dos dois valores.",
+          "acerto": "Mandou bem!",
+          "erro": "Não é essa.",
+          "explicacao": "A string vazia é falsa, então o `or` devolve o segundo valor."
+        }
+      ]
+    },
+    {
+      "id": "atividades",
+      "tipo": "atividades",
+      "nome": "Atividades práticas",
+      "intro": [
+        "São 10 atividades em quatro níveis. Todas pedem o mesmo método: escrever o algoritmo (narrativa, pseudocódigo ou fluxograma), fazer o teste de mesa e só então programar.",
+        "Escreva ou cole a sua tentativa no campo de cada atividade para liberar a solução. Outras soluções também valem, desde que passem nos testes do enunciado."
+      ],
+      "itens": [
+        {
+          "n": 1,
+          "nivel": "Básico",
+          "titulo": "Cartão de apresentação",
+          "enunciado": [
+            "Leia nome, idade e cidade do usuário e mostre uma frase única com f-string."
+          ],
+          "testes": [
+            "Exemplo de saída: `Olá! Sou a Ana, tenho 21 anos e moro em Salvador.`"
+          ],
+          "dica": "Use três `input()` e um único `print()`.",
+          "solucao": [
+            {
+              "codigo": "nome = input(\"Nome: \")\nidade = int(input(\"Idade: \"))\ncidade = input(\"Cidade: \")\n\nprint(f\"Olá! Sou {nome}, tenho {idade} anos e moro em {cidade}.\")"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "nivel": "Básico",
+          "titulo": "Conversor de temperatura",
+          "enunciado": [
+            "Leia uma temperatura em graus Celsius e mostre em Fahrenheit, com uma casa decimal. Fórmula: F = C × 9 / 5 + 32."
+          ],
+          "testes": [
+            "37 °C deve resultar em 98.6 °F."
+          ],
+          "dica": "A temperatura pode ter casas decimais. Qual função de conversão usar?",
+          "solucao": [
+            {
+              "codigo": "celsius = float(input(\"Temperatura em °C: \").replace(\",\", \".\"))\nfahrenheit = celsius * 9 / 5 + 32\n\nprint(f\"{celsius:.1f} °C = {fahrenheit:.1f} °F\")"
+            },
+            "Teste: 37 → `37.0 °C = 98.6 °F`."
+          ]
+        },
+        {
+          "n": 3,
+          "nivel": "Básico",
+          "titulo": "Algoritmo sem código",
+          "enunciado": [
+            "Escreva o algoritmo de \"lavar as mãos\" nas três representações: narrativa, pseudocódigo e fluxograma. Inclua ao menos uma decisão (tem sabão?) e uma repetição (esfregar por 20 segundos)."
+          ],
+          "dica": "Comece pela narrativa, depois identifique onde há uma pergunta (losango) e onde algo se repete.",
+          "solucao": [
+            "**Narrativa:** abrir a torneira e molhar as mãos. Se houver sabão, aplicar; se não, pegar o sabão reserva. Esfregar as mãos, contando até 20 segundos. Enxaguar, fechar a torneira e secar.",
+            "**Pseudocódigo:**",
+            {
+              "codigo": "algoritmo \"Lavar as mãos\"\nvar\n   segundos : inteiro\ninicio\n   abrir torneira\n   molhar as mãos\n   se tem sabão entao\n      aplicar sabão\n   senao\n      pegar sabão reserva\n      aplicar sabão\n   fimse\n   segundos <- 0\n   enquanto segundos < 20 faca\n      esfregar as mãos por 1 segundo\n      segundos <- segundos + 1\n   fimenquanto\n   enxaguar\n   fechar torneira\n   secar as mãos\nfimalgoritmo"
+            },
+            "**Fluxograma:**",
+            {
+              "fluxograma": "flowchart TD\n    A([Início]) --> B[Abrir torneira e molhar as mãos]\n    B --> C{Tem sabão?}\n    C -- Sim --> E[Aplicar sabão]\n    C -- Não --> D[Pegar sabão reserva] --> E\n    E --> F[segundos ← 0]\n    F --> G{segundos < 20?}\n    G -- Sim --> H[Esfregar 1 segundo<br/>segundos ← segundos + 1]\n    H --> G\n    G -- Não --> I[Enxaguar, fechar torneira e secar]\n    I --> J([Fim])"
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "nivel": "Intermediário",
+          "titulo": "Situação do aluno",
+          "enunciado": [
+            "Leia três notas, calcule a média e mostre: \"Aprovado\" (média ≥ 7), \"Recuperação\" (5 a 6,9) ou \"Reprovado\" (abaixo de 5)."
+          ],
+          "testes": [
+            "Teste com os casos de borda: médias exatamente 7 e exatamente 5."
+          ],
+          "dica": "`(n1 + n2 + n3) / 3` precisa dos parênteses. O que aconteceria sem eles?",
+          "solucao": [
+            {
+              "codigo": "n1 = float(input(\"Nota 1: \").replace(\",\", \".\"))\nn2 = float(input(\"Nota 2: \").replace(\",\", \".\"))\nn3 = float(input(\"Nota 3: \").replace(\",\", \".\"))\n\nmedia = (n1 + n2 + n3) / 3\n\nif media >= 7:\n    situacao = \"Aprovado\"\nelif media >= 5:\n    situacao = \"Recuperação\"\nelse:\n    situacao = \"Reprovado\"\n\nprint(f\"Média: {media:.1f} - {situacao}\")"
+            },
+            "**Resposta da dica:** sem parênteses, `n1 + n2 + n3 / 3` divide só a terceira nota. Com 6, 7 e 8, daria 15.67 em vez de 7.0."
+          ]
+        },
+        {
+          "n": 5,
+          "nivel": "Intermediário",
+          "titulo": "Par, ímpar e divisores",
+          "enunciado": [
+            "Leia um número inteiro e diga se é par ou ímpar e se é divisível por 3, por 5 ou pelos dois."
+          ],
+          "testes": [
+            "15 (ímpar, 3 e 5), 9 (ímpar, só 3), 10 (par, só 5), 7 (ímpar, nenhum), 0 (par, 3 e 5)."
+          ],
+          "dica": "\"Divisível por\" significa \"resto zero\". Qual operador calcula o resto?",
+          "solucao": [
+            {
+              "codigo": "numero = int(input(\"Número: \"))\n\nif numero % 2 == 0:\n    print(f\"{numero} é par\")\nelse:\n    print(f\"{numero} é ímpar\")\n\nif numero % 3 == 0 and numero % 5 == 0:\n    print(\"Divisível por 3 e por 5\")\nelif numero % 3 == 0:\n    print(\"Divisível só por 3\")\nelif numero % 5 == 0:\n    print(\"Divisível só por 5\")\nelse:\n    print(\"Não é divisível por 3 nem por 5\")"
+            }
+          ]
+        },
+        {
+          "n": 6,
+          "nivel": "Intermediário",
+          "titulo": "Calculadora de IMC",
+          "enunciado": [
+            "Leia peso e altura, calcule IMC = peso / altura² e classifique pela tabela da OMS: abaixo de 18,5 (abaixo do peso), 18,5 a 24,9 (normal), 25 a 29,9 (sobrepeso), 30 ou mais (obesidade).",
+            "O programa deve aceitar altura digitada com vírgula (`1,68`)."
+          ],
+          "dica": "`.replace(\",\", \".\")` antes do `float()`. E cuidado com a precedência: `altura ** 2` vem antes da divisão?",
+          "solucao": [
+            {
+              "codigo": "peso = float(input(\"Peso (kg): \").replace(\",\", \".\"))\naltura = float(input(\"Altura (m): \").replace(\",\", \".\"))\n\nimc = peso / altura ** 2\n\nif imc < 18.5:\n    classificacao = \"Abaixo do peso\"\nelif imc < 25:\n    classificacao = \"Peso normal\"\nelif imc < 30:\n    classificacao = \"Sobrepeso\"\nelse:\n    classificacao = \"Obesidade\"\n\nprint(f\"IMC: {imc:.1f} - {classificacao}\")"
+            },
+            "Teste: 70 kg e 1,75 m → `IMC: 22.9 - Peso normal`.",
+            "**Resposta da dica:** sim, `**` vem antes de `/`, então `peso / altura ** 2` já está certo. `(peso / altura) ** 2` daria um resultado errado."
+          ]
+        },
+        {
+          "n": 7,
+          "nivel": "Avançado",
+          "titulo": "Triagem para doação de sangue",
+          "enunciado": [
+            "Escreva a triagem com os critérios reais do Ministério da Saúde:",
+            {
+              "lista": [
+                "Idade entre 16 e 69 anos. Entre 16 e 17, só com autorização dos responsáveis.",
+                "Pessoas de 60 a 69 anos só podem doar se já tiverem doado antes.",
+                "Peso mínimo de 50 kg.",
+                "Pelo menos 6 horas de sono nas últimas 24 horas."
+              ]
+            },
+            "O programa deve dizer se a pessoa pode doar e, se não puder, qual critério falhou."
+          ],
+          "dica": "Leia as respostas sim/não como texto e converta: `autorizacao = input(\"Tem autorização? (s/n) \") == \"s\"`. Use comparação encadeada para as faixas de idade.",
+          "solucao": [
+            {
+              "codigo": "idade = int(input(\"Idade: \"))\npeso = float(input(\"Peso (kg): \").replace(\",\", \".\"))\nhoras_sono = float(input(\"Horas de sono nas últimas 24h: \").replace(\",\", \".\"))\n\npode_doar = True\n\nif not (16 <= idade <= 69):\n    print(\"Não pode doar: idade fora da faixa de 16 a 69 anos.\")\n    pode_doar = False\nelif idade < 18:\n    autorizacao = input(\"Tem autorização dos responsáveis? (s/n) \") == \"s\"\n    if not autorizacao:\n        print(\"Não pode doar: menores de 18 precisam de autorização.\")\n        pode_doar = False\nelif idade >= 60:\n    ja_doou = input(\"Já doou sangue antes? (s/n) \") == \"s\"\n    if not ja_doou:\n        print(\"Não pode doar: a partir de 60 anos, só quem já doou antes.\")\n        pode_doar = False\n\nif peso < 50:\n    print(\"Não pode doar: peso abaixo de 50 kg.\")\n    pode_doar = False\n\nif horas_sono < 6:\n    print(\"Não pode doar: menos de 6 horas de sono.\")\n    pode_doar = False\n\nif pode_doar:\n    print(\"Pode doar sangue!\")"
+            },
+            {
+              "tabela": [
+                [
+                  "Teste",
+                  "Idade",
+                  "Peso",
+                  "Sono",
+                  "Outras respostas",
+                  "Resultado esperado"
+                ],
+                [
+                  "1",
+                  "25",
+                  "70",
+                  "8",
+                  "—",
+                  "Pode doar"
+                ],
+                [
+                  "2",
+                  "17",
+                  "60",
+                  "7",
+                  "autorização: n",
+                  "Falha na autorização"
+                ],
+                [
+                  "3",
+                  "65",
+                  "80",
+                  "7",
+                  "já doou: n",
+                  "Falha na primeira doação após 60"
+                ],
+                [
+                  "4",
+                  "30",
+                  "48",
+                  "5",
+                  "—",
+                  "Falha no peso e no sono"
+                ],
+                [
+                  "5",
+                  "70",
+                  "70",
+                  "8",
+                  "—",
+                  "Falha na idade"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "n": 8,
+          "nivel": "Avançado",
+          "titulo": "Conversor de tempo",
+          "enunciado": [
+            "Leia uma quantidade de segundos e mostre em horas, minutos e segundos."
+          ],
+          "testes": [
+            "3725 segundos → `1h 2min 5s`"
+          ],
+          "dica": "`3725 // 3600` dá as horas. O que sobra (`%`) vira a entrada para calcular os minutos.",
+          "solucao": [
+            {
+              "codigo": "total = int(input(\"Segundos: \"))\n\nhoras = total // 3600\nresto = total % 3600\nminutos = resto // 60\nsegundos = resto % 60\n\nprint(f\"{horas}h {minutos}min {segundos}s\")"
+            },
+            "Teste de mesa com 3725:",
+            {
+              "tabela": [
+                [
+                  "Instrução",
+                  "total",
+                  "horas",
+                  "resto",
+                  "minutos",
+                  "segundos"
+                ],
+                [
+                  "leitura",
+                  "3725",
+                  "",
+                  "",
+                  "",
+                  ""
+                ],
+                [
+                  "`total // 3600`",
+                  "3725",
+                  "1",
+                  "",
+                  "",
+                  ""
+                ],
+                [
+                  "`total % 3600`",
+                  "3725",
+                  "1",
+                  "125",
+                  "",
+                  ""
+                ],
+                [
+                  "`resto // 60`",
+                  "3725",
+                  "1",
+                  "125",
+                  "2",
+                  ""
+                ],
+                [
+                  "`resto % 60`",
+                  "3725",
+                  "1",
+                  "125",
+                  "2",
+                  "5"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "n": 9,
+          "nivel": "Avançado",
+          "titulo": "Ano bissexto",
+          "enunciado": [
+            "Leia um ano e diga se é bissexto. Regra: divisível por 4 e não por 100, ou divisível por 400."
+          ],
+          "testes": [
+            "2024 (sim), 1900 (não), 2000 (sim), 2026 (não)."
+          ],
+          "dica": "Tudo cabe em uma única expressão com `and`, `or` e parênteses. Escreva a tabela-verdade antes.",
+          "solucao": [
+            {
+              "codigo": "ano = int(input(\"Ano: \"))\n\nbissexto = (ano % 4 == 0 and ano % 100 != 0) or ano % 400 == 0\n\nif bissexto:\n    print(f\"{ano} é bissexto\")\nelse:\n    print(f\"{ano} não é bissexto\")"
+            },
+            {
+              "tabela": [
+                [
+                  "Ano",
+                  "% 4 == 0",
+                  "% 100 != 0",
+                  "% 400 == 0",
+                  "Bissexto?"
+                ],
+                [
+                  "2024",
+                  "True",
+                  "True",
+                  "False",
+                  "Sim"
+                ],
+                [
+                  "1900",
+                  "True",
+                  "False",
+                  "False",
+                  "Não"
+                ],
+                [
+                  "2000",
+                  "True",
+                  "False",
+                  "True",
+                  "Sim"
+                ],
+                [
+                  "2026",
+                  "False",
+                  "True",
+                  "False",
+                  "Não"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "n": 10,
+          "nivel": "Desafio",
+          "titulo": "Caixa eletrônico",
+          "enunciado": [
+            "Leia o valor de um saque e mostre a menor quantidade de cédulas de R$ 100, 50, 20, 10, 5 e 2 para pagá-lo, sem usar laços de repetição.",
+            {
+              "lista": [
+                "Mostre só as cédulas usadas (quantidade maior que zero).",
+                "Recuse valores impossíveis de pagar com essas cédulas, como R$ 1 e R$ 3, e valores negativos.",
+                "Entregue também o fluxograma."
+              ]
+            },
+            "Teste: R$ 188 → 1 de 100, 1 de 50, 1 de 20, 1 de 10, 1 de 5... e aí? Sobram R$ 3, que não se pagam com notas de 2. O algoritmo guloso (pegar sempre a maior nota possível) falha aqui. Nem todo algoritmo óbvio está correto."
+          ],
+          "dica": "Use o par `//` e `%` para cada cédula, atualizando o valor restante. Para o caso de R$ 188, pense em quando vale a pena \"pular\" a nota de 5.",
+          "solucao": [
+            "A ideia central: só a nota de 5 é ímpar. Então, se o valor for ímpar, usamos exatamente uma nota de 5; o que sobra é par e pode ser pago com 100, 50, 20, 10 e 2. Isso resolve o caso de R$ 188 que quebra o algoritmo guloso.",
+            {
+              "codigo": "valor = int(input(\"Valor do saque: R$ \"))\n\nif valor <= 0 or valor == 1 or valor == 3:\n    print(\"Valor impossível com cédulas de 100, 50, 20, 10, 5 e 2.\")\nelse:\n    notas_5 = valor % 2          # 1 se o valor for ímpar, 0 se for par\n    restante = valor - notas_5 * 5\n\n    notas_100 = restante // 100\n    restante = restante % 100\n    notas_50 = restante // 50\n    restante = restante % 50\n    notas_20 = restante // 20\n    restante = restante % 20\n    notas_10 = restante // 10\n    restante = restante % 10\n    notas_2 = restante // 2\n\n    print(f\"Saque de R$ {valor}:\")\n    if notas_100 > 0:\n        print(f\"{notas_100} x R$ 100\")\n    if notas_50 > 0:\n        print(f\"{notas_50} x R$ 50\")\n    if notas_20 > 0:\n        print(f\"{notas_20} x R$ 20\")\n    if notas_10 > 0:\n        print(f\"{notas_10} x R$ 10\")\n    if notas_5 > 0:\n        print(f\"{notas_5} x R$ 5\")\n    if notas_2 > 0:\n        print(f\"{notas_2} x R$ 2\")"
+            },
+            {
+              "tabela": [
+                [
+                  "Valor",
+                  "Cédulas",
+                  "Observação"
+                ],
+                [
+                  "188",
+                  "100 + 50 + 20 + 10 + 4 × 2",
+                  "O guloso travaria com R$ 3 sobrando"
+                ],
+                [
+                  "11",
+                  "5 + 3 × 2",
+                  "O guloso pegaria 10 e travaria com R$ 1"
+                ],
+                [
+                  "7",
+                  "5 + 2",
+                  ""
+                ],
+                [
+                  "3",
+                  "impossível",
+                  ""
+                ],
+                [
+                  "250",
+                  "2 × 100 + 50",
+                  ""
+                ]
+              ]
+            },
+            "**Fluxograma:**",
+            {
+              "fluxograma": "flowchart TD\n    A([Início]) --> B[/Ler valor/]\n    B --> C{valor <= 0 ou valor é 1 ou 3?}\n    C -- Sim --> D[/Mostrar: valor impossível/] --> Z([Fim])\n    C -- Não --> E[notas_5 ← valor % 2<br/>restante ← valor - notas_5 × 5]\n    E --> F[Calcular notas de 100, 50, 20 e 10<br/>com // e %]\n    F --> G[notas_2 ← restante // 2]\n    G --> H[/Mostrar cédulas com quantidade > 0/]\n    H --> Z"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

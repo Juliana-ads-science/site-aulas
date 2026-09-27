@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Linha a Linha</title>
+<meta name="description" content="Aulas de programação com explicação linha a linha, quizzes e um espaço para os pequenos programadores.">
+<link rel="icon" href="logo/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="logo/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="logo/icone-512.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700&family=JetBrains+Mono:wght@400;500&family=Nunito+Sans:wght@400;600;700&family=Sora:wght@400;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilo.css">
+</head>
+<body>
+
+<!-- ================= CARREGANDO ================= -->
+<div id="carregando" role="status">
+  <img src="logo/simbolo.svg" alt="">
+  <span>Carregando…</span>
+</div>
+
+<!-- ================= LOGIN ================= -->
+<section id="login" hidden>
+  <div class="login-art">
+    <a class="brand" href="#"><span class="brand-mark"><img src="logo/simbolo.svg" alt=""></span><span>Linha a Linha</span></a>
+    <div>
+      <h1>Entenda cada linha do seu código.</h1>
+      <p class="sub">Aulas com explicação linha a linha, quizzes para testar o que você aprendeu e um espaço especial para os pequenos programadores.</p>
+    </div>
+    <div class="demo-code" aria-hidden="true">
+      <div id="demoLinhas"></div>
+      <div class="demo-nota" id="demoNota"></div>
+    </div>
+  </div>
+
+  <div class="login-form">
+    <div class="painel">
+      <div class="abas" role="tablist" id="abas">
+        <button type="button" role="tab" id="abaEntrar" aria-selected="true" aria-controls="formLogin">Entrar</button>
+        <button type="button" role="tab" id="abaCriar" aria-selected="false" aria-controls="formCadastro">Criar conta</button>
+      </div>
+      <p class="aviso" id="avisoGeral" role="alert"></p>
+
+      <!-- Entrar -->
+      <form id="formLogin" novalidate>
+        <h2>Entrar</h2>
+        <p class="muted">Use seu e-mail e senha. No Espaço Kids, use o apelido que a professora te passou.</p>
+        <div class="campo"><label for="usuario">E-mail ou apelido</label><input id="usuario" autocomplete="username" autocapitalize="none" spellcheck="false" required></div>
+        <div class="campo"><label for="senha">Senha</label><input id="senha" type="password" autocomplete="current-password" required></div>
+        <p class="aviso" id="erroLogin" role="alert"></p>
+        <button class="btn" type="submit" style="width:100%;margin-top:16px">Entrar</button>
+        <div class="linha-links">
+          <button type="button" class="link-btn" id="irRecuperar">Esqueci minha senha</button>
+          <button type="button" class="link-btn" id="irCriar">Criar conta</button>
+        </div>
+      </form>
+
+      <!-- Criar conta -->
+      <form id="formCadastro" novalidate hidden>
+        <h2>Criar conta</h2>
+        <p class="muted">Você precisa do código da turma que a professora passou em aula.</p>
+        <div class="campo"><label for="cadNome">Seu nome</label><input id="cadNome" autocomplete="name" required></div>
+        <div class="campo"><label for="cadEmail">E-mail</label><input id="cadEmail" type="email" autocomplete="email" autocapitalize="none" spellcheck="false" required></div>
+        <div class="campo"><label for="cadSenha">Senha</label><input id="cadSenha" type="password" autocomplete="new-password" minlength="6" required>
+          <p class="ajuda-campo">Pelo menos 6 caracteres.</p></div>
+        <div class="campo"><label for="cadCodigo">Código da turma</label><input id="cadCodigo" autocomplete="off" autocapitalize="characters" spellcheck="false" required></div>
+        <p class="aviso" id="erroCadastro" role="alert"></p>
+        <button class="btn" type="submit" style="width:100%;margin-top:16px">Criar minha conta</button>
+        <div class="dica">As contas do <strong>Espaço Kids</strong> são criadas pela professora. Crianças não precisam se cadastrar.</div>
+      </form>
+
+      <!-- Esqueci a senha -->
+      <form id="formRecuperar" novalidate hidden>
+        <h2>Recuperar senha</h2>
+        <p class="muted">Digite o e-mail da sua conta. Vamos enviar um link para você criar uma senha nova.</p>
+        <div class="campo"><label for="recEmail">E-mail</label><input id="recEmail" type="email" autocomplete="email" autocapitalize="none" spellcheck="false" required></div>
+        <p class="aviso" id="erroRecuperar" role="alert"></p>
+        <button class="btn" type="submit" style="width:100%;margin-top:16px">Enviar link</button>
+        <div class="linha-links"><button type="button" class="link-btn" data-voltar>Voltar para o login</button></div>
+        <div class="dica">No Espaço Kids, peça uma senha nova para a professora.</div>
+      </form>
+
+      <!-- Nova senha (depois do link do e-mail) -->
+      <form id="formNovaSenha" novalidate hidden>
+        <h2>Criar nova senha</h2>
+        <p class="muted">Escolha uma senha nova para a sua conta.</p>
+        <div class="campo"><label for="novaSenha">Nova senha</label><input id="novaSenha" type="password" autocomplete="new-password" minlength="6" required></div>
+        <div class="campo"><label for="novaSenha2">Repita a nova senha</label><input id="novaSenha2" type="password" autocomplete="new-password" minlength="6" required></div>
+        <p class="aviso" id="erroNovaSenha" role="alert"></p>
+        <button class="btn" type="submit" style="width:100%;margin-top:16px">Salvar nova senha</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ================= APP ================= -->
+<div id="app" hidden>
+  <aside class="sidebar">
+    <a class="brand" href="#/inicio"><span class="brand-mark"><img src="logo/simbolo.svg" alt=""></span><span>Linha a Linha</span></a>
+    <nav class="nav" id="nav"></nav>
+  </aside>
+  <main>
+    <header class="topbar">
+      <div class="busca">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="busca" type="search" placeholder="Buscar aulas" aria-label="Buscar aulas" autocomplete="off">
+        <div class="resultados" id="resultados"></div>
+      </div>
+      <div class="user">
+        <div class="avatar" id="avatar" aria-hidden="true"></div>
+        <span class="nome" id="nomeUsuario"></span>
+        <button class="btn ghost" id="sair">Sair</button>
+      </div>
+    </header>
+    <section id="view"></section>
+  </main>
+</div>
+
+<div class="toast" id="toast" role="status" hidden></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

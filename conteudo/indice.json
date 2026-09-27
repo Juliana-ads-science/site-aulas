@@ -1,0 +1,17 @@
+{
+  "trilhas": [
+    {
+      "id": "python",
+      "pasta": "python",
+      "publico": "adulto",
+      "titulo": "Python",
+      "descricao": "Da lógica de programação aos laços: algoritmos, decisões, repetições e listas, com exercícios em quatro níveis.",
+      "aulas": [
+        "aula-01",
+        "aula-02",
+        "aula-03",
+        "aula-04"
+      ]
+    }
+  ]
+}

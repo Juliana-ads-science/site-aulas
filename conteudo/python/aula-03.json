@@ -1,0 +1,995 @@
+{
+  "titulo": "Repetição com while",
+  "duracao": "3 h",
+  "etapas": [
+    {
+      "id": "conceito",
+      "tipo": "leitura",
+      "nome": "O laço while",
+      "blocos": [
+        "O `while` repete um bloco de código **enquanto** uma condição for verdadeira. Na prática, ele é um `if` que, ao terminar o bloco, volta para testar a condição de novo.",
+        {
+          "h": "Definição"
+        },
+        "Um **laço de repetição** (loop) é uma estrutura que executa o mesmo bloco várias vezes. Cada execução do bloco se chama **iteração**. O `while` (\"enquanto\", em inglês) decide se faz mais uma iteração olhando uma condição, igual à de um `if`.",
+        {
+          "h": "Para que usamos"
+        },
+        {
+          "lista": [
+            "**Evitar código duplicado:** escrever uma vez e repetir quantas vezes for preciso.",
+            "**Processar entradas do usuário** até ele decidir parar (menus, confirmações).",
+            "**Validar dados:** pedir de novo enquanto a resposta for inválida.",
+            "**Calcular com dados que chegam aos poucos:** somas, médias, contagens.",
+            "**Esperar um evento:** senha correta, sensor livre, fim de arquivo."
+          ]
+        },
+        {
+          "h": "Quando usar while (e quando não)"
+        },
+        "A pergunta-chave é: **eu sei quantas vezes vai repetir antes de começar?**",
+        {
+          "tabela": [
+            [
+              "Situação",
+              "Sei quantas vezes?",
+              "Melhor escolha"
+            ],
+            [
+              "Pedir a senha até acertar",
+              "Não",
+              "`while`"
+            ],
+            [
+              "Somar números até o usuário digitar 0",
+              "Não",
+              "`while`"
+            ],
+            [
+              "Repetir enquanto houver saldo",
+              "Não",
+              "`while`"
+            ],
+            [
+              "Mostrar a tabuada de 1 a 10",
+              "Sim, 10 vezes",
+              "`for` (Aula 4), mas `while` também funciona"
+            ],
+            [
+              "Percorrer cada letra de uma palavra",
+              "Sim, o tamanho da palavra",
+              "`for` (Aula 4)"
+            ]
+          ]
+        },
+        {
+          "h": "Sintaxe"
+        },
+        {
+          "codigo": "while condicao:\n    # bloco que se repete\n    # (precisa, em algum momento, tornar a condição falsa)\n# primeira linha fora do laço: roda quando a condição fica falsa"
+        },
+        {
+          "h": "Como funciona por dentro"
+        },
+        "O interpretador segue este ciclo:",
+        {
+          "passos": [
+            "Calcula a condição.",
+            "Se for falsa, pula o bloco inteiro e segue para a linha depois do laço.",
+            "Se for verdadeira, executa o bloco de cima a baixo.",
+            "Ao chegar ao fim do bloco, volta para o passo 1."
+          ]
+        },
+        {
+          "fluxograma": "flowchart TD\n    A([Início]) --> B[Inicialização: x ← 0]\n    B --> C{x < 5?}\n    C -- True --> D[/Mostrar x/]\n    D --> E[Atualização: x ← x + 1]\n    E --> C\n    C -- False --> F([Fim do laço])",
+          "legenda": "A seta que volta para o losango é o que diferencia um laço de uma condicional."
+        },
+        "Por isso o `while` pode rodar **zero vezes**: se a condição já nasce falsa, o bloco nunca é executado.",
+        {
+          "nota": "Na próxima etapa você acompanha esse exemplo (`x = 0`, `while x < 5`) passo a passo, como num teste de mesa."
+        },
+        {
+          "h": "Os três ingredientes de todo laço"
+        },
+        "Quase todo `while` bem-feito tem três partes. Uma forma de memorizar é a sigla **ICA**:",
+        {
+          "tabela": [
+            [
+              "Ingrediente",
+              "Onde fica",
+              "Exemplo",
+              "Se faltar..."
+            ],
+            [
+              "Inicialização",
+              "Antes do laço",
+              "`x = 0`",
+              "`NameError`, a variável não existe"
+            ],
+            [
+              "Condição",
+              "Na linha do `while`",
+              "`while x < 5:`",
+              "Não há laço"
+            ],
+            [
+              "Atualização",
+              "Dentro do bloco",
+              "`x += 1`",
+              "Loop infinito"
+            ]
+          ]
+        },
+        {
+          "h": "Símbolos e palavras-chave"
+        },
+        {
+          "tabela": [
+            [
+              "Símbolo",
+              "Função",
+              "Por que é assim"
+            ],
+            [
+              "`while`",
+              "Abre o laço",
+              "\"Enquanto\" em inglês: lê-se como frase"
+            ],
+            [
+              "`:` e indentação",
+              "Delimitam o bloco que se repete",
+              "Mesma regra do `if`"
+            ],
+            [
+              "`break`",
+              "Sai do laço na hora",
+              "\"Quebrar\" o ciclo"
+            ],
+            [
+              "`continue`",
+              "Pula o resto desta iteração e volta para a condição",
+              "\"Continuar\" para a próxima volta"
+            ],
+            [
+              "`True`",
+              "Condição sempre verdadeira",
+              "Usado em `while True:` com `break` dentro"
+            ],
+            [
+              "`+=`, `-=`, `*=`, `/=`, `//=`, `%=`",
+              "Atualizam uma variável usando o próprio valor",
+              "Atalhos herdados da linguagem C"
+            ]
+          ]
+        },
+        {
+          "h": "Atribuição composta"
+        },
+        "Como laços vivem de atualizar variáveis, os atalhos de atribuição aparecem o tempo todo:",
+        {
+          "tabela": [
+            [
+              "Atalho",
+              "Equivale a",
+              "Uso típico"
+            ],
+            [
+              "`x += 1`",
+              "`x = x + 1`",
+              "Contador"
+            ],
+            [
+              "`x -= 1`",
+              "`x = x - 1`",
+              "Contagem regressiva"
+            ],
+            [
+              "`soma += valor`",
+              "`soma = soma + valor`",
+              "Acumulador de soma"
+            ],
+            [
+              "`produto *= valor`",
+              "`produto = produto * valor`",
+              "Acumulador de multiplicação"
+            ],
+            [
+              "`n //= 10`",
+              "`n = n // 10`",
+              "Remover o último dígito"
+            ],
+            [
+              "`texto += \"a\"`",
+              "`texto = texto + \"a\"`",
+              "Acumular texto"
+            ]
+          ]
+        },
+        "Atenção: Python não tem `x++` nem `x--`, comuns em outras linguagens. Escrever `x++` gera `SyntaxError`."
+      ]
+    },
+    {
+      "id": "teste-de-mesa",
+      "tipo": "simulacao",
+      "nome": "Teste de mesa: while x < 5",
+      "intro": "Acompanhe o laço volta a volta. Repare em quantas vezes a condição é testada.",
+      "codigo": [
+        "x = 0",
+        "while x < 5:",
+        "    print(x)",
+        "    x += 1",
+        "print(\"fim\")"
+      ],
+      "passos": [
+        {
+          "linha": 1,
+          "explica": "**Inicialização:** `x` recebe 0.",
+          "memoria": {
+            "x": [
+              "0",
+              "int"
+            ]
+          }
+        },
+        {
+          "linha": 2,
+          "explica": "**Condição:** `0 < 5` é `True`. Começa a iteração 1."
+        },
+        {
+          "linha": 3,
+          "explica": "Mostra o valor atual de `x`.",
+          "tela": "0"
+        },
+        {
+          "linha": 4,
+          "explica": "**Atualização:** `x += 1`, então `x` passa a valer 1. Fim do bloco: o Python volta para a linha do `while`.",
+          "memoria": {
+            "x": [
+              "1",
+              "int"
+            ]
+          }
+        },
+        {
+          "linha": 2,
+          "explica": "`1 < 5` é `True`. Iteração 2."
+        },
+        {
+          "linha": 3,
+          "explica": "Mostra 1.",
+          "tela": "1"
+        },
+        {
+          "linha": 4,
+          "explica": "`x` vira 2 e o Python volta para a condição.",
+          "memoria": {
+            "x": [
+              "2",
+              "int"
+            ]
+          }
+        },
+        {
+          "linha": 2,
+          "explica": "`2 < 5` é `True`. Iterações 3, 4 e 5 seguem o mesmo ciclo: mostrar e somar 1."
+        },
+        {
+          "linha": 4,
+          "explica": "Depois das iterações 3, 4 e 5, a tela já mostrou 2, 3 e 4, e `x` chegou a 5.",
+          "tela": "2\n3\n4",
+          "memoria": {
+            "x": [
+              "5",
+              "int"
+            ]
+          }
+        },
+        {
+          "linha": 2,
+          "explica": "`5 < 5` é `False`: o laço termina. A condição foi testada **6 vezes** para 5 iterações. A última verificação é a que encerra."
+        },
+        {
+          "linha": 5,
+          "explica": "Primeira linha fora do laço: roda uma única vez, quando a condição fica falsa.",
+          "tela": "fim"
+        }
+      ]
+    },
+    {
+      "id": "padroes",
+      "tipo": "leitura",
+      "nome": "Padrões com while",
+      "blocos": [
+        "A maioria dos programas com `while` é uma combinação de poucos padrões. Reconhecer o padrão certo é metade da solução.",
+        {
+          "h": "Contador e acumulador: a diferença"
+        },
+        {
+          "tabela": [
+            [
+              "",
+              "Contador",
+              "Acumulador"
+            ],
+            [
+              "Responde",
+              "\"Quantas vezes?\"",
+              "\"Quanto no total?\""
+            ],
+            [
+              "Atualização",
+              "Sempre o mesmo passo (`+= 1`)",
+              "O valor da vez (`+= numero`)"
+            ],
+            [
+              "Valor inicial",
+              "0 (ou 1)",
+              "O elemento neutro da operação"
+            ]
+          ]
+        },
+        "O **elemento neutro** é o valor que não altera o resultado:",
+        {
+          "tabela": [
+            [
+              "Operação acumulada",
+              "Começa em",
+              "Por quê"
+            ],
+            [
+              "Soma",
+              "`0`",
+              "x + 0 = x"
+            ],
+            [
+              "Multiplicação",
+              "`1`",
+              "x × 1 = x. Começar em 0 zera tudo"
+            ],
+            [
+              "Texto",
+              "`\"\"`",
+              "`\"abc\" + \"\"` = `\"abc\"`"
+            ]
+          ]
+        },
+        {
+          "h": "Padrão sentinela"
+        },
+        "Um valor especial (a **sentinela**) avisa que os dados acabaram. Na próxima etapa você explora linha a linha um programa que soma números até o usuário digitar 0. Repare na estrutura: lê antes do laço e lê de novo no fim do bloco.",
+        {
+          "h": "Maior e menor de uma série"
+        },
+        "O truque é inicializar com o **primeiro valor lido**, não com 0. Se todos os números forem negativos, um \"maior\" iniciado em 0 daria a resposta errada.",
+        {
+          "codigo": "valor = float(input(\"Valor: \"))\nmaior = valor\nmenor = valor"
+        },
+        {
+          "h": "Validação de entrada"
+        },
+        "Repetir a pergunta enquanto a resposta for inválida:",
+        {
+          "codigo": "idade = int(input(\"Idade: \"))\nwhile idade < 0 or idade > 130:\n    print(\"Idade inválida, tente de novo.\")\n    idade = int(input(\"Idade: \"))"
+        },
+        {
+          "h": "while True com break"
+        },
+        "Quando a decisão de sair fica no meio do bloco, é comum usar um laço \"eterno\" com saída explícita:",
+        {
+          "codigo": "while True:\n    comando = input(\"Comando (sair para encerrar): \").strip().lower()\n    if comando == \"sair\":\n        break\n    print(f\"Executando: {comando}\")"
+        },
+        "O `.strip().lower()` garante que \"Sair\" com maiúscula ou com espaços sobrando também encerre o programa.",
+        "Outras linguagens têm o laço `do...while`, que roda o bloco pelo menos uma vez antes de testar. O Python não tem, e o `while True` + `break` é a forma de obter o mesmo efeito.",
+        {
+          "h": "continue na prática"
+        },
+        "Aqui, o `continue` ignora números negativos sem encerrar o laço:",
+        {
+          "codigo": "soma = 0\ncontador = 0\nwhile contador < 5:\n    numero = float(input(f\"Número {contador + 1}: \"))\n    if numero < 0:\n        print(\"Negativo ignorado.\")\n        continue          # volta para a condição sem somar nem contar\n    soma += numero\n    contador += 1\nprint(f\"Soma dos 5 números válidos: {soma}\")"
+        },
+        "Cuidado: se a atualização do contador ficar depois do `continue`, ela é pulada. Aqui isso é proposital (só conta os válidos), mas em outros casos gera loop infinito.",
+        {
+          "tabela": [
+            [
+              "Comando",
+              "O que faz",
+              "Analogia"
+            ],
+            [
+              "`break`",
+              "Sai do laço imediatamente",
+              "Sair da fila"
+            ],
+            [
+              "`continue`",
+              "Pula o resto desta volta e vai para a próxima",
+              "Deixar alguém passar na sua frente e continuar na fila"
+            ]
+          ]
+        },
+        {
+          "h": "Curiosidade: while com else"
+        },
+        "O Python permite um `else` depois do `while`. Ele roda quando o laço termina porque a condição ficou falsa, mas **não** roda se o laço foi interrompido por `break`:",
+        {
+          "codigo": "tentativas = 0\nwhile tentativas < 3:\n    senha = input(\"Senha: \")\n    if senha == \"1234\":\n        print(\"Acesso liberado\")\n        break\n    tentativas += 1\nelse:\n    print(\"Conta bloqueada\")    # só se as 3 tentativas acabarem"
+        },
+        {
+          "h": "Loops infinitos: causas e como sair"
+        },
+        {
+          "tabela": [
+            [
+              "Causa",
+              "Exemplo",
+              "Correção"
+            ],
+            [
+              "Esquecer a atualização",
+              "`while x < 5: print(x)`",
+              "Incluir `x += 1`"
+            ],
+            [
+              "Atualizar no sentido errado",
+              "`while x < 5: x -= 1`",
+              "Conferir se a variável se aproxima do limite"
+            ],
+            [
+              "Condição sempre verdadeira",
+              "`while x > 0 or True:`",
+              "Revisar a lógica"
+            ],
+            [
+              "Comparar decimais com `!=`",
+              "ver abaixo",
+              "Usar `<` ou `>`"
+            ],
+            [
+              "`continue` antes da atualização",
+              "ver `continue` na prática",
+              "Atualizar antes do `continue`"
+            ]
+          ]
+        },
+        "O caso dos decimais:",
+        {
+          "codigo": "x = 0\nwhile x != 1:\n    x += 0.1    # x passa por 0.9999999999999999 e nunca é exatamente 1"
+        },
+        "Como visto na Aula 1, 0.1 não tem representação exata em binário. A correção é `while x < 1:`.",
+        {
+          "nota": "Se o programa travar, aperte **Ctrl + C** no terminal. O Python interrompe a execução com `KeyboardInterrupt`."
+        }
+      ]
+    },
+    {
+      "id": "codigo-sentinela",
+      "tipo": "codigo",
+      "nome": "Código comentado: sentinela",
+      "linhas": [
+        {
+          "linha": "soma = 0",
+          "explica": "**Acumulador** de soma. Começa em 0, o elemento neutro da soma."
+        },
+        {
+          "linha": "qtd = 0",
+          "explica": "**Contador**: quantos números válidos foram digitados."
+        },
+        {
+          "linha": "numero = float(input(\"Número (0 para sair): \"))",
+          "explica": "**Leitura inicial**, antes do laço. Sem ela, a condição da linha seguinte não teria o que testar (`NameError`)."
+        },
+        {
+          "linha": "while numero != 0:",
+          "explica": "O 0 é a **sentinela**: enquanto o número for diferente de 0, o laço continua. Se o usuário digitar 0 logo de cara, o bloco roda zero vezes."
+        },
+        {
+          "linha": "    soma += numero",
+          "explica": "Acumula o valor da vez: `soma = soma + numero`."
+        },
+        {
+          "linha": "    qtd += 1",
+          "explica": "Conta mais um número. O contador sempre anda de 1 em 1."
+        },
+        {
+          "linha": "    numero = float(input(\"Número (0 para sair): \"))",
+          "explica": "**Nova leitura** no fim do bloco. É a atualização do laço: sem ela, `numero` nunca mudaria e o laço seria infinito."
+        },
+        {
+          "linha": "",
+          "explica": "Linha em branco: o laço terminou (a próxima linha não está indentada)."
+        },
+        {
+          "linha": "if qtd > 0:",
+          "explica": "Proteção: se nenhum número foi digitado, `soma / qtd` seria uma divisão por zero (`ZeroDivisionError`)."
+        },
+        {
+          "linha": "    print(f\"Média: {soma / qtd:.2f}\")",
+          "explica": "Mostra a média com duas casas decimais."
+        },
+        {
+          "linha": "else:",
+          "explica": "Caminho para quando o usuário digitou 0 logo de cara."
+        },
+        {
+          "linha": "    print(\"Nenhum número informado.\")",
+          "explica": "Mensagem clara em vez de um erro."
+        }
+      ]
+    },
+    {
+      "id": "quiz-1",
+      "tipo": "quiz",
+      "nome": "Quiz 1: estrutura do while",
+      "perguntas": [
+        {
+          "pergunta": "Quantas vezes \"Oi\" é impresso?",
+          "codigo": "i = 0\nwhile i < 3:\n    print(\"Oi\")\n    i += 1",
+          "opcoes": [
+            "2",
+            "3",
+            "4",
+            "Infinitas"
+          ],
+          "correta": 1,
+          "dica": "Faça o teste de mesa com `i` valendo 0, 1, 2...",
+          "acerto": "Isso mesmo!",
+          "erro": "Não foi dessa vez.",
+          "explicacao": "Roda com `i` = 0, 1 e 2. Com `i` = 3, a condição fica falsa."
+        },
+        {
+          "pergunta": "Quando um `while` para de repetir?",
+          "opcoes": [
+            "Depois de 10 voltas",
+            "Quando a condição fica falsa ou um `break` é executado",
+            "Quando o bloco dá erro de sintaxe",
+            "Nunca"
+          ],
+          "correta": 1,
+          "dica": "O nome do laço em português é \"enquanto\".",
+          "acerto": "Exato!",
+          "erro": "Quase!",
+          "explicacao": "São as duas formas normais de sair do laço."
+        },
+        {
+          "pergunta": "`x += 2` é equivalente a:",
+          "opcoes": [
+            "`x = 2`",
+            "`x == x + 2`",
+            "`x = x + 2`",
+            "`x = x * 2`"
+          ],
+          "correta": 2,
+          "dica": "O atalho usa o próprio valor de x.",
+          "acerto": "Acertou!",
+          "erro": "Ainda não.",
+          "explicacao": "Atribuição composta: soma 2 ao valor atual."
+        },
+        {
+          "pergunta": "O que o código imprime?",
+          "codigo": "x = 10\nwhile x < 5:\n    print(x)\n    x += 1",
+          "opcoes": [
+            "10",
+            "5 a 10",
+            "Nada",
+            "Loop infinito"
+          ],
+          "correta": 2,
+          "dica": "A condição é testada antes da primeira execução.",
+          "acerto": "Perfeito!",
+          "erro": "Olhe de novo.",
+          "explicacao": "`10 < 5` é falso logo no início, então o bloco roda zero vezes."
+        },
+        {
+          "pergunta": "Qual comando encerra o laço imediatamente?",
+          "opcoes": [
+            "`continue`",
+            "`break`",
+            "`else`",
+            "`stop`"
+          ],
+          "correta": 1,
+          "dica": "Em inglês, \"quebrar\".",
+          "acerto": "Mandou bem!",
+          "erro": "Não é essa.",
+          "explicacao": "`break` sai do laço; `continue` só pula para a próxima volta; `stop` não existe em Python."
+        }
+      ]
+    },
+    {
+      "id": "quiz-2",
+      "tipo": "quiz",
+      "nome": "Quiz 2: prever a saída",
+      "perguntas": [
+        {
+          "pergunta": "O que o código imprime?",
+          "codigo": "n = 10\nwhile n > 0:\n    n -= 3\nprint(n)",
+          "opcoes": [
+            "0",
+            "1",
+            "-2",
+            "-3"
+          ],
+          "correta": 2,
+          "dica": "O `print` está fora do laço. Anote `n` a cada volta: 10, 7...",
+          "acerto": "Isso mesmo!",
+          "erro": "Não foi dessa vez.",
+          "explicacao": "`n` passa por 10, 7, 4, 1 e -2. Com 1, `1 > 0` ainda é verdadeiro, então vira -2."
+        },
+        {
+          "pergunta": "O que o código imprime?",
+          "codigo": "soma = 0\ni = 1\nwhile i <= 4:\n    soma += i\n    i += 1\nprint(soma)",
+          "opcoes": [
+            "4",
+            "6",
+            "10",
+            "15"
+          ],
+          "correta": 2,
+          "dica": "O `<=` inclui o 4.",
+          "acerto": "Exato!",
+          "erro": "Quase!",
+          "explicacao": "1 + 2 + 3 + 4 = 10."
+        },
+        {
+          "pergunta": "O que o código imprime?",
+          "codigo": "i = 0\nwhile i < 5:\n    i += 1\n    if i == 3:\n        continue\n    print(i, end=\" \")",
+          "opcoes": [
+            "`1 2 3 4 5`",
+            "`1 2 4 5`",
+            "`0 1 2 4`",
+            "`1 2`"
+          ],
+          "correta": 1,
+          "dica": "O `continue` pula só o `print` daquela volta.",
+          "acerto": "Acertou!",
+          "erro": "Ainda não.",
+          "explicacao": "Quando `i` vale 3, o `continue` pula o `print`. O laço segue normalmente depois."
+        },
+        {
+          "pergunta": "Alguém quer multiplicar os números de 1 a 5, mas o resultado sai sempre 0. Por quê?",
+          "codigo": "produto = 0\ni = 1\nwhile i <= 5:\n    produto *= i\n    i += 1",
+          "opcoes": [
+            "Faltou `break`",
+            "O acumulador começa em 0",
+            "A condição deveria ser `i < 5`",
+            "`*=` não existe"
+          ],
+          "correta": 1,
+          "dica": "Qual é o elemento neutro da multiplicação?",
+          "acerto": "Perfeito!",
+          "erro": "Olhe de novo.",
+          "explicacao": "Qualquer número vezes 0 é 0. O produto precisa começar em 1."
+        },
+        {
+          "pergunta": "O que o código imprime?",
+          "codigo": "i = 1\nwhile i < 10:\n    i *= 2\nprint(i)",
+          "opcoes": [
+            "8",
+            "10",
+            "16",
+            "32"
+          ],
+          "correta": 2,
+          "dica": "8 é menor que 10, então ainda haverá mais uma volta.",
+          "acerto": "Mandou bem!",
+          "erro": "Não é essa.",
+          "explicacao": "`i` vale 1, 2, 4, 8 e 16. Com 8 a condição ainda é verdadeira, e o 16 é calculado."
+        }
+      ]
+    },
+    {
+      "id": "quiz-3",
+      "tipo": "quiz",
+      "nome": "Quiz 3: a lógica por trás",
+      "perguntas": [
+        {
+          "pergunta": "O que acontece com este código?",
+          "codigo": "x = 0\nwhile x != 1:\n    x += 0.1\nprint(\"Fim\")",
+          "opcoes": [
+            "Imprime Fim após 10 voltas",
+            "Imprime Fim após 11 voltas",
+            "Loop infinito",
+            "Erro de tipo"
+          ],
+          "correta": 2,
+          "dica": "Lembre como o computador guarda 0.1.",
+          "acerto": "Isso mesmo!",
+          "erro": "Não foi dessa vez.",
+          "explicacao": "`x` chega a 0.9999999999999999 e depois passa de 1 sem nunca ser exatamente 1."
+        },
+        {
+          "pergunta": "O que o código imprime?",
+          "codigo": "i = 0\nwhile i < 5:\n    if i == 2:\n        break\n    i += 1\nelse:\n    print(\"completo\")\nprint(i)",
+          "opcoes": [
+            "completo e 2",
+            "Só 2",
+            "completo e 5",
+            "Só 5"
+          ],
+          "correta": 1,
+          "dica": "O `else` de um laço não roda em um caso específico. Qual?",
+          "acerto": "Exato!",
+          "erro": "Quase!",
+          "explicacao": "O `break` interrompe o laço com `i` = 2, e o `else` só roda se o laço terminar pela condição."
+        },
+        {
+          "pergunta": "O que o código imprime?",
+          "codigo": "n = 100\npassos = 0\nwhile n > 1:\n    n //= 2\n    passos += 1\nprint(passos)",
+          "opcoes": [
+            "5",
+            "6",
+            "7",
+            "50"
+          ],
+          "correta": 1,
+          "dica": "Anote a sequência: 100, 50, 25...",
+          "acerto": "Acertou!",
+          "erro": "Ainda não.",
+          "explicacao": "100 → 50 → 25 → 12 → 6 → 3 → 1: seis divisões."
+        },
+        {
+          "pergunta": "Quantas vezes o bloco de `while \"\":` é executado?",
+          "opcoes": [
+            "Nenhuma",
+            "Uma",
+            "Infinitas",
+            "Dá erro"
+          ],
+          "correta": 0,
+          "dica": "Qual é o valor de verdade de uma string vazia?",
+          "acerto": "Perfeito!",
+          "erro": "Olhe de novo.",
+          "explicacao": "String vazia é falsa, então o bloco nunca é executado."
+        },
+        {
+          "pergunta": "Num programa de senha, o usuário digita 1234 na primeira tentativa. O que aparece?",
+          "codigo": "tentativas = 0\nsenha = \"\"\nwhile senha != \"1234\" and tentativas < 3:\n    senha = input(\"Digite a senha: \")\n    tentativas += 1\nprint(\"Senha incorreta ou tentativas excedidas\")",
+          "opcoes": [
+            "Acesso liberado",
+            "Nada",
+            "Senha incorreta ou tentativas excedidas",
+            "O laço pede a senha mais duas vezes"
+          ],
+          "correta": 2,
+          "dica": "O `print` depende de alguma condição?",
+          "acerto": "Mandou bem!",
+          "erro": "Não é essa.",
+          "explicacao": "O laço termina corretamente, mas o `print` está fora de qualquer `if` e aparece sempre. A mensagem final precisa de um `if` depois do laço para depender do resultado."
+        }
+      ]
+    },
+    {
+      "id": "atividades",
+      "tipo": "atividades",
+      "nome": "Atividades práticas",
+      "intro": [
+        "São 10 atividades em quatro níveis, usando só `while` (o `for` fica para a Aula 4). Para cada uma, identifique os três ingredientes do laço (inicialização, condição, atualização) antes de programar.",
+        "Escreva ou cole a sua tentativa no campo de cada atividade para liberar a solução. Outras soluções também valem, desde que passem nos testes do enunciado."
+      ],
+      "itens": [
+        {
+          "n": 1,
+          "nivel": "Básico",
+          "titulo": "Contagem regressiva",
+          "enunciado": [
+            "Leia um número N e mostre a contagem de N até 0, uma linha por número. No fim, mostre \"Decolar!\"."
+          ],
+          "testes": [
+            "N = 3 → 3, 2, 1, 0, Decolar!"
+          ],
+          "dica": "O contador começa em N e diminui. Qual operador de atribuição composta usar?",
+          "solucao": [
+            {
+              "codigo": "n = int(input(\"Começar a contagem em: \"))\n\nwhile n >= 0:\n    print(n)\n    n -= 1\n\nprint(\"Decolar!\")"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "nivel": "Básico",
+          "titulo": "Tabuada",
+          "enunciado": [
+            "Leia um número e mostre a tabuada dele de 1 a 10, no formato `7 x 1 = 7`."
+          ],
+          "dica": "O número lido não muda. O que muda a cada volta é o multiplicador.",
+          "solucao": [
+            {
+              "codigo": "numero = int(input(\"Tabuada de: \"))\n\ni = 1\nwhile i <= 10:\n    print(f\"{numero} x {i} = {numero * i}\")\n    i += 1"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "nivel": "Básico",
+          "titulo": "Senha com 3 tentativas",
+          "enunciado": [
+            "A senha correta é `1234`. O usuário tem até 3 tentativas. A cada erro, mostre quantas restam. No fim, mostre \"Acesso liberado\" ou \"Conta bloqueada\".",
+            "A mensagem final precisa depender do resultado."
+          ],
+          "dica": "A condição do laço tem duas partes, unidas por `and`. Depois do laço, um `if` decide qual mensagem mostrar.",
+          "solucao": [
+            {
+              "codigo": "SENHA = \"1234\"\nMAX_TENTATIVAS = 3\n\ntentativas = 0\nsenha = \"\"\n\nwhile senha != SENHA and tentativas < MAX_TENTATIVAS:\n    senha = input(\"Senha: \")\n    tentativas += 1\n    if senha != SENHA and tentativas < MAX_TENTATIVAS:\n        print(f\"Senha incorreta. Restam {MAX_TENTATIVAS - tentativas} tentativa(s).\")\n\nif senha == SENHA:\n    print(\"Acesso liberado\")\nelse:\n    print(\"Conta bloqueada\")"
+            },
+            "Solução alternativa válida: `while ... else`, mostrado na etapa de padrões."
+          ]
+        },
+        {
+          "n": 4,
+          "nivel": "Intermediário",
+          "titulo": "Soma e média com sentinela",
+          "enunciado": [
+            "Leia números até o usuário digitar 0. Mostre quantos números foram digitados, a soma e a média.",
+            "O programa não pode quebrar se o primeiro número digitado for 0."
+          ],
+          "dica": "Você vai precisar de um contador e de um acumulador ao mesmo tempo.",
+          "solucao": [
+            {
+              "codigo": "soma = 0\nqtd = 0\n\nnumero = float(input(\"Número (0 para sair): \").replace(\",\", \".\"))\nwhile numero != 0:\n    soma += numero\n    qtd += 1\n    numero = float(input(\"Número (0 para sair): \").replace(\",\", \".\"))\n\nif qtd > 0:\n    print(f\"Quantidade: {qtd} | Soma: {soma} | Média: {soma / qtd:.2f}\")\nelse:\n    print(\"Nenhum número foi digitado.\")"
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "nivel": "Intermediário",
+          "titulo": "Adivinhe o número",
+          "enunciado": [
+            "O número secreto é 42. O usuário tenta adivinhar; a cada erro, o programa diz \"maior\" ou \"menor\". Ao acertar, mostre em quantas tentativas.",
+            "Extra opcional: sortear o número com `import random` e `secreto = random.randint(1, 100)`."
+          ],
+          "dica": "O laço continua enquanto o palpite for diferente do secreto. Lembre de inicializar o palpite com um valor que não seja 42.",
+          "solucao": [
+            {
+              "codigo": "secreto = 42\n# Versão com sorteio:\n# import random\n# secreto = random.randint(1, 100)\n\ntentativas = 0\npalpite = 0\n\nwhile palpite != secreto:\n    palpite = int(input(\"Seu palpite: \"))\n    tentativas += 1\n    if palpite < secreto:\n        print(\"O número secreto é maior.\")\n    elif palpite > secreto:\n        print(\"O número secreto é menor.\")\n\nprint(f\"Acertou em {tentativas} tentativa(s)!\")"
+            }
+          ]
+        },
+        {
+          "n": 6,
+          "nivel": "Intermediário",
+          "titulo": "Maior e menor",
+          "enunciado": [
+            "Leia valores até o usuário digitar -1. Mostre o maior e o menor valor digitado (sem contar o -1)."
+          ],
+          "testes": [
+            "Com valores só negativos (por exemplo, -5, -2, -9, -1), o maior deve ser -2."
+          ],
+          "dica": "Reveja, na etapa de padrões, por que o maior e o menor não devem começar em 0.",
+          "solucao": [
+            {
+              "codigo": "valor = float(input(\"Valor (-1 para sair): \"))\n\nif valor == -1:\n    print(\"Nenhum valor informado.\")\nelse:\n    maior = valor\n    menor = valor\n    while valor != -1:\n        if valor > maior:\n            maior = valor\n        if valor < menor:\n            menor = valor\n        valor = float(input(\"Valor (-1 para sair): \"))\n    print(f\"Maior: {maior} | Menor: {menor}\")"
+            },
+            "Teste com -5, -2, -9, -1: maior -2, menor -9."
+          ]
+        },
+        {
+          "n": 7,
+          "nivel": "Avançado",
+          "titulo": "Dígitos de um número",
+          "enunciado": [
+            "Leia um inteiro positivo e mostre: quantos dígitos ele tem, a soma dos dígitos e o número invertido."
+          ],
+          "testes": [
+            "1234 → 4 dígitos, soma 10, invertido 4321."
+          ],
+          "dica": "`n % 10` dá o último dígito e `n //= 10` o remove. Para montar o invertido: `invertido = invertido * 10 + digito`.",
+          "solucao": [
+            {
+              "codigo": "n = int(input(\"Inteiro positivo: \"))\nwhile n <= 0:\n    n = int(input(\"Digite um inteiro positivo: \"))\n\noriginal = n\nqtd_digitos = 0\nsoma = 0\ninvertido = 0\n\nwhile n > 0:\n    digito = n % 10\n    qtd_digitos += 1\n    soma += digito\n    invertido = invertido * 10 + digito\n    n //= 10\n\nprint(f\"{original}: {qtd_digitos} dígitos, soma {soma}, invertido {invertido}\")"
+            },
+            "Teste de mesa com 1234:",
+            {
+              "tabela": [
+                [
+                  "Volta",
+                  "n no início",
+                  "digito",
+                  "qtd_digitos",
+                  "soma",
+                  "invertido",
+                  "n no fim"
+                ],
+                [
+                  "1",
+                  "1234",
+                  "4",
+                  "1",
+                  "4",
+                  "4",
+                  "123"
+                ],
+                [
+                  "2",
+                  "123",
+                  "3",
+                  "2",
+                  "7",
+                  "43",
+                  "12"
+                ],
+                [
+                  "3",
+                  "12",
+                  "2",
+                  "3",
+                  "9",
+                  "432",
+                  "1"
+                ],
+                [
+                  "4",
+                  "1",
+                  "1",
+                  "4",
+                  "10",
+                  "4321",
+                  "0"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "n": 8,
+          "nivel": "Avançado",
+          "titulo": "Caixa eletrônico",
+          "enunciado": [
+            "Saldo inicial de R$ 1.000. Mostre um menu com: 1 Ver saldo, 2 Depositar, 3 Sacar, 4 Sair. O menu se repete até o usuário escolher 4.",
+            {
+              "lista": [
+                "Não aceite depósitos ou saques negativos ou zerados.",
+                "Não permita sacar mais do que o saldo.",
+                "Opções inválidas devem mostrar uma mensagem e voltar ao menu."
+              ]
+            }
+          ],
+          "dica": "`while True` com `break` na opção 4. Cada opção é um `elif`.",
+          "solucao": [
+            {
+              "codigo": "saldo = 1000.0\n\nwhile True:\n    print(\"\\n1 - Ver saldo\\n2 - Depositar\\n3 - Sacar\\n4 - Sair\")\n    opcao = input(\"Opção: \").strip()\n\n    if opcao == \"1\":\n        print(f\"Saldo: R$ {saldo:.2f}\")\n    elif opcao == \"2\":\n        valor = float(input(\"Valor do depósito: R$ \").replace(\",\", \".\"))\n        if valor <= 0:\n            print(\"Valor inválido.\")\n        else:\n            saldo += valor\n            print(f\"Depósito feito. Saldo: R$ {saldo:.2f}\")\n    elif opcao == \"3\":\n        valor = float(input(\"Valor do saque: R$ \").replace(\",\", \".\"))\n        if valor <= 0:\n            print(\"Valor inválido.\")\n        elif valor > saldo:\n            print(\"Saldo insuficiente.\")\n        else:\n            saldo -= valor\n            print(f\"Saque feito. Saldo: R$ {saldo:.2f}\")\n    elif opcao == \"4\":\n        print(\"Até logo!\")\n        break\n    else:\n        print(\"Opção inválida.\")"
+            }
+          ]
+        },
+        {
+          "n": 9,
+          "nivel": "Avançado",
+          "titulo": "Número primo",
+          "enunciado": [
+            "Leia um inteiro e diga se ele é primo."
+          ],
+          "testes": [
+            "1 (não), 2 (sim), 9 (não), 97 (sim)."
+          ],
+          "dica": "Teste divisores a partir de 2. Basta testar enquanto `divisor * divisor <= n`: se n tivesse um divisor maior que a raiz, teria também um menor, que já teria sido encontrado. Ao achar um divisor, use `break`.",
+          "solucao": [
+            {
+              "codigo": "n = int(input(\"Número: \"))\n\nif n < 2:\n    primo = False\nelse:\n    primo = True\n    divisor = 2\n    while divisor * divisor <= n:\n        if n % divisor == 0:\n            primo = False\n            break\n        divisor += 1\n\nif primo:\n    print(f\"{n} é primo\")\nelse:\n    print(f\"{n} não é primo\")"
+            }
+          ]
+        },
+        {
+          "n": 10,
+          "nivel": "Desafio",
+          "titulo": "Conjectura de Collatz",
+          "enunciado": [
+            "Leia um inteiro positivo n e aplique a regra até chegar a 1: se n for par, divida por 2; se for ímpar, multiplique por 3 e some 1. Mostre a sequência completa, a quantidade de passos e o maior valor atingido.",
+            "Valide a entrada: repita a pergunta enquanto o número não for positivo.",
+            {
+              "nota": "Curiosidade: ninguém conseguiu provar até hoje que essa regra chega a 1 para qualquer número, embora computadores tenham testado números gigantescos. Lembra da característica de **finitude** de um algoritmo, vista na Aula 1? Aqui, não sabemos garantir que o laço termina."
+            }
+          ],
+          "testes": [
+            "6 → 6 → 3 → 10 → 5 → 16 → 8 → 4 → 2 → 1 (8 passos, maior valor 16).",
+            "27 → 111 passos, maior valor 9232."
+          ],
+          "dica": "Você vai precisar de um contador (passos), de um acumulador de texto (a sequência) e de uma variável de maior valor.",
+          "solucao": [
+            {
+              "codigo": "n = int(input(\"Inteiro positivo: \"))\nwhile n < 1:\n    n = int(input(\"Digite um inteiro positivo: \"))\n\npassos = 0\nmaior = n\nsequencia = str(n)\n\nwhile n != 1:\n    if n % 2 == 0:\n        n = n // 2\n    else:\n        n = 3 * n + 1\n    passos += 1\n    if n > maior:\n        maior = n\n    sequencia += f\" → {n}\"\n\nprint(sequencia)\nprint(f\"Passos: {passos} | Maior valor: {maior}\")"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
