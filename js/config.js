@@ -8,5 +8,10 @@ window.CONFIG = {
 
   /* Contas kids entram só com o apelido; o site completa com este domínio.
      Precisa ser igual ao usado em privado.criar_conta_kids (arquivo SQL). */
-  dominioKids: "kids.linhaalinha.com.br"
+  dominioKids: "kids.linhaalinha.com.br",
+
+  /* CAPTCHA (Cloudflare Turnstile) no login, no cadastro e no "Esqueci minha senha".
+     A Site Key é pública. A Secret Key fica SÓ no painel do Supabase
+     (Authentication → Attack Protection), nunca aqui. */
+  turnstileSiteKey: "COLE_AQUI_A_SITE_KEY"
 };

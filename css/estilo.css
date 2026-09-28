@@ -244,6 +244,11 @@ body.kids .aula-num.ok{background:var(--sun);color:var(--navy)}
 .linha-links{display:flex;justify-content:space-between;gap:12px;margin-top:14px;font-size:.92rem}
 .ajuda-campo{font-size:.85rem;color:var(--muted);margin:6px 0 0}
 
+/* ---------- CAPTCHA (Turnstile, quase sempre invisível) ---------- */
+.captcha{display:flex;justify-content:center}
+.captcha:not(:empty){margin-top:12px}
+.captcha-status{margin:8px 0 0;font-size:.85rem;color:var(--muted);text-align:center}
+
 /* ---------- quiz: dica ---------- */
 .q-dica{margin:-4px 0 16px}
 .q-dica .caixa{background:var(--sun-2);border-left:4px solid var(--sun);border-radius:8px;padding:12px 14px;margin-top:8px}

@@ -243,6 +243,9 @@ function mostrarPainel(qual) {
   $("#abaEntrar").setAttribute("aria-selected", qual === "entrar");
   $("#abaCriar").setAttribute("aria-selected", qual === "criar");
   $$(".login-form .aviso").forEach(a => { a.textContent = ""; a.className = "aviso"; });
+  // o widget é criado quando o formulário aparece pela primeira vez (num formulário escondido ele não mede direito)
+  const ERROS = { entrar: "#erroLogin", criar: "#erroCadastro", recuperar: "#erroRecuperar" };
+  if (ERROS[qual]) prepararCaptcha($(FORMS[qual]), ERROS[qual]);
 }
 function aviso(sel, msg, tipo = "err") { const a = $(sel); a.textContent = msg; a.className = `aviso ${tipo}`; }
 
@@ -282,10 +285,110 @@ $("#irRecuperar").onclick = () => {
 };
 $$("[data-voltar]").forEach(b => (b.onclick = () => mostrarPainel("entrar")));
 
+/* ============================================================
+   CAPTCHA (Cloudflare Turnstile)
+   Um widget por formulário (entrar, criar conta, recuperar senha), quase sempre invisível.
+   O Supabase confere o token no servidor com a Secret Key, que fica só no painel dele.
+   Cada token vale uma vez: depois de toda chamada ao Supabase, o widget é reiniciado.
+   ============================================================ */
+const CAPTCHA_ATIVO = !!CONFIG.turnstileSiteKey && !/^COLE_AQUI/.test(CONFIG.turnstileSiteKey);
+const MSG_ROBO = "Não conseguimos confirmar que você não é um robô. Tente de novo.";
+const captchas = new Map();   // form -> { id, token, erroSel }
+if (!CAPTCHA_ATIVO) console.warn("CAPTCHA desligado: preencha turnstileSiteKey em js/config.js.");
+
+function esperarTurnstile(limiteMs = 15000) {
+  return new Promise((ok, falha) => {
+    const inicio = Date.now();
+    (function tenta() {
+      if (window.turnstile) return ok(window.turnstile);
+      if (Date.now() - inicio > limiteMs) return falha(new Error("Turnstile não carregou"));
+      setTimeout(tenta, 150);
+    })();
+  });
+}
+
+function estadoCaptcha(form, texto) {
+  const st = $(".captcha-status", form);
+  if (!st) return;   // "Nova senha" não tem CAPTCHA
+  st.textContent = texto || "";
+  st.hidden = !texto;
+}
+
+/* O botão só libera quando não há envio em andamento e (com CAPTCHA) já existe um token. */
+function atualizarBotao(form) {
+  const b = $("button[type=submit]", form), c = captchas.get(form);
+  const esperandoCaptcha = CAPTCHA_ATIVO && form.id !== "formNovaSenha" && !(c && c.token);
+  b.disabled = !!form.dataset.ocupado || esperandoCaptcha;
+  if (!form.dataset.ocupado) estadoCaptcha(form,
+    !esperandoCaptcha || (c && c.falhou) ? ""
+    : c && c.expirou ? "A verificação de segurança expirou e está sendo renovada. Aguarde um instante."
+    : "Verificando a segurança…");
+}
+
+async function prepararCaptcha(form, erroSel) {
+  if (!CAPTCHA_ATIVO || captchas.has(form)) return;
+  const c = { id: null, token: null, falhou: false, expirou: false, erroSel };
+  captchas.set(form, c);
+  atualizarBotao(form);
+  try {
+    const ts = await esperarTurnstile();
+    c.id = ts.render($("[data-captcha]", form), {
+      sitekey: CONFIG.turnstileSiteKey,
+      language: "pt-br",
+      appearance: "interaction-only",
+      callback: token => {
+        c.token = token; c.falhou = false; c.expirou = false;
+        if ($(erroSel).textContent === MSG_ROBO) aviso(erroSel, "", "");   // a nova tentativa deu certo
+        atualizarBotao(form);
+      },
+      "expired-callback": () => {   // o token expirou antes do envio; o Turnstile renova sozinho
+        c.token = null; c.expirou = true; atualizarBotao(form);
+      },
+      "error-callback": () => {
+        c.token = null; c.falhou = true; atualizarBotao(form);
+        aviso(erroSel, MSG_ROBO);
+      },
+      "timeout-callback": () => {
+        c.token = null; c.falhou = true; atualizarBotao(form);
+        aviso(erroSel, MSG_ROBO);
+        ts.reset(c.id);
+      }
+    });
+  } catch (e) {
+    console.error(e);
+    c.falhou = true; atualizarBotao(form);
+    aviso(erroSel, "Não conseguimos carregar a verificação de segurança. Confira sua internet (ou desative bloqueadores de anúncio) e recarregue a página.");
+  }
+}
+
+/* Token atual para mandar ao Supabase (undefined com o CAPTCHA desligado). */
+const tokenCaptcha = form => (CAPTCHA_ATIVO ? (captchas.get(form) || {}).token : undefined);
+
+/* Descarta o token usado e pede um novo. */
+function renovarCaptcha(form) {
+  const c = captchas.get(form);
+  if (!c || c.id == null || !window.turnstile) return;
+  c.token = null; c.falhou = false; c.expirou = false;
+  window.turnstile.reset(c.id);
+  atualizarBotao(form);
+}
+
+/* Segurança extra: não envia sem token, mesmo que o botão seja contornado (ex.: Enter). */
+function captchaPronto(form) {
+  if (!CAPTCHA_ATIVO || tokenCaptcha(form)) return true;
+  const c = captchas.get(form);
+  aviso(c ? c.erroSel : "#avisoGeral", c && c.falhou ? MSG_ROBO : "Aguarde um instante: estamos terminando a verificação de segurança.");
+  return false;
+}
+
+const erroDeCaptcha = error => !!error && (error.code === "captcha_failed" || /captcha/i.test(error.message || ""));
+
 function ocupado(form, sim) {
   const b = $("button[type=submit]", form);
-  b.disabled = sim;
-  if (sim) { b.dataset.txt = b.textContent; b.textContent = "Aguarde…"; } else if (b.dataset.txt) b.textContent = b.dataset.txt;
+  if (sim) { form.dataset.ocupado = "1"; b.dataset.txt = b.textContent; b.textContent = "Aguarde…"; }
+  else { delete form.dataset.ocupado; if (b.dataset.txt) b.textContent = b.dataset.txt; }
+  estadoCaptcha(form, "");
+  atualizarBotao(form);
 }
 
 /* Entrar */
@@ -293,11 +396,17 @@ $("#formLogin").addEventListener("submit", async ev => {
   ev.preventDefault();
   const u = $("#usuario").value.trim(), s = $("#senha").value;
   if (!u || !s) { aviso("#erroLogin", "Preencha e-mail (ou apelido) e senha."); return; }
+  if (!captchaPronto(ev.target)) return;
   ocupado(ev.target, true);
-  const { data, error } = await db.auth.signInWithPassword({ email: emailDoLogin(u), password: s });
+  // vale também para o login kids: o apelido vira e-mail em emailDoLogin e o CAPTCHA é o mesmo, invisível
+  const { data, error } = await db.auth.signInWithPassword({
+    email: emailDoLogin(u), password: s, options: { captchaToken: tokenCaptcha(ev.target) }
+  });
+  renovarCaptcha(ev.target);
   ocupado(ev.target, false);
   if (error) {
-    const msg = error.code === "email_not_confirmed"
+    const msg = erroDeCaptcha(error) ? MSG_ROBO
+      : error.code === "email_not_confirmed"
       ? "Falta confirmar seu e-mail. Abra a mensagem que enviamos e clique no link."
       : error.status === 400 || error.code === "invalid_credentials"
         ? "E-mail/apelido ou senha incorretos. Confira e tente de novo."
@@ -318,6 +427,7 @@ $("#formCadastro").addEventListener("submit", async ev => {
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { aviso("#erroCadastro", "Esse e-mail não parece certo. Confira."); return; }
   if (email.endsWith("@" + CONFIG.dominioKids)) { aviso("#erroCadastro", "Use o seu e-mail pessoal."); return; }
   if (senha.length < 6) { aviso("#erroCadastro", "A senha precisa ter pelo menos 6 caracteres."); return; }
+  if (!captchaPronto(ev.target)) return;
 
   ocupado(ev.target, true);
   try {
@@ -327,12 +437,14 @@ $("#formCadastro").addEventListener("submit", async ev => {
 
     const { data, error } = await db.auth.signUp({
       email, password: senha,
-      options: { data: { nome, codigo_turma: codigo }, emailRedirectTo: urlDoSite }
+      options: { data: { nome, codigo_turma: codigo }, emailRedirectTo: urlDoSite, captchaToken: tokenCaptcha(ev.target) }
     });
+    renovarCaptcha(ev.target);
     if (error) {
       const m = (error.message || "").toLowerCase();
       aviso("#erroCadastro",
-        m.includes("database error") ? "Código da turma inválido. Confira com a professora."
+        erroDeCaptcha(error) ? MSG_ROBO
+        : m.includes("database error") ? "Código da turma inválido. Confira com a professora."
         : error.code === "user_already_exists" ? "Já existe uma conta com esse e-mail. Use Entrar."
         : error.code === "weak_password" ? "Essa senha é fraca demais. Tente uma maior, com letras e números."
         : error.code === "over_email_send_rate_limit" || error.status === 429 ? "Muitos cadastros em pouco tempo. Espere alguns minutos e tente de novo."
@@ -359,9 +471,12 @@ $("#formRecuperar").addEventListener("submit", async ev => {
   const email = $("#recEmail").value.trim().toLowerCase();
   if (!email.includes("@")) { aviso("#erroRecuperar", "Digite o e-mail da sua conta."); return; }
   if (email.endsWith("@" + CONFIG.dominioKids)) { aviso("#erroRecuperar", "Contas kids: peça uma senha nova para a professora."); return; }
+  if (!captchaPronto(ev.target)) return;
   ocupado(ev.target, true);
-  const { error } = await db.auth.resetPasswordForEmail(email, { redirectTo: urlDoSite });
+  const { error } = await db.auth.resetPasswordForEmail(email, { redirectTo: urlDoSite, captchaToken: tokenCaptcha(ev.target) });
+  renovarCaptcha(ev.target);
   ocupado(ev.target, false);
+  if (erroDeCaptcha(error)) { aviso("#erroRecuperar", MSG_ROBO); return; }
   if (error && error.status === 429) { aviso("#erroRecuperar", "Muitos pedidos em pouco tempo. Espere alguns minutos e tente de novo."); return; }
   if (error) { aviso("#erroRecuperar", "Não foi possível enviar agora. Tente de novo em instantes."); return; }
   mostrarPainel("entrar");

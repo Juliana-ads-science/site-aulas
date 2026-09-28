@@ -50,7 +50,9 @@
         <div class="campo"><label for="usuario">E-mail ou apelido</label><input id="usuario" autocomplete="username" autocapitalize="none" spellcheck="false" required></div>
         <div class="campo"><label for="senha">Senha</label><input id="senha" type="password" autocomplete="current-password" required></div>
         <p class="aviso" id="erroLogin" role="alert"></p>
+        <div class="captcha" data-captcha></div>
         <button class="btn" type="submit" style="width:100%;margin-top:16px">Entrar</button>
+        <p class="captcha-status" aria-live="polite" hidden></p>
         <div class="linha-links">
           <button type="button" class="link-btn" id="irRecuperar">Esqueci minha senha</button>
           <button type="button" class="link-btn" id="irCriar">Criar conta</button>
@@ -67,7 +69,9 @@
           <p class="ajuda-campo">Pelo menos 6 caracteres.</p></div>
         <div class="campo"><label for="cadCodigo">Código da turma</label><input id="cadCodigo" autocomplete="off" autocapitalize="characters" spellcheck="false" required></div>
         <p class="aviso" id="erroCadastro" role="alert"></p>
+        <div class="captcha" data-captcha></div>
         <button class="btn" type="submit" style="width:100%;margin-top:16px">Criar minha conta</button>
+        <p class="captcha-status" aria-live="polite" hidden></p>
         <div class="dica">As contas do <strong>Espaço Kids</strong> são criadas pela professora. Crianças não precisam se cadastrar.</div>
       </form>
 
@@ -77,7 +81,9 @@
         <p class="muted">Digite o e-mail da sua conta. Vamos enviar um link para você criar uma senha nova.</p>
         <div class="campo"><label for="recEmail">E-mail</label><input id="recEmail" type="email" autocomplete="email" autocapitalize="none" spellcheck="false" required></div>
         <p class="aviso" id="erroRecuperar" role="alert"></p>
+        <div class="captcha" data-captcha></div>
         <button class="btn" type="submit" style="width:100%;margin-top:16px">Enviar link</button>
+        <p class="captcha-status" aria-live="polite" hidden></p>
         <div class="linha-links"><button type="button" class="link-btn" data-voltar>Voltar para o login</button></div>
         <div class="dica">No Espaço Kids, peça uma senha nova para a professora.</div>
       </form>
@@ -120,6 +126,8 @@
 
 <div class="toast" id="toast" role="status" hidden></div>
 
+<!-- CAPTCHA: sem integrity, porque o Cloudflare não permite fixar a versão deste script -->
+<script id="turnstileScript" src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit" async defer></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script src="js/config.js"></script>
 <script src="js/app.js"></script>

@@ -103,6 +103,15 @@ A professora entrega o documento **completo, com as respostas**. Cabe ao Claude 
 - Simulação: `memoria` com valor `null` remove a variável (ex.: locais de uma função que terminou); `limparTela` recomeça a saída (ex.: rerun do Streamlit); `rotuloTela` troca o nome da caixa ("Console" no JavaScript).
 - Regras do LEIA-ME: não publicar "Na correção", "Observação para o slide", "Ajustes em alguns exemplos dos slides" nem instruções do tipo "peça que o aluno"; gabaritos só atrás de "Ver solução". Nas aulas 1 a 4 (formato Material Complementar), as mensagens de acerto/erro dos quizzes são escritas por Claude, curtas. As aulas 8 e 12 (Python) e a 3 (JavaScript) já trazem essas mensagens.
 
+## Segurança (não desfazer)
+
+- **Chaves:** no código só entram chaves públicas: a publishable key do Supabase e a Site Key do Turnstile (`js/config.js`). A Secret Key do Turnstile e a service_role/secret key do Supabase **nunca** vão para o repositório.
+- **Dados:** RLS em todas as tabelas; cada aluno só lê e grava o próprio progresso. O código da turma é validado no servidor (gatilho em `auth.users`), não só no JavaScript.
+- **CAPTCHA (Cloudflare Turnstile):** protege login (inclusive o kids, pelo apelido), cadastro e "Esqueci minha senha". Widget com `appearance: "interaction-only"` e `language: "pt-br"`, um por formulário, criado quando o formulário aparece. O token vai em `options.captchaToken` (`signInWithPassword`, `signUp`) e em `captchaToken` (`resetPasswordForEmail`); o "Nova senha" (`updateUser`) não usa. Cada token vale uma vez: `turnstile.reset` depois de toda chamada. O botão fica bloqueado até existir token.
+  - A **Secret Key fica só no painel do Supabase** (Authentication → Attack Protection → CAPTCHA, provedor Turnstile). Com o CAPTCHA ligado lá, o login só funciona com a Site Key certa em `js/config.js`.
+  - O script `https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit` é carregado **sem** `integrity`, porque o Cloudflare não permite fixar a versão dele.
+- **Ainda não existe:** Content-Security-Policy no `index.html` e `integrity` (SRI) nos scripts da jsDelivr. Se forem criados, incluir `https://challenges.cloudflare.com` em `script-src` e `frame-src`.
+
 ## Decisões pendentes
 
 - Domínio próprio (sugestão: linhaalinha.com.br, verificar disponibilidade no registro.br). Até lá, usar o endereço gratuito do GitHub Pages.
