@@ -9,7 +9,8 @@ const $ = (s, el = document) => el.querySelector(s);
 const $$ = (s, el = document) => [...el.querySelectorAll(s)];
 const esc = s => String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 /* `código` e **negrito**; o negrito só vale fora do código (ex.: `**kwargs` fica intacto) */
-const fmt = s => esc(s).split(/`([^`]+)`/).map((p, i) => i % 2 ? `<code>${p}</code>` : p.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>")).join("");
+const fmt = s => esc(s).split(/`([^`]+)`/).map((p, i) => i % 2 ? `<code>${p}</code>`
+  : p.replace(/\*\*([^*]+)\*\*/g, "<strong>$1</strong>").replace(/(^|[^*\w])\*([^*\s][^*]*?)\*(?![*\w])/g, "$1<em>$2</em>")).join("");
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 const semAcento = s => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
 const poucoMovimento = matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -738,7 +739,13 @@ function viewConversa(T, A, etapa, box) {
   desenhar();
 }
 
+/* Código comentado. Dois formatos:
+   - linhas: [{linha, explica}]  → uma explicação por linha;
+   - codigo: [...] + explicacoes: [{linhas: [de, ate], texto}]  → explicações por faixa, como nas
+     tabelas "Linha | O que acontece" do material; linhas sem explicação não são clicáveis.
+   "fechamento" (blocos) aparece depois do código. */
 function viewCodigo(T, A, etapa, box) {
+  if (etapa.explicacoes) return viewCodigoFaixas(T, A, etapa, box);
   const L = etapa.linhas; const vistas = new Set(); let atual = 0;
   box.innerHTML = `${etapa.intro ? `<div class="leitura">${blocos([].concat(etapa.intro))}</div>` : ""}
     <p class="dica-topo">Clique em qualquer linha para ver o que ela faz, ou use os botões para ir passo a passo.</p>
@@ -757,6 +764,42 @@ function viewCodigo(T, A, etapa, box) {
     if (vistas.size === L.length && !feito(T.id, A.id, etapa.id)) { marcar(T.id, A.id, etapa.id); atualizarRail(T, A, etapa.id); }
   };
   $$(".ln", box).forEach(el => el.addEventListener("click", () => mostrar(+el.dataset.i)));
+  $("#lAnt").onclick = () => mostrar(atual - 1);
+  $("#lProx").onclick = () => mostrar(atual + 1);
+  mostrar(0);
+}
+
+function viewCodigoFaixas(T, A, etapa, box) {
+  const C = etapa.codigo, X = etapa.explicacoes, vistas = new Set(); let atual = 0;
+  const faixa = x => [x.linhas[0], x.linhas[1] || x.linhas[0]];
+  const daLinha = n => X.findIndex(x => n >= faixa(x)[0] && n <= faixa(x)[1]);
+  box.innerHTML = `${etapa.intro ? `<div class="leitura">${blocos([].concat(etapa.intro))}</div>` : ""}
+    <p class="dica-topo">Clique em qualquer linha para ver o que ela faz, ou use os botões para ir passo a passo.</p>
+    <div class="explorer">
+      <div class="code" role="list">${C.map((l, i) => {
+        const x = daLinha(i + 1), conteudo = `<span class="num">${i + 1}</span><span class="src">${hl(l) || " "}</span>`;
+        return x < 0 ? `<div class="ln" role="listitem">${conteudo}</div>`
+          : `<button class="ln" role="listitem" data-x="${x}" aria-label="Linha ${i + 1}">${conteudo}</button>`;
+      }).join("")}</div>
+      <div class="explain" aria-live="polite"><div id="expTexto"></div>
+        <div class="explain-nav"><button class="btn ghost" id="lAnt">Anterior</button><button class="btn" id="lProx">Próxima</button></div>
+        <div class="contagem" id="contagem"></div></div>
+    </div>
+    ${etapa.fechamento ? `<div class="leitura" style="margin-top:18px">${blocos([].concat(etapa.fechamento))}</div>` : ""}`;
+  const mostrar = k => {
+    atual = k; vistas.add(k);
+    const [de, ate] = faixa(X[k]);
+    $$(".ln", box).forEach((el, j) => {
+      el.classList.toggle("ativa", j + 1 >= de && j + 1 <= ate);
+      el.classList.toggle("vista", el.dataset.x != null && vistas.has(+el.dataset.x));
+    });
+    const trecho = C.slice(de - 1, ate).map(hl).join("\n");
+    $("#expTexto").innerHTML = `<div class="qual">${de === ate ? `Linha ${de}` : `Linhas ${de}–${ate}`}</div><pre>${trecho || " "}</pre><p>${fmt(X[k].texto)}</p>`;
+    $("#lAnt").disabled = k === 0; $("#lProx").disabled = k === X.length - 1;
+    $("#contagem").textContent = `${vistas.size} de ${X.length} explicações vistas`;
+    if (vistas.size === X.length && !feito(T.id, A.id, etapa.id)) { marcar(T.id, A.id, etapa.id); atualizarRail(T, A, etapa.id); }
+  };
+  $$("button.ln", box).forEach(el => el.addEventListener("click", () => mostrar(+el.dataset.x)));
   $("#lAnt").onclick = () => mostrar(atual - 1);
   $("#lProx").onclick = () => mostrar(atual + 1);
   mostrar(0);
@@ -833,7 +876,7 @@ function viewQuiz(T, A, etapa, box) {
     const ultimo = i === Q.length - 1;
     $("#fb").innerHTML = `<div class="feedback ${certo ? "ok" : "err"}">
         ${kids ? `<div class="mini">${mascote(certo ? "feliz" : "triste")}</div>` : ""}
-        <div><strong>${esc(certo ? (q.acerto || "Isso mesmo!") : (q.erro || "Não foi dessa vez."))}</strong>${q.explicacao ? `<p>${fmt(q.explicacao)}</p>` : ""}</div></div>
+        <div><strong>${fmt(certo ? (q.acerto || "Isso mesmo!") : (q.erro || "Não foi dessa vez."))}</strong>${q.explicacao ? `<p>${fmt(q.explicacao)}</p>` : ""}</div></div>
       <button class="btn ${kids ? "sol" : ""}" id="qProx">${ultimo ? "Ver resultado" : "Próxima pergunta"}</button>`;
     $("#qProx").focus();
     $("#qProx").onclick = () => { if (ultimo) resultado(); else { i++; pergunta(); } };
@@ -872,7 +915,7 @@ function viewAtividades(T, A, etapa, box) {
     <div class="atividades">${itens.map(it => {
       const r = lerRascunho(it);
       return `<section class="atividade" data-n="${it.n}">
-        <header><span class="tag nivel-${semAcento(it.nivel)}">${esc(it.nivel)}</span><h2>Atividade ${it.n}: ${esc(it.titulo)}</h2></header>
+        <header><span class="tag nivel-${semAcento(it.nivel)}">${esc(it.nivel)}</span><h2>Atividade ${it.n}${it.titulo ? `: ${esc(it.titulo)}` : ""}</h2></header>
         <div class="leitura">${blocos(it.enunciado)}</div>
         ${it.testes ? `<div class="testes"><strong>Para testar</strong>${blocos(it.testes)}</div>` : ""}
         ${it.dica ? `<div class="q-dica"><button class="link-btn ver-dica" aria-expanded="false">Ver dica</button><div class="caixa" hidden>${fmt(it.dica)}</div></div>` : ""}

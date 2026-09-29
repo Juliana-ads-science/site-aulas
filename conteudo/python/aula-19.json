@@ -1,0 +1,998 @@
+{
+  "numero": 19,
+  "titulo": "Fundamentos de APIs e Primeira Versão do Monitor de Cotações",
+  "etapas": [
+    {
+      "id": "definicoes",
+      "tipo": "leitura",
+      "nome": "Definições",
+      "blocos": [
+        {
+          "tabela": [
+            [
+              "Termo",
+              "O que significa"
+            ],
+            [
+              "API",
+              "Interface que permite um programa pedir dados ou serviços a outro programa"
+            ],
+            [
+              "API REST",
+              "API acessada por endereços na web (URLs), usando os métodos do HTTP"
+            ],
+            [
+              "Endpoint",
+              "Endereço específico da API para um tipo de dado (ex.: `/json/last/USD-BRL`)"
+            ],
+            [
+              "HTTP",
+              "Protocolo de comunicação da web: o programa faz um pedido e o servidor responde"
+            ],
+            [
+              "Requisição (request)",
+              "O pedido que o programa envia à API"
+            ],
+            [
+              "Resposta (response)",
+              "O que a API devolve: código de status + conteúdo"
+            ],
+            [
+              "GET",
+              "Tipo de requisição que só **busca** dados, sem alterar nada no servidor"
+            ],
+            [
+              "`requests`",
+              "Biblioteca de terceiros para fazer requisições HTTP em Python (`pip install requests`)"
+            ],
+            [
+              "Status code",
+              "Número que indica o resultado da requisição (200, 404, 429...)"
+            ],
+            [
+              "JSON",
+              "Formato de texto com pares chave-valor, parecido com o dicionário do Python"
+            ],
+            [
+              "`resposta.json()`",
+              "Converte o texto JSON em dicionário ou lista do Python"
+            ],
+            [
+              "AwesomeAPI",
+              "API gratuita brasileira com cotações de moedas"
+            ],
+            [
+              "Par de moedas",
+              "Moeda de origem e de destino, com traço: `USD-BRL`"
+            ],
+            [
+              "`bid`",
+              "Preço de **compra** da moeda"
+            ],
+            [
+              "`ask`",
+              "Preço de **venda** da moeda"
+            ],
+            [
+              "`pctChange`",
+              "Variação percentual no período"
+            ],
+            [
+              "`create_date`",
+              "Data e hora da cotação"
+            ],
+            [
+              "Rota (simulada)",
+              "Função Python que faz o papel de um endpoint do nosso app (`/cotacao`, `/converter`, `/historico`)"
+            ],
+            [
+              "Camada de dados",
+              "Código que conversa com a API (`api_financeira.py`)"
+            ],
+            [
+              "Camada de apresentação",
+              "Código da interface (`app.py`, com Streamlit)"
+            ],
+            [
+              "`timeout`",
+              "Tempo máximo de espera pela resposta"
+            ],
+            [
+              "`try` / `except`",
+              "Tenta executar um bloco e trata o erro, se ele acontecer"
+            ],
+            [
+              "`st.empty()`",
+              "Espaço reservado na tela, preenchido depois"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "para-que-como-e-quando-usamos",
+      "tipo": "leitura",
+      "nome": "Para que, como e quando usamos",
+      "blocos": [
+        "**Para que:** trazer para o nosso programa dados que estão em outro sistema, sempre atualizados: cotações, clima, CEP, dados de filmes. Nesta aula, construímos a primeira versão de um monitor de câmbio.",
+        "**Como:** o programa monta a URL, faz um GET com `requests`, confere o status, converte o JSON em dicionário, extrai os campos necessários e mostra o resultado na interface Streamlit.",
+        "**Endpoints da AwesomeAPI usados na aula:**",
+        {
+          "tabela": [
+            [
+              "O que queremos",
+              "Endpoint",
+              "O JSON devolve"
+            ],
+            [
+              "Cotação mais recente",
+              "`/json/last/USD-BRL`",
+              "Dicionário com a chave `USDBRL`"
+            ],
+            [
+              "Várias moedas de uma vez",
+              "`/json/last/USD-BRL,EUR-BRL`",
+              "Dicionário com as chaves `USDBRL` e `EURBRL`"
+            ],
+            [
+              "Histórico de N dias",
+              "`/json/daily/USD-BRL/5`",
+              "Lista de dicionários, um por dia"
+            ]
+          ]
+        },
+        "**Quando buscar os dados:**",
+        {
+          "tabela": [
+            [
+              "Situação",
+              "Faça assim"
+            ],
+            [
+              "O usuário escolhe as moedas e depois pede a cotação",
+              "Requisição dentro de `if st.button(...)`"
+            ],
+            [
+              "Os mesmos dados são pedidos várias vezes em pouco tempo",
+              "Guarde com `@st.cache_data(ttl=60)`"
+            ],
+            [
+              "A API pode demorar ou estar fora do ar",
+              "Use `timeout` e `try/except`"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "estruturas",
+      "tipo": "leitura",
+      "nome": "Estruturas",
+      "blocos": [
+        {
+          "h": "3.1 Instalação (terminal)"
+        },
+        {
+          "codigo": "pip install requests streamlit pandas"
+        },
+        {
+          "h": "3.2 GET básico"
+        },
+        {
+          "codigo": "import requests\n\nresposta = requests.get(\"https://economia.awesomeapi.com.br/json/last/USD-BRL\", timeout=10)\nprint(resposta.status_code)   # 200 = sucesso\ndados = resposta.json()       # texto JSON -> dicionário"
+        },
+        {
+          "h": "3.3 Formato da resposta (`last`)"
+        },
+        {
+          "codigo": "{\n    \"USDBRL\": {\n        \"code\": \"USD\",\n        \"codein\": \"BRL\",\n        \"name\": \"Dólar Americano/Real Brasileiro\",\n        \"high\": \"5.4007\",\n        \"low\": \"5.35543\",\n        \"varBid\": \"-0.011\",\n        \"pctChange\": \"-0.204145\",\n        \"bid\": \"5.3773\",\n        \"ask\": \"5.3803\",\n        \"timestamp\": \"1761569201\",\n        \"create_date\": \"2025-10-27 09:46:41\"\n    }\n}"
+        },
+        "Os valores são ilustrativos. Repare que os números chegam como **texto** (entre aspas).",
+        {
+          "h": "3.4 Função padrão de consulta"
+        },
+        {
+          "codigo": "def obter_cotacao(moeda_origem, moeda_destino):\n    par = f\"{moeda_origem}-{moeda_destino}\".upper()\n    resposta = requests.get(f\"{URL_BASE}/last/{par}\", timeout=10)\n    if resposta.status_code == 200:\n        return float(resposta.json()[par.replace(\"-\", \"\")][\"bid\"])\n    return 0.0"
+        },
+        {
+          "h": "3.5 Estrutura do projeto"
+        },
+        {
+          "codigo": "monitor_cotacoes/\n├── api_financeira.py   # camada de dados: funções que chamam a API\n└── app.py              # camada de apresentação: interface Streamlit"
+        }
+      ]
+    },
+    {
+      "id": "sintaxe-e-simbolos",
+      "tipo": "leitura",
+      "nome": "Sintaxe e símbolos",
+      "blocos": [
+        {
+          "tabela": [
+            [
+              "Símbolo / comando",
+              "O que faz",
+              "Por que existe"
+            ],
+            [
+              "`import requests`",
+              "Carrega a biblioteca",
+              "Ela não vem com o Python; instale com `pip`"
+            ],
+            [
+              "`requests.get(url, timeout=10)`",
+              "Faz a requisição GET",
+              "O `timeout` impede o programa de esperar para sempre"
+            ],
+            [
+              "`resposta.status_code`",
+              "Código do resultado",
+              "Saber se deu certo antes de ler os dados"
+            ],
+            [
+              "`resposta.text`",
+              "Conteúdo bruto, em texto",
+              "Inspecionar o que a API mandou"
+            ],
+            [
+              "`resposta.text[:150]`",
+              "Primeiros 150 caracteres",
+              "Fatiamento: evita imprimir um texto enorme"
+            ],
+            [
+              "`resposta.json()`",
+              "Converte JSON em dicionário/lista",
+              "Acessar os dados por chave"
+            ],
+            [
+              "`dados[\"USDBRL\"][\"bid\"]`",
+              "Acesso em dois níveis",
+              "O JSON é um dicionário dentro de outro"
+            ],
+            [
+              "`.keys()`",
+              "Lista as chaves do dicionário",
+              "Descobrir quais campos existem"
+            ],
+            [
+              "`float(\"5.3773\")`",
+              "Converte texto em número",
+              "Os valores chegam como texto; sem isso não há conta"
+            ],
+            [
+              "`par.replace(\"-\", \"\")`",
+              "Remove o traço",
+              "A chave do JSON é `USDBRL`, sem traço"
+            ],
+            [
+              "`.upper()`",
+              "Deixa em maiúsculas",
+              "A API espera `USD`, não `usd`"
+            ],
+            [
+              "`f\"{a}-{b}\"`",
+              "Monta o par de moedas",
+              "Construir a URL com o que o usuário escolheu"
+            ],
+            [
+              "`f\"{taxa:.4f}\"`",
+              "4 casas decimais",
+              "Padrão de exibição de câmbio"
+            ],
+            [
+              "`try:` / `except requests.RequestException:`",
+              "Trata falhas de rede",
+              "Sem internet ou tempo esgotado viram mensagem, não erro na tela"
+            ],
+            [
+              "`return 0.0` / `return []`",
+              "Valor \"vazio\" em caso de falha",
+              "Quem chama a função consegue testar se deu certo"
+            ],
+            [
+              "`def _buscar(...)`",
+              "`_` no início do nome",
+              "Convenção: função de uso interno do módulo"
+            ],
+            [
+              "`from api_financeira import ...`",
+              "Importa funções de outro arquivo",
+              "Separar dados e interface"
+            ],
+            [
+              "`if __name__ == \"__main__\":`",
+              "Roda só quando o arquivo é executado direto",
+              "O teste do módulo não roda quando ele é importado"
+            ],
+            [
+              "`st.empty()`",
+              "Reserva um espaço na tela",
+              "Preencher depois com sucesso ou erro"
+            ],
+            [
+              "`@st.cache_data(ttl=60)`",
+              "Guarda o resultado por 60 segundos",
+              "Evita chamar a API a cada clique"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logica-por-tras",
+      "tipo": "leitura",
+      "nome": "Lógica por trás",
+      "blocos": [
+        "**Ciclo de uma requisição:** o programa monta a URL → envia o GET → o servidor processa → devolve o status e o conteúdo → o programa confere o status → converte o JSON → extrai os campos → exibe.",
+        "**Status codes mais comuns:**",
+        {
+          "tabela": [
+            [
+              "Código",
+              "Significado",
+              "O que fazer"
+            ],
+            [
+              "200",
+              "OK: deu certo",
+              "Ler os dados"
+            ],
+            [
+              "404",
+              "Não encontrado (ex.: par de moedas que não existe)",
+              "Avisar o usuário para conferir as moedas"
+            ],
+            [
+              "403",
+              "Proibido: sem permissão",
+              "Verificar se a API exige chave de acesso"
+            ],
+            [
+              "429",
+              "Muitas requisições em pouco tempo",
+              "Esperar e usar cache"
+            ],
+            [
+              "500",
+              "Erro no servidor da API",
+              "Tentar de novo mais tarde"
+            ]
+          ]
+        },
+        "**Status e exceção são problemas diferentes.** Se a API responde (mesmo com 404), temos um `status_code` para testar. Se **não há resposta** (sem internet, servidor fora do ar, tempo esgotado), o `requests.get` gera uma exceção antes de existir `status_code`. Por isso usamos os dois: `try/except` para falhas de conexão e `if status_code == 200` para respostas de erro.",
+        "**Por que `float()`.** O JSON da AwesomeAPI traz os números entre aspas. `\"5.37\" * 2` resulta em `\"5.375.37\"` (texto repetido), e não em 10.74. Convertemos com `float()` antes de qualquer conta.",
+        "**`bid` e `ask`.** O `bid` é o preço de compra e o `ask` é o preço de venda; a diferença entre eles é o *spread*. Nesta primeira versão, usamos o `bid` como valor de referência da cotação.",
+        "**`last` e `daily` devolvem formatos diferentes.** O `last` devolve um dicionário com a chave do par. O `daily` devolve uma **lista**, um item por dia, começando pelo mais recente. Nessa lista, só o primeiro item traz `code`, `codein`, `name` e `create_date`; os demais trazem os valores (`bid`, `high`, `low`, `timestamp`...). Por isso, ao montar a tabela, essas colunas aparecem vazias nas outras linhas.",
+        "**Por que um botão.** No Streamlit, cada interação re-executa o script. Se a requisição estivesse solta no código, a API seria chamada a cada mudança de campo. Dentro do `if st.button(...)`, ela só acontece quando o usuário pede. O cache com `ttl` vai além: repete o resultado guardado por alguns segundos, sem nova requisição.",
+        "**Separar as camadas.** O `api_financeira.py` só busca dados; o `app.py` só cuida da tela. Se a API mudar, alteramos um arquivo. Se o visual mudar, alteramos o outro.",
+        "**Importar executa o arquivo.** Quando o `app.py` faz `from api_financeira import ...`, o Python executa todo o `api_financeira.py`. Testes soltos no fim do arquivo rodariam (e fariam requisições) toda vez. Colocando os testes em `if __name__ == \"__main__\":`, eles só rodam quando executamos `python api_financeira.py`."
+      ]
+    },
+    {
+      "id": "exemplo-a",
+      "tipo": "codigo",
+      "nome": "Exemplo A — primeira requisição e leitura do JSON",
+      "codigo": [
+        "import requests",
+        "",
+        "url = \"https://economia.awesomeapi.com.br/json/last/EUR-BRL\"",
+        "resposta = requests.get(url, timeout=10)",
+        "",
+        "print(f\"Status da resposta: {resposta.status_code}\")",
+        "",
+        "dados_json = resposta.json()",
+        "cotacao_eur = dados_json[\"EURBRL\"]",
+        "",
+        "print(f\"Tipo após a conversão: {type(cotacao_eur)}\")",
+        "print(f\"Chaves disponíveis: {list(cotacao_eur.keys())}\")",
+        "print(f\"Moeda: {cotacao_eur['name']}\")",
+        "print(f\"Compra (bid): R$ {float(cotacao_eur['bid']):.4f}\")",
+        "print(f\"Atualizado em: {cotacao_eur['create_date']}\")"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Importa a biblioteca `requests`"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Endpoint da cotação mais recente de Euro para Real"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Faz o GET e espera no máximo 10 segundos"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Mostra o código de status (esperado: 200)"
+        },
+        {
+          "linhas": [
+            8,
+            8
+          ],
+          "texto": "Converte o texto JSON em dicionário"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "Entra no primeiro nível: a chave é o par sem traço"
+        },
+        {
+          "linhas": [
+            11,
+            11
+          ],
+          "texto": "Confirma que o conteúdo é um `dict`"
+        },
+        {
+          "linhas": [
+            12,
+            12
+          ],
+          "texto": "Lista os campos disponíveis (code, name, bid, ask...)"
+        },
+        {
+          "linhas": [
+            13,
+            15
+          ],
+          "texto": "Extrai nome, preço de compra (convertido em número) e data"
+        }
+      ],
+      "fechamento": [
+        "Saída (os valores mudam a cada consulta):",
+        {
+          "codigo": "Status da resposta: 200\nTipo após a conversão: <class 'dict'>\nChaves disponíveis: ['code', 'codein', 'name', 'high', 'low', 'varBid', 'pctChange', 'bid', 'ask', 'timestamp', 'create_date']\nMoeda: Euro/Real Brasileiro\nCompra (bid): R$ 6.2578\nAtualizado em: 2025-10-27 09:46:41"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-b",
+      "tipo": "codigo",
+      "nome": "Exemplo B — rota /cotacao como função",
+      "codigo": [
+        "import requests",
+        "",
+        "URL_BASE = \"https://economia.awesomeapi.com.br/json\"",
+        "",
+        "",
+        "def obter_cotacao(moeda_origem, moeda_destino):",
+        "    \"\"\"Retorna a cotação (bid) do par como float, ou 0.0 se falhar.\"\"\"",
+        "    par = f\"{moeda_origem}-{moeda_destino}\".upper()",
+        "    try:",
+        "        resposta = requests.get(f\"{URL_BASE}/last/{par}\", timeout=10)",
+        "    except requests.RequestException:",
+        "        return 0.0",
+        "    if resposta.status_code != 200:",
+        "        return 0.0",
+        "    chave = par.replace(\"-\", \"\")",
+        "    return float(resposta.json()[chave][\"bid\"])"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Parte fixa da URL em uma constante (nome em maiúsculas por convenção)"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "A função recebe as duas moedas"
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "Docstring: o que devolve em caso de sucesso e de falha"
+        },
+        {
+          "linhas": [
+            8,
+            8
+          ],
+          "texto": "Monta o par em maiúsculas (`usd`, `brl` vira `USD-BRL`)"
+        },
+        {
+          "linhas": [
+            9,
+            10
+          ],
+          "texto": "Tenta fazer a requisição"
+        },
+        {
+          "linhas": [
+            11,
+            12
+          ],
+          "texto": "Sem conexão ou tempo esgotado: devolve 0.0 em vez de quebrar"
+        },
+        {
+          "linhas": [
+            13,
+            14
+          ],
+          "texto": "A API respondeu com erro (ex.: 404, par inexistente): devolve 0.0"
+        },
+        {
+          "linhas": [
+            15,
+            15
+          ],
+          "texto": "Monta a chave do JSON (`USDBRL`)"
+        },
+        {
+          "linhas": [
+            16,
+            16
+          ],
+          "texto": "Converte o JSON, pega o `bid` e transforma em número"
+        }
+      ],
+      "fechamento": [
+        "Uso: `obter_cotacao(\"USD\", \"BRL\")` devolve algo como `5.3641`."
+      ]
+    },
+    {
+      "id": "exemplo-c",
+      "tipo": "codigo",
+      "nome": "Exemplo C — rota /converter reaproveitando a /cotacao",
+      "codigo": [
+        "def converter(valor, moeda_origem, moeda_destino):",
+        "    \"\"\"Converte o valor pela cotação atual. Retorna (resultado, taxa).\"\"\"",
+        "    taxa = obter_cotacao(moeda_origem, moeda_destino)",
+        "    if taxa > 0:",
+        "        return valor * taxa, taxa",
+        "    return None, 0.0",
+        "",
+        "",
+        "resultado, taxa = converter(100.0, \"BRL\", \"EUR\")",
+        "if resultado is not None:",
+        "    print(f\"R$ 100.00 = € {resultado:.2f} (taxa {taxa:.6f})\")",
+        "else:",
+        "    print(\"Não foi possível converter.\")"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Recebe o valor e as duas moedas"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Reaproveita a função do Exemplo B: nenhuma URL nova aqui"
+        },
+        {
+          "linhas": [
+            4,
+            5
+          ],
+          "texto": "Taxa válida: multiplica e devolve o resultado **e** a taxa (tupla)"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Falha: devolve `None`, que não pode ser confundido com um valor convertido"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "Recebe os dois valores da tupla em duas variáveis"
+        },
+        {
+          "linhas": [
+            10,
+            13
+          ],
+          "texto": "Só mostra o resultado se a conversão deu certo"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-d",
+      "tipo": "codigo",
+      "nome": "Exemplo D — rota /historico",
+      "codigo": [
+        "def obter_historico(moeda_origem, moeda_destino, dias=5):",
+        "    \"\"\"Retorna a lista de cotações diárias (a mais recente primeiro).\"\"\"",
+        "    par = f\"{moeda_origem}-{moeda_destino}\".upper()",
+        "    try:",
+        "        resposta = requests.get(f\"{URL_BASE}/daily/{par}/{dias}\", timeout=10)",
+        "    except requests.RequestException:",
+        "        return []",
+        "    if resposta.status_code != 200:",
+        "        return []",
+        "    return resposta.json()",
+        "",
+        "",
+        "historico = obter_historico(\"USD\", \"BRL\", dias=3)",
+        "print(f\"Histórico USD-BRL: {len(historico)} registros\")",
+        "for i, dia in enumerate(historico, start=1):",
+        "    print(f\"Dia {i}: compra {float(dia['bid']):.4f}\")"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "`dias=5` é o valor padrão se ninguém informar"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Endpoint `daily`, com o número de dias no fim da URL"
+        },
+        {
+          "linhas": [
+            6,
+            9
+          ],
+          "texto": "Falha: devolve lista vazia, que se comporta como `False` no `if`"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "Sucesso: aqui o JSON é uma **lista** de dicionários"
+        },
+        {
+          "linhas": [
+            13,
+            13
+          ],
+          "texto": "`len` conta quantos dias vieram"
+        },
+        {
+          "linhas": [
+            14,
+            15
+          ],
+          "texto": "Percorre a lista; cada item é o dicionário de um dia"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-e",
+      "tipo": "codigo",
+      "nome": "Exemplo E — interface com selectbox, botão e st.empty",
+      "codigo": [
+        "import streamlit as st",
+        "from api_financeira import obter_cotacao",
+        "",
+        "st.title(\"Monitor de Cotação Rápida\")",
+        "moedas = [\"USD\", \"EUR\", \"GBP\", \"JPY\", \"BRL\", \"CAD\"]",
+        "",
+        "origem = st.selectbox(\"Moeda de origem:\", moedas, index=0)",
+        "destino = st.selectbox(\"Moeda de destino:\", moedas, index=4)",
+        "",
+        "resultado = st.empty()",
+        "",
+        "if st.button(\"Buscar taxa de câmbio\"):",
+        "    cotacao = obter_cotacao(origem, destino)",
+        "    if cotacao > 0:",
+        "        resultado.success(f\"1 {origem} = **{cotacao:.4f} {destino}**\")",
+        "    else:",
+        "        resultado.error(\"Falha ao obter dados. Verifique se o par existe e tente novamente.\")"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            2
+          ],
+          "texto": "Importa o Streamlit e a função da camada de dados"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Lista fixa de moedas: o usuário não digita, então não erra o código"
+        },
+        {
+          "linhas": [
+            7,
+            8
+          ],
+          "texto": "Menus suspensos; `index` define a opção inicial (USD e BRL)"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "Reserva um espaço vazio acima do botão"
+        },
+        {
+          "linhas": [
+            12,
+            12
+          ],
+          "texto": "A requisição só acontece no clique"
+        },
+        {
+          "linhas": [
+            13,
+            13
+          ],
+          "texto": "Chama a camada de dados"
+        },
+        {
+          "linhas": [
+            14,
+            15
+          ],
+          "texto": "Deu certo: preenche o espaço reservado com uma caixa verde"
+        },
+        {
+          "linhas": [
+            16,
+            17
+          ],
+          "texto": "Falhou (0.0): preenche o mesmo espaço com uma caixa vermelha"
+        }
+      ]
+    },
+    {
+      "id": "como-aplicar",
+      "tipo": "leitura",
+      "nome": "Como aplicar: Monitor de Cotações V1",
+      "blocos": [
+        "Junta as três rotas, o cache, a sidebar, as abas, as métricas, o expander, a tabela e um gráfico. Crie os dois arquivos na mesma pasta e rode `streamlit run app.py`.",
+        "**`api_financeira.py`**:",
+        {
+          "codigo": "import requests\n\nURL_BASE = \"https://economia.awesomeapi.com.br/json\"\n\n\ndef _buscar(caminho):\n    \"\"\"Faz o GET e devolve o JSON, ou None se algo falhar.\"\"\"\n    try:\n        resposta = requests.get(f\"{URL_BASE}/{caminho}\", timeout=10)\n    except requests.RequestException:\n        return None\n    if resposta.status_code != 200:\n        return None\n    return resposta.json()\n\n\ndef obter_cotacao(origem, destino):\n    \"\"\"Rota /cotacao: preço de compra (bid) do par, ou 0.0.\"\"\"\n    par = f\"{origem}-{destino}\".upper()\n    dados = _buscar(f\"last/{par}\")\n    if not dados:\n        return 0.0\n    return float(dados[par.replace(\"-\", \"\")][\"bid\"])\n\n\ndef converter(valor, origem, destino):\n    \"\"\"Rota /converter: devolve (resultado, taxa) ou (None, 0.0).\"\"\"\n    taxa = obter_cotacao(origem, destino)\n    if taxa > 0:\n        return valor * taxa, taxa\n    return None, 0.0\n\n\ndef obter_historico(origem, destino, dias=5):\n    \"\"\"Rota /historico: lista de cotações diárias, ou lista vazia.\"\"\"\n    par = f\"{origem}-{destino}\".upper()\n    return _buscar(f\"daily/{par}/{dias}\") or []\n\n\nif __name__ == \"__main__\":\n    print(\"Teste USD-BRL:\", obter_cotacao(\"USD\", \"BRL\"))"
+        },
+        "**`app.py`**:",
+        {
+          "codigo": "import streamlit as st\nimport pandas as pd\nfrom api_financeira import converter, obter_cotacao, obter_historico\n\nst.set_page_config(page_title=\"Monitor de Cotações\", page_icon=\"💰\")\nst.title(\"💰 Monitor de Cotações V1\")\n\nMOEDAS = [\"USD\", \"EUR\", \"GBP\", \"JPY\", \"CAD\", \"BRL\"]\n\n\n@st.cache_data(ttl=60)\ndef cotacao_cache(origem, destino):\n    return obter_cotacao(origem, destino)\n\n\n@st.cache_data(ttl=60)\ndef converter_cache(valor, origem, destino):\n    return converter(valor, origem, destino)\n\n\n@st.cache_data(ttl=600)\ndef historico_cache(origem, destino, dias):\n    return obter_historico(origem, destino, dias)\n\n\nwith st.sidebar:\n    st.header(\"Moedas\")\n    origem = st.selectbox(\"Origem\", MOEDAS, index=0)\n    destino = st.selectbox(\"Destino\", MOEDAS, index=5)\n\naba_cot, aba_conv, aba_hist = st.tabs([\"Cotação\", \"Converter\", \"Histórico\"])\n\nwith aba_cot:\n    if st.button(\"Buscar cotação\"):\n        taxa = cotacao_cache(origem, destino)\n        if taxa > 0:\n            st.metric(f\"1 {origem} em {destino}\", f\"{taxa:.4f}\")\n        else:\n            st.error(\"Par indisponível ou falha na API.\")\n\nwith aba_conv:\n    valor = st.number_input(\"Valor\", min_value=0.01, value=100.0, step=10.0)\n    if st.button(\"Converter\"):\n        resultado, taxa = converter_cache(valor, origem, destino)\n        if resultado is not None:\n            st.metric(f\"{valor:.2f} {origem} em {destino}\", f\"{resultado:.2f} {destino}\")\n            with st.expander(\"Ver taxa utilizada\"):\n                st.write(f\"1 {origem} = {taxa:.6f} {destino}\")\n        else:\n            st.error(\"Não foi possível converter. Verifique as moedas.\")\n\nwith aba_hist:\n    dias = st.slider(\"Número de dias\", 1, 30, 7)\n    if st.button(\"Ver histórico\"):\n        lista = historico_cache(origem, destino, dias)\n        if lista:\n            df = pd.DataFrame(lista)\n            df[\"data\"] = pd.to_datetime(df[\"timestamp\"].astype(int), unit=\"s\")\n            df[\"bid\"] = df[\"bid\"].astype(float)\n            st.line_chart(df.set_index(\"data\")[\"bid\"])\n            st.dataframe(df[[\"data\", \"bid\", \"high\", \"low\", \"pctChange\"]], hide_index=True)\n        else:\n            st.info(\"Nenhum dado histórico encontrado.\")"
+        },
+        "**Por que funciona:** toda conversa com a API passa pela função `_buscar`, que já trata tempo esgotado, falta de conexão e status diferente de 200. As três rotas só montam o endereço e extraem o que precisam. No `app.py`, as funções com `@st.cache_data` guardam o resultado por alguns minutos, então clicar várias vezes não gera novas requisições. As moedas ficam na sidebar e valem para as três abas. No histórico, o `timestamp` (segundos desde 1970, em texto) vira data com `pd.to_datetime(..., unit=\"s\")`, e o `bid` vira número para o gráfico de linha."
+      ]
+    },
+    {
+      "id": "quiz",
+      "tipo": "quiz",
+      "nome": "Quiz de código",
+      "perguntas": [
+        {
+          "pergunta": "O que significa o status 404?",
+          "opcoes": [
+            "A requisição deu certo",
+            "Você não tem permissão",
+            "O recurso pedido não foi encontrado",
+            "Você fez requisições demais"
+          ],
+          "correta": 2,
+          "dica": "pense em um par de moedas que não existe.",
+          "acerto": "Isso! Não encontrado.",
+          "erro": "Sucesso é 200; excesso de requisições é 429.",
+          "explicacao": "404 indica que o endereço pedido não existe, como um par de moedas inválido."
+        },
+        {
+          "pergunta": "O que é impresso?",
+          "codigo": "dados = {\"USDBRL\": {\"bid\": \"5.37\"}}\nprint(dados[\"USDBRL\"][\"bid\"] * 2)",
+          "opcoes": [
+            "10.74",
+            "5.375.37",
+            "Erro",
+            "5.37"
+          ],
+          "correta": 1,
+          "dica": "o valor está entre aspas.",
+          "acerto": "Exato! Texto multiplicado é texto repetido.",
+          "erro": "Sem `float()`, o Python trata o valor como texto.",
+          "explicacao": "`\"5.37\" * 2` repete a string. Para calcular, use `float(dados[\"USDBRL\"][\"bid\"]) * 2`."
+        },
+        {
+          "pergunta": "Qual é o valor de `chave`?",
+          "codigo": "par = \"EUR-BRL\"\nchave = par.replace(\"-\", \"\")",
+          "opcoes": [
+            "\"EUR BRL\"",
+            "[\"EUR\", \"BRL\"]",
+            "\"EUR-BRL\"",
+            "\"EURBRL\""
+          ],
+          "correta": 3,
+          "dica": "o traço é trocado por quê?",
+          "acerto": "Perfeito! É a chave do JSON.",
+          "erro": "`replace` troca o texto; ele não separa em lista.",
+          "explicacao": "o traço é substituído por um texto vazio, e o resultado é a chave usada no JSON da AwesomeAPI."
+        },
+        {
+          "pergunta": "Por que a chamada à API fica dentro de `if st.button(...)`?",
+          "opcoes": [
+            "Para não fazer uma requisição a cada re-execução do script",
+            "Porque o Streamlit exige",
+            "Para deixar a tela mais bonita",
+            "Porque a API só aceita requisições com botão"
+          ],
+          "correta": 0,
+          "dica": "o que acontece no Streamlit a cada interação?",
+          "acerto": "Isso! A requisição só sai quando o usuário pede.",
+          "erro": "Funciona sem botão, mas chama a API a cada mudança.",
+          "explicacao": "cada interação re-executa o script inteiro. Dentro do `if`, a requisição só acontece no clique, poupando a API e evitando o limite de uso."
+        },
+        {
+          "pergunta": "O que `resposta.json()` devolve no endpoint `daily/USD-BRL/5`?",
+          "opcoes": [
+            "Um dicionário com a chave `USDBRL`",
+            "Uma lista de dicionários, um por dia",
+            "Um texto",
+            "Um único número"
+          ],
+          "correta": 1,
+          "dica": "são vários dias.",
+          "acerto": "Mandou bem! Uma lista.",
+          "erro": "O dicionário com a chave do par é o formato do `last`.",
+          "explicacao": "o histórico traz vários registros, então vem em uma lista; cada item é o dicionário de um dia."
+        },
+        {
+          "pergunta": "Quando o programa entra no `except`?",
+          "codigo": "try:\n    r = requests.get(url, timeout=10)\nexcept requests.RequestException:\n    print(\"Falha de conexão\")",
+          "opcoes": [
+            "Quando não há internet ou o tempo de espera acaba",
+            "Quando a API responde com status 404",
+            "Quando o JSON vem vazio",
+            "Sempre"
+          ],
+          "correta": 0,
+          "dica": "um 404 ainda é uma resposta.",
+          "acerto": "Isso! Sem resposta, há exceção.",
+          "erro": "Com 404 a API respondeu; teste o `status_code`.",
+          "explicacao": "a exceção acontece quando não há resposta. Um 404 é uma resposta válida com código de erro e é tratado com `if status_code == 200`."
+        }
+      ]
+    },
+    {
+      "id": "atividades",
+      "tipo": "atividades",
+      "nome": "Atividades",
+      "intro": [
+        "Os valores de saída mudam a cada consulta.",
+        "Escreva ou cole a sua tentativa no campo de cada atividade para liberar a solução. Outras soluções também valem, desde que passem nos testes do enunciado."
+      ],
+      "itens": [
+        {
+          "n": 1,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Faça um GET para `USD-BRL` e imprima o `status_code`."
+          ],
+          "solucao": [
+            {
+              "codigo": "import requests\n\nresposta = requests.get(\"https://economia.awesomeapi.com.br/json/last/USD-BRL\", timeout=10)\nprint(resposta.status_code)   # 200"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Busque `GBP-BRL` e imprima o nome da moeda, o `bid` e a `create_date`."
+          ],
+          "solucao": [
+            {
+              "codigo": "resposta = requests.get(\"https://economia.awesomeapi.com.br/json/last/GBP-BRL\", timeout=10)\nlibra = resposta.json()[\"GBPBRL\"]\nprint(f\"Moeda: {libra['name']}\")\nprint(f\"Compra (bid): R$ {libra['bid']}\")\nprint(f\"Atualizado em: {libra['create_date']}\")"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Converta o `bid` do dólar em número e mostre com 2 casas decimais."
+          ],
+          "solucao": [
+            {
+              "codigo": "resposta = requests.get(\"https://economia.awesomeapi.com.br/json/last/USD-BRL\", timeout=10)\nbid = float(resposta.json()[\"USDBRL\"][\"bid\"])\nprint(f\"Dólar: R$ {bid:.2f}\")"
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "nivel": "Médio",
+          "enunciado": [
+            "Crie a função `obter_cotacao(origem, destino)` com `timeout` e `try/except`, que devolva 0.0 em caso de falha."
+          ],
+          "solucao": [
+            {
+              "codigo": "import requests\n\nURL_BASE = \"https://economia.awesomeapi.com.br/json\"\n\ndef obter_cotacao(origem, destino):\n    par = f\"{origem}-{destino}\".upper()\n    try:\n        resposta = requests.get(f\"{URL_BASE}/last/{par}\", timeout=10)\n    except requests.RequestException:\n        return 0.0\n    if resposta.status_code != 200:\n        return 0.0\n    return float(resposta.json()[par.replace(\"-\", \"\")][\"bid\"])\n\nprint(obter_cotacao(\"usd\", \"brl\"))"
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "nivel": "Médio",
+          "enunciado": [
+            "Busque `USD-BRL` e `EUR-BRL` em **uma única** requisição e imprima os dois valores."
+          ],
+          "solucao": [
+            {
+              "codigo": "resposta = requests.get(\n    \"https://economia.awesomeapi.com.br/json/last/USD-BRL,EUR-BRL\", timeout=10\n)\ndados = resposta.json()\nprint(f\"Dólar: R$ {float(dados['USDBRL']['bid']):.4f}\")\nprint(f\"Euro:  R$ {float(dados['EURBRL']['bid']):.4f}\")"
+            }
+          ]
+        },
+        {
+          "n": 6,
+          "nivel": "Médio",
+          "enunciado": [
+            "Crie um app Streamlit com dois `selectbox`, um botão e um `st.metric` com a cotação."
+          ],
+          "solucao": [
+            {
+              "codigo": "import streamlit as st\nfrom api_financeira import obter_cotacao\n\nmoedas = [\"USD\", \"EUR\", \"GBP\", \"BRL\"]\norigem = st.selectbox(\"Origem\", moedas, index=0)\ndestino = st.selectbox(\"Destino\", moedas, index=3)\n\nif st.button(\"Ver cotação\"):\n    taxa = obter_cotacao(origem, destino)\n    if taxa > 0:\n        st.metric(f\"1 {origem} em {destino}\", f\"{taxa:.4f}\")\n    else:\n        st.error(\"Par indisponível.\")"
+            }
+          ]
+        },
+        {
+          "n": 7,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Busque o histórico de 10 dias do `USD-BRL` e calcule a média, o mínimo e o máximo do `bid` com a biblioteca `statistics`."
+          ],
+          "solucao": [
+            {
+              "codigo": "import statistics\nfrom api_financeira import obter_historico\n\nhistorico = obter_historico(\"USD\", \"BRL\", dias=10)\nvalores = [float(dia[\"bid\"]) for dia in historico]\n\nif valores:\n    print(f\"Média: {statistics.mean(valores):.4f}\")\n    print(f\"Mínimo: {min(valores):.4f}\")\n    print(f\"Máximo: {max(valores):.4f}\")\nelse:\n    print(\"Sem dados.\")"
+            }
+          ]
+        },
+        {
+          "n": 8,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Adicione ao app um gráfico de linha do histórico, com a data no eixo X."
+          ],
+          "solucao": [
+            "Dentro do `app.py`:",
+            {
+              "codigo": "import pandas as pd\n\nlista = obter_historico(origem, destino, 15)\nif lista:\n    df = pd.DataFrame(lista)\n    df[\"data\"] = pd.to_datetime(df[\"timestamp\"].astype(int), unit=\"s\")\n    df[\"bid\"] = df[\"bid\"].astype(float)\n    st.line_chart(df.set_index(\"data\")[\"bid\"])"
+            }
+          ]
+        },
+        {
+          "n": 9,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Organize o projeto em `api_financeira.py` e `app.py`. Explique por que o teste do módulo fica dentro de `if __name__ == \"__main__\":`."
+          ],
+          "solucao": [
+            "Use os arquivos da seção 7. Resposta esperada: quando o `app.py` importa o `api_financeira.py`, o Python executa o arquivo inteiro. Se o teste ficasse solto no fim, ele faria uma requisição toda vez que o app rodasse. O `__name__` só vale `\"__main__\"` quando o arquivo é executado diretamente (`python api_financeira.py`); na importação, ele vale `\"api_financeira\"`, e o teste não roda."
+          ]
+        }
+      ]
+    }
+  ]
+}

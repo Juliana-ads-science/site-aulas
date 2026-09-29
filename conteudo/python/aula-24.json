@@ -1,0 +1,1019 @@
+{
+  "numero": 24,
+  "titulo": "CRUD com Streamlit e SQLite",
+  "etapas": [
+    {
+      "id": "definicoes",
+      "tipo": "leitura",
+      "nome": "Definições",
+      "blocos": [
+        {
+          "tabela": [
+            [
+              "Termo",
+              "O que significa"
+            ],
+            [
+              "CRUD",
+              "Create, Read, Update, Delete: criar, ler, atualizar e excluir registros"
+            ],
+            [
+              "Persistência",
+              "Os dados continuam salvos depois de fechar o app"
+            ],
+            [
+              "SQLite",
+              "Banco de dados relacional guardado em um único arquivo (`.db`), sem servidor"
+            ],
+            [
+              "`sqlite3`",
+              "Biblioteca padrão do Python para usar SQLite (não precisa instalar)"
+            ],
+            [
+              "Conexão (`conn`)",
+              "Canal aberto entre o Python e o arquivo do banco"
+            ],
+            [
+              "Cursor",
+              "Objeto que executa comandos SQL e guarda os resultados"
+            ],
+            [
+              "SQL",
+              "Linguagem de comandos do banco de dados"
+            ],
+            [
+              "Tabela",
+              "Conjunto de registros com colunas definidas"
+            ],
+            [
+              "Registro",
+              "Uma linha da tabela (um usuário, um produto)"
+            ],
+            [
+              "Chave primária (PK)",
+              "Coluna que identifica cada registro de forma única (`id`)"
+            ],
+            [
+              "`AUTOINCREMENT`",
+              "O banco gera o `id` sozinho, sem repetir"
+            ],
+            [
+              "`commit()`",
+              "Confirma as alterações e grava no arquivo"
+            ],
+            [
+              "Placeholder `?`",
+              "Espaço reservado para um valor dentro do comando SQL"
+            ],
+            [
+              "`sqlite3.Row`",
+              "Faz cada linha se comportar como um dicionário"
+            ],
+            [
+              "`@st.cache_resource`",
+              "Guarda um recurso (como a conexão) para reutilizar entre re-execuções"
+            ],
+            [
+              "`st.form`",
+              "Agrupa campos; o script só re-executa ao clicar no botão de envio"
+            ],
+            [
+              "`st.tabs`",
+              "Abas para separar as operações na mesma página"
+            ],
+            [
+              "`format_func`",
+              "Função que define o texto mostrado em um `selectbox`"
+            ],
+            [
+              "SQL injection",
+              "Ataque que insere comandos SQL pelo texto digitado pelo usuário"
+            ],
+            [
+              "Modularização",
+              "Separar as funções de banco (`func_crud.py`) do código da interface"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "para-que-como-e-quando-usamos",
+      "tipo": "leitura",
+      "nome": "Para que, como e quando usamos",
+      "blocos": [
+        "**Para que:** cadastros de alunos, produtos ou tarefas, controles internos da equipe e painéis com dados criados pelo próprio usuário.",
+        "**Como:** a interface Streamlit coleta os dados e chama funções Python, que enviam comandos SQL ao arquivo SQLite. Cada letra do CRUD corresponde a um comando:",
+        {
+          "tabela": [
+            [
+              "Operação",
+              "Comando SQL",
+              "Na interface"
+            ],
+            [
+              "Create",
+              "`INSERT INTO`",
+              "Formulário de cadastro"
+            ],
+            [
+              "Read",
+              "`SELECT`",
+              "Tabela e gráfico"
+            ],
+            [
+              "Update",
+              "`UPDATE ... WHERE id = ?`",
+              "Seleção + formulário pré-preenchido"
+            ],
+            [
+              "Delete",
+              "`DELETE ... WHERE id = ?`",
+              "Seleção + confirmação"
+            ]
+          ]
+        },
+        "**Quando usar:**",
+        {
+          "tabela": [
+            [
+              "Situação",
+              "Escolha"
+            ],
+            [
+              "Só testar o fluxo, sem precisar salvar",
+              "`st.session_state` (Aula 13)"
+            ],
+            [
+              "Protótipo, app de uma pessoa ou de uma equipe pequena",
+              "SQLite"
+            ],
+            [
+              "Muitos usuários gravando ao mesmo tempo",
+              "PostgreSQL ou MySQL"
+            ],
+            [
+              "App publicado no Streamlit Community Cloud",
+              "Atenção: o arquivo `.db` pode ser apagado quando o app reinicia; prefira um banco externo"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "estruturas",
+      "tipo": "leitura",
+      "nome": "Estruturas",
+      "blocos": [
+        {
+          "h": "3.1 Comandos SQL da aula"
+        },
+        {
+          "codigo": "CREATE TABLE IF NOT EXISTS usuarios (\n    id INTEGER PRIMARY KEY AUTOINCREMENT,\n    nome TEXT NOT NULL,\n    funcao TEXT\n);\n\nINSERT INTO usuarios (nome, funcao) VALUES (?, ?);\nSELECT id, nome, funcao FROM usuarios ORDER BY id DESC;\nSELECT id, nome, funcao FROM usuarios WHERE id = ?;\nUPDATE usuarios SET nome = ?, funcao = ? WHERE id = ?;\nDELETE FROM usuarios WHERE id = ?;"
+        },
+        {
+          "h": "3.2 Conexão reaproveitada"
+        },
+        {
+          "codigo": "import sqlite3\nimport streamlit as st\n\n@st.cache_resource\ndef get_db_connection():\n    conn = sqlite3.connect(\"dados_crud.db\", check_same_thread=False)\n    conn.row_factory = sqlite3.Row\n    return conn"
+        },
+        {
+          "h": "3.3 Executar um comando"
+        },
+        {
+          "codigo": "conn = get_db_connection()\ncursor = conn.cursor()\ncursor.execute(\"INSERT INTO usuarios (nome, funcao) VALUES (?, ?)\", (nome, funcao))\nconn.commit()"
+        },
+        {
+          "h": "3.4 Formulário"
+        },
+        {
+          "codigo": "with st.form(\"form_criar\"):\n    nome = st.text_input(\"Nome\")\n    enviado = st.form_submit_button(\"Salvar\")\n\nif enviado:\n    ..."
+        },
+        {
+          "h": "3.5 Abas"
+        },
+        {
+          "codigo": "tab_r, tab_c, tab_u, tab_d = st.tabs([\"Consulta\", \"Criar\", \"Atualizar\", \"Excluir\"])\n\nwith tab_r:\n    st.header(\"Consulta\")"
+        },
+        {
+          "h": "3.6 Estrutura do projeto"
+        },
+        {
+          "codigo": "crud/\n├── app.py          # interface (abas)\n├── func_crud.py    # funções de banco\n└── dados_crud.db   # criado sozinho na primeira execução"
+        }
+      ]
+    },
+    {
+      "id": "sintaxe-e-simbolos",
+      "tipo": "leitura",
+      "nome": "Sintaxe e símbolos",
+      "blocos": [
+        {
+          "tabela": [
+            [
+              "Símbolo / comando",
+              "O que faz",
+              "Por que existe"
+            ],
+            [
+              "`sqlite3.connect(\"arquivo.db\")`",
+              "Abre o banco",
+              "Se o arquivo não existir, ele é criado"
+            ],
+            [
+              "`check_same_thread=False`",
+              "Permite usar a conexão em outras threads",
+              "O Streamlit roda as re-execuções em threads diferentes; sem isso a conexão guardada no cache dá erro"
+            ],
+            [
+              "`conn.row_factory = sqlite3.Row`",
+              "Linhas se comportam como dicionário",
+              "Permite `row[\"nome\"]` em vez de `row[1]`"
+            ],
+            [
+              "`cursor.execute(sql, (a, b))`",
+              "Executa o comando com valores",
+              "A tupla preenche os `?` na ordem"
+            ],
+            [
+              "`conn.execute(...)`",
+              "Atalho",
+              "Cria o cursor e executa numa linha só"
+            ],
+            [
+              "`(id_selecionado,)`",
+              "Tupla de um elemento",
+              "A vírgula é obrigatória; sem ela é só um número entre parênteses"
+            ],
+            [
+              "`fetchall()` / `fetchone()`",
+              "Busca todas as linhas / uma linha (ou `None`)",
+              "Pegar o resultado de um `SELECT`"
+            ],
+            [
+              "`dict(row)`",
+              "Converte a linha em dicionário comum",
+              "Facilita criar o DataFrame"
+            ],
+            [
+              "`[dict(row) for row in ...]`",
+              "List comprehension",
+              "Monta a lista em uma linha"
+            ],
+            [
+              "`conn.commit()`",
+              "Grava as alterações",
+              "Sem ele, `INSERT`, `UPDATE` e `DELETE` se perdem"
+            ],
+            [
+              "`WHERE id = ?`",
+              "Filtra um registro",
+              "Sem `WHERE`, `UPDATE` e `DELETE` atingem a tabela inteira"
+            ],
+            [
+              "`ORDER BY id DESC`",
+              "Ordena do maior para o menor id",
+              "Mostra os mais recentes primeiro"
+            ],
+            [
+              "`@st.cache_resource`",
+              "Guarda o objeto da conexão",
+              "`cache_data` é para dados (DataFrame); `cache_resource` é para recursos (conexões, modelos)"
+            ],
+            [
+              "`with st.form(\"id\"):`",
+              "Abre o formulário",
+              "Os campos só são enviados juntos, no botão"
+            ],
+            [
+              "`st.form_submit_button`",
+              "Botão de envio do formulário",
+              "Todo `st.form` precisa de um"
+            ],
+            [
+              "`clear_on_submit=True`",
+              "Limpa os campos após enviar",
+              "Deixa o formulário pronto para o próximo cadastro"
+            ],
+            [
+              "`st.tabs([...])`",
+              "Cria as abas",
+              "Devolve uma aba para cada nome, na mesma ordem"
+            ],
+            [
+              "`key=\"sel_u\"`",
+              "Chave única do widget",
+              "Widgets iguais em abas diferentes precisam de keys diferentes"
+            ],
+            [
+              "`format_func=lambda x: opcoes[x]`",
+              "Texto mostrado no `selectbox`",
+              "Mostra o nome, mas devolve o `id`"
+            ],
+            [
+              "`value=usuario_atual[\"nome\"]`",
+              "Valor inicial do campo",
+              "Pré-preenche o formulário de edição"
+            ],
+            [
+              "`type=\"primary\"`",
+              "Botão em destaque",
+              "Chamar atenção para ações importantes"
+            ],
+            [
+              "`from func_crud import ...`",
+              "Importa funções de outro arquivo",
+              "Separa banco e interface"
+            ],
+            [
+              "`df[\"funcao\"].value_counts()`",
+              "Conta quantas vezes cada valor aparece",
+              "Base do gráfico de análise"
+            ],
+            [
+              "`st.rerun()`",
+              "Re-executa o script na hora",
+              "Mostrar os dados atualizados logo após gravar"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logica-por-tras",
+      "tipo": "leitura",
+      "nome": "Lógica por trás",
+      "blocos": [
+        "**Por que um banco.** O script do Streamlit roda do zero a cada interação, e o `st.session_state` vive só enquanto a aba está aberta. O SQLite grava em um arquivo no disco, então os dados sobrevivem ao fechamento do app.",
+        "**O caminho de cada operação:** interface → função Python → comando SQL → arquivo `.db` → resultado → interface.",
+        "**Por que `?` e não f-string.** Com `f\"INSERT ... VALUES ('{nome}')\"`, um nome com apóstrofo (como D'Ávila) quebra o comando, e alguém mal-intencionado pode digitar um comando SQL no campo. Com `?`, o `sqlite3` trata o valor sempre como dado, nunca como comando.",
+        "**Por que `commit()`.** Toda alteração abre uma transação. Enquanto não há `commit()`, a mudança fica pendente e pode ser descartada.",
+        "**Por que `WHERE` é vital.** `DELETE FROM usuarios` sem `WHERE` apaga **todos** os registros. O `WHERE id = ?` garante que só o registro escolhido é afetado.",
+        "**Por que guardar a conexão e não fechá-la.** O `@st.cache_resource` devolve sempre o **mesmo** objeto de conexão. Se o código fechar essa conexão, a próxima re-execução recebe uma conexão fechada e dá erro. Com cache, a conexão fica aberta enquanto o app roda. (A alternativa sem cache é abrir e fechar a conexão em cada função.)",
+        "**Update e Delete dependem do Read.** O `selectbox` é preenchido com a leitura atual do banco; assim o usuário só escolhe registros que existem.",
+        "**Por que `st.rerun()` depois de gravar.** O script desenha as abas de cima para baixo. A aba de Consulta é desenhada **antes** de a gravação acontecer na aba Criar, então ainda mostra os dados antigos. O `st.rerun()` roda tudo de novo, já com o banco atualizado."
+      ]
+    },
+    {
+      "id": "exemplo-a",
+      "tipo": "codigo",
+      "nome": "Exemplo A — conexão e criação da tabela (func_crud.py, parte 1)",
+      "codigo": [
+        "import sqlite3",
+        "import streamlit as st",
+        "",
+        "@st.cache_resource",
+        "def get_db_connection():",
+        "    conn = sqlite3.connect(\"dados_crud.db\", check_same_thread=False)",
+        "    conn.row_factory = sqlite3.Row",
+        "    conn.execute(\"\"\"",
+        "        CREATE TABLE IF NOT EXISTS usuarios (",
+        "            id INTEGER PRIMARY KEY AUTOINCREMENT,",
+        "            nome TEXT NOT NULL,",
+        "            funcao TEXT",
+        "        )",
+        "    \"\"\")",
+        "    conn.commit()",
+        "    return conn"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            2
+          ],
+          "texto": "Importa `sqlite3` (já vem com o Python) e o Streamlit"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Decorador: a função roda uma vez só; depois o resultado é reaproveitado"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Abre (ou cria) o arquivo `dados_crud.db`, liberando o uso em várias threads"
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "Cada linha lida vai se comportar como dicionário"
+        },
+        {
+          "linhas": [
+            8,
+            14
+          ],
+          "texto": "Cria a tabela `usuarios` se ela ainda não existir"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "`id` inteiro, chave primária, gerado automaticamente"
+        },
+        {
+          "linhas": [
+            11,
+            11
+          ],
+          "texto": "`nome` obrigatório (`NOT NULL`)"
+        },
+        {
+          "linhas": [
+            12,
+            12
+          ],
+          "texto": "`funcao` opcional"
+        },
+        {
+          "linhas": [
+            15,
+            15
+          ],
+          "texto": "Grava a criação da tabela"
+        },
+        {
+          "linhas": [
+            16,
+            16
+          ],
+          "texto": "Devolve a conexão, que fica guardada no cache (não é fechada)"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-b",
+      "tipo": "codigo",
+      "nome": "Exemplo B — funções de banco (func_crud.py, parte 2)",
+      "codigo": [
+        "def ler_usuarios():",
+        "    cursor = get_db_connection().cursor()",
+        "    cursor.execute(\"SELECT id, nome, funcao FROM usuarios ORDER BY id DESC\")",
+        "    return [dict(row) for row in cursor.fetchall()]",
+        "",
+        "def obter_usuario_por_id(usuario_id):",
+        "    cursor = get_db_connection().cursor()",
+        "    cursor.execute(\"SELECT id, nome, funcao FROM usuarios WHERE id = ?\", (usuario_id,))",
+        "    registro = cursor.fetchone()",
+        "    return dict(registro) if registro else None",
+        "",
+        "def inserir_usuario(nome, funcao):",
+        "    conn = get_db_connection()",
+        "    conn.execute(\"INSERT INTO usuarios (nome, funcao) VALUES (?, ?)\", (nome, funcao))",
+        "    conn.commit()",
+        "",
+        "def atualizar_usuario(usuario_id, nome, funcao):",
+        "    conn = get_db_connection()",
+        "    conn.execute(\"UPDATE usuarios SET nome = ?, funcao = ? WHERE id = ?\",",
+        "                 (nome, funcao, usuario_id))",
+        "    conn.commit()",
+        "",
+        "def excluir_usuario(usuario_id):",
+        "    conn = get_db_connection()",
+        "    conn.execute(\"DELETE FROM usuarios WHERE id = ?\", (usuario_id,))",
+        "    conn.commit()"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            4
+          ],
+          "texto": "**Read:** busca todos os usuários, do mais novo ao mais antigo, e devolve uma lista de dicionários"
+        },
+        {
+          "linhas": [
+            6,
+            10
+          ],
+          "texto": "Busca um usuário pelo `id`; `fetchone()` devolve uma linha ou `None`"
+        },
+        {
+          "linhas": [
+            8,
+            8
+          ],
+          "texto": "`(usuario_id,)`: a vírgula transforma o valor em tupla"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "Se achou, converte em dicionário; se não, devolve `None`"
+        },
+        {
+          "linhas": [
+            12,
+            15
+          ],
+          "texto": "**Create:** insere nome e função nos dois `?`, na ordem, e grava"
+        },
+        {
+          "linhas": [
+            17,
+            21
+          ],
+          "texto": "**Update:** troca nome e função só do registro com aquele `id`"
+        },
+        {
+          "linhas": [
+            20,
+            20
+          ],
+          "texto": "A ordem da tupla segue a ordem dos `?`: nome, função, id"
+        },
+        {
+          "linhas": [
+            23,
+            26
+          ],
+          "texto": "**Delete:** remove só o registro com aquele `id` e grava"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-c",
+      "tipo": "codigo",
+      "nome": "Exemplo C — tela de atualização (Update)",
+      "codigo": [
+        "import streamlit as st",
+        "from func_crud import ler_usuarios, obter_usuario_por_id, atualizar_usuario",
+        "",
+        "st.subheader(\"U - Atualizar Usuário\")",
+        "",
+        "dados_lidos = ler_usuarios()",
+        "opcoes = {row[\"id\"]: row[\"nome\"] for row in dados_lidos}",
+        "",
+        "id_selecionado = st.selectbox(\"Selecione o usuário:\", list(opcoes.keys()),",
+        "                              format_func=lambda x: opcoes[x], key=\"sel_u\")",
+        "",
+        "if id_selecionado:",
+        "    usuario_atual = obter_usuario_por_id(id_selecionado)",
+        "    with st.form(\"form_atualizar\"):",
+        "        nome_upd = st.text_input(\"Novo nome:\", value=usuario_atual[\"nome\"])",
+        "        funcao_upd = st.text_input(\"Nova função:\", value=usuario_atual[\"funcao\"])",
+        "        btn_atualizar = st.form_submit_button(\"Atualizar Dados\")",
+        "    if btn_atualizar:",
+        "        atualizar_usuario(id_selecionado, nome_upd, funcao_upd)",
+        "        st.success(f\"Usuário ID {id_selecionado} atualizado!\")",
+        "else:",
+        "    st.info(\"Nenhum usuário cadastrado.\")"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            2
+          ],
+          "texto": "Importa o Streamlit e só as funções de banco necessárias"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Subtítulo da tela"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Lê todos os usuários do banco (Read)"
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "Monta um dicionário `{id: nome}`"
+        },
+        {
+          "linhas": [
+            9,
+            10
+          ],
+          "texto": "O menu mostra os nomes, mas devolve o `id` escolhido"
+        },
+        {
+          "linhas": [
+            12,
+            12
+          ],
+          "texto": "Se a tabela está vazia, o `selectbox` devolve `None` e cai no `else`"
+        },
+        {
+          "linhas": [
+            13,
+            13
+          ],
+          "texto": "Busca os dados atuais do usuário escolhido"
+        },
+        {
+          "linhas": [
+            14,
+            17
+          ],
+          "texto": "Formulário com os campos já preenchidos com os valores atuais"
+        },
+        {
+          "linhas": [
+            18,
+            20
+          ],
+          "texto": "Só no clique: grava a alteração e confirma"
+        },
+        {
+          "linhas": [
+            21,
+            22
+          ],
+          "texto": "Mensagem quando não há ninguém cadastrado"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-d",
+      "tipo": "codigo",
+      "nome": "Exemplo D — tela de exclusão (Delete)",
+      "codigo": [
+        "import streamlit as st",
+        "from func_crud import ler_usuarios, excluir_usuario",
+        "",
+        "st.subheader(\"D - Excluir Usuário\")",
+        "",
+        "opcoes = {row[\"id\"]: row[\"nome\"] for row in ler_usuarios()}",
+        "id_excluir = st.selectbox(\"Selecione o usuário:\", list(opcoes.keys()),",
+        "                          format_func=lambda x: opcoes[x], key=\"sel_d\")",
+        "",
+        "if id_excluir:",
+        "    st.warning(f\"Confirma a exclusão de **{opcoes[id_excluir]}** (ID {id_excluir})?\")",
+        "    if st.button(\"Sim, excluir permanentemente\", type=\"primary\", key=\"btn_d\"):",
+        "        excluir_usuario(id_excluir)",
+        "        st.success(f\"Usuário ID {id_excluir} excluído!\")",
+        "else:",
+        "    st.info(\"Selecione um registro para excluir.\")"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Monta `{id: nome}` a partir da leitura do banco"
+        },
+        {
+          "linhas": [
+            7,
+            8
+          ],
+          "texto": "Menu com key própria (`sel_d`), diferente da tela de Update"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "Só continua se há um usuário escolhido"
+        },
+        {
+          "linhas": [
+            11,
+            11
+          ],
+          "texto": "Aviso visual forte: a exclusão não pode ser desfeita"
+        },
+        {
+          "linhas": [
+            12,
+            12
+          ],
+          "texto": "Botão em destaque; a exclusão só acontece no clique"
+        },
+        {
+          "linhas": [
+            13,
+            14
+          ],
+          "texto": "Apaga pelo `id` e confirma"
+        },
+        {
+          "linhas": [
+            15,
+            16
+          ],
+          "texto": "Orientação quando não há registros"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-e",
+      "tipo": "codigo",
+      "nome": "Exemplo E — consulta e análise (Read avançado)",
+      "codigo": [
+        "import streamlit as st",
+        "import pandas as pd",
+        "from func_crud import ler_usuarios",
+        "",
+        "def exibir_dados_analise():",
+        "    df = pd.DataFrame(ler_usuarios())",
+        "    if df.empty:",
+        "        st.info(\"Nenhum usuário cadastrado ainda. Use a aba Criar para começar.\")",
+        "        return",
+        "    st.subheader(f\"Total de registros: {len(df)}\")",
+        "    st.dataframe(df, hide_index=True)",
+        "    st.subheader(\"Distribuição por função\")",
+        "    contagem = df[\"funcao\"].value_counts()",
+        "    st.bar_chart(contagem)"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Função que desenha toda a área de consulta"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Converte a lista de dicionários em DataFrame"
+        },
+        {
+          "linhas": [
+            7,
+            9
+          ],
+          "texto": "Tabela vazia: orienta o usuário e encerra a função (evita erro na coluna `funcao`)"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "`len(df)` = número de registros"
+        },
+        {
+          "linhas": [
+            11,
+            11
+          ],
+          "texto": "Tabela interativa, sem a coluna de índice do Pandas"
+        },
+        {
+          "linhas": [
+            13,
+            13
+          ],
+          "texto": "Conta quantos usuários há em cada função"
+        },
+        {
+          "linhas": [
+            14,
+            14
+          ],
+          "texto": "Gráfico de barras: uma barra por função"
+        }
+      ]
+    },
+    {
+      "id": "como-aplicar",
+      "tipo": "leitura",
+      "nome": "Como aplicar: app CRUD completo com abas",
+      "blocos": [
+        "Use o `func_crud.py` dos Exemplos A e B e salve este arquivo como `app.py`. Rode `streamlit run app.py`.",
+        {
+          "codigo": "import streamlit as st\nimport pandas as pd\nfrom func_crud import (ler_usuarios, inserir_usuario,\n                       atualizar_usuario, excluir_usuario)\n\nst.set_page_config(page_title=\"CRUD de Usuários\", page_icon=\"🗂️\")\nst.title(\"Sistema CRUD com Streamlit e SQLite\")\n\nif \"mensagem\" in st.session_state:\n    st.success(st.session_state.pop(\"mensagem\"))\n\ndef gravar_e_recarregar(mensagem):\n    st.session_state.mensagem = mensagem\n    st.rerun()\n\ndados = ler_usuarios()\nopcoes = {row[\"id\"]: f'{row[\"id\"]} - {row[\"nome\"]}' for row in dados}\n\ntab_r, tab_c, tab_u, tab_d = st.tabs([\"Consulta\", \"Criar\", \"Atualizar\", \"Excluir\"])\n\nwith tab_r:\n    df = pd.DataFrame(dados)\n    if df.empty:\n        st.info(\"Nenhum usuário cadastrado. Use a aba Criar.\")\n    else:\n        st.metric(\"Total de registros\", len(df))\n        st.dataframe(df, hide_index=True)\n        st.bar_chart(df[\"funcao\"].value_counts())\n\nwith tab_c:\n    with st.form(\"form_criar\", clear_on_submit=True):\n        nome = st.text_input(\"Nome\")\n        funcao = st.text_input(\"Função\")\n        salvar = st.form_submit_button(\"Salvar\")\n    if salvar:\n        if nome and funcao:\n            inserir_usuario(nome, funcao)\n            gravar_e_recarregar(f\"{nome} cadastrado!\")\n        else:\n            st.error(\"Preencha nome e função.\")\n\nwith tab_u:\n    if opcoes:\n        id_u = st.selectbox(\"Usuário\", list(opcoes), format_func=opcoes.get, key=\"sel_u\")\n        atual = next(row for row in dados if row[\"id\"] == id_u)\n        with st.form(\"form_atualizar\"):\n            novo_nome = st.text_input(\"Nome\", value=atual[\"nome\"])\n            nova_funcao = st.text_input(\"Função\", value=atual[\"funcao\"])\n            atualizar = st.form_submit_button(\"Atualizar\")\n        if atualizar:\n            atualizar_usuario(id_u, novo_nome, nova_funcao)\n            gravar_e_recarregar(f\"Usuário {id_u} atualizado!\")\n    else:\n        st.info(\"Nada para atualizar.\")\n\nwith tab_d:\n    if opcoes:\n        id_d = st.selectbox(\"Usuário\", list(opcoes), format_func=opcoes.get, key=\"sel_d\")\n        st.warning(f\"Excluir {opcoes[id_d]}? Essa ação não pode ser desfeita.\")\n        if st.button(\"Sim, excluir\", type=\"primary\"):\n            excluir_usuario(id_d)\n            gravar_e_recarregar(f\"Usuário {id_d} excluído!\")\n    else:\n        st.info(\"Nada para excluir.\")"
+        },
+        "**Por que funciona:** o banco é lido uma vez no topo (`dados`), e todas as abas usam essa mesma leitura. Depois de qualquer gravação, `gravar_e_recarregar` guarda a mensagem no `session_state` e chama `st.rerun()`; na nova execução, o banco é lido de novo (dados atualizados em todas as abas) e a mensagem aparece uma única vez no topo, porque o `.pop` a remove. O `format_func=opcoes.get` mostra \"id - nome\" no menu e devolve o `id`. O `next(...)` pega na lista já lida o usuário com aquele `id`, sem nova consulta ao banco."
+      ]
+    },
+    {
+      "id": "quiz",
+      "tipo": "quiz",
+      "nome": "Quiz de código",
+      "perguntas": [
+        {
+          "pergunta": "O que este comando faz?",
+          "codigo": "cursor.execute(\"DELETE FROM usuarios\")\nconn.commit()",
+          "opcoes": [
+            "Apaga o último registro",
+            "Dá erro por falta de `WHERE`",
+            "Apaga todos os registros da tabela",
+            "Não faz nada sem um `id`"
+          ],
+          "correta": 2,
+          "dica": "qual filtro limita quais linhas são apagadas?",
+          "acerto": "Exato! Sem `WHERE`, vale para a tabela inteira.",
+          "erro": "O SQL não exige `WHERE`; ele simplesmente apaga tudo.",
+          "explicacao": "o `WHERE id = ?` é o que restringe a operação a um registro. Sem ele, todas as linhas são removidas."
+        },
+        {
+          "pergunta": "O programa termina logo depois desta linha. O que acontece com a Ana?",
+          "codigo": "conn.execute(\"INSERT INTO usuarios (nome, funcao) VALUES (?, ?)\", (\"Ana\", \"Dev\"))",
+          "opcoes": [
+            "Fica gravada no banco",
+            "A inserção se perde",
+            "Dá erro de sintaxe",
+            "Fica gravada só o nome"
+          ],
+          "correta": 1,
+          "dica": "qual comando confirma a gravação?",
+          "acerto": "Isso! Faltou o `commit()`.",
+          "erro": "O `execute` prepara a mudança, mas quem grava é o `commit()`.",
+          "explicacao": "sem `conn.commit()`, a transação não é confirmada e a alteração é descartada."
+        },
+        {
+          "pergunta": "O que acontece?",
+          "codigo": "cursor.execute(\"SELECT * FROM usuarios WHERE id = ?\", (5))",
+          "opcoes": [
+            "Busca o usuário 5",
+            "Dá erro, porque `(5)` não é uma tupla",
+            "Busca os usuários 0 a 5",
+            "Devolve todos os usuários"
+          ],
+          "correta": 1,
+          "dica": "o que muda entre `(5)` e `(5,)`?",
+          "acerto": "Perfeito! Faltou a vírgula.",
+          "erro": "Parênteses sozinhos não criam tupla.",
+          "explicacao": "`(5)` é só o número 5. Os valores precisam ir em uma sequência, então o certo é `(5,)`."
+        },
+        {
+          "pergunta": "Por que usamos `?` em vez de f-string no SQL?",
+          "opcoes": [
+            "Para o banco tratar o valor sempre como dado, evitando SQL injection e erros com aspas",
+            "Porque é mais curto de escrever",
+            "Porque f-string não funciona dentro de SQL",
+            "Para converter o texto em número"
+          ],
+          "correta": 0,
+          "dica": "o que acontece se o nome digitado tiver um apóstrofo?",
+          "acerto": "Isso! Segurança e robustez.",
+          "erro": "A f-string funciona, mas mistura o texto do usuário com o comando.",
+          "explicacao": "com placeholders, o `sqlite3` envia o comando e os valores separados, e o valor nunca é interpretado como comando."
+        },
+        {
+          "pergunta": "O usuário escolhe \"Beto\". Quanto vale `x`?",
+          "codigo": "opcoes = {1: \"Ana\", 2: \"Beto\"}\nx = st.selectbox(\"Usuário\", list(opcoes), format_func=lambda k: opcoes[k])",
+          "opcoes": [
+            "`\"Beto\"`",
+            "`1`",
+            "`(2, \"Beto\")`",
+            "`2`"
+          ],
+          "correta": 3,
+          "dica": "a lista de opções tem os ids ou os nomes?",
+          "acerto": "Mandou bem! Mostra o nome, devolve o id.",
+          "erro": "O `format_func` muda só o texto exibido.",
+          "explicacao": "as opções são as chaves `[1, 2]`; o `format_func` troca o que aparece na tela, mas o valor devolvido continua sendo a chave."
+        },
+        {
+          "pergunta": "Qual a vantagem de colocar os campos dentro de `st.form`?",
+          "opcoes": [
+            "Cada campo re-executa o script ao ser digitado",
+            "Nenhuma, é só visual",
+            "O script só re-executa no botão de envio, com todos os valores juntos",
+            "Os dados são salvos no banco automaticamente"
+          ],
+          "correta": 2,
+          "dica": "o que acontece fora do form quando você digita em um campo e sai dele?",
+          "acerto": "Isso! Um envio só, na hora certa.",
+          "erro": "O form não grava nada sozinho; ele controla quando o script roda.",
+          "explicacao": "fora de um form, cada mudança de campo re-executa o script. Dentro dele, os valores só são enviados no `form_submit_button`."
+        }
+      ]
+    },
+    {
+      "id": "atividades",
+      "tipo": "atividades",
+      "nome": "Atividades",
+      "intro": [
+        "As atividades usam `import streamlit as st`, `import pandas as pd` e a função `get_db_connection()` do Exemplo A.",
+        "Escreva ou cole a sua tentativa no campo de cada atividade para liberar a solução. Outras soluções também valem, desde que passem nos testes do enunciado."
+      ],
+      "itens": [
+        {
+          "n": 1,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Escreva o `CREATE TABLE` de uma tabela `produtos` com `id` autoincremento, `nome` texto obrigatório e `preco` número real."
+          ],
+          "solucao": [
+            {
+              "codigo": "CREATE TABLE IF NOT EXISTS produtos (\n    id INTEGER PRIMARY KEY AUTOINCREMENT,\n    nome TEXT NOT NULL,\n    preco REAL\n);"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Escreva a função `inserir_produto(nome, preco)` usando placeholders e `commit()`."
+          ],
+          "solucao": [
+            {
+              "codigo": "def inserir_produto(nome, preco):\n    conn = get_db_connection()\n    conn.execute(\"INSERT INTO produtos (nome, preco) VALUES (?, ?)\", (nome, preco))\n    conn.commit()"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Escreva a função `ler_produtos()`, que devolva uma lista de dicionários, e mostre o resultado com `st.dataframe`."
+          ],
+          "solucao": [
+            {
+              "codigo": "def ler_produtos():\n    cursor = get_db_connection().cursor()\n    cursor.execute(\"SELECT id, nome, preco FROM produtos\")\n    return [dict(row) for row in cursor.fetchall()]\n\nst.dataframe(pd.DataFrame(ler_produtos()), hide_index=True)"
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "nivel": "Médio",
+          "enunciado": [
+            "Crie um `st.form` com nome e preço (`number_input`). Mostre erro se o nome estiver vazio ou se o preço for menor ou igual a zero; caso contrário, grave."
+          ],
+          "solucao": [
+            {
+              "codigo": "with st.form(\"form_produto\"):\n    nome = st.text_input(\"Nome\")\n    preco = st.number_input(\"Preço\", min_value=0.0, step=0.5)\n    enviar = st.form_submit_button(\"Cadastrar\")\n\nif enviar:\n    if not nome:\n        st.error(\"Informe o nome.\")\n    elif preco <= 0:\n        st.error(\"O preço deve ser maior que zero.\")\n    else:\n        inserir_produto(nome, preco)\n        st.success(f\"{nome} cadastrado!\")"
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "nivel": "Médio",
+          "enunciado": [
+            "Na aba de consulta, mostre com `st.metric` o total de produtos e o preço médio."
+          ],
+          "solucao": [
+            {
+              "codigo": "df = pd.DataFrame(ler_produtos())\nif df.empty:\n    st.info(\"Nenhum produto cadastrado.\")\nelse:\n    c1, c2 = st.columns(2)\n    c1.metric(\"Total de produtos\", len(df))\n    c2.metric(\"Preço médio\", f\"R$ {df['preco'].mean():.2f}\")"
+            }
+          ]
+        },
+        {
+          "n": 6,
+          "nivel": "Médio",
+          "enunciado": [
+            "Crie um `selectbox` que mostre \"id - nome\" de cada produto e exiba os dados do produto escolhido."
+          ],
+          "solucao": [
+            {
+              "codigo": "produtos = ler_produtos()\nopcoes = {p[\"id\"]: f'{p[\"id\"]} - {p[\"nome\"]}' for p in produtos}\nid_sel = st.selectbox(\"Produto\", list(opcoes), format_func=lambda k: opcoes[k])\n\nif id_sel:\n    escolhido = next(p for p in produtos if p[\"id\"] == id_sel)\n    st.write(escolhido)"
+            }
+          ]
+        },
+        {
+          "n": 7,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Crie a aba Atualizar para produtos, com formulário pré-preenchido e a função `atualizar_produto`."
+          ],
+          "solucao": [
+            "Continuação da atividade 6:",
+            {
+              "codigo": "def atualizar_produto(id_produto, nome, preco):\n    conn = get_db_connection()\n    conn.execute(\"UPDATE produtos SET nome = ?, preco = ? WHERE id = ?\",\n                 (nome, preco, id_produto))\n    conn.commit()\n\nif id_sel:\n    with st.form(\"form_upd_produto\"):\n        novo_nome = st.text_input(\"Nome\", value=escolhido[\"nome\"])\n        novo_preco = st.number_input(\"Preço\", min_value=0.0,\n                                     value=float(escolhido[\"preco\"]))\n        salvar = st.form_submit_button(\"Atualizar\")\n    if salvar:\n        atualizar_produto(id_sel, novo_nome, novo_preco)\n        st.success(\"Produto atualizado!\")"
+            }
+          ]
+        },
+        {
+          "n": 8,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Crie a aba Excluir com confirmação: o botão só fica habilitado depois que o usuário marca um `st.checkbox`."
+          ],
+          "solucao": [
+            {
+              "codigo": "def excluir_produto(id_produto):\n    conn = get_db_connection()\n    conn.execute(\"DELETE FROM produtos WHERE id = ?\", (id_produto,))\n    conn.commit()\n\nif id_sel:\n    confirmar = st.checkbox(\"Confirmo que quero excluir este produto\")\n    if st.button(\"Excluir\", type=\"primary\", disabled=not confirmar):\n        excluir_produto(id_sel)\n        st.success(\"Produto excluído!\")"
+            }
+          ]
+        },
+        {
+          "n": 9,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Explique por que usar `@st.cache_resource` junto com `conn.close()` quebra o app e mostre a correção."
+          ],
+          "solucao": [
+            "Resposta esperada: o `@st.cache_resource` devolve sempre o mesmo objeto de conexão em todas as re-execuções. Se o código chama `conn.close()` (ou usa `closing(...)`), fecha exatamente a conexão guardada. Na próxima re-execução, o cache devolve essa conexão já fechada e aparece o erro *Cannot operate on a closed database*. Correção: com cache, a conexão nunca é fechada; sem cache, cada função abre e fecha a própria conexão.",
+            {
+              "codigo": "@st.cache_resource\ndef get_db_connection():\n    conn = sqlite3.connect(\"dados_crud.db\", check_same_thread=False)\n    conn.row_factory = sqlite3.Row\n    return conn          # sem conn.close() em nenhum lugar do projeto"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

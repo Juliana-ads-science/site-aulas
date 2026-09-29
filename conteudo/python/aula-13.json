@@ -1,0 +1,988 @@
+{
+  "numero": 13,
+  "titulo": "Interface Gráfica com Streamlit II",
+  "etapas": [
+    {
+      "id": "definicoes",
+      "tipo": "leitura",
+      "nome": "Definições",
+      "blocos": [
+        "Na Aula 12 o app era uma coluna só, de cima para baixo. Nesta aula organizamos a **tela** (colunas, blocos retráteis, barra lateral), o **projeto** (várias páginas) e os **dados** (upload de arquivos e CRUD em memória).",
+        {
+          "tabela": [
+            [
+              "Termo",
+              "O que significa"
+            ],
+            [
+              "Layout",
+              "Organização visual dos elementos na página"
+            ],
+            [
+              "`st.columns()`",
+              "Divide a área em colunas lado a lado; devolve uma coluna por posição"
+            ],
+            [
+              "Proporção de colunas",
+              "Lista como `[1, 4, 2]`: cada número é a largura relativa da coluna"
+            ],
+            [
+              "`st.expander()`",
+              "Bloco retrátil: mostra só o título até o usuário clicar"
+            ],
+            [
+              "`st.container()`",
+              "Caixa que agrupa elementos; com `border=True` ganha uma borda"
+            ],
+            [
+              "`st.sidebar`",
+              "Barra lateral para filtros, controles e navegação"
+            ],
+            [
+              "App multipáginas",
+              "App com várias páginas, cada uma em um arquivo `.py`"
+            ],
+            [
+              "Pasta `pages/`",
+              "Pasta ao lado do arquivo principal; cada `.py` dentro dela vira uma página no menu"
+            ],
+            [
+              "`st.set_page_config()`",
+              "Define o título e o ícone da aba do navegador"
+            ],
+            [
+              "`st.file_uploader()`",
+              "Campo para o usuário enviar um arquivo; devolve `None` até o envio"
+            ],
+            [
+              "`st.metric()`",
+              "Mostra um indicador em destaque (rótulo + valor)"
+            ],
+            [
+              "`st.code()`",
+              "Mostra um bloco de código formatado"
+            ],
+            [
+              "`st.divider()`",
+              "Linha horizontal separadora"
+            ],
+            [
+              "CRUD",
+              "Create, Read, Update, Delete: as quatro operações básicas com dados"
+            ],
+            [
+              "CRUD visual",
+              "CRUD que guarda os dados só na memória da sessão (`st.session_state`)"
+            ],
+            [
+              "`st.rerun()`",
+              "Força o script a rodar de novo imediatamente"
+            ],
+            [
+              "`key`",
+              "Identificador único de um widget; obrigatório quando há widgets iguais"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "para-que-como-e-quando-usamos",
+      "tipo": "leitura",
+      "nome": "Para que, como e quando usamos",
+      "blocos": [
+        "**Para que:** dashboards com gráficos lado a lado, telas com detalhes escondidos, apps com várias seções (análise, upload, sobre), leitura de planilhas enviadas pelo usuário e cadastros simples.",
+        "**Como:** criamos contêineres (`st.columns`, `st.expander`, `st.sidebar`, `st.container`) e colocamos os elementos dentro deles com `with`. Para várias páginas, criamos a pasta `pages/`. Para manter dados entre cliques, usamos `st.session_state`.",
+        "**Quando usar cada ferramenta:**",
+        {
+          "tabela": [
+            [
+              "Situação",
+              "Ferramenta"
+            ],
+            [
+              "Comparar dois gráficos ou duas métricas",
+              "`st.columns(2)`"
+            ],
+            [
+              "Uma coluna principal larga e colunas menores de apoio",
+              "`st.columns([1, 4, 2])`"
+            ],
+            [
+              "Dados brutos, instruções, configurações avançadas",
+              "`st.expander()`"
+            ],
+            [
+              "Filtros e controles que afetam a página toda",
+              "`st.sidebar`"
+            ],
+            [
+              "Seções independentes do app",
+              "Pasta `pages/`"
+            ],
+            [
+              "Ler um CSV do usuário",
+              "`st.file_uploader()` + `pd.read_csv()`"
+            ],
+            [
+              "Guardar registros enquanto o app está aberto",
+              "`st.session_state`"
+            ],
+            [
+              "Guardar registros mesmo depois de fechar o app",
+              "Banco de dados (Aula 24, SQLite)"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "estruturas",
+      "tipo": "leitura",
+      "nome": "Estruturas",
+      "blocos": [
+        {
+          "h": "3.1 Colunas"
+        },
+        {
+          "codigo": "col1, col2 = st.columns(2)            # duas colunas iguais\na, b, c = st.columns([1, 4, 2])       # larguras 1/7, 4/7 e 2/7\n\nwith col1:\n    st.header(\"Coluna 1\")"
+        },
+        {
+          "h": "3.2 Expander"
+        },
+        {
+          "codigo": "with st.expander(\"Ver detalhes\"):\n    st.write(\"Conteúdo escondido\")\n\nwith st.expander(\"Instruções\", expanded=True):    # já começa aberto\n    st.write(\"Passo 1...\")"
+        },
+        {
+          "h": "3.3 Container com borda"
+        },
+        {
+          "codigo": "with st.container(border=True):\n    st.subheader(\"Cadastro\")"
+        },
+        {
+          "h": "3.4 App multipáginas"
+        },
+        {
+          "codigo": "meu_app/\n├── app.py                        # página inicial\n└── pages/\n    ├── 01_Análise_de_Dados.py\n    ├── 02_Upload_de_Arquivos.py\n    └── 03_Sobre.py"
+        },
+        "Rodamos só o principal: `streamlit run app.py`. O menu lateral é criado sozinho.",
+        {
+          "h": "3.5 Configuração da página"
+        },
+        {
+          "codigo": "st.set_page_config(page_title=\"Análise de Dados\", page_icon=\"📊\")"
+        },
+        "Coloque no início do arquivo, antes dos outros comandos `st.`.",
+        {
+          "h": "3.6 Upload de arquivo"
+        },
+        {
+          "codigo": "arquivo = st.file_uploader(\"Escolha um CSV\", type=\"csv\")\nif arquivo is not None:\n    df = pd.read_csv(arquivo)"
+        },
+        {
+          "h": "3.7 CRUD em memória"
+        },
+        {
+          "codigo": "if \"itens\" not in st.session_state:\n    st.session_state.itens = []\n\nst.session_state.itens.append(\"novo\")       # Create\nst.write(st.session_state.itens)            # Read\nst.session_state.itens[0] = \"editado\"       # Update\nst.session_state.itens.pop(0)               # Delete"
+        },
+        {
+          "h": "3.8 Métrica, código e divisória"
+        },
+        {
+          "codigo": "st.metric(label=\"Total de Vendas\", value=\"R$ 1.500\")\nst.code(\"print('oi')\", language=\"python\")\nst.divider()"
+        }
+      ]
+    },
+    {
+      "id": "sintaxe-e-simbolos",
+      "tipo": "leitura",
+      "nome": "Sintaxe e símbolos",
+      "blocos": [
+        {
+          "tabela": [
+            [
+              "Símbolo / comando",
+              "O que faz",
+              "Por que existe"
+            ],
+            [
+              "`col1, col2 = st.columns(2)`",
+              "Cria 2 colunas e guarda cada uma numa variável",
+              "A função devolve várias colunas; a atribuição múltipla \"desempacota\" cada uma"
+            ],
+            [
+              "`st.columns([1, 4, 2])`",
+              "Colunas com larguras diferentes",
+              "Cada número é uma fração da soma (1 + 4 + 2 = 7)"
+            ],
+            [
+              "`with col1:`",
+              "Entra no contexto da coluna",
+              "Tudo indentado abaixo é desenhado dentro dela"
+            ],
+            [
+              "`col1.metric(...)`",
+              "Chama o widget direto na coluna",
+              "Atalho: é o mesmo que escrever dentro de `with col1:`"
+            ],
+            [
+              "`st.sidebar.selectbox(...)`",
+              "Widget direto na barra lateral",
+              "Atalho para não abrir `with st.sidebar:`"
+            ],
+            [
+              "`container(border=True)`",
+              "Contêiner com borda",
+              "Destaca visualmente uma área (ex.: formulário)"
+            ],
+            [
+              "`expanded=True`",
+              "Expander já aberto",
+              "Útil para instruções que o usuário deve ver primeiro"
+            ],
+            [
+              "`pages/`",
+              "Pasta especial",
+              "O Streamlit lê essa pasta e monta o menu sozinho"
+            ],
+            [
+              "`01_`, `02_` no nome do arquivo",
+              "Define a ordem no menu",
+              "As páginas são ordenadas pelo nome; o número não aparece no menu"
+            ],
+            [
+              "`_` no nome do arquivo",
+              "Vira espaço no menu",
+              "`Análise_de_Dados.py` aparece como \"Análise de Dados\""
+            ],
+            [
+              "`type=\"csv\"`",
+              "Filtra o tipo de arquivo aceito",
+              "Evita que o usuário envie um formato que o código não sabe ler"
+            ],
+            [
+              "`is not None`",
+              "Testa se algo foi enviado",
+              "Antes do envio, o uploader devolve `None`"
+            ],
+            [
+              "`sep=\";\"`",
+              "Separador de colunas do CSV",
+              "CSVs brasileiros costumam usar `;` porque a vírgula é o decimal"
+            ],
+            [
+              "`df.head()`",
+              "As 5 primeiras linhas",
+              "Pré-visualizar sem mostrar a tabela inteira"
+            ],
+            [
+              "`enumerate(lista)`",
+              "Devolve índice e item",
+              "Precisamos do índice para editar ou apagar a posição certa"
+            ],
+            [
+              "`key=f\"del_{i}\"`",
+              "Chave única por botão",
+              "Em um laço, os botões têm o mesmo rótulo; a key os diferencia"
+            ],
+            [
+              "`lista.pop(i)`",
+              "Remove o item da posição `i`",
+              "Operação Delete"
+            ],
+            [
+              "`lista[i] = valor`",
+              "Substitui o item da posição `i`",
+              "Operação Update"
+            ],
+            [
+              "`st.session_state.get(\"chave\", False)`",
+              "Lê a chave ou devolve o padrão",
+              "Evita erro quando a chave ainda não existe"
+            ],
+            [
+              "`st.rerun()`",
+              "Re-executa o script na hora",
+              "Redesenhar a tela logo depois de mudar os dados"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logica-por-tras",
+      "tipo": "leitura",
+      "nome": "Lógica por trás",
+      "blocos": [
+        "**Contêineres reservam espaço.** Quando chamamos `st.columns(2)`, o Streamlit reserva dois espaços lado a lado. O `with` apenas diz *onde* desenhar. Dentro de cada contêiner, a regra da Aula 12 continua valendo: a ordem do código é a ordem na tela.",
+        "**Colunas são responsivas.** Em telas estreitas (celular), o Streamlit empilha as colunas uma embaixo da outra.",
+        "**Cada página é um script independente.** Ao clicar em uma página do menu, o Streamlit executa só aquele arquivo. O `st.session_state`, porém, é o mesmo para todas as páginas da sessão; por isso uma página consegue ler o que a outra guardou.",
+        "**O upload fica na memória.** O arquivo enviado vai para a memória do servidor e o `file_uploader` devolve um objeto que o Pandas lê como se fosse um arquivo do disco. Enquanto nada foi enviado, o valor é `None`, e tentar ler `None` dá erro. Por isso o `if arquivo is not None:` é obrigatório.",
+        "**Sem `session_state`, o CRUD some.** A cada clique o script roda do início; uma lista comum voltaria a ficar vazia. O `session_state` sobrevive às re-execuções, mas só enquanto a aba do navegador está aberta. Para guardar de verdade, precisamos de banco de dados.",
+        "**Por que `st.rerun()` depois de apagar:** o laço já desenhou a lista antes do clique ser processado. Depois do `pop`, a tela ainda mostra o item apagado; o `st.rerun()` redesenha com a lista atualizada."
+      ]
+    },
+    {
+      "id": "exemplo-a",
+      "tipo": "codigo",
+      "nome": "Exemplo A — colunas com proporções (app_colunas.py)",
+      "codigo": [
+        "import streamlit as st",
+        "",
+        "st.title(\"Colunas com Proporções Diferentes\")",
+        "",
+        "col1, col2, col3 = st.columns([1, 4, 2])",
+        "",
+        "with col1:",
+        "    st.subheader(\"Filtros\")",
+        "    st.checkbox(\"Opção A\")",
+        "    st.checkbox(\"Opção B\")",
+        "    st.button(\"Aplicar\")",
+        "",
+        "with col2:",
+        "    st.subheader(\"Gráfico Principal\")",
+        "    st.bar_chart({\"data\": [10, 20, 15, 30]})",
+        "",
+        "with col3:",
+        "    st.subheader(\"Resumo\")",
+        "    st.metric(label=\"Total de Vendas\", value=\"R$ 1.500\")",
+        "    st.metric(label=\"Lucro\", value=\"R$ 500\")"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Importa o Streamlit com o apelido `st`"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Título da página, acima das colunas"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Cria 3 colunas; a do meio é 4 vezes mais larga que a primeira"
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "Tudo indentado abaixo vai para a primeira coluna (a estreita)"
+        },
+        {
+          "linhas": [
+            8,
+            11
+          ],
+          "texto": "Filtros: subtítulo, duas caixas de seleção e um botão"
+        },
+        {
+          "linhas": [
+            13,
+            15
+          ],
+          "texto": "Segunda coluna (a larga): gráfico de barras com 4 valores"
+        },
+        {
+          "linhas": [
+            17,
+            20
+          ],
+          "texto": "Terceira coluna: dois indicadores com `st.metric`"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-b",
+      "tipo": "codigo",
+      "nome": "Exemplo B — expander (app_expander.py)",
+      "codigo": [
+        "import streamlit as st",
+        "import pandas as pd",
+        "",
+        "st.title(\"Exemplo de st.expander() com Dados\")",
+        "",
+        "data = {\"Produtos\": [\"Maçã\", \"Banana\", \"Laranja\"],",
+        "        \"Preço\": [2.5, 1.8, 3.2],",
+        "        \"Estoque\": [100, 150, 75]}",
+        "df = pd.DataFrame(data)",
+        "",
+        "with st.expander(\"Ver Tabela de Dados Brutos\"):",
+        "    st.write(\"Esta tabela mostra os dados completos do estoque.\")",
+        "    st.dataframe(df)",
+        "",
+        "st.header(\"Análise Rápida\")",
+        "st.metric(label=\"Total de Produtos\", value=len(df))"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            2
+          ],
+          "texto": "Importa Streamlit e Pandas"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Título"
+        },
+        {
+          "linhas": [
+            6,
+            8
+          ],
+          "texto": "Dicionário: cada chave é uma coluna, cada lista são os valores dela"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "Converte o dicionário em DataFrame"
+        },
+        {
+          "linhas": [
+            11,
+            11
+          ],
+          "texto": "Abre o bloco retrátil; na tela aparece só o título com uma seta"
+        },
+        {
+          "linhas": [
+            12,
+            13
+          ],
+          "texto": "Só ficam visíveis quando o usuário clica no título"
+        },
+        {
+          "linhas": [
+            15,
+            16
+          ],
+          "texto": "Fora do expander (sem recuo): sempre visíveis. `len(df)` conta as linhas (3)"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-c",
+      "tipo": "codigo",
+      "nome": "Exemplo C — uma página do app multipáginas (pages/01_Análise_de_Dados.py)",
+      "codigo": [
+        "import streamlit as st",
+        "import pandas as pd",
+        "import numpy as np",
+        "",
+        "st.set_page_config(page_title=\"Análise de Dados\", page_icon=\"📊\")",
+        "",
+        "st.title(\"Análise de Dados do Projeto\")",
+        "st.header(\"Visualização e Resumo\")",
+        "",
+        "df = pd.DataFrame(np.random.randn(20, 3), columns=[\"a\", \"b\", \"c\"])",
+        "",
+        "st.write(\"Este é um gráfico de dados aleatórios para demonstração.\")",
+        "st.line_chart(df)",
+        "",
+        "st.subheader(\"Tabela com os Dados Brutos\")",
+        "st.dataframe(df)"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            3
+          ],
+          "texto": "Importa Streamlit, Pandas e NumPy"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Título e ícone da aba do navegador só para esta página"
+        },
+        {
+          "linhas": [
+            7,
+            8
+          ],
+          "texto": "Título e cabeçalho da página"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "20 linhas × 3 colunas de números aleatórios"
+        },
+        {
+          "linhas": [
+            12,
+            13
+          ],
+          "texto": "Texto e gráfico de linhas: uma linha para cada coluna (a, b, c)"
+        },
+        {
+          "linhas": [
+            15,
+            16
+          ],
+          "texto": "Tabela com os mesmos dados"
+        }
+      ],
+      "fechamento": [
+        "Este arquivo só roda quando o usuário clica em \"Análise de Dados\" no menu lateral."
+      ]
+    },
+    {
+      "id": "exemplo-d",
+      "tipo": "codigo",
+      "nome": "Exemplo D — upload de CSV (pages/02_Upload_de_Arquivos.py)",
+      "codigo": [
+        "import streamlit as st",
+        "import pandas as pd",
+        "",
+        "st.title(\"Upload de Arquivos .csv\")",
+        "",
+        "separador = st.radio(\"Tipo de separador do CSV:\", [\",\", \";\"])",
+        "arquivo = st.file_uploader(\"Escolha um arquivo CSV\", type=\"csv\")",
+        "",
+        "if arquivo is not None:",
+        "    df = pd.read_csv(arquivo, sep=separador)",
+        "    st.subheader(\"Visualização dos Dados\")",
+        "    st.dataframe(df.head())",
+        "    st.success(\"Tabela exibida com sucesso!\")",
+        "else:",
+        "    st.info(\"Faça o upload de um arquivo CSV para continuar.\")"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            2
+          ],
+          "texto": "Importa Streamlit e Pandas"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Título"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "O usuário escolhe vírgula ou ponto e vírgula"
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "Caixa de upload que só aceita `.csv`. Devolve `None` enquanto nada foi enviado"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "Só entra se um arquivo foi enviado"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "O Pandas lê direto do arquivo enviado, sem salvar no disco"
+        },
+        {
+          "linhas": [
+            11,
+            12
+          ],
+          "texto": "`df.head()` mostra as 5 primeiras linhas"
+        },
+        {
+          "linhas": [
+            13,
+            13
+          ],
+          "texto": "Confirma para o usuário"
+        },
+        {
+          "linhas": [
+            14,
+            15
+          ],
+          "texto": "Estado inicial: orienta o usuário sobre o que fazer"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-e",
+      "tipo": "codigo",
+      "nome": "Exemplo E — CRUD visual: Update e Delete (app_crud_visual.py)",
+      "codigo": [
+        "import streamlit as st",
+        "",
+        "if \"itens\" not in st.session_state:",
+        "    st.session_state.itens = [\"Item A\", \"Item B\", \"Item C\"]",
+        "",
+        "st.title(\"CRUD Visual: Update & Delete\")",
+        "st.subheader(\"Itens Atuais\")",
+        "",
+        "for i, item in enumerate(st.session_state.itens):",
+        "    col1, col2, col3 = st.columns([0.6, 0.2, 0.2])",
+        "    with col1:",
+        "        st.write(f\"{i + 1}. {item}\")",
+        "    with col2:",
+        "        if st.button(\"Atualizar\", key=f\"upd_{i}\"):",
+        "            st.session_state.item_to_update = i",
+        "            st.session_state.update_form_active = True",
+        "    with col3:",
+        "        if st.button(\"Deletar\", key=f\"del_{i}\"):",
+        "            st.session_state.itens.pop(i)",
+        "            st.rerun()",
+        "",
+        "if st.session_state.get(\"update_form_active\", False):",
+        "    st.subheader(\"Atualizar Item\")",
+        "    atual = st.session_state.itens[st.session_state.item_to_update]",
+        "    novo_valor = st.text_input(\"Novo valor:\", value=atual)",
+        "    if st.button(\"Salvar Atualização\"):",
+        "        st.session_state.itens[st.session_state.item_to_update] = novo_valor",
+        "        st.session_state.update_form_active = False",
+        "        st.rerun()"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            3,
+            4
+          ],
+          "texto": "Cria a lista só na primeira execução"
+        },
+        {
+          "linhas": [
+            6,
+            7
+          ],
+          "texto": "Título e subtítulo"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "Percorre a lista com índice (`i`) e valor (`item`)"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "Uma linha de 3 colunas por item: 60% para o texto, 20% para cada botão"
+        },
+        {
+          "linhas": [
+            12,
+            12
+          ],
+          "texto": "Mostra `i + 1` (o índice começa em 0) e o item"
+        },
+        {
+          "linhas": [
+            14,
+            14
+          ],
+          "texto": "Botão com key única (`upd_0`, `upd_1`...). Sem ela, o Streamlit dá erro de elementos duplicados"
+        },
+        {
+          "linhas": [
+            15,
+            16
+          ],
+          "texto": "Guarda qual item editar e \"liga\" o formulário"
+        },
+        {
+          "linhas": [
+            18,
+            20
+          ],
+          "texto": "Remove o item da posição `i` e redesenha a tela na hora"
+        },
+        {
+          "linhas": [
+            22,
+            22
+          ],
+          "texto": "Só mostra o formulário se estiver ligado; `.get` evita erro na primeira execução"
+        },
+        {
+          "linhas": [
+            24,
+            25
+          ],
+          "texto": "Campo já preenchido com o valor atual do item"
+        },
+        {
+          "linhas": [
+            26,
+            29
+          ],
+          "texto": "Salva na posição certa, desliga o formulário e redesenha"
+        }
+      ]
+    },
+    {
+      "id": "como-aplicar",
+      "tipo": "leitura",
+      "nome": "Como aplicar: painel de estoque com duas páginas",
+      "blocos": [
+        "Junta multipáginas, sidebar, upload, colunas, métricas, expander, container e CRUD em memória. Estrutura:",
+        {
+          "codigo": "estoque/\n├── app.py\n└── pages/\n    └── 01_Cadastro.py"
+        },
+        "**`app.py`** (página inicial):",
+        {
+          "codigo": "import streamlit as st\nimport pandas as pd\n\nst.set_page_config(page_title=\"Estoque\", page_icon=\"📦\")\n\nif \"produtos\" not in st.session_state:\n    st.session_state.produtos = []\n\nst.title(\"Painel de Estoque\")\n\narquivo = st.sidebar.file_uploader(\"Importar CSV (Produto, Quantidade)\", type=\"csv\")\nif arquivo is not None and st.sidebar.button(\"Importar\"):\n    df_csv = pd.read_csv(arquivo)\n    st.session_state.produtos.extend(df_csv.to_dict(\"records\"))\n    st.sidebar.success(\"Produtos importados!\")\n\ndf = pd.DataFrame(st.session_state.produtos, columns=[\"Produto\", \"Quantidade\"])\n\ncol1, col2 = st.columns(2)\ncol1.metric(\"Produtos cadastrados\", len(df))\ncol2.metric(\"Itens em estoque\", int(df[\"Quantidade\"].sum()) if not df.empty else 0)\n\nif df.empty:\n    st.info(\"Nenhum produto ainda. Cadastre na página Cadastro ou importe um CSV.\")\nelse:\n    st.bar_chart(df.set_index(\"Produto\"))\n    with st.expander(\"Ver tabela completa\"):\n        st.dataframe(df)"
+        },
+        "**`pages/01_Cadastro.py`**:",
+        {
+          "codigo": "import streamlit as st\n\nst.title(\"Cadastro de Produtos\")\n\nif \"produtos\" not in st.session_state:\n    st.session_state.produtos = []\n\nwith st.container(border=True):\n    nome = st.text_input(\"Produto\")\n    qtd = st.number_input(\"Quantidade\", min_value=0, step=1)\n    if st.button(\"Adicionar\"):\n        if nome:\n            st.session_state.produtos.append({\"Produto\": nome, \"Quantidade\": qtd})\n            st.success(f\"{nome} adicionado!\")\n        else:\n            st.error(\"Informe o nome do produto.\")\n\nfor i, p in enumerate(st.session_state.produtos):\n    c1, c2 = st.columns([0.8, 0.2])\n    c1.write(f\"{p['Produto']}: {p['Quantidade']}\")\n    if c2.button(\"Excluir\", key=f\"exc_{i}\"):\n        st.session_state.produtos.pop(i)\n        st.rerun()"
+        },
+        "**Por que funciona:** as duas páginas usam a mesma chave `produtos` do `session_state`, então o que é cadastrado em uma aparece na outra. A chave é inicializada nas duas porque o usuário pode abrir qualquer página primeiro. `to_dict(\"records\")` transforma cada linha do CSV em um dicionário, no mesmo formato dos produtos cadastrados à mão."
+      ]
+    },
+    {
+      "id": "quiz",
+      "tipo": "quiz",
+      "nome": "Quiz de código",
+      "perguntas": [
+        {
+          "pergunta": "Que fração da largura fica com a coluna `c`?",
+          "codigo": "a, b, c = st.columns([2, 1, 3])",
+          "opcoes": [
+            "3 pixels",
+            "1/3",
+            "Metade (1/2)",
+            "3/5"
+          ],
+          "correta": 2,
+          "dica": "some todos os números da lista.",
+          "acerto": "Isso! 3 de 6 é metade.",
+          "erro": "O número é relativo à soma, não é uma medida fixa.",
+          "explicacao": "2 + 1 + 3 = 6; a coluna `c` ocupa 3/6 = 1/2 da largura."
+        },
+        {
+          "pergunta": "Onde aparece o texto \"Fim\"?",
+          "codigo": "col1, col2 = st.columns(2)\nwith col1:\n    st.write(\"Esquerda\")\nst.write(\"Fim\")",
+          "opcoes": [
+            "Na coluna 1",
+            "Na coluna 2",
+            "Abaixo das colunas, ocupando a largura toda",
+            "Na barra lateral"
+          ],
+          "correta": 2,
+          "dica": "repare na indentação da última linha.",
+          "acerto": "Perfeito! Sem recuo, fora da coluna.",
+          "erro": "Só vai para a coluna o que está indentado dentro do `with`.",
+          "explicacao": "a última linha não está recuada, então pertence à área principal, abaixo das colunas."
+        },
+        {
+          "pergunta": "Em que ordem as páginas aparecem no menu?",
+          "codigo": "app.py\npages/\n    02_Relatorio.py\n    01_Cadastro.py",
+          "opcoes": [
+            "app, Relatorio, Cadastro",
+            "app, Cadastro, Relatorio",
+            "Cadastro, Relatorio, app",
+            "Só aparecem as páginas da pasta `pages/`"
+          ],
+          "correta": 1,
+          "dica": "quem é a página inicial? E como as outras são ordenadas?",
+          "acerto": "Isso! Inicial primeiro, depois pela numeração.",
+          "erro": "A ordem vem do nome do arquivo, não da ordem em que foram criados.",
+          "explicacao": "`app.py` é a página inicial; as demais são ordenadas pelo nome, então `01_` vem antes de `02_`. O prefixo numérico não aparece no menu."
+        },
+        {
+          "pergunta": "O que acontece ao abrir este app?",
+          "codigo": "arquivo = st.file_uploader(\"CSV\", type=\"csv\")\ndf = pd.read_csv(arquivo)\nst.dataframe(df)",
+          "opcoes": [
+            "Mostra uma tabela vazia",
+            "Dá erro, porque `arquivo` é `None` antes do envio",
+            "Espera o usuário enviar e só depois continua",
+            "Lê um CSV de exemplo"
+          ],
+          "correta": 1,
+          "dica": "o que o uploader devolve antes de o usuário escolher um arquivo?",
+          "acerto": "Exato! Falta o `if arquivo is not None`.",
+          "erro": "O script não pausa esperando o upload; ele roda até o fim.",
+          "explicacao": "na primeira execução `arquivo` vale `None` e o `pd.read_csv(None)` gera erro. A leitura precisa ficar dentro de `if arquivo is not None:`."
+        },
+        {
+          "pergunta": "A lista tem 3 itens. O que acontece?",
+          "codigo": "for i, item in enumerate(itens):\n    st.button(\"Deletar\")",
+          "opcoes": [
+            "Aparecem 3 botões funcionando",
+            "Aparece só o primeiro botão",
+            "Nenhum botão aparece",
+            "Erro de elementos duplicados"
+          ],
+          "correta": 3,
+          "dica": "como o Streamlit diferencia três botões com o mesmo texto?",
+          "acerto": "Mandou bem! Falta a `key`.",
+          "erro": "Botões iguais em um laço precisam de `key` única.",
+          "explicacao": "sem `key`, os três botões ficam idênticos para o Streamlit. A correção é `st.button(\"Deletar\", key=f\"del_{i}\")`."
+        },
+        {
+          "pergunta": "Por que o CRUD visual usa `st.session_state`?",
+          "opcoes": [
+            "Para manter os dados entre as re-execuções enquanto a sessão está aberta",
+            "Para salvar os dados permanentemente no computador",
+            "Para deixar o app mais rápido",
+            "Para criar novas páginas"
+          ],
+          "correta": 0,
+          "dica": "o que acontece com uma lista comum a cada clique?",
+          "acerto": "Isso! Sobrevive aos cliques, mas não ao fechamento.",
+          "erro": "Não é permanente: fechou a aba, perdeu os dados.",
+          "explicacao": "variáveis comuns voltam ao valor inicial a cada re-execução; o `session_state` guarda os valores enquanto a sessão existe. Para salvar de verdade, usamos banco de dados."
+        }
+      ]
+    },
+    {
+      "id": "atividades",
+      "tipo": "atividades",
+      "nome": "Atividades",
+      "intro": [
+        "Todos começam com `import streamlit as st` (e `import pandas as pd` quando usam DataFrame).",
+        "Escreva ou cole a sua tentativa no campo de cada atividade para liberar a solução. Outras soluções também valem, desde que passem nos testes do enunciado."
+      ],
+      "itens": [
+        {
+          "n": 1,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie duas colunas iguais: na esquerda, um `st.metric` \"Alunos\" com valor 25; na direita, um `st.metric` \"Aulas\" com valor 12."
+          ],
+          "solucao": [
+            {
+              "codigo": "col1, col2 = st.columns(2)\ncol1.metric(\"Alunos\", 25)\ncol2.metric(\"Aulas\", 12)"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie um `st.expander` \"Como usar este app\" com três passos numerados em Markdown."
+          ],
+          "solucao": [
+            {
+              "codigo": "with st.expander(\"Como usar este app\"):\n    st.markdown(\"\"\"\n1. Escolha um filtro na barra lateral\n2. Veja o gráfico atualizado\n3. Abra a tabela para conferir os detalhes\n\"\"\")"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Monte um projeto com `app.py` (página inicial com um título) e `pages/01_Sobre.py` com `st.set_page_config` e um parágrafo explicando o app."
+          ],
+          "solucao": [
+            {
+              "codigo": "# app.py\nst.title(\"Página Inicial\")\nst.write(\"Use o menu ao lado para navegar.\")\n\n# pages/01_Sobre.py\nst.set_page_config(page_title=\"Sobre\", page_icon=\"ℹ️\")\nst.title(\"Sobre\")\nst.write(\"Este app foi criado na aula de Streamlit para praticar multipáginas.\")"
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "nivel": "Médio",
+          "enunciado": [
+            "Crie colunas `[1, 3]`: na estreita, um `st.selectbox` com os produtos A, B e C; na larga, um gráfico de barras com as vendas do produto escolhido, guardadas em um dicionário."
+          ],
+          "solucao": [
+            {
+              "codigo": "vendas = {\"A\": [10, 20, 15], \"B\": [5, 8, 12], \"C\": [30, 25, 40]}\n\ncol1, col2 = st.columns([1, 3])\nwith col1:\n    produto = st.selectbox(\"Produto\", list(vendas.keys()))\nwith col2:\n    st.bar_chart(pd.DataFrame({\"Vendas\": vendas[produto]}))"
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "nivel": "Médio",
+          "enunciado": [
+            "Faça um upload de CSV com `st.radio` para o separador. Mostre o número de linhas e de colunas com `st.metric` e a tabela dentro de um expander."
+          ],
+          "solucao": [
+            {
+              "codigo": "separador = st.radio(\"Separador\", [\",\", \";\"])\narquivo = st.file_uploader(\"CSV\", type=\"csv\")\n\nif arquivo is not None:\n    df = pd.read_csv(arquivo, sep=separador)\n    c1, c2 = st.columns(2)\n    c1.metric(\"Linhas\", df.shape[0])\n    c2.metric(\"Colunas\", df.shape[1])\n    with st.expander(\"Ver tabela\"):\n        st.dataframe(df)"
+            }
+          ]
+        },
+        {
+          "n": 6,
+          "nivel": "Médio",
+          "enunciado": [
+            "Lista de compras com `st.session_state`: um `st.text_input` e um botão \"Adicionar\". Mostre a lista numerada e impeça itens vazios com `st.warning`."
+          ],
+          "solucao": [
+            {
+              "codigo": "if \"compras\" not in st.session_state:\n    st.session_state.compras = []\n\nitem = st.text_input(\"Item\")\nif st.button(\"Adicionar\"):\n    if item:\n        st.session_state.compras.append(item)\n    else:\n        st.warning(\"Digite um item.\")\n\nfor i, c in enumerate(st.session_state.compras, start=1):\n    st.write(f\"{i}. {c}\")"
+            }
+          ]
+        },
+        {
+          "n": 7,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Amplie a atividade 6: cada item da lista deve ter um botão \"Remover\" ao lado (use colunas e `key` única)."
+          ],
+          "solucao": [
+            "Substitua o laço da atividade 6 por:",
+            {
+              "codigo": "for i, c in enumerate(st.session_state.compras):\n    col1, col2 = st.columns([0.8, 0.2])\n    col1.write(f\"{i + 1}. {c}\")\n    if col2.button(\"Remover\", key=f\"rem_{i}\"):\n        st.session_state.compras.pop(i)\n        st.rerun()"
+            }
+          ]
+        },
+        {
+          "n": 8,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Crie um formulário de edição para a lista de compras: um `selectbox` para escolher o item, um `text_input` já preenchido com o valor atual e um botão \"Salvar\" que atualiza a posição certa."
+          ],
+          "solucao": [
+            {
+              "codigo": "if st.session_state.compras:\n    indice = st.selectbox(\"Item para editar\",\n                          range(len(st.session_state.compras)),\n                          format_func=lambda i: st.session_state.compras[i])\n    novo = st.text_input(\"Novo valor\", value=st.session_state.compras[indice])\n    if st.button(\"Salvar\"):\n        st.session_state.compras[indice] = novo\n        st.rerun()"
+            },
+            "Escolher pelo índice (e não pelo texto) evita editar o item errado quando há itens repetidos. O `format_func` mostra o texto do item no menu, mas devolve o índice."
+          ]
+        },
+        {
+          "n": 9,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Crie um app de 2 páginas que compartilham o `session_state`: a página \"Cadastro\" adiciona nomes e a página \"Lista\" mostra todos e o total. Explique por que a chave precisa ser inicializada nas duas páginas."
+          ],
+          "solucao": [
+            {
+              "codigo": "# app.py\nst.title(\"Cadastro de Nomes\")\nst.write(\"Use o menu ao lado.\")\n\n# pages/01_Cadastro.py\nimport streamlit as st\nif \"nomes\" not in st.session_state:\n    st.session_state.nomes = []\nnome = st.text_input(\"Nome\")\nif st.button(\"Cadastrar\") and nome:\n    st.session_state.nomes.append(nome)\n    st.success(\"Cadastrado!\")\n\n# pages/02_Lista.py\nimport streamlit as st\nif \"nomes\" not in st.session_state:\n    st.session_state.nomes = []\nst.write(st.session_state.nomes)\nst.metric(\"Total\", len(st.session_state.nomes))"
+            },
+            "Resposta esperada: cada página é um script independente e o usuário pode abrir qualquer uma primeiro. Se abrir a \"Lista\" antes do \"Cadastro\" e a chave não existir, acessar `st.session_state.nomes` gera erro. Inicializando nas duas, a primeira que rodar cria a lista e a outra apenas a reaproveita."
+          ]
+        }
+      ]
+    }
+  ]
+}

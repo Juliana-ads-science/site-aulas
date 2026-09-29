@@ -1,0 +1,1117 @@
+{
+  "numero": 18,
+  "titulo": "Revisão: Funções e POO",
+  "etapas": [
+    {
+      "id": "definicoes",
+      "tipo": "leitura",
+      "nome": "Definições",
+      "blocos": [
+        {
+          "tabela": [
+            [
+              "Termo",
+              "O que significa"
+            ],
+            [
+              "Função",
+              "Bloco de código com nome, que pode ser chamado várias vezes"
+            ],
+            [
+              "`def`",
+              "Palavra-chave que define uma função"
+            ],
+            [
+              "Parâmetro",
+              "Variável listada na definição da função (a \"caixa\")"
+            ],
+            [
+              "Argumento",
+              "Valor enviado na chamada da função (o \"conteúdo\" da caixa)"
+            ],
+            [
+              "`return`",
+              "Encerra a função e devolve um valor para quem chamou"
+            ],
+            [
+              "`None`",
+              "Valor devolvido por funções que não têm `return`"
+            ],
+            [
+              "Docstring",
+              "Texto entre `\"\"\" \"\"\"` logo abaixo do `def`, que documenta a função"
+            ],
+            [
+              "DRY",
+              "*Don't Repeat Yourself*: não repita código; crie uma função"
+            ],
+            [
+              "Escopo",
+              "Região do código onde a variável existe e pode ser usada"
+            ],
+            [
+              "Variável local",
+              "Criada dentro da função; deixa de existir quando a função termina"
+            ],
+            [
+              "Variável global",
+              "Criada fora de funções; visível no arquivo todo"
+            ],
+            [
+              "`lambda`",
+              "Função anônima (sem nome) de uma linha só"
+            ],
+            [
+              "Função de ordem superior",
+              "Função que recebe outra função como argumento (`map`, `filter`, `sorted`)"
+            ],
+            [
+              "Argumento nomeado",
+              "Passado pelo nome do parâmetro: `saudar(nome=\"Ana\")`"
+            ],
+            [
+              "Argumento padrão",
+              "Parâmetro que já tem valor: `def f(cor=\"preto\")`"
+            ],
+            [
+              "POO",
+              "Programação Orientada a Objetos: organiza o programa em objetos com dados e comportamentos"
+            ],
+            [
+              "Classe",
+              "Molde para criar objetos"
+            ],
+            [
+              "Objeto / instância",
+              "Um exemplar concreto criado a partir da classe"
+            ],
+            [
+              "Atributo",
+              "Variável que pertence ao objeto (`self.nome`)"
+            ],
+            [
+              "Método",
+              "Função que pertence à classe; sempre recebe `self`"
+            ],
+            [
+              "`__init__`",
+              "Construtor: roda sozinho quando o objeto é criado"
+            ],
+            [
+              "`self`",
+              "Referência ao próprio objeto"
+            ],
+            [
+              "Herança",
+              "A classe filha reaproveita atributos e métodos da classe mãe"
+            ],
+            [
+              "Sobrescrita",
+              "A filha redefine um método da mãe usando o mesmo nome"
+            ],
+            [
+              "`super()`",
+              "Acessa a versão da classe mãe"
+            ],
+            [
+              "Encapsulamento",
+              "Proteger os dados do objeto e controlar como eles mudam"
+            ],
+            [
+              "Getter / setter",
+              "Métodos que leem / alteram um atributo protegido, com validação"
+            ],
+            [
+              "`@property`",
+              "Transforma um método em algo que se usa como atributo"
+            ],
+            [
+              "Associação",
+              "Um objeto guarda uma referência a outro (\"tem um\")"
+            ],
+            [
+              "Agregação",
+              "Associação fraca: a parte existe sem o todo"
+            ],
+            [
+              "Composição",
+              "Associação forte: o todo cria e controla a parte"
+            ],
+            [
+              "Polimorfismo",
+              "A mesma chamada gera comportamentos diferentes, conforme a classe"
+            ],
+            [
+              "Classe abstrata",
+              "Classe \"contrato\": não pode ser instanciada e obriga as filhas a implementar certos métodos"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "para-que-como-e-quando-usamos",
+      "tipo": "leitura",
+      "nome": "Para que, como e quando usamos",
+      "blocos": [
+        "**Para que:** funções evitam repetir código, dividem um problema grande em partes menores e facilitam testar cada parte. A POO modela entidades do mundo real (aluno, produto, pedido) que têm dados e ações.",
+        "**Como:** uma função é criada com `def`, recebe parâmetros e devolve um resultado com `return`. Uma classe é criada com `class`, recebe os dados no `__init__` e define ações como métodos.",
+        "**Quando usar cada recurso:**",
+        {
+          "tabela": [
+            [
+              "Situação",
+              "Use"
+            ],
+            [
+              "Um cálculo ou transformação que se repete",
+              "Função com `def`"
+            ],
+            [
+              "Uma regra curta, usada uma vez (ex.: chave de ordenação)",
+              "`lambda`"
+            ],
+            [
+              "Uma entidade com dados e ações (Aluno, Conta, Produto)",
+              "Classe"
+            ],
+            [
+              "Várias entidades parecidas, com algumas diferenças",
+              "Herança"
+            ],
+            [
+              "Um atributo que precisa de validação (nota, preço)",
+              "`@property` + setter"
+            ],
+            [
+              "Um objeto usa outro que existe sozinho",
+              "Agregação"
+            ],
+            [
+              "Um objeto cria e é dono das suas partes",
+              "Composição"
+            ],
+            [
+              "Garantir que todas as subclasses tenham um método",
+              "Classe abstrata"
+            ]
+          ]
+        },
+        "Funcional ou POO? A programação funcional foca em **transformar dados** (entra valor, sai valor, sem alterar o estado). A POO foca em **modelar entidades** que guardam estado e interagem. Python permite misturar os dois."
+      ]
+    },
+    {
+      "id": "estruturas",
+      "tipo": "leitura",
+      "nome": "Estruturas",
+      "blocos": [
+        {
+          "h": "3.1 Função"
+        },
+        {
+          "codigo": "def nome_da_funcao(parametro1, parametro2=\"padrão\"):\n    \"\"\"O que a função faz.\"\"\"\n    resultado = parametro1\n    return resultado"
+        },
+        {
+          "h": "3.2 Lambda"
+        },
+        {
+          "codigo": "dobro = lambda n: n * 2              # lambda argumentos: expressão\nsorted(lista, key=lambda item: item[\"idade\"])"
+        },
+        {
+          "h": "3.3 Classe, construtor e método"
+        },
+        {
+          "codigo": "class NomeDaClasse:\n    def __init__(self, atributo):\n        self.atributo = atributo\n\n    def metodo(self):\n        return self.atributo\n\nobjeto = NomeDaClasse(\"valor\")\nobjeto.metodo()"
+        },
+        {
+          "h": "3.4 Herança e `super()`"
+        },
+        {
+          "codigo": "class Filha(Mae):\n    def __init__(self, a, b):\n        super().__init__(a)       # inicializa a parte da mãe\n        self.b = b                # atributo novo da filha"
+        },
+        {
+          "h": "3.5 Encapsulamento com `@property`"
+        },
+        {
+          "codigo": "class Produto:\n    def __init__(self, preco):\n        self.__preco = 0          # valor seguro inicial\n        self.preco = preco        # passa pelo setter\n\n    @property\n    def preco(self):              # getter\n        return self.__preco\n\n    @preco.setter\n    def preco(self, valor):       # setter com validação\n        if valor >= 0:\n            self.__preco = valor"
+        },
+        {
+          "h": "3.6 Classe abstrata"
+        },
+        {
+          "codigo": "from abc import ABC, abstractmethod\n\nclass Forma(ABC):\n    @abstractmethod\n    def area(self):\n        pass"
+        }
+      ]
+    },
+    {
+      "id": "sintaxe-e-simbolos",
+      "tipo": "leitura",
+      "nome": "Sintaxe e símbolos",
+      "blocos": [
+        {
+          "tabela": [
+            [
+              "Símbolo / comando",
+              "O que faz",
+              "Por que existe"
+            ],
+            [
+              "`def nome():`",
+              "Define uma função",
+              "Dar nome a um bloco reutilizável"
+            ],
+            [
+              "`:` + indentação",
+              "Delimita o corpo da função, classe, `if`, `for`",
+              "Regra do Python para blocos"
+            ],
+            [
+              "`return valor`",
+              "Devolve o valor e encerra a função",
+              "Permite guardar o resultado em variável ou usar em contas"
+            ],
+            [
+              "`\"\"\" \"\"\"`",
+              "Docstring",
+              "Documenta o que a função faz"
+            ],
+            [
+              "`f\"{variavel}\"`",
+              "f-string",
+              "Colocar valores dentro do texto"
+            ],
+            [
+              "`*` / `**`",
+              "Multiplicação / potência",
+              "`numero ** 2` é o quadrado"
+            ],
+            [
+              "`lambda x: x * 2`",
+              "Função anônima",
+              "Evita criar uma função com `def` para uma tarefa trivial"
+            ],
+            [
+              "`key=lambda a: a[\"idade\"]`",
+              "Critério de ordenação",
+              "Diz ao `sorted` qual valor comparar"
+            ],
+            [
+              "`f(nome=\"Ana\")`",
+              "Argumento nomeado",
+              "A ordem deixa de importar e a chamada fica mais legível"
+            ],
+            [
+              "`def f(a, b=2)`",
+              "Valor padrão",
+              "Parâmetros com padrão vêm **depois** dos sem padrão"
+            ],
+            [
+              "`global x`",
+              "Permite alterar a global dentro da função",
+              "Existe, mas deve ser evitado"
+            ],
+            [
+              "`class Carro:`",
+              "Define uma classe",
+              "Nome em CamelCase (cada palavra com maiúscula)"
+            ],
+            [
+              "`Carro(\"Ford\")`",
+              "Cria uma instância",
+              "Chama o `__init__` automaticamente"
+            ],
+            [
+              "`self.marca`",
+              "Atributo do objeto",
+              "Cada objeto guarda seu próprio valor"
+            ],
+            [
+              "`objeto.metodo()`",
+              "Chama o método",
+              "O Python passa o `self` sozinho"
+            ],
+            [
+              "`class Gato(Animal):`",
+              "Herança",
+              "A mãe vai entre parênteses"
+            ],
+            [
+              "`super().__init__(...)`",
+              "Chama o construtor da mãe",
+              "Inicializa os atributos herdados sem repetir código"
+            ],
+            [
+              "`_atributo`",
+              "\"Uso interno\"",
+              "Só uma convenção; o acesso continua possível"
+            ],
+            [
+              "`__atributo`",
+              "Name mangling",
+              "O Python renomeia para `_Classe__atributo`, dificultando o acesso externo"
+            ],
+            [
+              "`@property`",
+              "Decorador de getter",
+              "Ler `objeto.preco` sem parênteses, mas passando por um método"
+            ],
+            [
+              "`@preco.setter`",
+              "Decorador de setter",
+              "`objeto.preco = 10` passa pela validação"
+            ],
+            [
+              "`ABC`, `@abstractmethod`",
+              "Classe e método abstratos",
+              "Obrigar as filhas a implementar o método"
+            ],
+            [
+              "`__del__`",
+              "Método chamado quando o objeto é destruído",
+              "Usado aqui só para demonstrar o ciclo de vida"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logica-por-tras",
+      "tipo": "leitura",
+      "nome": "Lógica por trás",
+      "blocos": [
+        "**`print` não é `return`.** O `print` só mostra na tela; o valor não volta para o programa. Uma função sem `return` devolve `None`. Por isso `x = print(\"oi\")` deixa `x` valendo `None`.",
+        "**Cada chamada cria um espaço próprio.** Quando a função é chamada, as variáveis locais nascem; quando termina, somem. Ao procurar um nome, o Python olha primeiro no local, depois no global e por fim nos nomes embutidos (`print`, `len`). Por isso uma função consegue **ler** uma global, mas uma variável local não existe fora da função (`NameError`).",
+        "**Funções são valores.** `dobrar` (sem parênteses) é a própria função; `dobrar(3)` é a chamada. Por isso podemos passar `dobrar` como argumento para outra função.",
+        "**O que é o `self`.** Escrever `meu_livro.marcar_como_lido()` é o mesmo que `Livro.marcar_como_lido(meu_livro)`. O Python preenche o `self` com o objeto que está antes do ponto.",
+        "**Como a herança encontra um método.** O Python procura primeiro na classe do objeto; se não achar, sobe para a classe mãe. Se a filha tiver um método com o mesmo nome, ele é encontrado primeiro: isso é a sobrescrita.",
+        "**O setter é chamado sem parecer.** Com `@property`, a linha `item.preco = -100` parece uma atribuição comum, mas executa o método setter, que pode recusar o valor.",
+        "**Agregação ou composição?** Pergunte quem cria a parte. Se ela é criada fora e passada para o objeto, é agregação (a parte continua existindo sozinha). Se é criada dentro do objeto, é composição (a parte pertence ao todo).",
+        "**Polimorfismo evita `if`.** Em vez de perguntar \"é carro ou moto?\", chamamos `veiculo.acelerar()` e cada objeto responde do seu jeito."
+      ]
+    },
+    {
+      "id": "exemplo-a",
+      "tipo": "codigo",
+      "nome": "Exemplo A — parâmetros e return",
+      "codigo": [
+        "def calcular_area_retangulo(largura, altura):",
+        "    \"\"\"Calcula a área de um retângulo.\"\"\"",
+        "    area = largura * altura",
+        "    return area",
+        "",
+        "area_calculada = calcular_area_retangulo(10, 5)",
+        "print(f\"A área do retângulo é: {area_calculada}\")",
+        "print(f\"O dobro da área é: {calcular_area_retangulo(10, 5) * 2}\")"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Define a função com dois parâmetros: `largura` e `altura`"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Docstring explicando a função"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Multiplica e guarda em `area` (variável local)"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Devolve o valor para quem chamou"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Chama com os argumentos 10 e 5; o retorno (50) vai para `area_calculada`"
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "Mostra o resultado guardado"
+        },
+        {
+          "linhas": [
+            8,
+            8
+          ],
+          "texto": "Usa o retorno direto em uma conta, sem variável intermediária"
+        }
+      ],
+      "fechamento": [
+        "Saída:",
+        {
+          "codigo": "A área do retângulo é: 50\nO dobro da área é: 100"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-b",
+      "tipo": "codigo",
+      "nome": "Exemplo B — escopo local e global",
+      "codigo": [
+        "x = 100  # variável global",
+        "",
+        "def minha_funcao():",
+        "    y = 50  # variável local",
+        "    print(f\"Dentro da função: y = {y} e x = {x}\")",
+        "    z = \"Olá\"",
+        "    return z",
+        "",
+        "resultado = minha_funcao()",
+        "print(f\"Fora da função: {resultado}\")",
+        "# print(y)  -> NameError: y só existe dentro da função"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "`x` é criada fora de funções: é global"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Define a função"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "`y` nasce dentro da função: é local"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "A função enxerga a local `y` e consegue **ler** a global `x`"
+        },
+        {
+          "linhas": [
+            6,
+            7
+          ],
+          "texto": "Cria `z` e devolve o valor dela"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "O valor de `z` (\"Olá\") sai da função pelo `return` e vai para `resultado`"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "Mostra o valor recebido"
+        },
+        {
+          "linhas": [
+            11,
+            11
+          ],
+          "texto": "Se fosse executada, daria `NameError`: `y` sumiu quando a função terminou"
+        }
+      ],
+      "fechamento": [
+        "Saída:",
+        {
+          "codigo": "Dentro da função: y = 50 e x = 100\nFora da função: Olá"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-c",
+      "tipo": "codigo",
+      "nome": "Exemplo C — lambda como chave do sorted",
+      "codigo": [
+        "alunos = [",
+        "    {\"nome\": \"João\", \"idade\": 25},",
+        "    {\"nome\": \"Maria\", \"idade\": 22},",
+        "    {\"nome\": \"Pedro\", \"idade\": 28},",
+        "]",
+        "",
+        "alunos_ordenados = sorted(alunos, key=lambda aluno: aluno[\"idade\"])",
+        "",
+        "for aluno in alunos_ordenados:",
+        "    print(aluno)"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            5
+          ],
+          "texto": "Lista de dicionários, um por aluno"
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "O `sorted` chama a lambda para cada aluno; ela devolve a idade, e é por esse valor que a lista é ordenada"
+        },
+        {
+          "linhas": [
+            9,
+            10
+          ],
+          "texto": "Mostra a nova lista, do mais novo ao mais velho"
+        }
+      ],
+      "fechamento": [
+        "Saída:",
+        {
+          "codigo": "{'nome': 'Maria', 'idade': 22}\n{'nome': 'João', 'idade': 25}\n{'nome': 'Pedro', 'idade': 28}"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-d",
+      "tipo": "codigo",
+      "nome": "Exemplo D — herança, sobrescrita e super()",
+      "codigo": [
+        "class Veiculo:",
+        "    def __init__(self, marca):",
+        "        self.marca = marca",
+        "",
+        "    def exibir_info(self):",
+        "        return f\"Veículo da marca {self.marca}.\"",
+        "",
+        "class Carro(Veiculo):",
+        "    def __init__(self, marca, modelo):",
+        "        super().__init__(marca)",
+        "        self.modelo = modelo",
+        "",
+        "    def exibir_info(self):",
+        "        info_veiculo = super().exibir_info()",
+        "        return f\"{info_veiculo} Modelo: {self.modelo}.\"",
+        "",
+        "meu_carro = Carro(\"Volkswagen\", \"Fusca\")",
+        "print(meu_carro.exibir_info())"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            3
+          ],
+          "texto": "Classe mãe: guarda a marca"
+        },
+        {
+          "linhas": [
+            5,
+            6
+          ],
+          "texto": "Método da mãe que monta a descrição"
+        },
+        {
+          "linhas": [
+            8,
+            8
+          ],
+          "texto": "`Carro` herda de `Veiculo`"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "Construtor próprio, com um parâmetro a mais (`modelo`)"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "Chama o construtor da mãe para preencher `self.marca`"
+        },
+        {
+          "linhas": [
+            11,
+            11
+          ],
+          "texto": "Guarda o atributo novo"
+        },
+        {
+          "linhas": [
+            13,
+            13
+          ],
+          "texto": "Sobrescreve `exibir_info` (mesmo nome da mãe)"
+        },
+        {
+          "linhas": [
+            14,
+            14
+          ],
+          "texto": "Pega o texto da versão da mãe"
+        },
+        {
+          "linhas": [
+            15,
+            15
+          ],
+          "texto": "Acrescenta o modelo ao texto"
+        },
+        {
+          "linhas": [
+            17,
+            18
+          ],
+          "texto": "Cria o objeto e chama o método; roda a versão de `Carro`"
+        }
+      ],
+      "fechamento": [
+        "Saída:",
+        {
+          "codigo": "Veículo da marca Volkswagen. Modelo: Fusca."
+        }
+      ]
+    },
+    {
+      "id": "exemplo-e",
+      "tipo": "codigo",
+      "nome": "Exemplo E — encapsulamento com @property",
+      "codigo": [
+        "class Produto:",
+        "    def __init__(self, nome, preco):",
+        "        self.nome = nome",
+        "        self.__preco = 0",
+        "        self.preco = preco",
+        "",
+        "    @property",
+        "    def preco(self):",
+        "        return self.__preco",
+        "",
+        "    @preco.setter",
+        "    def preco(self, novo_preco):",
+        "        if novo_preco >= 0:",
+        "            self.__preco = novo_preco",
+        "        else:",
+        "            print(\"Erro: O preço não pode ser negativo.\")",
+        "",
+        "item = Produto(\"Smartphone\", 1500)",
+        "print(f\"Nome: {item.nome}, Preço: {item.preco}\")",
+        "item.preco = -100",
+        "print(f\"Preço após tentativa inválida: {item.preco}\")"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "`nome` é um atributo comum"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Cria o atributo protegido com um valor seguro"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Parece atribuição, mas chama o setter (linha 12)"
+        },
+        {
+          "linhas": [
+            7,
+            9
+          ],
+          "texto": "Getter: `item.preco` (sem parênteses) executa este método"
+        },
+        {
+          "linhas": [
+            11,
+            12
+          ],
+          "texto": "Setter: roda em toda atribuição `item.preco = ...`"
+        },
+        {
+          "linhas": [
+            13,
+            14
+          ],
+          "texto": "Só aceita valores maiores ou iguais a zero"
+        },
+        {
+          "linhas": [
+            15,
+            16
+          ],
+          "texto": "Recusa o valor e avisa; o preço antigo fica"
+        },
+        {
+          "linhas": [
+            18,
+            18
+          ],
+          "texto": "Cria o produto; o setter aceita 1500"
+        },
+        {
+          "linhas": [
+            20,
+            20
+          ],
+          "texto": "Tentativa inválida: o setter recusa"
+        },
+        {
+          "linhas": [
+            21,
+            21
+          ],
+          "texto": "O preço continua 1500"
+        }
+      ],
+      "fechamento": [
+        "Saída:",
+        {
+          "codigo": "Nome: Smartphone, Preço: 1500\nErro: O preço não pode ser negativo.\nPreço após tentativa inválida: 1500"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-f",
+      "tipo": "codigo",
+      "nome": "Exemplo F — polimorfismo com classe abstrata",
+      "codigo": [
+        "from abc import ABC, abstractmethod",
+        "",
+        "class Veiculo(ABC):",
+        "    @abstractmethod",
+        "    def acelerar(self):",
+        "        pass",
+        "",
+        "class Carro(Veiculo):",
+        "    def acelerar(self):",
+        "        print(\"Acelerando o carro...\")",
+        "",
+        "class Moto(Veiculo):",
+        "    def acelerar(self):",
+        "        print(\"Acelerando a moto...\")",
+        "",
+        "veiculos = [Carro(), Moto()]",
+        "for veiculo in veiculos:",
+        "    veiculo.acelerar()"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Importa a base para classes abstratas"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "`Veiculo` herda de `ABC`: vira um \"contrato\""
+        },
+        {
+          "linhas": [
+            4,
+            6
+          ],
+          "texto": "Método abstrato: toda filha é obrigada a implementar `acelerar`"
+        },
+        {
+          "linhas": [
+            8,
+            10
+          ],
+          "texto": "`Carro` cumpre o contrato do seu jeito"
+        },
+        {
+          "linhas": [
+            12,
+            14
+          ],
+          "texto": "`Moto` cumpre o contrato de outro jeito"
+        },
+        {
+          "linhas": [
+            16,
+            16
+          ],
+          "texto": "Lista com objetos de classes diferentes"
+        },
+        {
+          "linhas": [
+            17,
+            18
+          ],
+          "texto": "A mesma chamada executa a versão certa de cada objeto"
+        }
+      ],
+      "fechamento": [
+        "Saída:",
+        {
+          "codigo": "Acelerando o carro...\nAcelerando a moto..."
+        }
+      ]
+    },
+    {
+      "id": "como-aplicar",
+      "tipo": "leitura",
+      "nome": "Como aplicar: sistema de biblioteca",
+      "blocos": [
+        "Junta funções, lambda, classe abstrata, herança, `super()`, sobrescrita, encapsulamento, agregação e polimorfismo. Salve como `biblioteca.py` e rode `python biblioteca.py`.",
+        {
+          "codigo": "from abc import ABC, abstractmethod\n\n\nclass Item(ABC):\n    \"\"\"Contrato: todo item da biblioteca informa o prazo de empréstimo.\"\"\"\n\n    def __init__(self, titulo, ano):\n        self.titulo = titulo\n        self.ano = ano\n\n    @abstractmethod\n    def prazo_dias(self):\n        pass\n\n    def descricao(self):\n        return f\"{self.titulo} ({self.ano}) - prazo {self.prazo_dias()} dias\"\n\n\nclass Livro(Item):\n    def __init__(self, titulo, ano, autor):\n        super().__init__(titulo, ano)\n        self.autor = autor\n\n    def prazo_dias(self):\n        return 14\n\n    def descricao(self):\n        return f\"{super().descricao()} - {self.autor}\"\n\n\nclass Revista(Item):\n    def prazo_dias(self):\n        return 7\n\n\nclass Leitor:\n    def __init__(self, nome):\n        self.nome = nome\n        self.__emprestimos = []\n\n    @property\n    def emprestimos(self):\n        return list(self.__emprestimos)   # devolve uma cópia\n\n    def pegar(self, item, limite=3):\n        if len(self.__emprestimos) >= limite:\n            print(f\"{self.nome} já está no limite de {limite} itens.\")\n            return False\n        self.__emprestimos.append(item)\n        return True\n\n\nclass Biblioteca:\n    def __init__(self):\n        self.acervo = []   # agregação: os itens são criados fora\n\n    def cadastrar(self, item):\n        self.acervo.append(item)\n\n    def ordenar_por_ano(self):\n        return sorted(self.acervo, key=lambda i: i.ano)\n\n\nbib = Biblioteca()\nbib.cadastrar(Livro(\"Dom Casmurro\", 1899, \"Machado de Assis\"))\nbib.cadastrar(Revista(\"Ciência Hoje\", 2024))\nbib.cadastrar(Livro(\"O Cortiço\", 1890, \"Aluísio Azevedo\"))\n\nfor item in bib.ordenar_por_ano():\n    print(item.descricao())\n\nana = Leitor(\"Ana\")\nana.pegar(bib.acervo[0])\nprint(f\"{ana.nome} está com {len(ana.emprestimos)} item(ns).\")"
+        },
+        "Saída:",
+        {
+          "codigo": "O Cortiço (1890) - prazo 14 dias - Aluísio Azevedo\nDom Casmurro (1899) - prazo 14 dias - Machado de Assis\nCiência Hoje (2024) - prazo 7 dias\nAna está com 1 item(ns)."
+        },
+        "**Por que funciona:** `Item` obriga cada tipo a informar o prazo, e `descricao()` chama `prazo_dias()` sem saber se o objeto é livro ou revista (polimorfismo). `Livro` reaproveita a descrição da mãe com `super()` e acrescenta o autor. A lista de empréstimos do leitor é protegida (`__emprestimos`) e só muda pelo método `pegar`, que valida o limite. O `lambda` ordena o acervo pelo ano."
+      ]
+    },
+    {
+      "id": "quiz",
+      "tipo": "quiz",
+      "nome": "Quiz de código",
+      "perguntas": [
+        {
+          "pergunta": "O que aparece na tela?",
+          "codigo": "def dobro(n):\n    print(n * 2)\n\nx = dobro(4)\nprint(x)",
+          "opcoes": [
+            "8 e 8",
+            "8 e None",
+            "None e 8",
+            "Erro"
+          ],
+          "correta": 1,
+          "dica": "a função tem `return`?",
+          "acerto": "Isso! `print` mostra, mas não devolve.",
+          "erro": "Sem `return`, a função devolve `None`.",
+          "explicacao": "dentro da função o `print` mostra 8; como não há `return`, `x` recebe `None`."
+        },
+        {
+          "pergunta": "Qual é a saída?",
+          "codigo": "def f(a, b=2, c=3):\n    return a + b + c\n\nprint(f(1, c=10))",
+          "opcoes": [
+            "6",
+            "16",
+            "13",
+            "Erro"
+          ],
+          "correta": 2,
+          "dica": "qual parâmetro ficou com o valor padrão?",
+          "acerto": "Perfeito! 1 + 2 + 10.",
+          "erro": "O argumento nomeado troca só o `c`; o `b` continua 2.",
+          "explicacao": "`a` recebe 1 por posição, `b` usa o padrão 2 e `c` recebe 10 pelo nome."
+        },
+        {
+          "pergunta": "Qual é a saída?",
+          "codigo": "nums = [1, 2, 3, 4, 5, 6]\nprint(list(filter(lambda n: n % 2 == 0, nums)))",
+          "opcoes": [
+            "[2, 4, 6]",
+            "[1, 3, 5]",
+            "[False, True, False, True, False, True]",
+            "3"
+          ],
+          "correta": 0,
+          "dica": "o `filter` mantém os itens para os quais a função devolve `True`.",
+          "acerto": "Isso! Só os pares passam no filtro.",
+          "erro": "O `filter` não devolve os `True`/`False`, devolve os itens aprovados.",
+          "explicacao": "`n % 2 == 0` é verdadeiro para 2, 4 e 6."
+        },
+        {
+          "pergunta": "O que acontece?",
+          "codigo": "class Conta:\n    def __init__(self, saldo):\n        self.__saldo = saldo\n\nc = Conta(100)\nprint(c.__saldo)",
+          "opcoes": [
+            "Mostra 100",
+            "Mostra 0",
+            "`AttributeError`",
+            "Mostra `None`"
+          ],
+          "correta": 2,
+          "dica": "o que os dois underscores fazem com o nome?",
+          "acerto": "Exato! Name mangling.",
+          "erro": "Com `__`, o Python renomeia o atributo por dentro.",
+          "explicacao": "o atributo vira `_Conta__saldo`, então `c.__saldo` não existe fora da classe."
+        },
+        {
+          "pergunta": "Qual é a saída?",
+          "codigo": "class Animal:\n    def som(self):\n        return \"...\"\n\nclass Gato(Animal):\n    def som(self):\n        return \"Miau\"\n\nclass Peixe(Animal):\n    pass\n\nfor a in [Gato(), Peixe()]:\n    print(a.som())",
+          "opcoes": [
+            "Miau / Miau",
+            "... / ...",
+            "Miau / ...",
+            "Erro"
+          ],
+          "correta": 2,
+          "dica": "o `Peixe` tem um método `som` próprio?",
+          "acerto": "Mandou bem! Sobrescrita e herança juntas.",
+          "erro": "Quem não sobrescreve usa a versão da mãe.",
+          "explicacao": "`Gato` sobrescreve `som`; `Peixe` não, então herda o \"...\" de `Animal`."
+        },
+        {
+          "pergunta": "O que acontece?",
+          "codigo": "from abc import ABC, abstractmethod\n\nclass Forma(ABC):\n    @abstractmethod\n    def area(self):\n        pass\n\nclass Quadrado(Forma):\n    pass\n\nq = Quadrado()",
+          "opcoes": [
+            "Cria um quadrado vazio",
+            "`TypeError`: `Quadrado` não implementou `area`",
+            "Cria, e `q.area()` devolve `None`",
+            "Cria, mas mostra um aviso"
+          ],
+          "correta": 1,
+          "dica": "o que a classe abstrata exige das filhas?",
+          "acerto": "Isso! O contrato não foi cumprido.",
+          "erro": "Com `@abstractmethod`, a filha precisa implementar o método para ser instanciada.",
+          "explicacao": "como `Quadrado` não implementou `area`, o Python impede a criação do objeto."
+        }
+      ]
+    },
+    {
+      "id": "atividades",
+      "tipo": "atividades",
+      "nome": "Atividades",
+      "intro": [
+        "Escreva ou cole a sua tentativa no campo de cada atividade para liberar a solução. Outras soluções também valem, desde que passem nos testes do enunciado."
+      ],
+      "itens": [
+        {
+          "n": 1,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie a função `media(a, b, c)` que retorne a média dos três valores e mostre `media(7, 8, 9)` com uma casa decimal."
+          ],
+          "solucao": [
+            {
+              "codigo": "def media(a, b, c):\n    return (a + b + c) / 3\n\nprint(f\"{media(7, 8, 9):.1f}\")   # 8.0"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Use `sorted` com `lambda` para ordenar `[\"banana\", \"kiwi\", \"abacaxi\"]` pelo tamanho da palavra."
+          ],
+          "solucao": [
+            {
+              "codigo": "frutas = [\"banana\", \"kiwi\", \"abacaxi\"]\nprint(sorted(frutas, key=lambda f: len(f)))   # ['kiwi', 'banana', 'abacaxi']"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie a classe `Aluno` com `nome` e `curso` e o método `apresentar()`, que retorne \"Sou <nome>, do curso <curso>\"."
+          ],
+          "solucao": [
+            {
+              "codigo": "class Aluno:\n    def __init__(self, nome, curso):\n        self.nome = nome\n        self.curso = curso\n\n    def apresentar(self):\n        return f\"Sou {self.nome}, do curso {self.curso}\"\n\nprint(Aluno(\"Ana\", \"Python\").apresentar())"
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "nivel": "Médio",
+          "enunciado": [
+            "Crie `saudar(nome, saudacao=\"Bom dia\")` que retorne \"<saudacao>, <nome>!\". Chame uma vez sem o segundo argumento e outra com `saudacao=\"Boa noite\"`."
+          ],
+          "solucao": [
+            {
+              "codigo": "def saudar(nome, saudacao=\"Bom dia\"):\n    return f\"{saudacao}, {nome}!\"\n\nprint(saudar(\"Ana\"))                         # Bom dia, Ana!\nprint(saudar(\"Ana\", saudacao=\"Boa noite\"))   # Boa noite, Ana!"
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "nivel": "Médio",
+          "enunciado": [
+            "Crie a classe `ContaBancaria` com o atributo protegido `__saldo`, um `@property saldo` e os métodos `depositar(valor)` e `sacar(valor)`, que não aceitem valores negativos nem saque maior que o saldo."
+          ],
+          "solucao": [
+            {
+              "codigo": "class ContaBancaria:\n    def __init__(self, titular):\n        self.titular = titular\n        self.__saldo = 0\n\n    @property\n    def saldo(self):\n        return self.__saldo\n\n    def depositar(self, valor):\n        if valor > 0:\n            self.__saldo += valor\n        else:\n            print(\"Depósito inválido.\")\n\n    def sacar(self, valor):\n        if 0 < valor <= self.__saldo:\n            self.__saldo -= valor\n        else:\n            print(\"Saque inválido.\")\n\nc = ContaBancaria(\"Ana\")\nc.depositar(100)\nc.sacar(150)      # Saque inválido.\nprint(c.saldo)    # 100"
+            }
+          ]
+        },
+        {
+          "n": 6,
+          "nivel": "Médio",
+          "enunciado": [
+            "Crie `aplicar(lista, operacao)`, que aplica a função a cada item. Use com uma `lambda` que triplica e com uma função `def eh_par(n)`."
+          ],
+          "solucao": [
+            {
+              "codigo": "def aplicar(lista, operacao):\n    return [operacao(item) for item in lista]\n\ndef eh_par(n):\n    return n % 2 == 0\n\nprint(aplicar([1, 2, 3], lambda n: n * 3))   # [3, 6, 9]\nprint(aplicar([1, 2, 3], eh_par))            # [False, True, False]"
+            }
+          ]
+        },
+        {
+          "n": 7,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Crie `Funcionario` (nome, salário e método `pagamento()`) e `Gerente(Funcionario)`, que tem `bonus`. Use `super()` no `__init__` e no `pagamento()`."
+          ],
+          "solucao": [
+            {
+              "codigo": "class Funcionario:\n    def __init__(self, nome, salario):\n        self.nome = nome\n        self.salario = salario\n\n    def pagamento(self):\n        return self.salario\n\nclass Gerente(Funcionario):\n    def __init__(self, nome, salario, bonus):\n        super().__init__(nome, salario)\n        self.bonus = bonus\n\n    def pagamento(self):\n        return super().pagamento() + self.bonus\n\nprint(Gerente(\"Carla\", 5000, 1500).pagamento())   # 6500"
+            }
+          ]
+        },
+        {
+          "n": 8,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Composição: crie a classe `Pedido`, que cria seus próprios `ItemPedido` (produto, preço, quantidade) pelo método `adicionar_item(...)` e calcula o `total()`."
+          ],
+          "solucao": [
+            {
+              "codigo": "class ItemPedido:\n    def __init__(self, produto, preco, qtd):\n        self.produto = produto\n        self.preco = preco\n        self.qtd = qtd\n\n    def subtotal(self):\n        return self.preco * self.qtd\n\nclass Pedido:\n    def __init__(self):\n        self.itens = []\n\n    def adicionar_item(self, produto, preco, qtd=1):\n        self.itens.append(ItemPedido(produto, preco, qtd))   # o Pedido cria o item\n\n    def total(self):\n        return sum(item.subtotal() for item in self.itens)\n\np = Pedido()\np.adicionar_item(\"Caderno\", 18.0, 2)\np.adicionar_item(\"Caneta\", 2.5, 4)\nprint(p.total())   # 46.0"
+            },
+            "É composição porque os `ItemPedido` nascem dentro do `Pedido` e só existem nele."
+          ]
+        },
+        {
+          "n": 9,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Crie a classe abstrata `Forma` com `area()` e as classes `Retangulo` e `Circulo`. Some as áreas de uma lista de formas e explique onde está o polimorfismo."
+          ],
+          "solucao": [
+            {
+              "codigo": "from abc import ABC, abstractmethod\nimport math\n\nclass Forma(ABC):\n    @abstractmethod\n    def area(self):\n        pass\n\nclass Retangulo(Forma):\n    def __init__(self, largura, altura):\n        self.largura = largura\n        self.altura = altura\n\n    def area(self):\n        return self.largura * self.altura\n\nclass Circulo(Forma):\n    def __init__(self, raio):\n        self.raio = raio\n\n    def area(self):\n        return math.pi * self.raio ** 2\n\nformas = [Retangulo(2, 3), Circulo(1)]\nprint(f\"{sum(f.area() for f in formas):.2f}\")   # 9.14"
+            },
+            "Resposta esperada: o polimorfismo está em `f.area()`. O laço chama o mesmo método sem saber se `f` é retângulo ou círculo, e cada classe calcula a área do seu jeito."
+          ]
+        }
+      ]
+    }
+  ]
+}
