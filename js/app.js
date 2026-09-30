@@ -423,8 +423,8 @@ $("#formLogin").addEventListener("submit", async ev => {
 $("#formCadastro").addEventListener("submit", async ev => {
   ev.preventDefault();
   const nome = $("#cadNome").value.trim(), email = $("#cadEmail").value.trim().toLowerCase();
-  const senha = $("#cadSenha").value, codigo = $("#cadCodigo").value.trim().toUpperCase();
-  if (!nome || !email || !senha || !codigo) { aviso("#erroCadastro", "Preencha todos os campos."); return; }
+  const senha = $("#cadSenha").value;
+  if (!nome || !email || !senha) { aviso("#erroCadastro", "Preencha todos os campos."); return; }
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { aviso("#erroCadastro", "Esse e-mail não parece certo. Confira."); return; }
   if (email.endsWith("@" + CONFIG.dominioKids)) { aviso("#erroCadastro", "Use o seu e-mail pessoal."); return; }
   if (senha.length < 6) { aviso("#erroCadastro", "A senha precisa ter pelo menos 6 caracteres."); return; }
@@ -432,20 +432,15 @@ $("#formCadastro").addEventListener("submit", async ev => {
 
   ocupado(ev.target, true);
   try {
-    // conferência rápida só para dar uma mensagem clara; a validação real é feita no servidor
-    const { data: ok, error: e1 } = await db.rpc("codigo_turma_valido", { codigo });
-    if (!e1 && ok === false) { aviso("#erroCadastro", "Código da turma inválido. Confira com a professora."); return; }
-
     const { data, error } = await db.auth.signUp({
       email, password: senha,
-      options: { data: { nome, codigo_turma: codigo }, emailRedirectTo: urlDoSite, captchaToken: tokenCaptcha(ev.target) }
+      options: { data: { nome }, emailRedirectTo: urlDoSite, captchaToken: tokenCaptcha(ev.target) }
     });
     renovarCaptcha(ev.target);
     if (error) {
-      const m = (error.message || "").toLowerCase();
+      console.error(error);
       aviso("#erroCadastro",
         erroDeCaptcha(error) ? MSG_ROBO
-        : m.includes("database error") ? "Código da turma inválido. Confira com a professora."
         : error.code === "user_already_exists" ? "Já existe uma conta com esse e-mail. Use Entrar."
         : error.code === "weak_password" ? "Essa senha é fraca demais. Tente uma maior, com letras e números."
         : error.code === "over_email_send_rate_limit" || error.status === 429 ? "Muitos cadastros em pouco tempo. Espere alguns minutos e tente de novo."

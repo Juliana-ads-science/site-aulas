@@ -62,12 +62,10 @@
       <!-- Criar conta -->
       <form id="formCadastro" novalidate hidden>
         <h2>Criar conta</h2>
-        <p class="muted">Você precisa do código da turma que a professora passou em aula.</p>
         <div class="campo"><label for="cadNome">Seu nome</label><input id="cadNome" autocomplete="name" required></div>
         <div class="campo"><label for="cadEmail">E-mail</label><input id="cadEmail" type="email" autocomplete="email" autocapitalize="none" spellcheck="false" required></div>
         <div class="campo"><label for="cadSenha">Senha</label><input id="cadSenha" type="password" autocomplete="new-password" minlength="6" required>
           <p class="ajuda-campo">Pelo menos 6 caracteres.</p></div>
-        <div class="campo"><label for="cadCodigo">Código da turma</label><input id="cadCodigo" autocomplete="off" autocapitalize="characters" spellcheck="false" required></div>
         <p class="aviso" id="erroCadastro" role="alert"></p>
         <div class="captcha" data-captcha></div>
         <button class="btn" type="submit" style="width:100%;margin-top:16px">Criar minha conta</button>

@@ -4,7 +4,7 @@
 -- Pode rodar de novo sem problema: nada é apagado.
 -- ============================================================
 
--- ---------- 1. Turmas (uma linha por turma, cada uma com seu código) ----------
+-- ---------- 1. Turmas (organizam os alunos; o cadastro pelo site não pede código) ----------
 create table if not exists public.turmas (
   id         bigint generated always as identity primary key,
   nome       text not null,
@@ -73,9 +73,9 @@ create policy "aluno apaga o próprio progresso" on public.progresso
 revoke all on public.turmas from anon, authenticated;
 revoke all on public.progresso from anon;
 
--- ---------- 5. Validação do código da turma NO SERVIDOR ----------
--- Roda automaticamente a cada nova conta. Se o código for inválido, a conta NÃO é criada.
--- Contas kids criadas pela professora (função privado.criar_conta_kids) passam direto.
+-- ---------- 5. Perfil criado automaticamente a cada nova conta ----------
+-- Cadastro aberto: qualquer pessoa cria conta com nome, e-mail e senha (sem código de turma).
+-- Contas kids criadas pela professora (função privado.criar_conta_kids) recebem o perfil kids.
 create schema if not exists privado;
 revoke all on schema privado from public, anon, authenticated;
 
@@ -86,9 +86,7 @@ security definer
 set search_path = ''
 as $$
 declare
-  v_turma  public.turmas%rowtype;
-  v_codigo text := upper(trim(coalesce(new.raw_user_meta_data ->> 'codigo_turma', '')));
-  v_nome   text := nullif(trim(coalesce(new.raw_user_meta_data ->> 'nome', '')), '');
+  v_nome text := nullif(trim(coalesce(new.raw_user_meta_data ->> 'nome', '')), '');
 begin
   -- conta kids criada pela professora
   if coalesce(new.raw_app_meta_data ->> 'criado_pela_professora', '') = 'true' then
@@ -105,17 +103,9 @@ begin
     raise exception 'DOMINIO_RESERVADO' using errcode = 'P0001';
   end if;
 
-  -- cadastro pelo site: exige código de turma adulta e ativa
-  select * into v_turma
-  from public.turmas
-  where upper(codigo) = v_codigo and ativa and publico = 'adulto';
-
-  if not found then
-    raise exception 'CODIGO_TURMA_INVALIDO' using errcode = 'P0001';
-  end if;
-
-  insert into public.perfis (id, nome, perfil, turma_id)
-  values (new.id, coalesce(v_nome, split_part(new.email, '@', 1)), 'adulto', v_turma.id);
+  -- cadastro pelo site: aberto, sem turma
+  insert into public.perfis (id, nome, perfil)
+  values (new.id, coalesce(v_nome, split_part(new.email, '@', 1)), 'adulto');
   return new;
 end;
 $$;
@@ -125,25 +115,9 @@ create trigger ao_criar_usuario
   after insert on auth.users
   for each row execute function privado.ao_criar_usuario();
 
--- ---------- 6. Conferência do código antes de enviar o cadastro ----------
--- Só responde "sim" ou "não" para mostrar uma mensagem amigável.
--- A proteção de verdade é o gatilho acima.
-create or replace function public.codigo_turma_valido(codigo text)
-returns boolean
-language sql
-stable
-security definer
-set search_path = ''
-as $$
-  select exists (
-    select 1 from public.turmas t
-    where upper(t.codigo) = upper(trim(codigo_turma_valido.codigo))
-      and t.ativa and t.publico = 'adulto'
-  );
-$$;
-
-revoke all on function public.codigo_turma_valido(text) from public;
-grant execute on function public.codigo_turma_valido(text) to anon, authenticated;
+-- ---------- 6. (removido) Conferência do código da turma ----------
+-- O cadastro não pede mais código. Apaga a função, se sobrou de uma versão antiga.
+drop function if exists public.codigo_turma_valido(text);
 
 -- ---------- 7. Criar conta kids (só a professora, pelo SQL Editor) ----------
 -- Uso: select privado.criar_conta_kids('apelido', 'senha', 'Nome da turma kids');

@@ -5,12 +5,14 @@
 -- ============================================================
 
 
--- ---------- Criar uma turma de adultos (o código é o que você passa aos alunos) ----------
+-- ---------- Criar uma turma de adultos ----------
+-- O cadastro pelo site é aberto e não pede código. O "codigo" aqui é só uma
+-- identificação interna (obrigatória e única), os alunos não precisam dele.
 insert into public.turmas (nome, codigo, publico)
 values ('Lógica – Turma 1', 'LOGICA-2026-A7K', 'adulto');
 
 
--- ---------- Criar uma turma kids (sem código de cadastro: você cria as contas) ----------
+-- ---------- Criar uma turma kids (você cria as contas das crianças) ----------
 insert into public.turmas (nome, codigo, publico)
 values ('Kids – Turma 1', 'KIDS-1-USO-INTERNO', 'kids');
 
@@ -19,13 +21,11 @@ values ('Kids – Turma 1', 'KIDS-1-USO-INTERNO', 'kids');
 select id, nome, codigo, publico, ativa, criada_em from public.turmas order by id;
 
 
--- ---------- Trocar o código de uma turma (o código antigo para de funcionar na hora) ----------
-update public.turmas set codigo = 'LOGICA-2026-NOVO' where nome = 'Lógica – Turma 1';
-
-
--- ---------- Fechar as inscrições de uma turma ----------
-update public.turmas set ativa = false where nome = 'Lógica – Turma 1';
--- para reabrir: troque false por true
+-- ---------- Colocar um aluno adulto numa turma ----------
+-- Quem se cadastra pelo site entra sem turma. Use para organizar os relatórios abaixo.
+update public.perfis
+set turma_id = (select id from public.turmas where nome = 'Lógica – Turma 1')
+where id = (select id from auth.users where email = 'email@do.aluno');
 
 
 -- ---------- Criar conta kids (apelido, senha, nome da turma kids) ----------

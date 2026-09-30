@@ -81,7 +81,7 @@ A professora entrega o documento **completo, com as respostas**. Cabe ao Claude 
 
 - **Nome do site:** Linha a Linha.
 
-- **Cadastro:** aberto a qualquer pessoa que tenha o **código da turma**. O código deve ser validado no Supabase (função ou trigger no servidor), não só no JavaScript da página, para não poder ser contornado. A professora precisa conseguir trocar o código e ter um código por turma.
+- **Cadastro:** aberto a qualquer pessoa, só com nome, e-mail e senha (o código da turma foi removido a pedido da professora em setembro de 2026). Contas novas entram sem turma; a professora pode colocar o aluno numa turma pelo `2-comandos-da-professora.sql`.
 - **Conteúdo:** acessível pelo link direto, de qualquer lugar. O login serve para identificar o aluno e salvar o progresso (aulas concluídas, notas dos quizzes). O conteúdo fica nos arquivos JSON do próprio site.
 - **Contas kids:** continuam sendo criadas pela professora (LGPD), sem e-mail da criança.
 
@@ -95,7 +95,7 @@ A professora entrega o documento **completo, com as respostas**. Cabe ao Claude 
   - `atividades`: `itens[{n, nivel, titulo, enunciado, testes?, dica, solucao, observar?}]` (solução só depois de escrever a tentativa);
   - kids: `conversa` (`falas[]`) e `jogo` (`missao, tamanho, inicio, estrela, paredes`).
 - Progresso: uma linha por etapa na tabela `progresso`; quizzes guardam `acertos/total`; cada atividade marcada vira a etapa `atividades:<n>`.
-- Supabase: `supabase/1-configuracao.sql` (tabelas `turmas`, `perfis`, `progresso`, RLS, gatilho que valida o código da turma, função `privado.criar_conta_kids`) e `supabase/2-comandos-da-professora.sql`.
+- Supabase: `supabase/1-configuracao.sql` (tabelas `turmas`, `perfis`, `progresso`, RLS, gatilho que cria o perfil a cada nova conta, função `privado.criar_conta_kids`), `supabase/2-comandos-da-professora.sql` e `supabase/3-cadastro-sem-codigo.sql` (atualiza um banco antigo para o cadastro sem código).
 - Contas kids: login só com apelido; o site completa com `@kids.linhaalinha.com.br` (domínio reservado, nenhum e-mail real). Criadas pela professora via `select privado.criar_conta_kids(...)`.
 - Material bruto da professora fica em `materiais/` (no `.gitignore`, nunca vai para o GitHub). Ler `materiais/LEIA-ME.md` antes de converter uma aula. `prototipo/` também fica fora do repositório.
 - Trilha **Python** (`conteudo/python/`, id `python`): aulas 1, 2, 3, 4, 8 e 12. Trilha **JavaScript** (`conteudo/javascript/`, id `javascript`): aula 3. Tudo feito só a partir dos PDFs de `materiais/` (os slides não são fonte). Faltam no material: Python 5 a 7 e 9 a 11, JavaScript 1 e 2.
@@ -106,7 +106,7 @@ A professora entrega o documento **completo, com as respostas**. Cabe ao Claude 
 ## Segurança (não desfazer)
 
 - **Chaves:** no código só entram chaves públicas: a publishable key do Supabase e a Site Key do Turnstile (`js/config.js`). A Secret Key do Turnstile e a service_role/secret key do Supabase **nunca** vão para o repositório.
-- **Dados:** RLS em todas as tabelas; cada aluno só lê e grava o próprio progresso. O código da turma é validado no servidor (gatilho em `auth.users`), não só no JavaScript.
+- **Dados:** RLS em todas as tabelas; cada aluno só lê e grava o próprio progresso. O gatilho em `auth.users` bloqueia cadastro pelo site com o domínio reservado das contas kids.
 - **CAPTCHA (Cloudflare Turnstile):** protege login (inclusive o kids, pelo apelido), cadastro e "Esqueci minha senha". Widget com `appearance: "interaction-only"` e `language: "pt-br"`, um por formulário, criado quando o formulário aparece. O token vai em `options.captchaToken` (`signInWithPassword`, `signUp`) e em `captchaToken` (`resetPasswordForEmail`); o "Nova senha" (`updateUser`) não usa. Cada token vale uma vez: `turnstile.reset` depois de toda chamada. O botão fica bloqueado até existir token.
   - A **Secret Key fica só no painel do Supabase** (Authentication → Attack Protection → CAPTCHA, provedor Turnstile). Com o CAPTCHA ligado lá, o login só funciona com a Site Key certa em `js/config.js`.
   - O script `https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit` é carregado **sem** `integrity`, porque o Cloudflare não permite fixar a versão dele.
