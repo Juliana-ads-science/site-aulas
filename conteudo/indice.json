@@ -40,6 +40,15 @@
       "aulas": [
         "aula-19"
       ]
+    },
+    {
+      "id": "informatica-basica",
+      "pasta": "informatica-basica",
+      "publico": "adulto",
+      "linguagem": "python",
+      "titulo": "Informática Básica",
+      "descricao": "Os primeiros passos no computador: arquivos, pastas, internet e as ferramentas do dia a dia.",
+      "aulas": []
     }
   ]
 }
