@@ -16,7 +16,6 @@
         "aula-12",
         "aula-13",
         "aula-18",
-        "aula-19",
         "aula-24"
       ]
     },
@@ -29,6 +28,17 @@
       "descricao": "A linguagem da web: laços de repetição, decisões e lógica aplicada no navegador.",
       "aulas": [
         "aula-03"
+      ]
+    },
+    {
+      "id": "data-analise",
+      "pasta": "data-analise",
+      "publico": "adulto",
+      "linguagem": "python",
+      "titulo": "Data Análise",
+      "descricao": "Dados na prática com Python: APIs financeiras, cotações e análise de informações reais.",
+      "aulas": [
+        "aula-19"
       ]
     }
   ]
