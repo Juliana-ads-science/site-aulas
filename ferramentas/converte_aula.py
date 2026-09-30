@@ -37,13 +37,16 @@ def celulas(ln):
 
 
 def sem_notas_de_slide(linhas):
-    """Remove '**Observações para os slides:**' e a lista que vem logo depois."""
+    """Remove notas internas que não vão para o site: '**Observações/Observação para os
+    slides:**' ou '**Observação sobre o slide:**' (e a lista ou o texto que vem logo depois)
+    e a seção '### Outras correções do material original' (e a lista que vem depois)."""
     out, pulando, fence = [], False, False
     for ln in linhas:
         s = ln.strip()
         if s.startswith("```"):
             fence = not fence
-        if not fence and re.match(r"^\*\*Observaç(ões|ão) para (os |o )?slides?", s, re.I):
+        if not fence and (re.match(r"^\*\*Observaç(ões|ão) (para|sobre) (os |o )?slides?", s, re.I)
+                           or re.match(r"^###\s+Outras correções do material original", s, re.I)):
             pulando = True
             continue
         if pulando:
@@ -166,19 +169,29 @@ def quiz(titulo, linhas):
 
 
 def enunciados(linhas):
-    nivel, out = None, {}
+    """Cada item começa em 'N. texto' e pode ter linhas depois (ex.: um bloco de código de
+    apoio), até o próximo item, o próximo nível ou o fim da seção. O texto antes do primeiro
+    item (ex.: uma instrução geral para todas as atividades) vira o intro da etapa."""
+    intro, nivel, out, cur, fence = [], None, {}, None, False
     for ln in linhas:
         s = ln.strip()
-        m = re.match(r"^\*\*Nível\s+(.*?)\*\*$", s)
-        if m:
-            nivel = m.group(1).strip().capitalize(); continue
-        m = re.match(r"^(\d+)\.\s+(.*)$", s)
-        if m:
-            out[int(m.group(1))] = (nivel, m.group(2))
-    return out
+        if s.startswith("```"):
+            fence = not fence
+            (out[cur][1] if cur is not None else intro).append(ln); continue
+        if not fence:
+            m = re.match(r"^\*\*Nível\s+(.*?)\*\*$", s)
+            if m:
+                nivel, cur = m.group(1).strip().capitalize(), None; continue
+            m = re.match(r"^(\d+)\.\s+(.*)$", s)
+            if m:
+                cur = int(m.group(1)); out[cur] = (nivel, [m.group(2)]); continue
+        (out[cur][1] if cur is not None else intro).append(ln)
+    return intro, out
 
 
 def gabarito(linhas, numeros):
+    """Marcador de cada solução: '1.' (sozinho na linha, formato antigo) ou '**1.**' /
+    '**9. Resposta esperada:** texto...' (negrito, com rótulo opcional na mesma linha)."""
     intro, itens, cur, i = [], {}, None, 0
     while i < len(linhas):
         s = linhas[i].strip()
@@ -188,9 +201,12 @@ def gabarito(linhas, numeros):
                 bloco.append(linhas[i]); i += 1
             bloco.append(linhas[i]); i += 1
             (itens[cur] if cur else intro).extend(bloco); continue
-        m = re.match(r"^(\d+)\.\s*(.*)$", s)
+        m = re.match(r"^\*\*(\d+)\.\s*(.*?)\*\*\s*(.*)$", s) or re.match(r"^(\d+)\.\s*(.*)$", s)
         if m and int(m.group(1)) in numeros:
-            cur = int(m.group(1)); itens[cur] = [m.group(2)] if m.group(2) else []; i += 1; continue
+            cur = int(m.group(1))
+            resto = f"{m.group(2)} {m.group(3)}".strip() if m.lastindex == 3 else m.group(2)
+            itens[cur] = [resto] if resto else []
+            i += 1; continue
         (itens[cur] if cur else intro).append(linhas[i]); i += 1
     return blocos(intro), itens
 
@@ -206,7 +222,7 @@ def converter(md_path):
         elif atual is not None:
             atual["linhas"].append(ln)
 
-    etapas, atv_titulo, enun, gab = [], "Atividades", {}, None
+    etapas, atv_titulo, atv_intro, enun, gab = [], "Atividades", [], {}, None
     for sec in secoes:
         t, linhas = sec["titulo"], sem_notas_de_slide(sec["linhas"])
         if re.match(r"^Código explicado", t, re.I):
@@ -214,7 +230,7 @@ def converter(md_path):
         elif re.match(r"^Quiz", t, re.I):
             etapas.append(quiz(t, linhas))
         elif re.match(r"^Atividades", t, re.I):
-            atv_titulo, enun = t, enunciados(linhas)
+            atv_titulo, (atv_intro, enun) = t, enunciados(linhas)
         elif re.match(r"^Gabarito", t, re.I):
             gab = linhas
         else:
@@ -226,8 +242,8 @@ def converter(md_path):
         if faltam:
             sys.exit(f"Gabarito: não achei a solução das atividades {faltam}")
         etapas.append({"id": "atividades", "tipo": "atividades", "nome": sem_crases(atv_titulo),
-                       "intro": intro + [AVISO_ATIVIDADES],
-                       "itens": [{"n": n, "nivel": enun[n][0], "enunciado": [enun[n][1]], "solucao": blocos(sol[n])}
+                       "intro": blocos(atv_intro) + intro + [AVISO_ATIVIDADES],
+                       "itens": [{"n": n, "nivel": enun[n][0], "enunciado": blocos(enun[n][1]), "solucao": blocos(sol[n])}
                                  for n in sorted(enun)]})
     return titulo, etapas
 
@@ -240,20 +256,29 @@ def textos(v):
 
 
 def conferir(md_path, aula):
-    """Cada linha de texto do .md (fora as notas de slide) precisa aparecer no JSON."""
+    """Cada linha de texto do .md (fora as notas internas) precisa aparecer no JSON."""
     tudo = "\n".join(textos(aula))
-    faltando, fence, pulando = [], False, False
+    faltando, fence, pulando, comecou = [], False, False, False
     ignorar = {"fácil", "médio", "difícil", "linha", "o que acontece"}
     for n, ln in enumerate(md_path.read_text(encoding="utf-8").split("\n")[1:], 2):
         s = ln.rstrip()
+        if not comecou:   # título e qualquer nota solta antes da 1ª seção não viram JSON
+            if re.match(r"^##\s+\d+\.", s.strip()):
+                comecou = True
+            else:
+                continue
         if s.strip().startswith("```"):
             fence = not fence; continue
-        if not fence:   # mesmas notas de slide que o conversor deixa de fora
-            if re.match(r"^\*\*Observaç(ões|ão) para (os |o )?slides?", s.strip(), re.I):
+        if not fence:   # mesmas notas internas que o conversor deixa de fora
+            if (re.match(r"^\*\*Observaç(ões|ão) (para|sobre) (os |o )?slides?", s.strip(), re.I)
+                    or re.match(r"^###\s+Outras correções do material original", s.strip(), re.I)):
                 pulando = True; continue
             if pulando and (not s.strip() or s.strip().startswith("- ")):
                 continue
             pulando = False
+            mg = re.match(r"^\*\*(\d+)\.\s*(.*?)\*\*\s*(.*)$", s.strip())   # gabarito: "**1.**" / "**9. Rótulo:** texto"
+            if mg:
+                s = f"{mg.group(2)} {mg.group(3)}".strip()
         if fence:
             pedacos = [s]
         else:

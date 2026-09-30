@@ -1,0 +1,1136 @@
+{
+  "numero": 14,
+  "titulo": "Consumo de API e Tratamento de Erros",
+  "etapas": [
+    {
+      "id": "definicoes",
+      "tipo": "leitura",
+      "nome": "Definições",
+      "blocos": [
+        "Uma API é o intermediário que deixa dois sistemas conversarem; no JavaScript, pedimos dados a ela com `fetch()`, que devolve uma Promise. A analogia da aula: a API é o garçom, o servidor é a cozinha e o seu código é o cliente que faz o pedido.",
+        {
+          "tabela": [
+            [
+              "Termo",
+              "O que significa"
+            ],
+            [
+              "API",
+              "Interface de Programação de Aplicações: conjunto de regras para um sistema pedir dados ou ações a outro"
+            ],
+            [
+              "API Web / REST",
+              "API acessada por endereços (URLs) via HTTP, a mais comum na web"
+            ],
+            [
+              "Endpoint",
+              "Endereço específico de um recurso na API, ex.: `/todos/1`"
+            ],
+            [
+              "JSON",
+              "JavaScript Object Notation: formato de texto com pares chave–valor, padrão das respostas de API"
+            ],
+            [
+              "Requisição (request)",
+              "Pedido que o seu código envia ao servidor"
+            ],
+            [
+              "Resposta (response)",
+              "O que o servidor devolve: código de status + corpo com os dados"
+            ],
+            [
+              "`fetch()`",
+              "Função nativa do JavaScript que faz requisições de rede"
+            ],
+            [
+              "Assíncrono",
+              "Não trava o resto do código enquanto espera a resposta"
+            ],
+            [
+              "Promise",
+              "Objeto que representa um valor que ainda vai chegar (ou falhar)"
+            ],
+            [
+              "Pending",
+              "Estado da Promise enquanto a operação não terminou"
+            ],
+            [
+              "Fulfilled",
+              "Estado da Promise que terminou com sucesso"
+            ],
+            [
+              "Rejected",
+              "Estado da Promise que falhou"
+            ],
+            [
+              "`.then()`",
+              "Define o que fazer quando a Promise dá certo"
+            ],
+            [
+              "`.catch()`",
+              "Define o que fazer quando a Promise falha ou quando um erro é lançado"
+            ],
+            [
+              "Callback",
+              "Função passada para ser executada depois"
+            ],
+            [
+              "Objeto Response",
+              "O que o primeiro `.then()` recebe do `fetch()`: status, cabeçalhos e corpo ainda não lido"
+            ],
+            [
+              "`response.json()`",
+              "Lê o corpo da resposta e converte para objeto JS (também devolve Promise)"
+            ],
+            [
+              "`response.status`",
+              "Número do código HTTP: 200, 404, 500..."
+            ],
+            [
+              "`response.ok`",
+              "`true` se o status está entre 200 e 299; `false` caso contrário"
+            ],
+            [
+              "GET",
+              "Método HTTP de leitura; é o padrão do `fetch()`"
+            ],
+            [
+              "Erro de rede",
+              "A requisição nem chegou ao servidor (offline, domínio errado). O `fetch()` rejeita a Promise"
+            ],
+            [
+              "Erro HTTP",
+              "O servidor respondeu, mas com código de problema (404, 500). O `fetch()` NÃO rejeita"
+            ],
+            [
+              "`throw new Error()`",
+              "Lança um erro manualmente, desviando o fluxo para o `.catch()`"
+            ],
+            [
+              "DOM",
+              "Document Object Model: a página HTML vista como objetos que o JS manipula"
+            ],
+            [
+              "Placeholder",
+              "Elemento HTML vazio (com `id`) reservado para receber os dados da API"
+            ],
+            [
+              "`textContent`",
+              "Insere texto puro no elemento"
+            ],
+            [
+              "`innerHTML`",
+              "Insere texto interpretado como HTML"
+            ],
+            [
+              "XSS",
+              "Cross-Site Scripting: ataque em que código malicioso é injetado na página via HTML"
+            ],
+            [
+              "JSONPlaceholder",
+              "API pública e gratuita de testes, usada nos exemplos"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "para-que-como-e-quando-usamos",
+      "tipo": "leitura",
+      "nome": "Para que, como e quando usamos",
+      "blocos": [
+        "Usamos `fetch()` para buscar dados que estão em outro lugar (outro servidor) e mostrá-los na nossa página sem recarregá-la.",
+        "**Para que:** exibir clima, cotações, listas de produtos, posts e usuários; fazer login com Google; integrar pagamentos e mapas. O site não guarda esses dados, ele pede a quem guarda.",
+        "**Como:** chamamos `fetch(url)`, tratamos a resposta no primeiro `.then()` (verificando `response.ok` e convertendo com `.json()`), usamos os dados no segundo `.then()` para montar o HTML e capturamos falhas no `.catch()`, avisando o usuário na tela.",
+        "**Quando usar (e quando não):**",
+        {
+          "tabela": [
+            [
+              "Situação",
+              "`fetch()` é uma boa?"
+            ],
+            [
+              "Buscar dados atualizados de um serviço externo (clima, cotação)",
+              "Sim"
+            ],
+            [
+              "Carregar uma lista do servidor e montar a página dinamicamente",
+              "Sim"
+            ],
+            [
+              "Atualizar parte da página sem recarregar tudo",
+              "Sim"
+            ],
+            [
+              "Dados fixos que nunca mudam (ex.: lista de estados do Brasil)",
+              "Não precisa: deixe no próprio código"
+            ],
+            [
+              "Dados que só existem na página (valor de um input)",
+              "Não: leia direto do DOM"
+            ],
+            [
+              "Chamar uma API que exige chave secreta direto do navegador",
+              "Não: a chave ficaria exposta; use um back-end intermediário"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "estruturas",
+      "tipo": "leitura",
+      "nome": "Estruturas",
+      "blocos": [
+        {
+          "h": "3.1 Objeto no formato JSON e acesso aos dados"
+        },
+        {
+          "codigo": "const usuario = { id: 1, nome: \"Alice\", cidade: \"Curitiba\", idade: 30 };\nconsole.log(usuario.nome);      // notação de ponto → Alice\nconsole.log(usuario[\"cidade\"]); // notação de colchetes → Curitiba"
+        },
+        {
+          "h": "3.2 Requisição GET básica"
+        },
+        {
+          "codigo": "fetch(\"https://jsonplaceholder.typicode.com/todos/1\") // sem 2º argumento = GET\n  .then(resposta => resposta.json())                   // corpo → objeto JS\n  .then(dados => console.log(dados))                   // usa os dados\n  .catch(erro => console.error(\"Erro:\", erro));        // trata falhas"
+        },
+        {
+          "h": "3.3 Criando uma Promise (para entender o fetch por dentro)"
+        },
+        {
+          "codigo": "const promessa = new Promise((resolver, rejeitar) => {\n  setTimeout(() => resolver(\"Pronto!\"), 1000); // resolve após 1 s\n});\npromessa.then(valor => console.log(valor));"
+        },
+        {
+          "h": "3.4 Encadeamento de `.then()`"
+        },
+        {
+          "codigo": "fetch(url)\n  .then(res => res.json())      // 1º then: recebe Response, devolve outra Promise\n  .then(dados => {               // 2º then: recebe os dados prontos\n    console.log(dados.title);\n  });"
+        },
+        {
+          "h": "3.5 `.catch()` no fim da corrente"
+        },
+        {
+          "codigo": "fetch(url)\n  .then(res => res.json())\n  .then(dados => console.log(dados))\n  .catch(erro => console.error(\"Falhou:\", erro.message)); // pega erro de qualquer etapa"
+        },
+        {
+          "h": "3.6 Verificação de status com `response.ok`"
+        },
+        {
+          "codigo": "fetch(url)\n  .then(res => {\n    if (!res.ok) {\n      throw new Error(`Erro HTTP: ${res.status}`); // desvia para o catch\n    }\n    return res.json();\n  })\n  .then(dados => console.log(dados))\n  .catch(erro => console.error(erro.message));"
+        },
+        {
+          "h": "3.7 HTML com placeholder"
+        },
+        {
+          "codigo": "<div id=\"dados-do-usuario\">\n  <p>Carregando dados...</p>\n</div>\n<ul id=\"lista-tarefas\"></ul>\n<script src=\"app.js\"></script>"
+        },
+        {
+          "h": "3.8 Inserir um único item"
+        },
+        {
+          "codigo": "const caixa = document.getElementById(\"dados-do-usuario\");\ncaixa.textContent = usuario.name;       // texto puro (seguro)\ncaixa.innerHTML = `<h2>${usuario.name}</h2>`; // HTML formatado (cuidado com XSS)"
+        },
+        {
+          "h": "3.9 Inserir uma lista com loop"
+        },
+        {
+          "codigo": "const lista = document.getElementById(\"lista-tarefas\");\ntarefas.forEach(tarefa => {\n  const li = document.createElement(\"li\"); // cria\n  li.textContent = tarefa.title;           // preenche\n  lista.appendChild(li);                   // anexa\n});"
+        },
+        {
+          "h": "3.10 Função de renderização separada"
+        },
+        {
+          "codigo": "function renderizarLista(tarefas) {\n  const lista = document.getElementById(\"lista-tarefas\");\n  lista.innerHTML = \"\"; // limpa antes de preencher\n  tarefas.forEach(t => {\n    const li = document.createElement(\"li\");\n    li.textContent = t.title;\n    lista.appendChild(li);\n  });\n}\n\nfetch(url).then(res => res.json()).then(renderizarLista);"
+        }
+      ]
+    },
+    {
+      "id": "sintaxe-e-simbolos",
+      "tipo": "leitura",
+      "nome": "Sintaxe e símbolos",
+      "blocos": [
+        {
+          "tabela": [
+            [
+              "Símbolo / comando",
+              "O que faz",
+              "Por que existe"
+            ],
+            [
+              "`{ chave: valor }`",
+              "Cria um objeto",
+              "Organiza dados por nome, como o JSON da API"
+            ],
+            [
+              "`objeto.chave`",
+              "Acessa uma propriedade",
+              "Pegar um dado específico da resposta"
+            ],
+            [
+              "`objeto[\"chave\"]`",
+              "Acessa com texto entre colchetes",
+              "Útil quando o nome vem de uma variável ou tem espaço"
+            ],
+            [
+              "`lista[0]`",
+              "Pega o primeiro item de um array",
+              "Arrays começam no índice 0"
+            ],
+            [
+              "`fetch(url)`",
+              "Inicia a requisição",
+              "Comunicação com servidores; devolve Promise"
+            ],
+            [
+              "`.` antes de `then`",
+              "Encadeia um método na Promise",
+              "Cada `.then()` devolve nova Promise, permitindo a corrente"
+            ],
+            [
+              "`=>`",
+              "Arrow function (função curta)",
+              "Escrever callbacks em uma linha"
+            ],
+            [
+              "`res => res.json()`",
+              "Função que devolve `res.json()`",
+              "Sem chaves, o valor é devolvido automaticamente"
+            ],
+            [
+              "`return` dentro do `.then()`",
+              "Passa o valor para o próximo `.then()`",
+              "Sem ele, o próximo recebe `undefined`"
+            ],
+            [
+              "`new Promise((resolver, rejeitar) => {...})`",
+              "Cria uma Promise",
+              "Mostrar como o fetch funciona por dentro"
+            ],
+            [
+              "`setTimeout(fn, 1000)`",
+              "Executa `fn` depois de 1000 ms",
+              "Simular a demora da rede"
+            ],
+            [
+              "`!`",
+              "Nega um valor (`!true` = `false`)",
+              "`!res.ok` lê como \"resposta não está ok\""
+            ],
+            [
+              "`throw new Error(\"msg\")`",
+              "Lança um erro",
+              "Forçar a ida ao `.catch()` em erros HTTP"
+            ],
+            [
+              "`erro.message`",
+              "Texto do erro",
+              "Mostrar só a mensagem, sem o objeto inteiro"
+            ],
+            [
+              "`` `texto ${variavel}` ``",
+              "Template string",
+              "Juntar texto e valores; também monta HTML"
+            ],
+            [
+              "`condicao ? \"A\" : \"B\"`",
+              "Operador ternário",
+              "Um `if/else` curto dentro de uma expressão"
+            ],
+            [
+              "`document.getElementById(\"id\")`",
+              "Encontra um elemento pelo `id`",
+              "O `id` é a âncora do placeholder"
+            ],
+            [
+              "`document.createElement(\"li\")`",
+              "Cria um elemento novo",
+              "Gerar HTML para cada item da API"
+            ],
+            [
+              "`pai.appendChild(filho)`",
+              "Insere o filho dentro do pai",
+              "Só depois disso o elemento aparece na tela"
+            ],
+            [
+              "`.textContent = ...`",
+              "Troca o texto",
+              "Seguro contra XSS"
+            ],
+            [
+              "`.innerHTML = ...`",
+              "Troca o HTML interno",
+              "Formatação rica; exige dados confiáveis"
+            ],
+            [
+              "`.innerHTML = \"\"`",
+              "Esvazia o elemento",
+              "Limpar a lista antes de preencher de novo"
+            ],
+            [
+              "`array.forEach(item => {...})`",
+              "Repete para cada item",
+              "Percorrer a lista vinda da API"
+            ],
+            [
+              "`?_limit=5` na URL",
+              "Parâmetro de consulta",
+              "Pedir só 5 itens ao JSONPlaceholder"
+            ],
+            [
+              "`console.error()`",
+              "Mostra erro em vermelho no console",
+              "Log para quem programa, não para o usuário"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logica-por-tras",
+      "tipo": "leitura",
+      "nome": "Lógica por trás",
+      "blocos": [
+        "O `fetch()` faz o pedido e segue em frente: o resto do código continua rodando, e os `.then()` só executam quando a resposta chega. É isso que impede a página de \"congelar\".",
+        "**Fluxo completo, passo a passo:**",
+        {
+          "passos": [
+            "`fetch(url)` dispara a requisição. A Promise fica em **Pending**.",
+            "O código síncrono logo abaixo continua executando.",
+            "A resposta chega sem erro de rede → a Promise vira **Fulfilled** → o 1º `.then()` recebe o objeto Response.",
+            "O 1º `.then()` verifica `res.ok` e devolve `res.json()`, que é outra Promise.",
+            "O JSON é lido → o 2º `.then()` recebe os dados prontos e atualiza o HTML.",
+            "Se houve falha de rede, a Promise vira **Rejected** e o fluxo pula direto para o `.catch()`.",
+            "Se algum `.then()` lançar erro (`throw`), o fluxo também pula os `.then()` seguintes e vai para o `.catch()`."
+          ]
+        },
+        "**Por que o \"2\" aparece antes do \"3\":**",
+        {
+          "codigo": "console.log(\"1\");\nfetch(url).then(() => console.log(\"3\"));\nconsole.log(\"2\");\n// Saída: 1, 2, 3"
+        },
+        "A linha do `fetch` só agenda o `.then()`. O `console.log(\"2\")` é síncrono e roda na hora; o \"3\" espera a rede.",
+        "**Erro de rede x erro HTTP:**",
+        {
+          "tabela": [
+            [
+              "Tipo",
+              "Exemplo",
+              "O `fetch()` rejeita?",
+              "Onde tratar"
+            ],
+            [
+              "Erro de rede",
+              "Offline, domínio inexistente",
+              "Sim → vai direto ao `.catch()`",
+              "`.catch()`"
+            ],
+            [
+              "Erro HTTP 4xx",
+              "404 Not Found, 401 Unauthorized",
+              "Não → entra no `.then()`",
+              "`if (!res.ok) throw ...` no 1º `.then()`"
+            ],
+            [
+              "Erro HTTP 5xx",
+              "500 Internal Server Error",
+              "Não → entra no `.then()`",
+              "`if (!res.ok) throw ...` no 1º `.then()`"
+            ]
+          ]
+        },
+        "**Por que o `throw` é necessário:** para o `fetch()`, um 404 é uma resposta válida: o servidor respondeu. Se não verificarmos `res.ok`, o código tenta ler e exibir dados que não existem. O `throw` transforma o erro HTTP em rejeição e unifica o tratamento no `.catch()`.",
+        "**Por que `textContent` é mais seguro:** com `innerHTML`, um texto como `<img src=x onerror=\"...\">` vindo da API seria executado como código. Com `textContent`, ele aparece na tela como texto, sem executar.",
+        "**Por que separar em funções:** o `.then()` fica só com a tarefa de entregar os dados; a função de exibição cuida do layout. Se o design mudar, mexemos só na função, sem tocar no `fetch()`."
+      ]
+    },
+    {
+      "id": "exemplo-a",
+      "tipo": "codigo",
+      "nome": "Exemplo A — Promise simulada (promise_simulada.js)",
+      "codigo": [
+        "function simularBusca(sucesso) {",
+        "  return new Promise((resolver, rejeitar) => {",
+        "    setTimeout(() => {",
+        "      if (sucesso) {",
+        "        resolver(\"Dados do servidor OK!\");",
+        "      } else {",
+        "        rejeitar(\"Erro na conexão de rede.\");",
+        "      }",
+        "    }, 1000);",
+        "  });",
+        "}",
+        "",
+        "simularBusca(true)",
+        "  .then(resultado => {",
+        "    console.log(\"Sucesso:\", resultado);",
+        "  })",
+        "  .catch(erro => {",
+        "    console.error(\"Falha:\", erro);",
+        "  });"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Declara a função; `sucesso` decide se vai dar certo ou errado"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Devolve uma Promise nova. `resolver` e `rejeitar` são as duas \"saídas\" possíveis"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Agenda o bloco para daqui a 1 segundo (simula a rede)"
+        },
+        {
+          "linhas": [
+            4,
+            5
+          ],
+          "texto": "Se `sucesso` é `true`, chama `resolver`: a Promise vira Fulfilled"
+        },
+        {
+          "linhas": [
+            6,
+            7
+          ],
+          "texto": "Senão, chama `rejeitar`: a Promise vira Rejected"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "`1000` = tempo de espera em milissegundos"
+        },
+        {
+          "linhas": [
+            13,
+            13
+          ],
+          "texto": "Chama a função com `true`"
+        },
+        {
+          "linhas": [
+            14,
+            16
+          ],
+          "texto": "O `.then()` recebe o texto passado para `resolver` e mostra \"Sucesso: Dados do servidor OK!\""
+        },
+        {
+          "linhas": [
+            17,
+            19
+          ],
+          "texto": "Só executaria se a Promise fosse rejeitada. Teste com `simularBusca(false)`"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-b",
+      "tipo": "codigo",
+      "nome": "Exemplo B — Ordem de execução (fluxo_completo.js)",
+      "codigo": [
+        "const url = 'https://jsonplaceholder.typicode.com/todos/3';",
+        "",
+        "console.log(\"1. Início da execução: Código síncrono rodando.\");",
+        "",
+        "fetch(url)",
+        "  .then(res => {",
+        "    console.log(\"3. Primeira Promise resolvida: Resposta HTTP recebida.\");",
+        "    return res.json();",
+        "  })",
+        "  .then(data => {",
+        "    console.log(\"4. Segunda Promise resolvida: Dados prontos.\");",
+        "    console.log(\"Título do todo:\", data.title);",
+        "  })",
+        "  .catch(err => {",
+        "    console.error(\"Erro:\", err);",
+        "  });",
+        "",
+        "console.log(\"2. Código síncrono após o fetch: A página não travou!\");"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Guarda o endereço da tarefa 3 da API de teste"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Primeira mensagem: roda na hora"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Dispara a requisição e segue em frente sem esperar"
+        },
+        {
+          "linhas": [
+            6,
+            9
+          ],
+          "texto": "1º `.then()`: só roda quando a resposta chega; devolve `res.json()` para o próximo"
+        },
+        {
+          "linhas": [
+            10,
+            13
+          ],
+          "texto": "2º `.then()`: recebe o objeto pronto e mostra o título"
+        },
+        {
+          "linhas": [
+            14,
+            16
+          ],
+          "texto": "Só roda se houver falha"
+        },
+        {
+          "linhas": [
+            18,
+            18
+          ],
+          "texto": "Roda logo após a linha 5, antes da resposta chegar. Por isso a saída é 1, 2, 3, 4"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-c",
+      "tipo": "codigo",
+      "nome": "Exemplo C — Tratando erro 404 (erro_404.js)",
+      "codigo": [
+        "const urlErro = 'https://jsonplaceholder.typicode.com/posts/99999';",
+        "",
+        "fetch(urlErro)",
+        "  .then(response => {",
+        "    console.log(\"Status da Resposta:\", response.status);",
+        "    if (!response.ok) {",
+        "      throw new Error(`Erro HTTP: Status ${response.status}`);",
+        "    }",
+        "    return response.json();",
+        "  })",
+        "  .then(data => console.log('Dados OK:', data))",
+        "  .catch(erro => {",
+        "    console.error('Falha Tratada:', erro.message);",
+        "  });"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "URL de um post que não existe, para forçar o 404"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Faz a requisição. O servidor responde, então não há erro de rede"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "O 1º `.then()` executa mesmo com 404, porque o `fetch()` não rejeita erros HTTP"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Mostra `404`"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "`response.ok` é `false` (404 está fora de 200–299), então `!response.ok` é `true`"
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "Lança o erro: os `.then()` seguintes são pulados"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "Não executa neste caso"
+        },
+        {
+          "linhas": [
+            11,
+            11
+          ],
+          "texto": "Não executa neste caso"
+        },
+        {
+          "linhas": [
+            12,
+            14
+          ],
+          "texto": "Recebe o erro lançado e mostra \"Falha Tratada: Erro HTTP: Status 404\""
+        }
+      ]
+    },
+    {
+      "id": "exemplo-d",
+      "tipo": "codigo",
+      "nome": "Exemplo D — Inserindo um único item (usuario.js)",
+      "codigo": [
+        "const apiUrl = 'https://jsonplaceholder.typicode.com/users/1';",
+        "const placeholder = document.getElementById('dados-do-usuario');",
+        "",
+        "fetch(apiUrl)",
+        "  .then(res => res.json())",
+        "  .then(usuario => {",
+        "    const conteudoHtml = `",
+        "      <h2>${usuario.name}</h2>",
+        "      <p>Email: ${usuario.email}</p>",
+        "      <p>Cidade: ${usuario.address.city}</p>",
+        "    `;",
+        "    placeholder.innerHTML = conteudoHtml;",
+        "    console.log(\"HTML atualizado com sucesso!\");",
+        "  })",
+        "  .catch(err => {",
+        "    placeholder.textContent = 'Falha ao carregar dados do usuário.';",
+        "    console.error(\"Erro:\", err);",
+        "  });"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Endereço do usuário 1"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Pega o `<div id=\"dados-do-usuario\">` que mostra \"Carregando dados...\""
+        },
+        {
+          "linhas": [
+            4,
+            5
+          ],
+          "texto": "Busca e converte a resposta para objeto"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Recebe o usuário pronto"
+        },
+        {
+          "linhas": [
+            7,
+            11
+          ],
+          "texto": "Template string com HTML. `usuario.address.city` acessa um objeto dentro de outro"
+        },
+        {
+          "linhas": [
+            12,
+            12
+          ],
+          "texto": "Substitui o \"Carregando dados...\" pelo HTML montado"
+        },
+        {
+          "linhas": [
+            15,
+            18
+          ],
+          "texto": "Em caso de falha, troca o texto por uma mensagem amigável e registra o erro"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-e",
+      "tipo": "codigo",
+      "nome": "Exemplo E — Lista organizada em funções (tarefas.js)",
+      "codigo": [
+        "function criarItemLista(tarefa) {",
+        "  const itemLista = document.createElement('li');",
+        "  let status = tarefa.completed ? '✅' : '❌';",
+        "  itemLista.textContent = `${status} ${tarefa.title}`;",
+        "  return itemLista;",
+        "}",
+        "",
+        "function renderizarLista(tarefas) {",
+        "  const listaCont = document.getElementById('lista-tarefas');",
+        "  listaCont.innerHTML = '';",
+        "  tarefas.forEach(tarefa => {",
+        "    const item = criarItemLista(tarefa);",
+        "    listaCont.appendChild(item);",
+        "  });",
+        "}",
+        "",
+        "const urlApi = 'https://jsonplaceholder.typicode.com/todos?_limit=3';",
+        "",
+        "fetch(urlApi)",
+        "  .then(res => res.json())",
+        "  .then(dados => {",
+        "    renderizarLista(dados);",
+        "    console.log(\"Renderização completa.\");",
+        "  })",
+        "  .catch(err => console.error('Erro:', err));"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Função que monta UM item"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Cria um `<li>` ainda fora da página"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Ternário: se `completed` é `true`, usa o ícone de concluído; senão, o de pendente"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Coloca ícone + título como texto"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Devolve o `<li>` pronto"
+        },
+        {
+          "linhas": [
+            8,
+            8
+          ],
+          "texto": "Função que cuida da lista inteira"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "Pega o `<ul id=\"lista-tarefas\">`"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "Esvazia a lista para não duplicar itens se a função rodar de novo"
+        },
+        {
+          "linhas": [
+            11,
+            14
+          ],
+          "texto": "Para cada tarefa: cria o item e anexa ao `<ul>`"
+        },
+        {
+          "linhas": [
+            17,
+            17
+          ],
+          "texto": "`?_limit=3` pede só 3 tarefas"
+        },
+        {
+          "linhas": [
+            19,
+            20
+          ],
+          "texto": "Busca e converte"
+        },
+        {
+          "linhas": [
+            21,
+            24
+          ],
+          "texto": "O `.then()` só entrega os dados para `renderizarLista`"
+        },
+        {
+          "linhas": [
+            25,
+            25
+          ],
+          "texto": "Registra qualquer falha"
+        }
+      ]
+    },
+    {
+      "id": "como-aplicar",
+      "tipo": "leitura",
+      "nome": "Como aplicar: agenda de contatos da API",
+      "blocos": [
+        "Junta placeholder, `fetch()`, verificação de `res.ok`, lista com loop, funções de renderização e mensagem de erro na tela. Salve como `index.html` e `app.js` na mesma pasta e abra o HTML no navegador.",
+        "**index.html**",
+        {
+          "codigo": "<!DOCTYPE html>\n<html lang=\"pt-br\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>Agenda de Contatos</title>\n</head>\n<body>\n  <h1>Agenda de Contatos</h1>\n  <button id=\"botao-carregar\">Carregar contatos</button>\n  <p id=\"status-msg\">Clique no botão para carregar.</p>\n  <ul id=\"lista-contatos\"></ul>\n  <script src=\"app.js\"></script>\n</body>\n</html>"
+        },
+        "**app.js**",
+        {
+          "codigo": "const URL_CONTATOS = \"https://jsonplaceholder.typicode.com/users\";\nconst botao = document.getElementById(\"botao-carregar\");\nconst statusMsg = document.getElementById(\"status-msg\");\nconst lista = document.getElementById(\"lista-contatos\");\n\nfunction criarItemContato(contato) {\n  const li = document.createElement(\"li\");\n  li.textContent = `${contato.name} — ${contato.email} (${contato.address.city})`;\n  return li;\n}\n\nfunction renderizarContatos(contatos) {\n  lista.innerHTML = \"\";\n  contatos.forEach(contato => {\n    lista.appendChild(criarItemContato(contato));\n  });\n  statusMsg.textContent = `${contatos.length} contatos carregados.`;\n}\n\nfunction carregarContatos() {\n  statusMsg.textContent = \"Carregando...\";\n  botao.disabled = true;\n\n  fetch(URL_CONTATOS)\n    .then(res => {\n      if (!res.ok) {\n        throw new Error(`Erro HTTP: ${res.status}`);\n      }\n      return res.json();\n    })\n    .then(renderizarContatos)\n    .catch(erro => {\n      statusMsg.textContent = \"Não foi possível carregar os contatos. Tente novamente.\";\n      console.error(\"Detalhe do erro:\", erro);\n    })\n    .finally(() => {\n      botao.disabled = false;\n    });\n}\n\nbotao.addEventListener(\"click\", carregarContatos);"
+        },
+        "**Por que funciona:** as três constantes do topo guardam os elementos uma vez só. `criarItemContato` monta um `<li>` com `textContent` (seguro), e `renderizarContatos` limpa a lista antes de preencher, então clicar duas vezes não duplica os contatos. No `fetch()`, o 1º `.then()` barra erros HTTP com `throw`, o 2º entrega os dados à função de exibição e o `.catch()` mostra uma mensagem amigável na tela. O `.finally()` roda nos dois casos e reabilita o botão, que foi desativado para evitar cliques repetidos durante a espera.",
+        "Para testar o erro, troque a URL por `https://jsonplaceholder.typicode.com/usersXYZ` (erro 404) ou por um domínio que não existe (erro de rede)."
+      ]
+    },
+    {
+      "id": "quiz",
+      "tipo": "quiz",
+      "nome": "Quiz de código",
+      "perguntas": [
+        {
+          "pergunta": "Em que ordem as mensagens aparecem?",
+          "codigo": "console.log(\"A\");\nfetch(url).then(() => console.log(\"B\"));\nconsole.log(\"C\");",
+          "opcoes": [
+            "A, B, C",
+            "A, C, B",
+            "B, A, C",
+            "C, A, B"
+          ],
+          "correta": 1,
+          "dica": "o `fetch()` espera a resposta antes de seguir?",
+          "acerto": "Isso! O fetch não trava o código.",
+          "erro": "O .then() só roda quando a resposta chega.",
+          "explicacao": "\"A\" e \"C\" são síncronos e saem na hora; \"B\" depende da rede e aparece por último."
+        },
+        {
+          "pergunta": "A URL retorna 404. O que aparece no console?",
+          "codigo": "fetch(urlQueNaoExiste404)\n  .then(res => console.log(\"Entrou no then\"))\n  .catch(() => console.log(\"Entrou no catch\"));",
+          "opcoes": [
+            "Entrou no catch",
+            "Entrou no then",
+            "As duas mensagens",
+            "Nenhuma"
+          ],
+          "correta": 1,
+          "dica": "o servidor respondeu?",
+          "acerto": "Exato! 404 não é erro de rede.",
+          "erro": "O fetch só rejeita quando a rede falha.",
+          "explicacao": "o servidor respondeu com 404, então a Promise é resolvida. Sem `if (!res.ok) throw`, o `.catch()` não é acionado."
+        },
+        {
+          "pergunta": "O que o segundo `.then()` recebe?",
+          "codigo": "fetch(url)\n  .then(res => {\n    res.json();\n  })\n  .then(dados => console.log(dados));",
+          "opcoes": [
+            "O objeto com os dados",
+            "O objeto Response",
+            "`undefined`",
+            "Um erro"
+          ],
+          "correta": 2,
+          "dica": "repare nas chaves `{ }` do primeiro `.then()`.",
+          "acerto": "Mandou bem! Faltou o return.",
+          "erro": "Com chaves, a arrow function precisa de return.",
+          "explicacao": "com `{ }` o valor não é devolvido automaticamente; o correto é `return res.json();` ou `res => res.json()` sem chaves."
+        },
+        {
+          "pergunta": "Qual é o valor de `res.ok` quando o status é 201?",
+          "codigo": "console.log(res.status); // 201\nconsole.log(res.ok);     // ?",
+          "opcoes": [
+            "`true`",
+            "`false`",
+            "`201`",
+            "`undefined`"
+          ],
+          "correta": 0,
+          "dica": "qual faixa conta como sucesso?",
+          "acerto": "Isso! 201 está entre 200 e 299.",
+          "erro": "ok é true para toda a faixa 200–299, não só 200.",
+          "explicacao": "`ok` é um booleano; 201 (Created) é sucesso."
+        },
+        {
+          "pergunta": "Qual linha é mais segura para mostrar um comentário escrito por um usuário?",
+          "codigo": "// comentario = \"<img src=x onerror='alert(1)'>\"",
+          "opcoes": [
+            "`caixa.innerHTML = comentario;`",
+            "`caixa.textContent = comentario;`",
+            "As duas são iguais",
+            "Nenhuma funciona"
+          ],
+          "correta": 1,
+          "dica": "qual delas interpreta HTML?",
+          "acerto": "Perfeito! textContent não executa código.",
+          "erro": "innerHTML executaria o código escondido no texto.",
+          "explicacao": "`textContent` mostra o texto literalmente; `innerHTML` criaria a imagem e dispararia o `onerror` (ataque XSS)."
+        },
+        {
+          "pergunta": "Quantos `<li>` existem depois de rodar duas vezes?",
+          "codigo": "function renderizar(itens) {\n  itens.forEach(i => {\n    const li = document.createElement(\"li\");\n    li.textContent = i;\n    lista.appendChild(li);\n  });\n}\nrenderizar([\"a\", \"b\", \"c\"]);\nrenderizar([\"a\", \"b\", \"c\"]);",
+          "opcoes": [
+            "3",
+            "6",
+            "0",
+            "Erro"
+          ],
+          "correta": 1,
+          "dica": "alguém limpa a lista antes?",
+          "acerto": "Isso! Sem limpar, os itens acumulam.",
+          "erro": "appendChild adiciona; não substitui.",
+          "explicacao": "cada chamada anexa 3 itens. Para mostrar só 3, comece a função com `lista.innerHTML = \"\";`."
+        }
+      ]
+    },
+    {
+      "id": "atividades",
+      "tipo": "atividades",
+      "nome": "Atividades",
+      "intro": [
+        "Use o JSONPlaceholder (`https://jsonplaceholder.typicode.com`) em todas.",
+        "Considere `const BASE = \"https://jsonplaceholder.typicode.com\";` no topo de cada resposta que usa a API.",
+        "Escreva ou cole a sua tentativa no campo de cada atividade para liberar a solução. Outras soluções também valem, desde que passem nos testes do enunciado."
+      ],
+      "itens": [
+        {
+          "n": 1,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie um objeto `livro` com `titulo`, `autor` e `ano` e mostre no console a frase \"`<titulo>` foi escrito por `<autor>`\" usando template string."
+          ],
+          "solucao": [
+            {
+              "codigo": "const livro = { titulo: \"Dom Casmurro\", autor: \"Machado de Assis\", ano: 1899 };\nconsole.log(`${livro.titulo} foi escrito por ${livro.autor}`);"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Faça um `fetch` em `/todos/5` e mostre no console só o `title` da tarefa."
+          ],
+          "solucao": [
+            {
+              "codigo": "fetch(`${BASE}/todos/5`)\n  .then(res => res.json())\n  .then(tarefa => console.log(tarefa.title))\n  .catch(erro => console.error(erro));"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie uma Promise que resolve com o texto \"Carregado!\" depois de 2 segundos e mostre esse texto com `.then()`."
+          ],
+          "solucao": [
+            {
+              "codigo": "const carregar = new Promise(resolver => {\n  setTimeout(() => resolver(\"Carregado!\"), 2000);\n});\ncarregar.then(texto => console.log(texto));"
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "nivel": "Médio",
+          "enunciado": [
+            "Busque `/users/2` e exiba nome e telefone dentro de um `<div id=\"perfil\">`, usando `textContent`."
+          ],
+          "solucao": [
+            {
+              "codigo": "const perfil = document.getElementById(\"perfil\");\nfetch(`${BASE}/users/2`)\n  .then(res => res.json())\n  .then(usuario => {\n    perfil.textContent = `${usuario.name} — ${usuario.phone}`;\n  })\n  .catch(() => perfil.textContent = \"Erro ao carregar perfil.\");"
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "nivel": "Médio",
+          "enunciado": [
+            "Busque `/posts?_limit=5` e monte uma `<ul id=\"lista-posts\">` com o título de cada post."
+          ],
+          "solucao": [
+            {
+              "codigo": "const lista = document.getElementById(\"lista-posts\");\nfetch(`${BASE}/posts?_limit=5`)\n  .then(res => res.json())\n  .then(posts => {\n    posts.forEach(post => {\n      const li = document.createElement(\"li\");\n      li.textContent = post.title;\n      lista.appendChild(li);\n    });\n  });"
+            }
+          ]
+        },
+        {
+          "n": 6,
+          "nivel": "Médio",
+          "enunciado": [
+            "Faça um `fetch` em `/posts/99999`, verifique `res.ok` e, em caso de erro, mostre a mensagem \"Post não encontrado (404)\" num `<p id=\"erro\">`."
+          ],
+          "solucao": [
+            {
+              "codigo": "const erroMsg = document.getElementById(\"erro\");\nfetch(`${BASE}/posts/99999`)\n  .then(res => {\n    if (!res.ok) throw new Error(`Post não encontrado (${res.status})`);\n    return res.json();\n  })\n  .then(post => console.log(post))\n  .catch(erro => erroMsg.textContent = erro.message);"
+            }
+          ]
+        },
+        {
+          "n": 7,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Crie duas funções, `criarCartao(post)` e `renderizarPosts(posts)`, e use-as para exibir 3 posts, cada um num `<div>` com `<h3>` (título) e `<p>` (corpo). A lista deve ser limpa antes de preencher."
+          ],
+          "solucao": [
+            {
+              "codigo": "function criarCartao(post) {\n  const div = document.createElement(\"div\");\n  const h3 = document.createElement(\"h3\");\n  const p = document.createElement(\"p\");\n  h3.textContent = post.title;\n  p.textContent = post.body;\n  div.appendChild(h3);\n  div.appendChild(p);\n  return div;\n}\n\nfunction renderizarPosts(posts) {\n  const area = document.getElementById(\"area-posts\");\n  area.innerHTML = \"\";\n  posts.forEach(post => area.appendChild(criarCartao(post)));\n}\n\nfetch(`${BASE}/posts?_limit=3`)\n  .then(res => res.json())\n  .then(renderizarPosts)\n  .catch(erro => console.error(erro));"
+            }
+          ]
+        },
+        {
+          "n": 8,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Crie um `<input id=\"numero\">` e um botão \"Buscar\". Ao clicar, busque `/users/<numero>`. Mostre o nome se existir; se não existir, mostre \"Usuário não encontrado\"; se a rede falhar, mostre \"Verifique sua conexão\"."
+          ],
+          "solucao": [
+            {
+              "codigo": "const campo = document.getElementById(\"numero\");\nconst saida = document.getElementById(\"saida\");\n\ndocument.getElementById(\"buscar\").addEventListener(\"click\", () => {\n  fetch(`${BASE}/users/${campo.value}`)\n    .then(res => {\n      if (!res.ok) throw new Error(\"Usuário não encontrado\");\n      return res.json();\n    })\n    .then(usuario => saida.textContent = usuario.name)\n    .catch(erro => {\n      // erro de rede chega como TypeError (\"Failed to fetch\")\n      saida.textContent = erro instanceof TypeError\n        ? \"Verifique sua conexão\"\n        : erro.message;\n    });\n});"
+            }
+          ]
+        },
+        {
+          "n": 9,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Explique, com suas palavras e um código de exemplo, por que um erro 404 não cai direto no `.catch()`, e mostre como fazer ele cair."
+          ],
+          "solucao": [
+            "Resposta esperada: o `fetch()` só rejeita a Promise quando a requisição nem chega ao servidor. Num 404 o servidor respondeu, então a Promise é resolvida e o fluxo entra no `.then()`. Para cair no `.catch()`, é preciso verificar `res.ok` e lançar um erro.",
+            {
+              "codigo": "fetch(`${BASE}/posts/99999`)\n  .then(res => {\n    if (!res.ok) {\n      throw new Error(`Erro HTTP: ${res.status}`); // agora vai para o catch\n    }\n    return res.json();\n  })\n  .catch(erro => console.error(\"Caiu no catch:\", erro.message));"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

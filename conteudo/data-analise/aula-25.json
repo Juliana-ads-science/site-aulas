@@ -1,0 +1,1180 @@
+{
+  "numero": 25,
+  "titulo": "Fundamentos de Data Analytics",
+  "etapas": [
+    {
+      "id": "definicoes",
+      "tipo": "leitura",
+      "nome": "Definições",
+      "blocos": [
+        "Data Analytics é o processo de inspecionar, limpar, transformar e analisar dados para tirar conclusões e apoiar decisões. Nesta aula usamos SQL para extrair, Python/Pandas para transformar e analisar, e Matplotlib para visualizar.",
+        {
+          "tabela": [
+            [
+              "Termo",
+              "O que significa"
+            ],
+            [
+              "Data Analytics",
+              "Transformar dados brutos em informação útil para decidir"
+            ],
+            [
+              "Dado (data)",
+              "Fato isolado, sem contexto: `150`, `\"São Paulo\"`, `\"2023-05-10\"`"
+            ],
+            [
+              "Informação",
+              "Dado organizado e com contexto: \"150 unidades vendidas em SP em 10/05/2023\""
+            ],
+            [
+              "Insight",
+              "Conclusão útil tirada da informação"
+            ],
+            [
+              "Dado estruturado",
+              "Organizado em linhas e colunas (tabelas, planilhas)"
+            ],
+            [
+              "Dado semiestruturado",
+              "Tem marcação, mas não esquema rígido (JSON, XML)"
+            ],
+            [
+              "Dado não estruturado",
+              "Sem formato de tabela (e-mails, imagens, vídeos)"
+            ],
+            [
+              "ETL",
+              "Extract, Transform, Load: extrair, transformar e carregar os dados"
+            ],
+            [
+              "Pandas",
+              "Biblioteca Python para manipular tabelas"
+            ],
+            [
+              "NumPy",
+              "Biblioteca Python para cálculos numéricos (`np.mean`, `np.nan`)"
+            ],
+            [
+              "DataFrame",
+              "A tabela do Pandas: linhas + colunas com nome"
+            ],
+            [
+              "Series",
+              "Uma coluna (ou lista rotulada) do Pandas"
+            ],
+            [
+              "dtype",
+              "Tipo de dado de uma coluna: `int64`, `float64`, `object` (texto), `datetime64`"
+            ],
+            [
+              "NaN",
+              "\"Not a Number\": valor ausente"
+            ],
+            [
+              "SQL",
+              "Structured Query Language: linguagem para consultar bancos de dados relacionais"
+            ],
+            [
+              "Banco de dados relacional",
+              "Dados guardados em tabelas ligadas entre si"
+            ],
+            [
+              "Registro / atributo",
+              "Linha / coluna de uma tabela"
+            ],
+            [
+              "Chave primária (PK)",
+              "Coluna que identifica cada linha de forma única"
+            ],
+            [
+              "Chave estrangeira (FK)",
+              "Coluna que aponta para a PK de outra tabela, criando o relacionamento"
+            ],
+            [
+              "JOIN",
+              "Junta dados de tabelas relacionadas numa consulta"
+            ],
+            [
+              "GROUP BY / `groupby`",
+              "Agrupa linhas por categoria para calcular soma, média, contagem"
+            ],
+            [
+              "Driver / conector",
+              "Biblioteca que liga o Python ao banco (sqlite3, psycopg2, mysql.connector)"
+            ],
+            [
+              "Média",
+              "Soma dos valores ÷ quantidade de valores"
+            ],
+            [
+              "Mediana",
+              "Valor do meio com os dados ordenados; resiste a valores extremos"
+            ],
+            [
+              "Outlier",
+              "Valor extremo, muito diferente dos demais"
+            ],
+            [
+              "KPI",
+              "Key Performance Indicator: métrica-chave do negócio"
+            ],
+            [
+              "Ticket médio",
+              "Valor médio por venda"
+            ],
+            [
+              "Churn",
+              "Percentual de clientes que cancelam"
+            ],
+            [
+              "Threshold",
+              "Limite que dispara uma regra (ex.: churn acima de 10% = alerta)"
+            ],
+            [
+              "Dashboard",
+              "Painel interativo, com KPIs atualizados"
+            ],
+            [
+              "Relatório",
+              "Documento estático e detalhado sobre um período fechado"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "para-que-como-e-quando-usamos",
+      "tipo": "leitura",
+      "nome": "Para que, como e quando usamos",
+      "blocos": [
+        "Usamos Data Analytics para trocar decisões por palpite por decisões baseadas em evidência: o papel central é reduzir a incerteza.",
+        "**Para que:** detectar fraudes e avaliar crédito (finanças), recomendar produtos e otimizar estoque (varejo), prever epidemias (saúde), prever falhas de máquinas (manufatura), acompanhar churn e ticket médio (qualquer empresa).",
+        "**Como:** partimos de uma pergunta de negócio, extraímos os dados com SQL, limpamos e transformamos com Pandas, calculamos métricas, visualizamos em gráficos ou dashboards e transformamos o resultado em ação.",
+        "**Quando usar cada ferramenta:**",
+        {
+          "tabela": [
+            [
+              "Situação",
+              "Ferramenta"
+            ],
+            [
+              "Buscar só as linhas e colunas necessárias num banco grande",
+              "SQL (`SELECT`, `WHERE`, `JOIN`)"
+            ],
+            [
+              "Juntar tabelas relacionadas",
+              "SQL (`JOIN`)"
+            ],
+            [
+              "Limpar valores ausentes, padronizar texto, corrigir tipos",
+              "Python/Pandas"
+            ],
+            [
+              "Criar colunas novas e categorias",
+              "Python/Pandas"
+            ],
+            [
+              "Médias, medianas, agrupamentos, modelos",
+              "Python/Pandas/NumPy"
+            ],
+            [
+              "Mostrar tendência ou comparação",
+              "Matplotlib/Seaborn"
+            ],
+            [
+              "Acompanhar KPIs continuamente",
+              "Dashboard (Power BI, Tableau, Plotly/Dash)"
+            ],
+            [
+              "Registrar a análise de um período fechado",
+              "Relatório"
+            ]
+          ]
+        },
+        "**Quando não usar:** uma planilha pequena com uma soma simples não precisa de pipeline. E nenhuma ferramenta substitui a pergunta de negócio: sem ela, a análise vira só números."
+      ]
+    },
+    {
+      "id": "estruturas",
+      "tipo": "leitura",
+      "nome": "Estruturas",
+      "blocos": [
+        {
+          "h": "3.1 Criar um DataFrame"
+        },
+        {
+          "codigo": "import pandas as pd\n\ndados = {\"Nome\": [\"Ana\", \"Bruno\"], \"Idade\": [25, 30]}  # dicionário: chave = coluna\ndf = pd.DataFrame(dados)"
+        },
+        {
+          "h": "3.2 Filtrar linhas por condição"
+        },
+        {
+          "codigo": "df_sp = df[df[\"Cidade\"] == \"SP\"]              # uma condição\ndf_f = df[(df[\"Cidade\"] == \"SP\") & (df[\"Idade\"] > 24)]  # duas condições\ndf_ab = df[df[\"Tipo\"].isin([\"A\", \"B\"])]      # valor dentro de uma lista"
+        },
+        {
+          "h": "3.3 Consulta SQL"
+        },
+        {
+          "codigo": "SELECT Produto, Quantidade, Preco   -- colunas\nFROM Vendas                         -- tabela\nWHERE Quantidade > 10               -- condição\n  AND Produto LIKE 'A%';            -- começa com A"
+        },
+        {
+          "h": "3.4 Tabelas com chave primária e estrangeira"
+        },
+        {
+          "codigo": "CREATE TABLE Clientes (\n    ClienteID INT PRIMARY KEY,\n    Nome VARCHAR(100)\n);\n\nCREATE TABLE Pedidos (\n    PedidoID INT PRIMARY KEY,\n    ClienteID INT,\n    FOREIGN KEY (ClienteID) REFERENCES Clientes(ClienteID)\n);"
+        },
+        {
+          "h": "3.5 JOIN e GROUP BY"
+        },
+        {
+          "codigo": "SELECT c.Nome, SUM(p.Valor) AS Total\nFROM Pedidos p\nJOIN Clientes c ON p.ClienteID = c.ClienteID\nGROUP BY c.Nome;"
+        },
+        {
+          "h": "3.6 Python conectado ao banco"
+        },
+        {
+          "codigo": "import sqlite3\nimport pandas as pd\n\nconn = sqlite3.connect(\"loja.db\")               # abre a conexão\ndf = pd.read_sql(\"SELECT * FROM Vendas\", conn)  # consulta → DataFrame\nconn.close()"
+        },
+        {
+          "h": "3.7 Média e mediana"
+        },
+        {
+          "codigo": "import numpy as np\nvendas = pd.Series([100, 150, 1000])\nnp.mean(vendas)    # ou vendas.mean()\nnp.median(vendas)  # ou vendas.median()"
+        },
+        {
+          "h": "3.8 Agrupar e calcular"
+        },
+        {
+          "codigo": "df.groupby(\"Regiao\")[\"Valor\"].mean()                  # média por região\ndf.groupby(\"Produto\")[\"Compra\"].sum()                 # soma por produto\ndf.groupby(\"Categoria\")[\"Cliente\"].count().reset_index()  # contagem, de volta em tabela"
+        },
+        {
+          "h": "3.9 Limpeza (Transformação do ETL)"
+        },
+        {
+          "codigo": "df[\"Valor\"] = df[\"Valor\"].fillna(0)          # preenche ausentes\ndf[\"Status\"] = df[\"Status\"].str.upper()      # padroniza texto\ndf = df.rename(columns={\"Coluna1\": \"Produto\"})  # dá nome com significado"
+        },
+        {
+          "h": "3.10 Correção de tipos"
+        },
+        {
+          "codigo": "df[\"Preco\"] = df[\"Preco\"].astype(float)\ndf[\"Data\"] = pd.to_datetime(df[\"Data\"])\nprint(df.dtypes)"
+        },
+        {
+          "h": "3.11 Coluna nova com condição"
+        },
+        {
+          "codigo": "df[\"Categoria\"] = [\"Alto\" if v >= 200 else \"Baixo\" for v in df[\"Valor\"]]"
+        },
+        {
+          "h": "3.12 Gráfico de linha"
+        },
+        {
+          "codigo": "import matplotlib.pyplot as plt\n\nplt.plot(df[\"Mes\"], df[\"Vendas\"], marker=\"o\")\nplt.title(\"Vendas por mês\")\nplt.xlabel(\"Mês\")\nplt.ylabel(\"R$\")\nplt.show()"
+        },
+        {
+          "h": "3.13 KPIs"
+        },
+        {
+          "codigo": "receita_total = df[\"Valor_Venda\"].sum()\nticket_medio = df[\"Valor_Venda\"].mean()\nprint(f\"Ticket médio: R$ {ticket_medio:.2f}\")"
+        }
+      ]
+    },
+    {
+      "id": "sintaxe-e-simbolos",
+      "tipo": "leitura",
+      "nome": "Sintaxe e símbolos",
+      "blocos": [
+        "**Python / Pandas**",
+        {
+          "tabela": [
+            [
+              "Símbolo / comando",
+              "O que faz",
+              "Por que existe"
+            ],
+            [
+              "`import pandas as pd`",
+              "Importa o Pandas com o apelido `pd`",
+              "Escrever `pd.` em vez de `pandas.`"
+            ],
+            [
+              "`{\"Coluna\": [..]}`",
+              "Dicionário: chave = nome da coluna, lista = valores",
+              "Forma simples de montar um DataFrame"
+            ],
+            [
+              "`df[\"Coluna\"]`",
+              "Seleciona uma coluna (Series)",
+              "Trabalhar com uma variável por vez"
+            ],
+            [
+              "`df[condição]`",
+              "Mantém só as linhas em que a condição é `True`",
+              "Filtrar subconjuntos"
+            ],
+            [
+              "`==`",
+              "Compara igualdade",
+              "`=` atribui; `==` pergunta \"é igual?\""
+            ],
+            [
+              "`&` / `\\",
+              "`",
+              "\"e\" / \"ou\" entre condições do Pandas",
+              "`and`/`or` não funcionam em colunas inteiras"
+            ],
+            [
+              "`( )` em cada condição",
+              "Agrupa a comparação",
+              "Sem parênteses, o `&` é avaliado antes do `==` e dá erro"
+            ],
+            [
+              "`.isin([...])`",
+              "Verifica se o valor está na lista",
+              "Filtrar várias categorias de uma vez"
+            ],
+            [
+              "`.groupby(\"col\")`",
+              "Separa as linhas por categoria",
+              "Base para médias e somas por grupo"
+            ],
+            [
+              "`.mean()` `.sum()` `.count()` `.median()`",
+              "Agregações",
+              "Resumir cada grupo num número"
+            ],
+            [
+              "`.reset_index()`",
+              "Transforma o índice em coluna",
+              "Resultado volta a ser uma tabela comum"
+            ],
+            [
+              "`.sort_values(ascending=False)`",
+              "Ordena do maior para o menor",
+              "Ranking"
+            ],
+            [
+              "`.index[0]`",
+              "Rótulo da primeira linha",
+              "Pegar o \"campeão\" depois de ordenar"
+            ],
+            [
+              "`np.nan`",
+              "Valor ausente",
+              "Representar dado que falta"
+            ],
+            [
+              "`.fillna(valor)`",
+              "Preenche ausentes",
+              "Evitar erros em cálculos"
+            ],
+            [
+              "`.str.upper()`",
+              "Deixa o texto em maiúsculas",
+              "Padronizar `ok` e `OK`"
+            ],
+            [
+              "`.astype(int)`",
+              "Converte o tipo",
+              "Texto `\"100.50\"` não soma; número soma"
+            ],
+            [
+              "`pd.to_datetime()`",
+              "Converte texto em data",
+              "Filtrar por mês/ano, ordenar no tempo"
+            ],
+            [
+              "`[x if c else y for v in col]`",
+              "List comprehension com condição",
+              "Criar coluna categórica em uma linha"
+            ],
+            [
+              "`f\"{valor:.2f}\"`",
+              "f-string com 2 casas decimais",
+              "Mostrar valores monetários"
+            ],
+            [
+              "`\"\\n\"`",
+              "Quebra de linha no texto",
+              "Separar blocos no `print`"
+            ]
+          ]
+        },
+        "**SQL**",
+        {
+          "tabela": [
+            [
+              "Símbolo / comando",
+              "O que faz",
+              "Por que existe"
+            ],
+            [
+              "`SELECT colunas`",
+              "Escolhe as colunas",
+              "Trazer só o necessário"
+            ],
+            [
+              "`FROM tabela`",
+              "Indica a tabela",
+              "De onde vêm os dados"
+            ],
+            [
+              "`WHERE condição`",
+              "Filtra linhas",
+              "Pré-filtrar no próprio banco"
+            ],
+            [
+              "`AND` / `OR`",
+              "\"e\" / \"ou\"",
+              "Combinar condições"
+            ],
+            [
+              "`LIKE 'A%'`",
+              "Texto que começa com A",
+              "`%` = qualquer sequência de caracteres"
+            ],
+            [
+              "`;`",
+              "Fim do comando",
+              "Separar comandos"
+            ],
+            [
+              "`--`",
+              "Comentário",
+              "Explicar a consulta"
+            ],
+            [
+              "`PRIMARY KEY`",
+              "Define a chave primária",
+              "Identificar cada linha"
+            ],
+            [
+              "`FOREIGN KEY ... REFERENCES`",
+              "Define a chave estrangeira",
+              "Ligar tabelas e garantir integridade"
+            ],
+            [
+              "`INT`, `VARCHAR(100)`, `DATE`, `DECIMAL(10, 2)`",
+              "Tipos de coluna",
+              "`DECIMAL(10, 2)` = até 10 dígitos, 2 depois da vírgula"
+            ],
+            [
+              "`JOIN ... ON`",
+              "Junta tabelas pela coluna em comum",
+              "Unir cliente e pedido"
+            ],
+            [
+              "`GROUP BY`",
+              "Agrupa linhas",
+              "Somas e médias por categoria"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logica-por-tras",
+      "tipo": "leitura",
+      "nome": "Lógica por trás",
+      "blocos": [
+        "Data Analytics é um ciclo, não um evento único: começa com uma pergunta de negócio e termina numa decisão, que gera novas perguntas.",
+        "**As quatro etapas do ciclo:**",
+        {
+          "passos": [
+            "**Coleta e preparação:** obter os dados (banco, API, arquivo) e passá-los pelo ETL.",
+            "**Análise estatística e modelagem:** médias, desvios, agrupamentos, regressões, machine learning.",
+            "**Visualização:** gráficos, dashboards e relatórios que comunicam o resultado.",
+            "**Decisão e ação:** o insight vira estratégia. Muitas vezes a visualização revela algo que exige voltar à etapa 2."
+          ]
+        },
+        "**As quatro perguntas da análise:**",
+        {
+          "tabela": [
+            [
+              "Tipo",
+              "Pergunta",
+              "Exemplo"
+            ],
+            [
+              "Descritiva",
+              "O que aconteceu?",
+              "As vendas caíram 10% no último mês"
+            ],
+            [
+              "Diagnóstica",
+              "Por que aconteceu?",
+              "A queda está nos clientes novos e no produto X"
+            ],
+            [
+              "Preditiva",
+              "O que vai acontecer?",
+              "Se nada mudar, as vendas continuam caindo"
+            ],
+            [
+              "Prescritiva",
+              "O que devemos fazer?",
+              "Promoção do produto X para clientes novos"
+            ]
+          ]
+        },
+        "**ETL, passo a passo:**",
+        {
+          "passos": [
+            "**Extract:** coletar da fonte (banco, API, arquivo).",
+            "**Transform:** limpar ausentes, padronizar texto, corrigir tipos, criar colunas. É a etapa mais crítica: a qualidade da análise depende dela.",
+            "**Load:** levar os dados prontos para o destino (Data Warehouse, script, dashboard)."
+          ]
+        },
+        "**Por que cada ferramenta ocupa o seu lugar:** o SQL roda no servidor, onde os dados já estão; filtrar ali evita trazer milhões de linhas para o computador. O Pandas trabalha na memória e faz o que o SQL faz mal: limpeza sofisticada, estatística, variáveis novas. A visualização fecha o ciclo, porque o cérebro enxerga uma tendência num gráfico mais rápido do que numa tabela de 50 linhas.",
+        "**Por que a mediana às vezes é melhor que a média:** em `[100, 150, 120, 200, 180, 150, 1000]`, a média é R$ 271,43, puxada pelo valor 1000; a mediana é R$ 150,00, mais próxima da maioria. Com outliers, compare as duas antes de concluir.",
+        "**Por que os tipos importam:** `\"100.50\"` guardado como texto não soma nem tira média, e `\"2023-01-01\"` como texto não permite filtrar por mês. Corrigir tipos é parte da transformação.",
+        "**Por que PK e FK:** a chave primária garante que cada registro é único; a chave estrangeira garante que um pedido só exista para um cliente cadastrado. Isso evita repetição de dados e permite o `JOIN`."
+      ]
+    },
+    {
+      "id": "exemplo-a",
+      "tipo": "codigo",
+      "nome": "Exemplo A — Filtrando um DataFrame (filtro_sp.py)",
+      "codigo": [
+        "import pandas as pd",
+        "",
+        "dados = {",
+        "    'Nome': ['Ana', 'Bruno', 'Carlos', 'Diana'],",
+        "    'Idade': [25, 30, 22, 35],",
+        "    'Cidade': ['SP', 'RJ', 'SP', 'MG'],",
+        "    'Salario': [50000, 65000, 45000, 70000]",
+        "}",
+        "df = pd.DataFrame(dados)",
+        "",
+        "df_sp = df[df['Cidade'] == 'SP']",
+        "",
+        "print(\"DataFrame Original:\")",
+        "print(df)",
+        "print(\"\\nDataFrame Filtrado (Apenas SP):\")",
+        "print(df_sp)"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Importa o Pandas como `pd`"
+        },
+        {
+          "linhas": [
+            3,
+            8
+          ],
+          "texto": "Dicionário: cada chave vira uma coluna, cada lista vira os valores"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "Converte o dicionário em tabela (4 linhas × 4 colunas)"
+        },
+        {
+          "linhas": [
+            11,
+            11
+          ],
+          "texto": "`df['Cidade'] == 'SP'` gera `[True, False, True, False]`; `df[...]` mantém só as linhas `True`"
+        },
+        {
+          "linhas": [
+            13,
+            14
+          ],
+          "texto": "Mostra a tabela completa"
+        },
+        {
+          "linhas": [
+            15,
+            15
+          ],
+          "texto": "`\\n` pula uma linha antes do título"
+        },
+        {
+          "linhas": [
+            16,
+            16
+          ],
+          "texto": "Mostra só Ana e Carlos. O índice original (0 e 2) é mantido"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-b",
+      "tipo": "codigo",
+      "nome": "Exemplo B — Do banco para o DataFrame (sqlite_pandas.py)",
+      "codigo": [
+        "import pandas as pd",
+        "from sqlite3 import connect",
+        "",
+        "conn = connect(':memory:')",
+        "",
+        "conn.execute(\"CREATE TABLE Produtos (ID INT, Nome TEXT, Estoque INT)\")",
+        "conn.execute(\"INSERT INTO Produtos VALUES (1, 'Teclado', 50)\")",
+        "conn.execute(\"INSERT INTO Produtos VALUES (2, 'Monitor', 20)\")",
+        "conn.commit()",
+        "",
+        "query = \"SELECT Nome, Estoque FROM Produtos WHERE Estoque < 30\"",
+        "df_estoque = pd.read_sql(query, conn)",
+        "",
+        "print(\"Produtos com Estoque Baixo:\")",
+        "print(df_estoque)",
+        "conn.close()"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Importa só a função `connect` do módulo `sqlite3` (já vem com o Python)"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Cria um banco na memória RAM: some quando a conexão fecha"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Cria a tabela `Produtos` com três colunas"
+        },
+        {
+          "linhas": [
+            7,
+            8
+          ],
+          "texto": "Insere duas linhas"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "Confirma (grava) as alterações"
+        },
+        {
+          "linhas": [
+            11,
+            11
+          ],
+          "texto": "Consulta SQL: nome e estoque dos produtos com menos de 30 unidades"
+        },
+        {
+          "linhas": [
+            12,
+            12
+          ],
+          "texto": "Executa a consulta no banco e devolve o resultado como DataFrame"
+        },
+        {
+          "linhas": [
+            14,
+            15
+          ],
+          "texto": "Mostra só o Monitor (20)"
+        },
+        {
+          "linhas": [
+            16,
+            16
+          ],
+          "texto": "Fecha a conexão"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-c",
+      "tipo": "codigo",
+      "nome": "Exemplo C — Categorizar e contar (categorias.py)",
+      "codigo": [
+        "import pandas as pd",
+        "",
+        "dados = {'Cliente': ['A', 'B', 'C', 'D', 'E'],",
+        "         'Valor_Compra': [250, 90, 150, 300, 80]}",
+        "df = pd.DataFrame(dados)",
+        "",
+        "df['Categoria'] = ['Alto' if val >= 200 else 'Médio' if val >= 100 else 'Baixo'",
+        "                   for val in df['Valor_Compra']]",
+        "",
+        "contagem = df.groupby('Categoria')['Cliente'].count().reset_index()",
+        "",
+        "print(\"Análise de Categorização de Clientes:\")",
+        "print(df)",
+        "print(\"\\nContagem por Categoria:\")",
+        "print(contagem)"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            3,
+            5
+          ],
+          "texto": "Cria 5 clientes com o valor de compra"
+        },
+        {
+          "linhas": [
+            7,
+            8
+          ],
+          "texto": "Para cada valor: ≥ 200 → Alto; senão ≥ 100 → Médio; senão Baixo. A lista vira a coluna nova"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "Agrupa por categoria, conta clientes e devolve como tabela"
+        },
+        {
+          "linhas": [
+            12,
+            13
+          ],
+          "texto": "Mostra a tabela com a coluna `Categoria`"
+        },
+        {
+          "linhas": [
+            14,
+            15
+          ],
+          "texto": "Mostra Alto 2, Baixo 2, Médio 1 (o `groupby` ordena as categorias em ordem alfabética)"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-d",
+      "tipo": "codigo",
+      "nome": "Exemplo D — Limpeza no ETL (etl_limpeza.py)",
+      "codigo": [
+        "import pandas as pd",
+        "import numpy as np",
+        "",
+        "dados = {'ID': [1, 2, 3, 4],",
+        "         'Valor': [100.5, np.nan, 200.75, 50.25],",
+        "         'Status': ['ok', 'OK', 'falhou', 'OK']}",
+        "df = pd.DataFrame(dados)",
+        "",
+        "df['Valor'] = df['Valor'].fillna(0)",
+        "",
+        "df['Status'] = df['Status'].str.upper()",
+        "",
+        "print(\"DataFrame Após Transformação (Limpeza):\")",
+        "print(df)"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "NumPy é importado para usar `np.nan`"
+        },
+        {
+          "linhas": [
+            4,
+            7
+          ],
+          "texto": "Tabela com dois problemas: um valor ausente e o status escrito de formas diferentes"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "Troca o `NaN` por `0` e guarda de volta na coluna"
+        },
+        {
+          "linhas": [
+            11,
+            11
+          ],
+          "texto": "Deixa todos os status em maiúsculas: `ok` vira `OK`, `falhou` vira `FALHOU`"
+        },
+        {
+          "linhas": [
+            13,
+            14
+          ],
+          "texto": "Mostra a tabela limpa"
+        }
+      ],
+      "fechamento": [
+        "**Atenção:** preencher com 0 muda as estatísticas. A média de `Valor` era 117,17 (3 valores) e passa a 87,88 (4 valores). Dependendo da pergunta, é melhor preencher com a média (`fillna(df['Valor'].mean())`) ou remover a linha (`dropna()`)."
+      ]
+    },
+    {
+      "id": "exemplo-e",
+      "tipo": "codigo",
+      "nome": "Exemplo E — Correção de tipos (tipos.py)",
+      "codigo": [
+        "import pandas as pd",
+        "",
+        "dados = {'ID_Venda': ['001', '002', '003'],",
+        "         'Data_Registro': ['2023-01-01', '2023-01-02', '2023-01-03'],",
+        "         'Preco': ['100.50', '250.00', '150.75']}",
+        "df = pd.DataFrame(dados)",
+        "",
+        "print(\"Tipos de Dados Originais:\")",
+        "print(df.dtypes)",
+        "",
+        "df['ID_Venda'] = df['ID_Venda'].astype(int)",
+        "df['Data_Registro'] = pd.to_datetime(df['Data_Registro'])",
+        "df['Preco'] = df['Preco'].astype(float)",
+        "",
+        "print(\"\\nTipos de Dados Corrigidos:\")",
+        "print(df.dtypes)"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            3,
+            5
+          ],
+          "texto": "Tudo está entre aspas, ou seja, é texto"
+        },
+        {
+          "linhas": [
+            8,
+            9
+          ],
+          "texto": "Mostra as três colunas como `object` (texto)"
+        },
+        {
+          "linhas": [
+            11,
+            11
+          ],
+          "texto": "Texto → inteiro"
+        },
+        {
+          "linhas": [
+            12,
+            12
+          ],
+          "texto": "Texto → data (`datetime64`)"
+        },
+        {
+          "linhas": [
+            13,
+            13
+          ],
+          "texto": "Texto → número decimal (`float64`)"
+        },
+        {
+          "linhas": [
+            15,
+            16
+          ],
+          "texto": "Mostra os tipos corrigidos"
+        }
+      ],
+      "fechamento": [
+        "**Atenção:** a linha 11 transforma `'001'` em `1` e perde os zeros à esquerda. Códigos e IDs em que ninguém faz conta costumam continuar como texto."
+      ]
+    },
+    {
+      "id": "exemplo-f",
+      "tipo": "codigo",
+      "nome": "Exemplo F — Recomendação por popularidade (recomendacao.py)",
+      "codigo": [
+        "import pandas as pd",
+        "",
+        "dados = {'Produto': ['A', 'B', 'C', 'A', 'B', 'C', 'A', 'B', 'C', 'B'],",
+        "         'Cliente': [1, 1, 1, 2, 2, 2, 3, 3, 4, 3],",
+        "         'Compra': [1, 1, 0, 1, 0, 1, 0, 1, 1, 1]}",
+        "df = pd.DataFrame(dados)",
+        "",
+        "popularidade = df.groupby('Produto')['Compra'].sum()",
+        "",
+        "produtos_mais_vendidos = popularidade.sort_values(ascending=False)",
+        "",
+        "print(\"Popularidade dos Produtos:\")",
+        "print(produtos_mais_vendidos)",
+        "",
+        "print(\"\\nRecomendação para Cliente 4: \" + produtos_mais_vendidos.index[0])"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            3,
+            5
+          ],
+          "texto": "Cada linha: um produto, um cliente e se comprou (1) ou não (0)"
+        },
+        {
+          "linhas": [
+            8,
+            8
+          ],
+          "texto": "Soma as compras de cada produto: A = 2, B = 3, C = 2"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "Ordena do mais comprado para o menos"
+        },
+        {
+          "linhas": [
+            12,
+            13
+          ],
+          "texto": "Mostra B 3, A 2, C 2"
+        },
+        {
+          "linhas": [
+            15,
+            15
+          ],
+          "texto": "`.index[0]` pega o nome do primeiro da lista: B"
+        }
+      ]
+    },
+    {
+      "id": "como-aplicar",
+      "tipo": "leitura",
+      "nome": "Como aplicar: mini-pipeline de vendas",
+      "blocos": [
+        "Junta o ciclo inteiro: banco com PK/FK, extração com `JOIN`, transformação com Pandas, KPIs, agrupamento, regra de decisão e gráfico. Salve como `pipeline_vendas.py` e rode `python pipeline_vendas.py` (precisa de `pip install pandas matplotlib`).",
+        {
+          "codigo": "import sqlite3\nimport pandas as pd\nimport matplotlib.pyplot as plt\n\n# ===== 1. EXTRAÇÃO =====\nconn = sqlite3.connect(\":memory:\")\nconn.executescript(\"\"\"\nCREATE TABLE Clientes (ClienteID INTEGER PRIMARY KEY, Nome TEXT, Cidade TEXT);\nCREATE TABLE Pedidos (\n    PedidoID INTEGER PRIMARY KEY,\n    ClienteID INTEGER,\n    Data TEXT,\n    Valor TEXT,\n    FOREIGN KEY (ClienteID) REFERENCES Clientes(ClienteID)\n);\nINSERT INTO Clientes VALUES (1, 'Ana', 'salvador'), (2, 'Bruno', 'Recife'), (3, 'Carla', 'SALVADOR');\nINSERT INTO Pedidos VALUES\n    (1, 1, '2026-01-15', '120.50'),\n    (2, 2, '2026-01-20', '80.00'),\n    (3, 1, '2026-02-03', NULL),\n    (4, 3, '2026-02-18', '300.00'),\n    (5, 2, '2026-03-05', '150.00'),\n    (6, 3, '2026-03-22', '210.00');\n\"\"\")\n\nquery = \"\"\"\nSELECT p.PedidoID, c.Nome, c.Cidade, p.Data, p.Valor\nFROM Pedidos p\nJOIN Clientes c ON p.ClienteID = c.ClienteID\n\"\"\"\ndf = pd.read_sql(query, conn)\nconn.close()\n\n# ===== 2. TRANSFORMAÇÃO =====\ndf[\"Cidade\"] = df[\"Cidade\"].str.title()        # salvador / SALVADOR → Salvador\ndf[\"Valor\"] = pd.to_numeric(df[\"Valor\"])       # texto → número; NULL vira NaN\ndf = df.dropna(subset=[\"Valor\"])               # remove o pedido sem valor\ndf[\"Data\"] = pd.to_datetime(df[\"Data\"])\ndf[\"Mes\"] = df[\"Data\"].dt.to_period(\"M\").astype(str)  # 2026-01, 2026-02...\n\n# ===== 3. ANÁLISE =====\nreceita_total = df[\"Valor\"].sum()\nticket_medio = df[\"Valor\"].mean()\npor_cidade = df.groupby(\"Cidade\")[\"Valor\"].sum().reset_index()\npor_mes = df.groupby(\"Mes\")[\"Valor\"].sum()\n\nprint(f\"Receita total: R$ {receita_total:.2f}\")\nprint(f\"Ticket médio: R$ {ticket_medio:.2f}\")\nprint(\"\\nReceita por cidade:\")\nprint(por_cidade)\n\n# ===== 4. DECISÃO =====\nMETA_MENSAL = 250\nprint(\"\\nStatus mensal:\")\nfor mes, valor in por_mes.items():\n    status = \"Alerta\" if valor < META_MENSAL else \"Normal\"\n    print(f\"{mes}: R$ {valor:.2f} → {status}\")\n\n# ===== 5. VISUALIZAÇÃO =====\nplt.plot(por_mes.index, por_mes.values, marker=\"o\")\nplt.title(\"Receita mensal\")\nplt.xlabel(\"Mês\")\nplt.ylabel(\"Receita (R$)\")\nplt.grid(True)\nplt.show()"
+        },
+        "**Saída esperada no terminal:**",
+        {
+          "codigo": "Receita total: R$ 860.50\nTicket médio: R$ 172.10\n\nReceita por cidade:\n     Cidade  Valor\n0    Recife  230.0\n1  Salvador  630.5\n\nStatus mensal:\n2026-01: R$ 200.50 → Alerta\n2026-02: R$ 300.00 → Normal\n2026-03: R$ 360.00 → Normal"
+        },
+        "**Por que funciona:** o SQL faz o que faz melhor, juntar as tabelas pela chave estrangeira antes de trazer os dados. No Pandas, `str.title()` resolve \"salvador\" e \"SALVADOR\" escritos de formas diferentes, `pd.to_numeric` converte o texto e transforma o `NULL` em `NaN`, e `dropna` tira o pedido sem valor antes de calcular. Com os dados limpos, os KPIs e agrupamentos saem em uma linha cada. A meta de R$ 250 transforma o número em ação (janeiro em alerta), e o gráfico mostra a tendência de alta de uma vez.",
+        "Note que o pedido 3 foi removido, e não preenchido com 0: preencher com 0 derrubaria o ticket médio de R$ 172,10 para R$ 143,42."
+      ]
+    },
+    {
+      "id": "quiz",
+      "tipo": "quiz",
+      "nome": "Quiz de código",
+      "perguntas": [
+        {
+          "pergunta": "Quantas linhas tem `resultado`?",
+          "codigo": "df = pd.DataFrame({\"Nome\": [\"Ana\", \"Bruno\", \"Carlos\", \"Diana\"],\n                   \"Idade\": [25, 30, 22, 35]})\nresultado = df[df[\"Idade\"] > 24]",
+          "opcoes": [
+            "1",
+            "2",
+            "3",
+            "4"
+          ],
+          "correta": 2,
+          "dica": "teste cada idade contra 24.",
+          "acerto": "Isso! Ana, Bruno e Diana.",
+          "erro": "Só Carlos (22) fica de fora.",
+          "explicacao": "a condição gera `[True, True, False, True]` e o filtro mantém as três linhas `True`."
+        },
+        {
+          "pergunta": "O que é impresso?",
+          "codigo": "import numpy as np\nvalores = [10, 10, 10, 10, 100]\nprint(np.mean(valores), np.median(valores))",
+          "opcoes": [
+            "28.0 10.0",
+            "10.0 28.0",
+            "28.0 28.0",
+            "10.0 10.0"
+          ],
+          "correta": 0,
+          "dica": "some tudo e divida por 5; depois ache o valor do meio.",
+          "acerto": "Exato! O outlier puxa só a média.",
+          "erro": "A mediana é o valor central com os dados ordenados.",
+          "explicacao": "média = 140 ÷ 5 = 28; mediana = 10. A mediana resiste ao valor extremo 100."
+        },
+        {
+          "pergunta": "Qual é o resultado?",
+          "codigo": "df = pd.DataFrame({\"Regiao\": [\"Norte\", \"Sul\", \"Norte\"],\n                   \"Valor\": [100, 200, 300]})\nprint(df.groupby(\"Regiao\")[\"Valor\"].sum())",
+          "opcoes": [
+            "Norte 100, Sul 200",
+            "Norte 400, Sul 200",
+            "Norte 200, Sul 200",
+            "600"
+          ],
+          "correta": 1,
+          "dica": "quantas linhas são do Norte?",
+          "acerto": "Perfeito! O groupby soma dentro de cada grupo.",
+          "erro": "As duas linhas do Norte são somadas: 100 + 300.",
+          "explicacao": "o `groupby` separa por região e aplica `sum()` em cada grupo."
+        },
+        {
+          "pergunta": "Quais produtos a consulta devolve?",
+          "codigo": "-- Produtos: Arroz, Banana, Abacaxi, Café\nSELECT Produto FROM Estoque WHERE Produto LIKE 'A%';",
+          "opcoes": [
+            "Só Arroz",
+            "Arroz e Abacaxi",
+            "Banana e Abacaxi",
+            "Todos"
+          ],
+          "correta": 1,
+          "dica": "onde está o `%`?",
+          "acerto": "Isso! Começa com A.",
+          "erro": "'A%' = começa com A; '%a' = termina com a.",
+          "explicacao": "`%` representa qualquer sequência depois do A, então entram Arroz e Abacaxi."
+        },
+        {
+          "pergunta": "O que é impresso?",
+          "codigo": "df = pd.DataFrame({\"Preco\": [\"10\", \"20\"]})\nprint(df[\"Preco\"].sum())",
+          "opcoes": [
+            "30",
+            "1020",
+            "Erro",
+            "10"
+          ],
+          "correta": 1,
+          "dica": "os números estão entre aspas.",
+          "acerto": "Mandou bem! Texto se junta, não soma.",
+          "erro": "Com dtype object, o + concatena textos.",
+          "explicacao": "\"10\" + \"20\" = \"1020\". Por isso corrigimos o tipo com `astype(float)` antes de calcular."
+        },
+        {
+          "pergunta": "Qual coluna é a chave estrangeira?",
+          "codigo": "CREATE TABLE Pedidos (\n    PedidoID INT PRIMARY KEY,\n    DataPedido DATE,\n    ClienteID INT,\n    FOREIGN KEY (ClienteID) REFERENCES Clientes(ClienteID)\n);",
+          "opcoes": [
+            "`PedidoID`",
+            "`DataPedido`",
+            "`ClienteID`",
+            "Não há chave estrangeira"
+          ],
+          "correta": 2,
+          "dica": "qual coluna aponta para outra tabela?",
+          "acerto": "Isso! Ela liga o pedido ao cliente.",
+          "erro": "PedidoID é a chave primária desta tabela.",
+          "explicacao": "`ClienteID` referencia a PK da tabela `Clientes`, criando o relacionamento que permite o `JOIN`."
+        }
+      ]
+    },
+    {
+      "id": "atividades",
+      "tipo": "atividades",
+      "nome": "Atividades",
+      "intro": [
+        "Todos começam com `import pandas as pd` (e `import numpy as np` ou `import matplotlib.pyplot as plt` quando usados).",
+        "Escreva ou cole a sua tentativa no campo de cada atividade para liberar a solução. Outras soluções também valem, desde que passem nos testes do enunciado."
+      ],
+      "itens": [
+        {
+          "n": 1,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie um DataFrame com 5 alunos (`Nome`, `Turma`, `Nota`) e mostre só os alunos da turma \"A\"."
+          ],
+          "solucao": [
+            {
+              "codigo": "df = pd.DataFrame({\"Nome\": [\"Ana\", \"Bia\", \"Caio\", \"Davi\", \"Eva\"],\n                   \"Turma\": [\"A\", \"B\", \"A\", \"B\", \"A\"],\n                   \"Nota\": [8.5, 7.0, 6.5, 9.0, 7.5]})\nprint(df[df[\"Turma\"] == \"A\"])"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Para as vendas `[200, 250, 180, 220, 2000]`, calcule média e mediana e escreva, num comentário, qual representa melhor a venda típica e por quê."
+          ],
+          "solucao": [
+            {
+              "codigo": "vendas = [200, 250, 180, 220, 2000]\nprint(np.mean(vendas))    # 570.0\nprint(np.median(vendas))  # 220.0\n# A mediana (220) representa melhor a venda típica:\n# a venda de 2000 é um outlier que puxa a média para cima."
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Escreva uma consulta SQL que traga `Nome` e `Preco` da tabela `Produtos` com preço acima de 50 e nome começando com \"C\"."
+          ],
+          "solucao": [
+            {
+              "codigo": "SELECT Nome, Preco\nFROM Produtos\nWHERE Preco > 50 AND Nome LIKE 'C%';"
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "nivel": "Médio",
+          "enunciado": [
+            "Limpe o DataFrame abaixo: preencha a nota ausente com a média da coluna e padronize `Status` em maiúsculas.",
+            {
+              "codigo": "df = pd.DataFrame({\"Aluno\": [\"Ana\", \"Bia\", \"Caio\"],\n                   \"Nota\": [8.0, None, 6.0],\n                   \"Status\": [\"aprovado\", \"Aprovado\", \"recuperação\"]})"
+            }
+          ],
+          "solucao": [
+            {
+              "codigo": "df[\"Nota\"] = df[\"Nota\"].fillna(df[\"Nota\"].mean())  # Bia recebe 7.0\ndf[\"Status\"] = df[\"Status\"].str.upper()\nprint(df)"
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "nivel": "Médio",
+          "enunciado": [
+            "Corrija os tipos: `Valor` (`\"19.90\"`, `\"45.00\"`) para número e `Data` (`\"2026-09-01\"`, `\"2026-09-15\"`) para data. Mostre `df.dtypes` antes e depois."
+          ],
+          "solucao": [
+            {
+              "codigo": "df = pd.DataFrame({\"Valor\": [\"19.90\", \"45.00\"],\n                   \"Data\": [\"2026-09-01\", \"2026-09-15\"]})\nprint(df.dtypes)                           # object, object\ndf[\"Valor\"] = df[\"Valor\"].astype(float)\ndf[\"Data\"] = pd.to_datetime(df[\"Data\"])\nprint(df.dtypes)                           # float64, datetime64[ns]"
+            }
+          ]
+        },
+        {
+          "n": 6,
+          "nivel": "Médio",
+          "enunciado": [
+            "Com `Vendedor` e `Valor_Venda` de 6 vendas, calcule receita total, ticket médio e a receita por vendedor, ordenada do maior para o menor."
+          ],
+          "solucao": [
+            {
+              "codigo": "df = pd.DataFrame({\"Vendedor\": [\"João\", \"Maria\", \"João\", \"Maria\", \"Ana\", \"Ana\"],\n                   \"Valor_Venda\": [500, 750, 1200, 300, 800, 400]})\nprint(f\"Receita total: R$ {df['Valor_Venda'].sum():.2f}\")   # 3950.00\nprint(f\"Ticket médio: R$ {df['Valor_Venda'].mean():.2f}\")   # 658.33\nranking = df.groupby(\"Vendedor\")[\"Valor_Venda\"].sum().sort_values(ascending=False)\nprint(ranking)  # João 1700, Ana 1200, Maria 1050"
+            }
+          ]
+        },
+        {
+          "n": 7,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Crie as tabelas `Alunos` (PK `AlunoID`) e `Notas` (PK `NotaID`, FK `AlunoID`) num SQLite em memória, insira dados, faça um `JOIN` e leve o resultado para um DataFrame com `pd.read_sql`. Calcule a média por aluno."
+          ],
+          "solucao": [
+            {
+              "codigo": "import sqlite3\n\nconn = sqlite3.connect(\":memory:\")\nconn.executescript(\"\"\"\nCREATE TABLE Alunos (AlunoID INTEGER PRIMARY KEY, Nome TEXT);\nCREATE TABLE Notas (\n    NotaID INTEGER PRIMARY KEY,\n    AlunoID INTEGER,\n    Nota REAL,\n    FOREIGN KEY (AlunoID) REFERENCES Alunos(AlunoID)\n);\nINSERT INTO Alunos VALUES (1, 'Ana'), (2, 'Bruno');\nINSERT INTO Notas VALUES (1, 1, 8.0), (2, 1, 9.0), (3, 2, 6.0), (4, 2, 7.0);\n\"\"\")\n\nquery = \"\"\"\nSELECT a.Nome, n.Nota\nFROM Notas n\nJOIN Alunos a ON n.AlunoID = a.AlunoID\n\"\"\"\ndf = pd.read_sql(query, conn)\nconn.close()\n\nprint(df.groupby(\"Nome\")[\"Nota\"].mean())  # Ana 8.5, Bruno 6.5"
+            }
+          ]
+        },
+        {
+          "n": 8,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Com a taxa de churn mensal `[0.05, 0.06, 0.11, 0.09, 0.13]` (jan a mai), crie a coluna `Status` com \"Alerta\" acima de 0.10 e faça um gráfico de linha com uma linha horizontal no limite (`plt.axhline(0.10)`)."
+          ],
+          "solucao": [
+            {
+              "codigo": "df = pd.DataFrame({\"Mes\": [\"Jan\", \"Fev\", \"Mar\", \"Abr\", \"Mai\"],\n                   \"Churn\": [0.05, 0.06, 0.11, 0.09, 0.13]})\nLIMITE = 0.10\ndf[\"Status\"] = [\"Alerta\" if t > LIMITE else \"Normal\" for t in df[\"Churn\"]]\nprint(df)  # Mar e Mai em Alerta\n\nplt.plot(df[\"Mes\"], df[\"Churn\"], marker=\"o\")\nplt.axhline(LIMITE, color=\"red\", linestyle=\"--\")\nplt.title(\"Taxa de churn mensal\")\nplt.ylabel(\"Churn\")\nplt.show()"
+            }
+          ]
+        },
+        {
+          "n": 9,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Explique, com suas palavras e um exemplo, a diferença entre dado e informação, e classifique em descritiva, diagnóstica, preditiva ou prescritiva: \"a queda aconteceu porque o preço subiu\"."
+          ],
+          "solucao": [
+            "Resposta esperada: dado é um fato isolado, sem contexto (ex.: o número `320`). Informação é o dado organizado e contextualizado (ex.: \"320 matrículas no curso em setembro, 20% a mais que em agosto\"). A frase \"a queda aconteceu porque o preço subiu\" é **diagnóstica**, porque responde \"por que aconteceu?\"."
+          ]
+        }
+      ]
+    }
+  ]
+}

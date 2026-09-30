@@ -27,7 +27,9 @@
       "titulo": "JavaScript",
       "descricao": "A linguagem da web: laços de repetição, decisões e lógica aplicada no navegador.",
       "aulas": [
-        "aula-03"
+        "aula-03",
+        "aula-14",
+        "aula-15"
       ]
     },
     {
@@ -38,7 +40,8 @@
       "titulo": "Data Análise",
       "descricao": "Dados na prática com Python: APIs financeiras, cotações e análise de informações reais.",
       "aulas": [
-        "aula-19"
+        "aula-19",
+        "aula-25"
       ]
     },
     {

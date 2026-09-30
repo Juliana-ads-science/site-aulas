@@ -1,0 +1,1186 @@
+{
+  "numero": 15,
+  "titulo": "Consumo de API II: Manipulação e Criação de Dados",
+  "etapas": [
+    {
+      "id": "definicoes",
+      "tipo": "leitura",
+      "nome": "Definições",
+      "blocos": [
+        "Na Aula 14 só lemos dados (GET). Nesta aula usamos POST, PUT e DELETE para criar, alterar e apagar dados no servidor, completando o CRUD.",
+        {
+          "tabela": [
+            [
+              "Termo",
+              "O que significa"
+            ],
+            [
+              "HTTP",
+              "Protocolo de Transferência de Hipertexto: as regras de conversa entre navegador e servidor"
+            ],
+            [
+              "Método (ou verbo) HTTP",
+              "Indica a ação desejada: GET, POST, PUT, PATCH, DELETE"
+            ],
+            [
+              "Recurso",
+              "O dado identificado por uma URL, ex.: o usuário `/usuarios/5`"
+            ],
+            [
+              "CRUD",
+              "Create, Read, Update, Delete: as quatro operações básicas com dados"
+            ],
+            [
+              "GET",
+              "Lê dados (Read). Não envia corpo"
+            ],
+            [
+              "POST",
+              "Cria um recurso novo (Create). Envia os dados no corpo"
+            ],
+            [
+              "PUT",
+              "Substitui um recurso existente inteiro (Update). ID na URL + objeto completo no corpo"
+            ],
+            [
+              "PATCH",
+              "Atualiza só alguns campos de um recurso"
+            ],
+            [
+              "DELETE",
+              "Remove um recurso (Delete). Só precisa do ID na URL"
+            ],
+            [
+              "Objeto de configuração",
+              "Segundo argumento do `fetch()`, com `method`, `headers` e `body`"
+            ],
+            [
+              "Corpo (body)",
+              "Os dados enviados junto com a requisição"
+            ],
+            [
+              "Cabeçalho (header)",
+              "Informação extra sobre a requisição"
+            ],
+            [
+              "`Content-Type: application/json`",
+              "Cabeçalho que avisa ao servidor: \"o corpo é JSON\""
+            ],
+            [
+              "Serializar",
+              "Transformar um objeto em texto para enviar pela rede"
+            ],
+            [
+              "`JSON.stringify()`",
+              "Converte objeto JS → string JSON"
+            ],
+            [
+              "`JSON.parse()`",
+              "Converte string JSON → objeto JS"
+            ],
+            [
+              "ID",
+              "Identificador único que o servidor atribui a cada recurso"
+            ],
+            [
+              "200 OK",
+              "Sucesso (GET, PUT, DELETE)"
+            ],
+            [
+              "201 Created",
+              "Recurso criado (POST)"
+            ],
+            [
+              "204 No Content",
+              "Sucesso sem corpo de resposta (comum no DELETE)"
+            ],
+            [
+              "400 Bad Request",
+              "Dados enviados inválidos"
+            ],
+            [
+              "401 Unauthorized",
+              "Não autenticado (falta login ou chave)"
+            ],
+            [
+              "403 Forbidden",
+              "Autenticado, mas sem permissão"
+            ],
+            [
+              "404 Not Found",
+              "O recurso não existe"
+            ],
+            [
+              "500 Internal Server Error",
+              "Erro dentro do servidor"
+            ],
+            [
+              "`async`",
+              "Marca uma função que pode usar `await` e sempre devolve Promise"
+            ],
+            [
+              "`await`",
+              "Espera uma Promise terminar antes de seguir para a próxima linha"
+            ],
+            [
+              "`try...catch`",
+              "Tenta executar um bloco; se der erro, executa o `catch`"
+            ],
+            [
+              "API mockada",
+              "API falsa, feita para testes (JSONPlaceholder, MockAPI)"
+            ],
+            [
+              "JSON Server",
+              "Ferramenta que cria uma API REST local a partir de um arquivo `.json`"
+            ],
+            [
+              "Separação de preocupações",
+              "Deixar o código da API separado do código da interface"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "para-que-como-e-quando-usamos",
+      "tipo": "leitura",
+      "nome": "Para que, como e quando usamos",
+      "blocos": [
+        "Usamos POST, PUT e DELETE sempre que uma ação do usuário precisa mudar algo no servidor, e não só ler.",
+        "**Para que:** cadastrar usuários, adicionar produto ao carrinho, publicar comentário, editar perfil, marcar tarefa como concluída, excluir post.",
+        "**Como:** passamos um objeto de configuração como segundo argumento do `fetch()`. Para POST e PUT ele leva `method`, `headers` com `Content-Type: application/json` e `body` com `JSON.stringify(objeto)`. Para DELETE basta `method: 'DELETE'` e o ID na URL. Depois verificamos a resposta e só então atualizamos o DOM.",
+        "**Quando usar cada método:**",
+        {
+          "tabela": [
+            [
+              "Ação do usuário",
+              "Método",
+              "O que enviar",
+              "Sucesso típico"
+            ],
+            [
+              "Abre a página e vê a lista",
+              "GET",
+              "Só a URL",
+              "200"
+            ],
+            [
+              "Preenche formulário e clica \"Salvar\"",
+              "POST",
+              "URL da coleção + objeto novo no corpo",
+              "201 + objeto com ID novo"
+            ],
+            [
+              "Clica \"Editar\" e salva tudo",
+              "PUT",
+              "URL com ID + objeto completo no corpo",
+              "200 + objeto atualizado"
+            ],
+            [
+              "Muda só um campo (ex.: marcar concluída)",
+              "PATCH (ou PUT com objeto completo)",
+              "URL com ID + só o campo alterado",
+              "200"
+            ],
+            [
+              "Clica \"Excluir\"",
+              "DELETE",
+              "URL com ID",
+              "200 ou 204"
+            ]
+          ]
+        },
+        "**Quando não usar:** para só consultar dados use GET; nunca use GET para apagar ou alterar algo. Em APIs reais, POST/PUT/DELETE quase sempre exigem autenticação: não tente fazê-los em APIs de terceiros sem permissão."
+      ]
+    },
+    {
+      "id": "estruturas",
+      "tipo": "leitura",
+      "nome": "Estruturas",
+      "blocos": [
+        {
+          "h": "3.1 POST: criar"
+        },
+        {
+          "codigo": "fetch(\"https://jsonplaceholder.typicode.com/posts\", {\n  method: \"POST\",\n  headers: { \"Content-Type\": \"application/json\" },\n  body: JSON.stringify({ title: \"Novo post\", body: \"Texto\", userId: 1 })\n});"
+        },
+        {
+          "h": "3.2 PUT: substituir (ID na URL, objeto completo no corpo)"
+        },
+        {
+          "codigo": "fetch(\"https://jsonplaceholder.typicode.com/posts/1\", {\n  method: \"PUT\",\n  headers: { \"Content-Type\": \"application/json\" },\n  body: JSON.stringify({ id: 1, title: \"Novo título\", body: \"Texto\", userId: 1 })\n});"
+        },
+        {
+          "h": "3.3 PATCH: alterar só um campo"
+        },
+        {
+          "codigo": "fetch(\"https://jsonplaceholder.typicode.com/posts/1\", {\n  method: \"PATCH\",\n  headers: { \"Content-Type\": \"application/json\" },\n  body: JSON.stringify({ title: \"Só o título muda\" })\n});"
+        },
+        {
+          "h": "3.4 DELETE: remover (sem corpo)"
+        },
+        {
+          "codigo": "fetch(\"https://jsonplaceholder.typicode.com/posts/1\", { method: \"DELETE\" });"
+        },
+        {
+          "h": "3.5 Conversão objeto ↔ JSON"
+        },
+        {
+          "codigo": "const objeto = { produto: \"Monitor\", preco: 1200.5 };\nconst texto = JSON.stringify(objeto); // '{\"produto\":\"Monitor\",\"preco\":1200.5}'\nconst deVolta = JSON.parse(texto);    // { produto: \"Monitor\", preco: 1200.5 }"
+        },
+        {
+          "h": "3.6 `async/await` com `try...catch`"
+        },
+        {
+          "codigo": "async function criar(dados) {\n  try {\n    const resposta = await fetch(url, { method: \"POST\", headers: {...}, body: JSON.stringify(dados) });\n    if (!resposta.ok) throw new Error(`Status ${resposta.status}`);\n    const criado = await resposta.json();\n    return criado;\n  } catch (erro) {\n    console.error(\"Falhou:\", erro.message);\n  }\n}"
+        },
+        {
+          "h": "3.7 Mesma leitura com `.then()` e com `await`"
+        },
+        {
+          "codigo": "// com .then()\nfetch(url).then(r => r.json()).then(dados => console.log(dados));\n\n// com await (dentro de uma função async)\nconst r = await fetch(url);\nconst dados = await r.json();\nconsole.log(dados);"
+        },
+        {
+          "h": "3.8 Conjunto de funções CRUD"
+        },
+        {
+          "codigo": "const URL_BASE = \"https://jsonplaceholder.typicode.com/todos\";\n\nasync function criarItem(dados) { /* POST em URL_BASE */ }\nasync function lerItens() { /* GET em URL_BASE */ }\nasync function atualizarItem(id, dados) { /* PUT em `${URL_BASE}/${id}` */ }\nasync function deletarItem(id) { /* DELETE em `${URL_BASE}/${id}` */ }"
+        },
+        {
+          "h": "3.9 Módulo de API separado da interface"
+        },
+        {
+          "codigo": "const ApiService = {\n  async post(endpoint, dados) { /* só rede */ },\n  async delete(endpoint, id) { /* só rede */ }\n};\n\nasync function aoClicarSalvar(dadosDoForm) {\n  const novo = await ApiService.post(\"/todos\", dadosDoForm); // chama a rede\n  adicionarNaTela(novo);                                    // cuida da tela\n}"
+        },
+        {
+          "h": "3.10 Atualizar o DOM depois da API"
+        },
+        {
+          "codigo": "// depois de um POST bem-sucedido\nconst li = document.createElement(\"li\");\nli.id = `item-${criado.id}`;\nli.textContent = criado.title;\nlista.appendChild(li);\n\n// depois de um DELETE bem-sucedido\ndocument.getElementById(`item-${id}`).remove();"
+        }
+      ]
+    },
+    {
+      "id": "sintaxe-e-simbolos",
+      "tipo": "leitura",
+      "nome": "Sintaxe e símbolos",
+      "blocos": [
+        {
+          "tabela": [
+            [
+              "Símbolo / comando",
+              "O que faz",
+              "Por que existe"
+            ],
+            [
+              "`fetch(url, { ... })`",
+              "Requisição com configuração",
+              "O 2º argumento muda o método e envia dados"
+            ],
+            [
+              "`method: \"POST\"`",
+              "Define o verbo HTTP",
+              "Sem ele, o `fetch()` assume GET"
+            ],
+            [
+              "`headers: { ... }`",
+              "Cabeçalhos da requisição",
+              "Dizer ao servidor como ler o corpo"
+            ],
+            [
+              "`\"Content-Type\": \"application/json\"`",
+              "Informa que o corpo é JSON",
+              "Sem ele, muitos servidores ignoram ou recusam os dados"
+            ],
+            [
+              "`body: JSON.stringify(obj)`",
+              "Corpo em texto JSON",
+              "A rede só transporta texto; objeto puro vira `\"[object Object]\"`"
+            ],
+            [
+              "`JSON.parse(texto)`",
+              "Texto JSON → objeto",
+              "Usar a resposta como objeto"
+            ],
+            [
+              "`await resposta.json()`",
+              "Lê o corpo e já faz o parse",
+              "Atalho do `fetch()` para `JSON.parse`"
+            ],
+            [
+              "`` `${URL}/${id}` ``",
+              "Monta a URL com o ID",
+              "PUT, PATCH e DELETE precisam saber QUAL recurso"
+            ],
+            [
+              "`async function nome() {}`",
+              "Declara função assíncrona",
+              "Permite usar `await` dentro dela"
+            ],
+            [
+              "`await promessa`",
+              "Pausa a função até a Promise terminar",
+              "Escrever código assíncrono linha a linha, sem `.then()`"
+            ],
+            [
+              "`try { } catch (erro) { }`",
+              "Captura erros do bloco `try`",
+              "Equivale ao `.catch()` no estilo `await`"
+            ],
+            [
+              "`resposta.ok`",
+              "`true` para status 200–299",
+              "Detectar erro HTTP"
+            ],
+            [
+              "`resposta.status === 204`",
+              "Compara o código exato",
+              "Tratar casos específicos (204, 404)"
+            ],
+            [
+              "`\\",
+              "\\",
+              "`",
+              "\"ou\" lógico",
+              "`status === 200 \\",
+              "\\",
+              "status === 204`"
+            ],
+            [
+              "`&&`",
+              "\"e\" lógico",
+              "`status >= 200 && status < 300`"
+            ],
+            [
+              "`{ id: 100, ...dados }`",
+              "Espalha as propriedades de `dados` num objeto novo",
+              "Juntar o ID devolvido com os dados enviados"
+            ],
+            [
+              "`obj.propriedade = valor`",
+              "Altera uma propriedade",
+              "Ex.: `tarefa.completed = true` antes do PUT"
+            ],
+            [
+              "`const ApiService = { async post() {} }`",
+              "Objeto que agrupa funções",
+              "Concentrar toda a lógica de rede num lugar só"
+            ],
+            [
+              "`elemento.remove()`",
+              "Tira o elemento da página",
+              "Refletir o DELETE na tela"
+            ],
+            [
+              "`elemento.classList.add(\"concluida\")`",
+              "Adiciona classe CSS",
+              "Riscar a tarefa depois do PUT"
+            ],
+            [
+              "`// comentário`",
+              "Linha ignorada pelo JS",
+              "Explicar o código"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logica-por-tras",
+      "tipo": "leitura",
+      "nome": "Lógica por trás",
+      "blocos": [
+        "Toda operação que altera dados segue o mesmo trio: **método + cabeçalho + corpo**. O que muda de um método para outro é o que vai na URL e o que vai no corpo.",
+        "**O que cada método precisa:**",
+        {
+          "tabela": [
+            [
+              "Método",
+              "ID na URL?",
+              "Corpo?",
+              "`Content-Type`?"
+            ],
+            [
+              "GET",
+              "Opcional (um item ou a lista)",
+              "Não",
+              "Não"
+            ],
+            [
+              "POST",
+              "Não (o servidor cria o ID)",
+              "Sim, o objeto novo",
+              "Sim"
+            ],
+            [
+              "PUT",
+              "Sim",
+              "Sim, o objeto COMPLETO",
+              "Sim"
+            ],
+            [
+              "PATCH",
+              "Sim",
+              "Sim, só os campos alterados",
+              "Sim"
+            ],
+            [
+              "DELETE",
+              "Sim",
+              "Não",
+              "Não"
+            ]
+          ]
+        },
+        "**Por que o PUT exige o objeto completo:** o PUT substitui o recurso inteiro pelo que foi enviado. Se o produto tinha `nome`, `preco` e `estoque` e o PUT enviar só `nome`, o servidor pode apagar `preco` e `estoque`. Para mudar um campo só, use PATCH ou envie tudo no PUT.",
+        "**Por que precisamos do `JSON.stringify()`:** a rede transporta texto. Se o objeto for passado direto no `body`, o JavaScript o transforma em `\"[object Object]\"` e o servidor recebe lixo, geralmente respondendo 400.",
+        "**Por que o ID devolvido pelo POST é tão importante:** é o servidor que cria o ID. Sem guardar esse ID, o front-end não consegue depois editar (PUT) ou excluir (DELETE) aquele item.",
+        "**Por que o DOM só muda depois da confirmação:** se o comentário sumir da tela antes da API responder e a exclusão falhar, o usuário vê um estado falso (sumiu para ele, mas continua no servidor). A ordem correta é:",
+        {
+          "passos": [
+            "Enviar a requisição.",
+            "Aguardar a resposta e verificar o sucesso.",
+            "Só então atualizar o DOM."
+          ]
+        },
+        "**Por que `async/await`:** o `await` pausa só a função `async`, não a página. O código fica em ordem de leitura (linha 1, depois linha 2), e o `try...catch` pega tanto erro de rede quanto o erro que lançamos com `throw`.",
+        "**Fluxo completo de um recurso (ex.: posts de um blog):**",
+        {
+          "tabela": [
+            [
+              "Ação do usuário",
+              "Requisição",
+              "Reflexo no DOM"
+            ],
+            [
+              "Abre a página",
+              "GET `/posts`",
+              "Monta a lista"
+            ],
+            [
+              "Salva um post novo",
+              "POST `/posts`",
+              "Adiciona o post (com o ID novo) ao topo"
+            ],
+            [
+              "Edita um post",
+              "PUT `/posts/{id}`",
+              "Reescreve título e texto na tela"
+            ],
+            [
+              "Exclui um post",
+              "DELETE `/posts/{id}`",
+              "Remove o elemento `post-{id}`"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "exemplo-a",
+      "tipo": "codigo",
+      "nome": "Exemplo A — POST com async/await (criar_post.js)",
+      "codigo": [
+        "async function criarNovoPost(titulo, corpo) {",
+        "  const novoPost = { titulo: titulo, corpo: corpo, userId: 1 };",
+        "  const url = 'https://jsonplaceholder.typicode.com/posts';",
+        "",
+        "  try {",
+        "    const resposta = await fetch(url, {",
+        "      method: 'POST',",
+        "      headers: { 'Content-Type': 'application/json' },",
+        "      body: JSON.stringify(novoPost)",
+        "    });",
+        "",
+        "    if (!resposta.ok) {",
+        "      throw new Error(`Erro HTTP! Status: ${resposta.status}`);",
+        "    }",
+        "",
+        "    const dadosRetornados = await resposta.json();",
+        "    console.log('✅ Post criado com sucesso!');",
+        "    console.log('Dados do servidor (incluindo o novo ID):', dadosRetornados);",
+        "  } catch (erro) {",
+        "    console.error('❌ Falha ao criar post:', erro);",
+        "  }",
+        "}",
+        "",
+        "criarNovoPost(\"Meu Primeiro Post via Fetch\", \"Conteúdo rico e detalhado do post.\");"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "`async` permite usar `await` dentro da função"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Monta o objeto que será criado"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "URL da coleção de posts (sem ID: quem cria o ID é o servidor)"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Abre o bloco protegido"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "`await` espera a resposta do `fetch()` e guarda em `resposta`"
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "Método POST"
+        },
+        {
+          "linhas": [
+            8,
+            8
+          ],
+          "texto": "Avisa que o corpo é JSON"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "Converte o objeto em texto e envia"
+        },
+        {
+          "linhas": [
+            12,
+            14
+          ],
+          "texto": "Se o status não for 200–299, lança erro e pula para o `catch`"
+        },
+        {
+          "linhas": [
+            16,
+            16
+          ],
+          "texto": "Espera o corpo da resposta e converte em objeto"
+        },
+        {
+          "linhas": [
+            17,
+            18
+          ],
+          "texto": "Mostra o objeto criado, agora com `id: 101`"
+        },
+        {
+          "linhas": [
+            19,
+            21
+          ],
+          "texto": "Captura erro de rede ou o erro lançado na linha 13"
+        },
+        {
+          "linhas": [
+            24,
+            24
+          ],
+          "texto": "Chama a função com título e corpo"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-b",
+      "tipo": "codigo",
+      "nome": "Exemplo B — PUT para marcar tarefa como concluída (concluir_tarefa.js)",
+      "codigo": [
+        "async function marcarTarefaConcluida(idDaTarefa, dadosCompletos) {",
+        "  const url = `https://jsonplaceholder.typicode.com/todos/${idDaTarefa}`;",
+        "",
+        "  dadosCompletos.completed = true;",
+        "",
+        "  try {",
+        "    const resposta = await fetch(url, {",
+        "      method: 'PUT',",
+        "      headers: { 'Content-Type': 'application/json' },",
+        "      body: JSON.stringify(dadosCompletos)",
+        "    });",
+        "",
+        "    const tarefaAtualizada = await resposta.json();",
+        "",
+        "    console.log(`✅ Tarefa ${idDaTarefa} marcada como concluída.`);",
+        "    console.log('Novo estado:', tarefaAtualizada.completed);",
+        "  } catch (e) {",
+        "    console.error('❌ Falha ao marcar tarefa como concluída:', e);",
+        "  }",
+        "}",
+        "",
+        "const tarefaExemplo = { userId: 1, id: 1, title: 'delectus aut autem', completed: false };",
+        "marcarTarefaConcluida(1, tarefaExemplo);"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Recebe o ID e o objeto COMPLETO da tarefa"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "URL com o ID: o PUT precisa saber qual tarefa alterar"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Troca só `completed` para `true`; as outras propriedades continuam no objeto"
+        },
+        {
+          "linhas": [
+            7,
+            11
+          ],
+          "texto": "PUT com o objeto inteiro no corpo"
+        },
+        {
+          "linhas": [
+            13,
+            13
+          ],
+          "texto": "Lê a tarefa devolvida pelo servidor"
+        },
+        {
+          "linhas": [
+            15,
+            16
+          ],
+          "texto": "Confirma e mostra `true`"
+        },
+        {
+          "linhas": [
+            17,
+            19
+          ],
+          "texto": "Trata falhas"
+        },
+        {
+          "linhas": [
+            22,
+            22
+          ],
+          "texto": "Objeto completo da tarefa 1, como viria de um GET"
+        },
+        {
+          "linhas": [
+            23,
+            23
+          ],
+          "texto": "Chama a função"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-c",
+      "tipo": "codigo",
+      "nome": "Exemplo C — DELETE tratando cada status (deletar_item.js)",
+      "codigo": [
+        "async function deletarItem(id) {",
+        "  const url = `https://jsonplaceholder.typicode.com/posts/${id}`;",
+        "",
+        "  try {",
+        "    const resposta = await fetch(url, { method: 'DELETE' });",
+        "",
+        "    if (resposta.status === 204 || resposta.status === 200) {",
+        "      console.log(`✅ Item com ID ${id} deletado com sucesso. Status: ${resposta.status}`);",
+        "    } else if (resposta.status === 404) {",
+        "      console.log(`⚠️ Item com ID ${id} não encontrado no servidor.`);",
+        "    } else {",
+        "      throw new Error(`Falha na operação: Status ${resposta.status}`);",
+        "    }",
+        "  } catch (erro) {",
+        "    console.error('❌ Ocorreu um erro na requisição:', erro.message);",
+        "  }",
+        "}",
+        "",
+        "deletarItem(1);"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "URL com o ID do item a excluir"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "DELETE só precisa do `method`: sem corpo, sem `Content-Type`"
+        },
+        {
+          "linhas": [
+            7,
+            8
+          ],
+          "texto": "204 ou 200 = sucesso"
+        },
+        {
+          "linhas": [
+            9,
+            10
+          ],
+          "texto": "404 = o item já não existia; tratado sem virar erro"
+        },
+        {
+          "linhas": [
+            11,
+            12
+          ],
+          "texto": "Qualquer outro status (400, 500...) vira erro"
+        },
+        {
+          "linhas": [
+            14,
+            16
+          ],
+          "texto": "Captura erro de rede ou o erro da linha 12"
+        },
+        {
+          "linhas": [
+            19,
+            19
+          ],
+          "texto": "Tenta excluir o post 1 → mostra status 200"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-d",
+      "tipo": "codigo",
+      "nome": "Exemplo D — Conversão objeto ↔ JSON (conversao_json.js)",
+      "codigo": [
+        "const dadosObjetoJS = {",
+        "  produto: \"Monitor\",",
+        "  preco: 1200.50,",
+        "  emEstoque: true",
+        "};",
+        "",
+        "console.log(\"1. Objeto JavaScript original:\", dadosObjetoJS);",
+        "",
+        "const stringJSON = JSON.stringify(dadosObjetoJS);",
+        "console.log(\"2. String JSON (Para o body da requisição):\", stringJSON);",
+        "console.log(\"   (Tipo:\", typeof stringJSON, \")\");",
+        "",
+        "const objetoDeVolta = JSON.parse(stringJSON);",
+        "console.log(\"3. Objeto JavaScript de volta:\", objetoDeVolta);",
+        "console.log(\"   (Tipo:\", typeof objetoDeVolta, \")\");"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            5
+          ],
+          "texto": "Objeto JS com texto, número e booleano"
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "Mostra o objeto (o console exibe `preco: 1200.5`, sem o zero final)"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "Converte para texto: as chaves ganham aspas duplas"
+        },
+        {
+          "linhas": [
+            10,
+            11
+          ],
+          "texto": "Mostra a string e confirma o tipo `string`"
+        },
+        {
+          "linhas": [
+            13,
+            13
+          ],
+          "texto": "Converte o texto de volta em objeto"
+        },
+        {
+          "linhas": [
+            14,
+            15
+          ],
+          "texto": "Mostra o objeto e confirma o tipo `object`"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-e",
+      "tipo": "codigo",
+      "nome": "Exemplo E — API separada da interface (api_service.js)",
+      "codigo": [
+        "const ApiService = {",
+        "  URL_BASE: 'https://api.ficticia.com',",
+        "",
+        "  async post(endpoint, dados) {",
+        "    // ... Lógica do POST com fetch ...",
+        "    return { id: 100, ...dados };",
+        "  },",
+        "",
+        "  async put(endpoint, id, dados) {",
+        "    // ... Lógica do PUT com fetch ...",
+        "    return { id: id, ...dados };",
+        "  }",
+        "};",
+        "",
+        "async function handleFormSubmit(dadosDoForm) {",
+        "  console.log('UI: Tentando salvar dados...');",
+        "  try {",
+        "    const novoDado = await ApiService.post('/itens', dadosDoForm);",
+        "    console.log('UI: Dados salvos. Atualizando tela com ID:', novoDado.id);",
+        "    // atualizarDOM(novoDado);",
+        "  } catch (e) {",
+        "    console.error('UI: Erro ao salvar!');",
+        "  }",
+        "}",
+        "",
+        "handleFormSubmit({ nome: 'Item A', preco: 50 });"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Objeto que reúne tudo o que é rede"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "A URL base fica num lugar só: se mudar, muda aqui"
+        },
+        {
+          "linhas": [
+            4,
+            7
+          ],
+          "texto": "Função de criação. Aqui entraria o `fetch()`; por enquanto simula o retorno"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "`...dados` copia as propriedades enviadas e acrescenta `id: 100`"
+        },
+        {
+          "linhas": [
+            9,
+            12
+          ],
+          "texto": "Função de atualização, no mesmo formato"
+        },
+        {
+          "linhas": [
+            15,
+            15
+          ],
+          "texto": "Função da interface: é ela que o botão \"Salvar\" chamaria"
+        },
+        {
+          "linhas": [
+            18,
+            18
+          ],
+          "texto": "Pede ao `ApiService` para salvar e espera o resultado"
+        },
+        {
+          "linhas": [
+            19,
+            20
+          ],
+          "texto": "Usa o ID devolvido para atualizar a tela"
+        },
+        {
+          "linhas": [
+            21,
+            23
+          ],
+          "texto": "Se a rede falhar, a interface avisa"
+        },
+        {
+          "linhas": [
+            26,
+            26
+          ],
+          "texto": "Simula o envio de um formulário"
+        }
+      ]
+    },
+    {
+      "id": "como-aplicar",
+      "tipo": "leitura",
+      "nome": "Como aplicar: To-Do List com CRUD completo",
+      "blocos": [
+        "Junta GET, POST, PUT e DELETE, `async/await`, `try...catch`, verificação de status, separação entre API e interface e atualização do DOM só depois da confirmação. Salve `index.html` e `app.js` na mesma pasta.",
+        "**index.html**",
+        {
+          "codigo": "<!DOCTYPE html>\n<html lang=\"pt-br\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>Minhas Tarefas</title>\n  <style>\n    .concluida { text-decoration: line-through; color: gray; }\n    li button { margin-left: 8px; }\n  </style>\n</head>\n<body>\n  <h1>Minhas Tarefas</h1>\n  <input id=\"nova-tarefa\" placeholder=\"Nova tarefa\">\n  <button id=\"botao-adicionar\">Adicionar</button>\n  <p id=\"status-msg\"></p>\n  <ul id=\"lista-tarefas\"></ul>\n  <script src=\"app.js\"></script>\n</body>\n</html>"
+        },
+        "**app.js**",
+        {
+          "codigo": "// ===== Camada da API: só rede =====\nconst ApiService = {\n  URL_BASE: \"https://jsonplaceholder.typicode.com/todos\",\n\n  async requisitar(url, opcoes = {}) {\n    const resposta = await fetch(url, opcoes);\n    if (!resposta.ok) throw new Error(`Status ${resposta.status}`);\n    return resposta.status === 204 ? null : resposta.json();\n  },\n\n  listar() {\n    return this.requisitar(`${this.URL_BASE}?_limit=5`);\n  },\n\n  criar(tarefa) {\n    return this.requisitar(this.URL_BASE, {\n      method: \"POST\",\n      headers: { \"Content-Type\": \"application/json\" },\n      body: JSON.stringify(tarefa)\n    });\n  },\n\n  atualizar(tarefa) {\n    return this.requisitar(`${this.URL_BASE}/${tarefa.id}`, {\n      method: \"PUT\",\n      headers: { \"Content-Type\": \"application/json\" },\n      body: JSON.stringify(tarefa)\n    });\n  },\n\n  deletar(id) {\n    return this.requisitar(`${this.URL_BASE}/${id}`, { method: \"DELETE\" });\n  }\n};\n\n// ===== Camada da interface: só DOM =====\nconst lista = document.getElementById(\"lista-tarefas\");\nconst campo = document.getElementById(\"nova-tarefa\");\nconst statusMsg = document.getElementById(\"status-msg\");\n\nfunction criarItem(tarefa) {\n  const li = document.createElement(\"li\");\n  li.id = `tarefa-${tarefa.id}`;\n\n  const texto = document.createElement(\"span\");\n  texto.textContent = tarefa.title;\n  if (tarefa.completed) texto.classList.add(\"concluida\");\n\n  const botaoConcluir = document.createElement(\"button\");\n  botaoConcluir.textContent = \"Concluir\";\n  botaoConcluir.addEventListener(\"click\", () => concluir(tarefa, texto));\n\n  const botaoExcluir = document.createElement(\"button\");\n  botaoExcluir.textContent = \"Excluir\";\n  botaoExcluir.addEventListener(\"click\", () => excluir(tarefa.id));\n\n  li.append(texto, botaoConcluir, botaoExcluir);\n  return li;\n}\n\nasync function carregar() {\n  try {\n    const tarefas = await ApiService.listar();\n    lista.innerHTML = \"\";\n    tarefas.forEach(t => lista.appendChild(criarItem(t)));\n  } catch (erro) {\n    statusMsg.textContent = \"Não foi possível carregar as tarefas.\";\n  }\n}\n\nasync function adicionar() {\n  const titulo = campo.value.trim();\n  if (!titulo) return;\n  try {\n    const criada = await ApiService.criar({ title: titulo, completed: false, userId: 1 });\n    lista.prepend(criarItem(criada));\n    campo.value = \"\";\n    statusMsg.textContent = `Tarefa criada com ID ${criada.id}.`;\n  } catch (erro) {\n    statusMsg.textContent = \"Erro ao criar a tarefa.\";\n  }\n}\n\nasync function concluir(tarefa, elementoTexto) {\n  try {\n    const atualizada = await ApiService.atualizar({ ...tarefa, completed: true });\n    if (atualizada.completed) elementoTexto.classList.add(\"concluida\");\n  } catch (erro) {\n    statusMsg.textContent = \"Erro ao concluir a tarefa.\";\n  }\n}\n\nasync function excluir(id) {\n  try {\n    await ApiService.deletar(id);\n    document.getElementById(`tarefa-${id}`).remove();\n  } catch (erro) {\n    statusMsg.textContent = \"Erro ao excluir a tarefa.\";\n  }\n}\n\ndocument.getElementById(\"botao-adicionar\").addEventListener(\"click\", adicionar);\ncarregar();"
+        },
+        "**Por que funciona:** o `ApiService` concentra a rede, e a função `requisitar` faz a verificação de status uma vez só para os quatro métodos. As funções da interface chamam a API com `await` e só mexem no DOM depois do sucesso: `prepend` após o POST, classe `concluida` após o PUT e `remove()` após o DELETE. No PUT, `{ ...tarefa, completed: true }` cria uma cópia completa sem alterar o objeto original. Cada `li` recebe o `id` `tarefa-<id>`, o que permite encontrá-lo na hora de excluir.",
+        "**Atenção:** o JSONPlaceholder simula as respostas, mas não grava nada. Toda tarefa criada volta com ID 201, e concluir essa tarefa nova gera erro (o PUT responde 500), porque ela não existe no servidor. Para um CRUD que persiste de verdade, troque a URL por um JSON Server local."
+      ]
+    },
+    {
+      "id": "quiz",
+      "tipo": "quiz",
+      "nome": "Quiz de código",
+      "perguntas": [
+        {
+          "pergunta": "Que método está sendo usado?",
+          "codigo": "fetch(\"https://api.exemplo.com/produtos\", {\n  headers: { \"Content-Type\": \"application/json\" },\n  body: JSON.stringify({ nome: \"Mouse\" })\n});",
+          "opcoes": [
+            "POST",
+            "GET",
+            "PUT",
+            "DELETE"
+          ],
+          "correta": 1,
+          "dica": "onde está o `method`?",
+          "acerto": "Isso! Sem method, é GET.",
+          "erro": "Ter body não muda o método sozinho.",
+          "explicacao": "o `fetch()` assume GET quando não há `method`. Aliás, o navegador recusa GET com corpo e dá erro; faltou `method: \"POST\"`."
+        },
+        {
+          "pergunta": "O que o servidor recebe no corpo?",
+          "codigo": "fetch(url, {\n  method: \"POST\",\n  headers: { \"Content-Type\": \"application/json\" },\n  body: { nome: \"Ana\" }\n});",
+          "opcoes": [
+            "`{\"nome\":\"Ana\"}`",
+            "`\"[object Object]\"`",
+            "Nada",
+            "`nome=Ana`"
+          ],
+          "correta": 1,
+          "dica": "o objeto passou pelo `JSON.stringify()`?",
+          "acerto": "Exato! Objeto sem stringify vira [object Object].",
+          "erro": "A rede só leva texto; o objeto foi convertido do jeito errado.",
+          "explicacao": "o correto é `body: JSON.stringify({ nome: \"Ana\" })`."
+        },
+        {
+          "pergunta": "O produto tinha `nome`, `preco` e `estoque`. Após este PUT, o que sobra no servidor?",
+          "codigo": "fetch(\"/produtos/7\", {\n  method: \"PUT\",\n  headers: { \"Content-Type\": \"application/json\" },\n  body: JSON.stringify({ nome: \"Teclado\" })\n});",
+          "opcoes": [
+            "`nome`, `preco` e `estoque`, com o nome novo",
+            "Só `nome` (e o `id`)",
+            "Nada, o produto é apagado",
+            "Dá erro 404"
+          ],
+          "correta": 1,
+          "dica": "o PUT atualiza ou substitui?",
+          "acerto": "Perfeito! PUT substitui o recurso inteiro.",
+          "erro": "Para mudar só um campo, use PATCH.",
+          "explicacao": "o recurso é trocado pelo que foi enviado; `preco` e `estoque` somem."
+        },
+        {
+          "pergunta": "Qual a ordem correta para excluir um comentário?",
+          "opcoes": [
+            "Remover do DOM → enviar DELETE",
+            "Enviar DELETE → aguardar sucesso → remover do DOM",
+            "Enviar DELETE e remover do DOM ao mesmo tempo",
+            "Só remover do DOM"
+          ],
+          "correta": 1,
+          "dica": "e se a API falhar?",
+          "acerto": "Isso! A tela só muda depois da confirmação.",
+          "erro": "Se a API falhar, o usuário verá algo que não aconteceu.",
+          "explicacao": "remover antes da confirmação deixa a tela diferente do servidor quando há falha."
+        },
+        {
+          "pergunta": "O que aparece no console?",
+          "codigo": "async function teste() {\n  const r = fetch(url);\n  console.log(r.ok);\n}\nteste();",
+          "opcoes": [
+            "`true`",
+            "`false`",
+            "`undefined`",
+            "O status"
+          ],
+          "correta": 2,
+          "dica": "falta alguma palavra antes do `fetch`?",
+          "acerto": "Mandou bem! Sem await, r é uma Promise.",
+          "erro": "Uma Promise não tem a propriedade ok.",
+          "explicacao": "sem `await`, `r` é a Promise pendente, não o Response; o correto é `const r = await fetch(url);`."
+        },
+        {
+          "pergunta": "Qual status é mais comum para um POST bem-sucedido?",
+          "codigo": "const resposta = await fetch(url, { method: \"POST\", /* ... */ });\nconsole.log(resposta.status);",
+          "opcoes": [
+            "200",
+            "201",
+            "204",
+            "404"
+          ],
+          "correta": 1,
+          "dica": "o POST cria o quê?",
+          "acerto": "Isso! 201 Created.",
+          "erro": "204 é típico do DELETE; 200 do GET e do PUT.",
+          "explicacao": "201 indica que um recurso novo foi criado, e a resposta costuma trazer o objeto com o ID."
+        }
+      ]
+    },
+    {
+      "id": "atividades",
+      "tipo": "atividades",
+      "nome": "Atividades",
+      "intro": [
+        "Use o JSONPlaceholder (`https://jsonplaceholder.typicode.com`) em todas.",
+        "Considere `const BASE = \"https://jsonplaceholder.typicode.com\";` no topo de cada resposta que usa a API, e que o código com `await` está dentro de uma função `async`.",
+        "Escreva ou cole a sua tentativa no campo de cada atividade para liberar a solução. Outras soluções também valem, desde que passem nos testes do enunciado."
+      ],
+      "itens": [
+        {
+          "n": 1,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie o objeto `aluno` com `nome`, `curso` e `nota`. Converta para JSON, mostre a string e o `typeof` dela; depois converta de volta e mostre `nome`."
+          ],
+          "solucao": [
+            {
+              "codigo": "const aluno = { nome: \"Ana\", curso: \"FullStack\", nota: 9 };\nconst texto = JSON.stringify(aluno);\nconsole.log(texto, typeof texto);  // {\"nome\":\"Ana\",...} string\nconst deVolta = JSON.parse(texto);\nconsole.log(deVolta.nome);         // Ana"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Monte (sem enviar) o objeto de configuração de um POST que cria o comentário `{ postId: 1, name: \"Ana\", body: \"Ótima aula!\" }`."
+          ],
+          "solucao": [
+            {
+              "codigo": "const configuracao = {\n  method: \"POST\",\n  headers: { \"Content-Type\": \"application/json\" },\n  body: JSON.stringify({ postId: 1, name: \"Ana\", body: \"Ótima aula!\" })\n};"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Faça um DELETE em `/posts/3` e mostre no console o `status` da resposta."
+          ],
+          "solucao": [
+            {
+              "codigo": "fetch(`${BASE}/posts/3`, { method: \"DELETE\" })\n  .then(resposta => console.log(resposta.status)); // 200"
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "nivel": "Médio",
+          "enunciado": [
+            "Com `async/await`, faça um POST em `/posts` com título e texto seus e mostre no console o `id` devolvido."
+          ],
+          "solucao": [
+            {
+              "codigo": "async function publicar() {\n  const resposta = await fetch(`${BASE}/posts`, {\n    method: \"POST\",\n    headers: { \"Content-Type\": \"application/json\" },\n    body: JSON.stringify({ title: \"Meu post\", body: \"Meu texto\", userId: 1 })\n  });\n  const criado = await resposta.json();\n  console.log(criado.id); // 101\n}\npublicar();"
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "nivel": "Médio",
+          "enunciado": [
+            "Faça um PATCH em `/todos/1` alterando só `completed` para `true` e mostre a tarefa devolvida."
+          ],
+          "solucao": [
+            {
+              "codigo": "async function concluir() {\n  const resposta = await fetch(`${BASE}/todos/1`, {\n    method: \"PATCH\",\n    headers: { \"Content-Type\": \"application/json\" },\n    body: JSON.stringify({ completed: true })\n  });\n  console.log(await resposta.json());\n}\nconcluir();"
+            }
+          ]
+        },
+        {
+          "n": 6,
+          "nivel": "Médio",
+          "enunciado": [
+            "Reescreva com `async/await` e `try...catch`:",
+            {
+              "codigo": "fetch(\"https://jsonplaceholder.typicode.com/users/1\")\n  .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })\n  .then(u => console.log(u.name))\n  .catch(e => console.error(e));"
+            }
+          ],
+          "solucao": [
+            {
+              "codigo": "async function mostrarUsuario() {\n  try {\n    const r = await fetch(`${BASE}/users/1`);\n    if (!r.ok) throw new Error(r.status);\n    const u = await r.json();\n    console.log(u.name);\n  } catch (e) {\n    console.error(e);\n  }\n}\nmostrarUsuario();"
+            }
+          ]
+        },
+        {
+          "n": 7,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Crie o objeto `PostService` com quatro métodos (`listar`, `criar`, `atualizar`, `deletar`), cada um usando `fetch` com o método correto. Teste os quatro no console."
+          ],
+          "solucao": [
+            {
+              "codigo": "const PostService = {\n  url: `${BASE}/posts`,\n  config(metodo, dados) {\n    return {\n      method: metodo,\n      headers: { \"Content-Type\": \"application/json\" },\n      body: JSON.stringify(dados)\n    };\n  },\n  async listar() {\n    const r = await fetch(`${this.url}?_limit=3`);\n    return r.json();\n  },\n  async criar(dados) {\n    const r = await fetch(this.url, this.config(\"POST\", dados));\n    return r.json();\n  },\n  async atualizar(id, dados) {\n    const r = await fetch(`${this.url}/${id}`, this.config(\"PUT\", { id, ...dados }));\n    return r.json();\n  },\n  async deletar(id) {\n    const r = await fetch(`${this.url}/${id}`, { method: \"DELETE\" });\n    return r.ok;\n  }\n};\n\nasync function testar() {\n  console.log(await PostService.listar());\n  console.log(await PostService.criar({ title: \"A\", body: \"B\", userId: 1 }));\n  console.log(await PostService.atualizar(1, { title: \"Novo\", body: \"Texto\", userId: 1 }));\n  console.log(await PostService.deletar(1));\n}\ntestar();"
+            }
+          ]
+        },
+        {
+          "n": 8,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Crie uma página com `<input>`, botão \"Publicar\" e `<ul>`. Ao publicar, envie um POST e, só após o sucesso, adicione o `<li>` com o título e um botão \"Excluir\" que envia DELETE e remove o `<li>` depois da confirmação."
+          ],
+          "solucao": [
+            {
+              "codigo": "const campo = document.getElementById(\"titulo\");\nconst lista = document.getElementById(\"posts\");\n\nasync function publicar() {\n  try {\n    const r = await fetch(`${BASE}/posts`, {\n      method: \"POST\",\n      headers: { \"Content-Type\": \"application/json\" },\n      body: JSON.stringify({ title: campo.value, body: \"\", userId: 1 })\n    });\n    if (!r.ok) throw new Error(r.status);\n    const post = await r.json();\n\n    const li = document.createElement(\"li\");\n    li.textContent = post.title;\n    const botao = document.createElement(\"button\");\n    botao.textContent = \"Excluir\";\n    botao.addEventListener(\"click\", () => excluir(post.id, li));\n    li.appendChild(botao);\n    lista.appendChild(li);\n    campo.value = \"\";\n  } catch (e) {\n    alert(\"Erro ao publicar.\");\n  }\n}\n\nasync function excluir(id, li) {\n  try {\n    const r = await fetch(`${BASE}/posts/${id}`, { method: \"DELETE\" });\n    if (!r.ok) throw new Error(r.status);\n    li.remove(); // só depois da confirmação\n  } catch (e) {\n    alert(\"Erro ao excluir.\");\n  }\n}\n\ndocument.getElementById(\"publicar\").addEventListener(\"click\", publicar);"
+            }
+          ]
+        },
+        {
+          "n": 9,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Explique, com suas palavras e um código de exemplo, a diferença entre PUT e PATCH e o que acontece com os campos não enviados em cada um."
+          ],
+          "solucao": [
+            "Resposta esperada: o PUT substitui o recurso inteiro pelo objeto enviado; campos que ficaram de fora são apagados. O PATCH altera só os campos enviados; os outros continuam como estavam.",
+            {
+              "codigo": "// Servidor antes: { id: 7, nome: \"Mouse\", preco: 50, estoque: 10 }\n\n// PUT com { nome: \"Teclado\" }  → { id: 7, nome: \"Teclado\" }\n// PATCH com { nome: \"Teclado\" } → { id: 7, nome: \"Teclado\", preco: 50, estoque: 10 }"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
