@@ -1,0 +1,965 @@
+{
+  "numero": 12,
+  "titulo": "Manipulação do DOM II: Eventos e Formulários",
+  "etapas": [
+    {
+      "id": "definicoes",
+      "tipo": "leitura",
+      "nome": "Definições",
+      "blocos": [
+        "Eventos são acontecimentos na página (um clique, uma tecla, o envio de um formulário). O JavaScript fica \"escutando\" esses eventos e executa uma função quando eles acontecem. É isso que transforma uma página parada numa página interativa.",
+        {
+          "tabela": [
+            [
+              "Termo",
+              "O que significa"
+            ],
+            [
+              "Evento",
+              "Ação que acontece num elemento: clique, digitação, envio de formulário"
+            ],
+            [
+              "Ouvinte (listener)",
+              "Código que fica esperando um evento acontecer"
+            ],
+            [
+              "Função de resposta (handler)",
+              "Função executada quando o evento acontece"
+            ],
+            [
+              "`addEventListener()`",
+              "Forma moderna de ligar um evento a uma função; aceita várias funções no mesmo evento"
+            ],
+            [
+              "`onclick = função`",
+              "Forma antiga; cada nova atribuição apaga a anterior"
+            ],
+            [
+              "`click`",
+              "Disparado ao clicar"
+            ],
+            [
+              "`input`",
+              "Disparado a cada alteração no conteúdo de um campo (cada tecla)"
+            ],
+            [
+              "`change`",
+              "Disparado quando o valor muda e é confirmado (sair do campo, escolher uma opção, marcar um checkbox)"
+            ],
+            [
+              "`submit`",
+              "Disparado ao enviar um formulário (botão de envio ou Enter)"
+            ],
+            [
+              "`focus` / `blur`",
+              "Disparados ao entrar / sair de um campo"
+            ],
+            [
+              "Objeto evento (`e`)",
+              "Objeto que o navegador entrega ao handler, com detalhes do evento"
+            ],
+            [
+              "`e.target`",
+              "O elemento que disparou o evento"
+            ],
+            [
+              "Ação padrão",
+              "O que o navegador faz sozinho (o `submit` recarrega a página, o link abre outra página)"
+            ],
+            [
+              "`e.preventDefault()`",
+              "Impede a ação padrão"
+            ],
+            [
+              "`.value`",
+              "O que está escrito ou escolhido num campo; **sempre texto (string)**"
+            ],
+            [
+              "`.checked`",
+              "`true` ou `false` para checkbox e radio"
+            ],
+            [
+              "`.disabled`",
+              "`true` desabilita o elemento; `false` habilita"
+            ],
+            [
+              "`.textContent`",
+              "Texto de um elemento (lê ou troca)"
+            ],
+            [
+              "`.classList`",
+              "Lista de classes CSS, com `add`, `remove`, `toggle` e `contains`"
+            ],
+            [
+              "`.style`",
+              "Estilo direto do elemento; propriedades em camelCase (`backgroundColor`)"
+            ],
+            [
+              "Validação",
+              "Conferir se os dados digitados estão completos e corretos antes de usar"
+            ],
+            [
+              "`querySelectorAll()`",
+              "Seleciona todos os elementos que combinam com um seletor CSS (devolve uma NodeList)"
+            ],
+            [
+              "Arrow function",
+              "Forma curta de escrever função: `(e) => { ... }`"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "para-que-como-e-quando-usamos",
+      "tipo": "leitura",
+      "nome": "Para que, como e quando usamos",
+      "blocos": [
+        "Usamos eventos para reagir ao que o usuário faz e formulários para coletar dados dele.",
+        "**Para que:** botões que mostram ou escondem conteúdo, contador de caracteres, busca que filtra enquanto se digita, cadastro e login, botão que só libera quando os campos estão preenchidos, escolha de opções que muda o preço.",
+        "**Como:** selecionamos o elemento, chamamos `addEventListener` com o nome do evento e a função de resposta, e dentro dela lemos valores (`.value`, `.checked`) e atualizamos a página (`.textContent`, `.classList`, `.disabled`, `.style`).",
+        "**Quando usar cada evento:**",
+        {
+          "tabela": [
+            [
+              "Situação",
+              "Evento"
+            ],
+            [
+              "Clique num botão, ícone ou card",
+              "`click`"
+            ],
+            [
+              "Reagir a cada tecla (contador, busca ao vivo)",
+              "`input`"
+            ],
+            [
+              "Escolha num `<select>`, checkbox ou radio",
+              "`change`"
+            ],
+            [
+              "Envio de formulário (botão ou Enter)",
+              "`submit` no `<form>`"
+            ],
+            [
+              "Destacar o campo em que o usuário está",
+              "`focus` e `blur`"
+            ]
+          ]
+        },
+        "**Quando não usar:** para validar um envio, não use `click` no botão: quem aperta Enter num campo também envia o formulário, e só o `submit` pega os dois casos. E prefira `classList` a `style` quando o visual for mais do que um ajuste pontual."
+      ]
+    },
+    {
+      "id": "estruturas",
+      "tipo": "leitura",
+      "nome": "Estruturas",
+      "blocos": [
+        {
+          "h": "3.1 Ouvir um evento"
+        },
+        {
+          "codigo": "const botao = document.getElementById(\"botao\");\nbotao.addEventListener(\"click\", () => {\n  console.log(\"Clicou!\");\n});"
+        },
+        {
+          "h": "3.2 Função nomeada x anônima x arrow"
+        },
+        {
+          "codigo": "function responder() { console.log(\"nomeada\"); }\nbotao.addEventListener(\"click\", responder);           // sem parênteses!\n\nbotao.addEventListener(\"click\", function () { console.log(\"anônima\"); });\nbotao.addEventListener(\"click\", () => console.log(\"arrow\"));"
+        },
+        {
+          "h": "3.3 Objeto evento"
+        },
+        {
+          "codigo": "link.addEventListener(\"click\", (e) => {\n  e.preventDefault();         // não abre o link\n  console.log(e.target);      // o elemento clicado\n});"
+        },
+        {
+          "h": "3.4 Envio de formulário"
+        },
+        {
+          "codigo": "form.addEventListener(\"submit\", (e) => {\n  e.preventDefault();         // não recarrega a página\n  const nome = form.nome.value;  // campo com name=\"nome\"\n});"
+        },
+        {
+          "h": "3.5 Ler valores"
+        },
+        {
+          "codigo": "campoTexto.value;            // texto digitado (string)\nNumber(campoIdade.value);    // converte para número\ncheckbox.checked;            // true ou false\nselect.value;                // value da opção escolhida"
+        },
+        {
+          "h": "3.6 Validações básicas"
+        },
+        {
+          "codigo": "if (campo.value.trim() === \"\") { /* vazio */ }\nif (senha.value.length < 6) { /* curta demais */ }"
+        },
+        {
+          "h": "3.7 Atualizar a página"
+        },
+        {
+          "codigo": "mensagem.textContent = \"Salvo!\";\ncaixa.classList.add(\"erro\");\ncaixa.classList.remove(\"erro\");\ncaixa.classList.toggle(\"aberto\");\nbotao.disabled = true;\ncampo.style.backgroundColor = \"#E8EEF7\";"
+        },
+        {
+          "h": "3.8 Mesmo handler para vários elementos"
+        },
+        {
+          "codigo": "const botoes = document.querySelectorAll(\".opcao\");\nbotoes.forEach((b) => {\n  b.addEventListener(\"click\", (e) => {\n    console.log(\"Clicou em \" + e.target.textContent);\n  });\n});"
+        }
+      ]
+    },
+    {
+      "id": "sintaxe-e-simbolos",
+      "tipo": "leitura",
+      "nome": "Sintaxe e símbolos",
+      "blocos": [
+        {
+          "tabela": [
+            [
+              "Símbolo / comando",
+              "O que faz",
+              "Por que existe"
+            ],
+            [
+              "`elemento.addEventListener(\"tipo\", função)`",
+              "Liga o evento à função",
+              "Permite várias funções no mesmo evento, sem sobrescrever"
+            ],
+            [
+              "`\"click\"`, `\"submit\"` (entre aspas)",
+              "Nome do evento",
+              "É um texto; em minúsculas e sem o \"on\""
+            ],
+            [
+              "`responder` (sem `()`)",
+              "Passa a função para ser chamada depois",
+              "`responder()` executaria na hora e passaria o resultado"
+            ],
+            [
+              "`(e) => { ... }`",
+              "Arrow function que recebe o evento",
+              "Forma curta, comum em handlers"
+            ],
+            [
+              "`e`",
+              "Objeto evento",
+              "Nome livre; `e`, `evt` e `event` são os mais usados"
+            ],
+            [
+              "`e.preventDefault()`",
+              "Cancela a ação padrão",
+              "O formulário não recarrega; o link não abre"
+            ],
+            [
+              "`e.target`",
+              "Quem disparou o evento",
+              "Saber qual botão de vários foi clicado"
+            ],
+            [
+              "`form.nome`",
+              "Acessa o campo pelo atributo `name`",
+              "Atalho para ler campos de dentro do formulário"
+            ],
+            [
+              "`.value`",
+              "Valor atual do campo",
+              "Sempre string, mesmo em `type=\"number\"`"
+            ],
+            [
+              "`Number(...)`",
+              "Converte texto em número",
+              "Para fazer contas com o que foi digitado"
+            ],
+            [
+              "`.trim()`",
+              "Remove espaços do início e do fim",
+              "Um campo só com espaços não é um campo preenchido"
+            ],
+            [
+              "`.length`",
+              "Quantidade de caracteres",
+              "Validar tamanho mínimo"
+            ],
+            [
+              "`.checked`",
+              "Estado do checkbox/radio",
+              "Decidir com `if`"
+            ],
+            [
+              "`!`",
+              "Inverte um booleano",
+              "`botao.disabled = !aceito.checked`"
+            ],
+            [
+              "`.classList.toggle(\"x\")`",
+              "Põe a classe se não tem, tira se tem",
+              "Liga/desliga"
+            ],
+            [
+              "`.classList.contains(\"x\")`",
+              "Diz se a classe está presente",
+              "Decidir o texto de um botão, por exemplo"
+            ],
+            [
+              "`.style.backgroundColor`",
+              "Estilo direto",
+              "`background-color` do CSS vira camelCase no JS"
+            ],
+            [
+              "`return` dentro do handler",
+              "Encerra a função",
+              "Parar a validação no primeiro erro"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logica-por-tras",
+      "tipo": "leitura",
+      "nome": "Lógica por trás",
+      "blocos": [
+        "Todo código com eventos segue o mesmo ciclo:",
+        {
+          "passos": [
+            "**Selecionar:** pegar o elemento (`getElementById`, `querySelector`).",
+            "**Escutar:** `addEventListener(\"evento\", função)`.",
+            "**Esperar:** o código não roda agora; ele roda quando o evento acontecer.",
+            "**Ler o estado atual:** dentro da função, ler `.value`, `.checked`, classes.",
+            "**Decidir:** `if / else` com base no que foi lido.",
+            "**Atualizar a página:** `.textContent`, `.classList`, `.disabled`, `.style`."
+          ]
+        },
+        "**Por que a função não roda na hora:** `addEventListener` só registra a função. Se você escrever `botao.addEventListener(\"click\", responder())`, com parênteses, a função roda uma vez no carregamento e o que fica registrado é o retorno dela (geralmente `undefined`).",
+        "**Por que `addEventListener` é melhor que `onclick`:** `onclick` guarda uma única função; atribuir outra apaga a primeira. `addEventListener` acumula: todas as funções registradas rodam, na ordem em que foram adicionadas.",
+        "**Por que `preventDefault` no `submit`:** por padrão, o navegador envia o formulário e recarrega a página, apagando o que o JavaScript fez. O `preventDefault` deixa o JavaScript no controle: validar, mostrar mensagens e enviar só se estiver tudo certo.",
+        "**Por que `.value` sempre é texto:** o campo guarda caracteres. Em `\"5\" + \"3\"` o resultado é `\"53\"`, não `8`. Converta com `Number()` antes de calcular.",
+        "**`input` x `change`:** o `input` dispara a cada tecla; o `change`, quando o valor é confirmado. Em campo de texto, o `change` só vem quando o usuário sai do campo; em `select` e checkbox, vem logo após a escolha.",
+        "**Por que `classList` em vez de `style`:** o CSS define a aparência (`.erro`, `.ativo`) e o JavaScript só decide quando aplicar. Se o visual mudar, você mexe só no CSS. O `.style` serve para ajustes pontuais e valores calculados na hora.",
+        "**Validar no `submit` e dar retorno ao vivo:** o `submit` é a última barreira, porque nada passa sem ser conferido. Os eventos `input` e `change` deixam a experiência melhor: o erro some enquanto a pessoa corrige, e o botão libera quando está tudo pronto."
+      ]
+    },
+    {
+      "id": "exemplo-a",
+      "tipo": "codigo",
+      "nome": "Exemplo A — Duas funções no mesmo clique (clique.js)",
+      "intro": [
+        "Os HTMLs são curtos e aparecem antes de cada exemplo; a numeração da tabela se refere ao JavaScript.",
+        {
+          "codigo": "<button id=\"btn\">Clique</button>\n<p id=\"msg\"></p>"
+        }
+      ],
+      "codigo": [
+        "const btn = document.getElementById(\"btn\");",
+        "const msg = document.getElementById(\"msg\");",
+        "",
+        "btn.addEventListener(\"click\", () => {",
+        "  msg.textContent = \"Você clicou!\";",
+        "});",
+        "btn.addEventListener(\"click\", () => {",
+        "  console.log(\"Clique registrado no console\");",
+        "});"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            2
+          ],
+          "texto": "Seleciona o botão e o parágrafo"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Registra a primeira função para o `click`"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Ao clicar, troca o texto do parágrafo"
+        },
+        {
+          "linhas": [
+            7,
+            8
+          ],
+          "texto": "Registra uma segunda função no mesmo evento; as duas rodam a cada clique"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-b",
+      "tipo": "codigo",
+      "nome": "Exemplo B — Contador de caracteres (contador.js)",
+      "intro": [
+        {
+          "codigo": "<textarea id=\"texto\" maxlength=\"140\"></textarea>\n<p id=\"contador\">0/140</p>"
+        }
+      ],
+      "codigo": [
+        "const texto = document.getElementById(\"texto\");",
+        "const contador = document.getElementById(\"contador\");",
+        "",
+        "texto.addEventListener(\"input\", () => {",
+        "  const usados = texto.value.length;",
+        "  contador.textContent = `${usados}/140`;",
+        "  if (usados > 120) {",
+        "    contador.classList.add(\"alerta\");",
+        "  } else {",
+        "    contador.classList.remove(\"alerta\");",
+        "  }",
+        "});"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "O evento `input` dispara a cada tecla, inclusive ao apagar"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Conta os caracteres digitados"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Atualiza o texto: \"37/140\", por exemplo"
+        },
+        {
+          "linhas": [
+            7,
+            8
+          ],
+          "texto": "Passou de 120, adiciona a classe `alerta` (que no CSS pode deixar o texto vermelho)"
+        },
+        {
+          "linhas": [
+            9,
+            10
+          ],
+          "texto": "Abaixo disso, remove a classe"
+        }
+      ],
+      "fechamento": [
+        "Atalho equivalente para as linhas 7 a 11: `contador.classList.toggle(\"alerta\", usados > 120);`."
+      ]
+    },
+    {
+      "id": "exemplo-c",
+      "tipo": "codigo",
+      "nome": "Exemplo C — Cadastro com validação (cadastro.js)",
+      "intro": [
+        {
+          "codigo": "<form id=\"cadastro\">\n  <input id=\"email\" name=\"email\" type=\"email\" placeholder=\"E-mail\">\n  <input id=\"senha\" name=\"senha\" type=\"password\" placeholder=\"Senha\">\n  <button type=\"submit\">Cadastrar</button>\n  <p id=\"erro\"></p>\n</form>"
+        }
+      ],
+      "codigo": [
+        "const form = document.getElementById(\"cadastro\");",
+        "const erro = document.getElementById(\"erro\");",
+        "const MIN_SENHA = 6;",
+        "",
+        "form.addEventListener(\"submit\", (e) => {",
+        "  e.preventDefault();",
+        "  const email = form.email.value.trim();",
+        "  const senha = form.senha.value;",
+        "",
+        "  if (email === \"\") {",
+        "    erro.textContent = \"Preencha o e-mail.\";",
+        "    return;",
+        "  }",
+        "  if (senha.length < MIN_SENHA) {",
+        "    erro.textContent = `A senha precisa de pelo menos ${MIN_SENHA} caracteres.`;",
+        "    return;",
+        "  }",
+        "  erro.textContent = \"\";",
+        "  alert(`Cadastro de ${email} enviado!`);",
+        "});"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "A regra fica numa constante: para mudar, basta trocar aqui"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "O `submit` é ouvido no `<form>`, não no botão: pega o clique e o Enter"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Impede o recarregamento da página"
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "Lê o campo pelo `name` e tira espaços sobrando"
+        },
+        {
+          "linhas": [
+            8,
+            8
+          ],
+          "texto": "Lê a senha (aqui não usamos `trim`, porque espaços podem fazer parte dela)"
+        },
+        {
+          "linhas": [
+            10,
+            13
+          ],
+          "texto": "Vazio: mostra o erro e `return` encerra a função ali"
+        },
+        {
+          "linhas": [
+            14,
+            17
+          ],
+          "texto": "Senha curta: outro erro, outro `return`"
+        },
+        {
+          "linhas": [
+            18,
+            18
+          ],
+          "texto": "Passou nas duas regras: limpa a mensagem de erro"
+        },
+        {
+          "linhas": [
+            19,
+            19
+          ],
+          "texto": "Simula o envio"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-d",
+      "tipo": "codigo",
+      "nome": "Exemplo D — Preço conforme o plano (plano.js)",
+      "intro": [
+        {
+          "codigo": "<select id=\"plano\">\n  <option value=\"\">Escolha um plano</option>\n  <option value=\"29\">Básico</option>\n  <option value=\"49\">Pro</option>\n</select>\n<p id=\"preco\"></p>"
+        }
+      ],
+      "codigo": [
+        "const plano = document.getElementById(\"plano\");",
+        "const preco = document.getElementById(\"preco\");",
+        "",
+        "plano.addEventListener(\"change\", () => {",
+        "  if (plano.value === \"\") {",
+        "    preco.textContent = \"\";",
+        "    return;",
+        "  }",
+        "  const valor = Number(plano.value);",
+        "  preco.textContent = `R$ ${valor},00 por mês (R$ ${valor * 12},00 por ano)`;",
+        "});"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "`change` dispara assim que uma opção é escolhida"
+        },
+        {
+          "linhas": [
+            5,
+            8
+          ],
+          "texto": "Se voltou para \"Escolha um plano\", limpa o preço e para"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "O `value` da opção é texto (\"49\"); `Number` converte para fazer contas"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "Mostra o preço mensal e o anual: \"R$ 49,00 por mês (R$ 588,00 por ano)\""
+        }
+      ]
+    },
+    {
+      "id": "exemplo-e",
+      "tipo": "codigo",
+      "nome": "Exemplo E — Botão liberado pelo checkbox (termos.js)",
+      "intro": [
+        {
+          "codigo": "<label><input type=\"checkbox\" id=\"aceito\"> Li e aceito os termos</label>\n<button id=\"enviar\" disabled>Enviar</button>"
+        }
+      ],
+      "codigo": [
+        "const aceito = document.getElementById(\"aceito\");",
+        "const enviar = document.getElementById(\"enviar\");",
+        "",
+        "aceito.addEventListener(\"change\", () => {",
+        "  enviar.disabled = !aceito.checked;",
+        "});"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "O checkbox dispara `change` ao marcar ou desmarcar"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Marcado (`true`): `!true` é `false`, o botão habilita. Desmarcado: o botão volta a ficar desabilitado"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-f",
+      "tipo": "codigo",
+      "nome": "Exemplo F — Um handler para vários botões (tamanhos.js)",
+      "intro": [
+        {
+          "codigo": "<button class=\"tamanho\">P</button>\n<button class=\"tamanho\">M</button>\n<button class=\"tamanho\">G</button>\n<p id=\"escolha\"></p>"
+        }
+      ],
+      "codigo": [
+        "const botoes = document.querySelectorAll(\".tamanho\");",
+        "const escolha = document.getElementById(\"escolha\");",
+        "",
+        "botoes.forEach((botao) => {",
+        "  botao.addEventListener(\"click\", (e) => {",
+        "    botoes.forEach((b) => b.classList.remove(\"ativo\"));",
+        "    e.target.classList.add(\"ativo\");",
+        "    escolha.textContent = \"Tamanho escolhido: \" + e.target.textContent;",
+        "  });",
+        "});"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Pega todos os botões com a classe `tamanho`"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Percorre a lista e registra o mesmo handler em cada botão"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "A cada clique, tira o destaque de todos"
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "`e.target` é o botão clicado: só ele recebe o destaque"
+        },
+        {
+          "linhas": [
+            8,
+            8
+          ],
+          "texto": "Mostra o texto do botão clicado: \"Tamanho escolhido: M\""
+        }
+      ]
+    },
+    {
+      "id": "como-aplicar",
+      "tipo": "leitura",
+      "nome": "Como aplicar: inscrição numa oficina",
+      "blocos": [
+        "Junta `submit` com `preventDefault`, validação de vazio e de tamanho, `change` em `select` e checkbox, campo condicional, `input` para limpar o erro, `classList`, `disabled`, `style` e `textContent`. Crie `index.html` e `app.js` na mesma pasta e abra no navegador.",
+        "**index.html**",
+        {
+          "codigo": "<!DOCTYPE html>\n<html lang=\"pt-br\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>Inscrição na Oficina</title>\n  <style>\n    body { font-family: sans-serif; max-width: 420px; margin: 40px auto; }\n    input, select, button { display: block; width: 100%; margin: 8px 0; padding: 8px; }\n    .erro { color: #B83A34; }\n    .ok { color: #1B7F52; }\n    .campo-erro { border: 2px solid #B83A34; }\n    #outro-tema { display: none; }\n  </style>\n</head>\n<body>\n  <h1>Inscrição na Oficina</h1>\n  <form id=\"inscricao\">\n    <input id=\"nome\" name=\"nome\" placeholder=\"Seu nome\">\n    <select id=\"tema\" name=\"tema\">\n      <option value=\"\">Escolha o tema</option>\n      <option value=\"HTML e CSS\">HTML e CSS</option>\n      <option value=\"JavaScript\">JavaScript</option>\n      <option value=\"Outro\">Outro</option>\n    </select>\n    <input id=\"outro-tema\" name=\"outroTema\" placeholder=\"Qual tema?\">\n    <label><input type=\"checkbox\" id=\"regras\"> Li as regras da oficina</label>\n    <button type=\"submit\" id=\"enviar\" disabled>Inscrever</button>\n    <p id=\"mensagem\"></p>\n  </form>\n  <script src=\"app.js\"></script>\n</body>\n</html>"
+        },
+        "**app.js**",
+        {
+          "codigo": "const form = document.getElementById(\"inscricao\");\nconst nome = document.getElementById(\"nome\");\nconst tema = document.getElementById(\"tema\");\nconst outroTema = document.getElementById(\"outro-tema\");\nconst regras = document.getElementById(\"regras\");\nconst enviar = document.getElementById(\"enviar\");\nconst mensagem = document.getElementById(\"mensagem\");\n\n// Mostra o campo extra só quando o tema é \"Outro\"\ntema.addEventListener(\"change\", () => {\n  outroTema.style.display = tema.value === \"Outro\" ? \"block\" : \"none\";\n});\n\n// O botão só libera com as regras lidas\nregras.addEventListener(\"change\", () => {\n  enviar.disabled = !regras.checked;\n});\n\n// Tira o destaque de erro enquanto a pessoa corrige o nome\nnome.addEventListener(\"input\", () => {\n  nome.classList.remove(\"campo-erro\");\n});\n\nform.addEventListener(\"submit\", (e) => {\n  e.preventDefault();\n  mensagem.className = \"erro\";\n\n  if (nome.value.trim().length < 3) {\n    nome.classList.add(\"campo-erro\");\n    mensagem.textContent = \"Digite seu nome (pelo menos 3 letras).\";\n    return;\n  }\n  if (tema.value === \"\") {\n    mensagem.textContent = \"Escolha um tema.\";\n    return;\n  }\n  if (tema.value === \"Outro\" && outroTema.value.trim() === \"\") {\n    mensagem.textContent = \"Conte qual tema você quer.\";\n    return;\n  }\n\n  const temaFinal = tema.value === \"Outro\" ? outroTema.value.trim() : tema.value;\n  mensagem.className = \"ok\";\n  mensagem.textContent = `Inscrição confirmada, ${nome.value.trim()}! Tema: ${temaFinal}.`;\n\n  form.reset();\n  outroTema.style.display = \"none\";\n  enviar.disabled = true;\n});"
+        },
+        "**Por que funciona:** cada evento cuida de uma coisa. O `change` do `select` mostra ou esconde o campo extra; o `change` do checkbox libera o botão; o `input` do nome tira o destaque vermelho assim que a pessoa começa a corrigir. O `submit` é a última barreira: impede o recarregamento, confere as regras na ordem e para no primeiro erro com `return`. Quando tudo está certo, mostra a confirmação, limpa o formulário com `form.reset()` e devolve a página ao estado inicial (campo extra escondido e botão bloqueado). O `className` troca a classe da mensagem inteira de uma vez, alternando entre `erro` e `ok`."
+      ]
+    },
+    {
+      "id": "quiz",
+      "tipo": "quiz",
+      "nome": "Quiz de código",
+      "perguntas": [
+        {
+          "pergunta": "Quantos alertas aparecem ao clicar uma vez?",
+          "codigo": "botao.onclick = () => alert(\"A\");\nbotao.onclick = () => alert(\"B\");\nbotao.addEventListener(\"click\", () => alert(\"C\"));",
+          "opcoes": [
+            "1 (só A)",
+            "2 (B e C)",
+            "3 (A, B e C)",
+            "1 (só C)"
+          ],
+          "correta": 1,
+          "dica": "o que acontece quando `onclick` recebe um segundo valor?",
+          "acerto": "Isso! O segundo onclick apagou o primeiro.",
+          "erro": "onclick guarda uma função só; addEventListener acumula.",
+          "explicacao": "o \"B\" substituiu o \"A\", e o \"C\" foi registrado à parte pelo `addEventListener`."
+        },
+        {
+          "pergunta": "O que acontece ao enviar este formulário?",
+          "codigo": "form.addEventListener(\"submit\", (e) => {\n  mensagem.textContent = \"Enviado!\";\n});",
+          "opcoes": [
+            "Mostra \"Enviado!\" e a mensagem fica na tela",
+            "A página recarrega e a mensagem some",
+            "Dá erro",
+            "Nada acontece"
+          ],
+          "correta": 1,
+          "dica": "falta uma linha clássica no início.",
+          "acerto": "Exato! Faltou o e.preventDefault().",
+          "erro": "Sem preventDefault, o navegador recarrega a página.",
+          "explicacao": "o texto até aparece, mas o envio padrão recarrega a página logo em seguida."
+        },
+        {
+          "pergunta": "O usuário digita 5 e 3 nos campos. O que aparece?",
+          "codigo": "const total = campoA.value + campoB.value;\nconsole.log(total);",
+          "opcoes": [
+            "8",
+            "\"53\"",
+            "NaN",
+            "Erro"
+          ],
+          "correta": 1,
+          "dica": "que tipo de dado o `.value` devolve?",
+          "acerto": "Perfeito! .value é sempre texto.",
+          "erro": "Texto + texto concatena; use Number() para somar.",
+          "explicacao": "o correto é `Number(campoA.value) + Number(campoB.value)`."
+        },
+        {
+          "pergunta": "Qual evento mostra o total de caracteres enquanto a pessoa digita?",
+          "opcoes": [
+            "`change`",
+            "`submit`",
+            "`input`",
+            "`click`"
+          ],
+          "correta": 2,
+          "dica": "qual dispara a cada tecla?",
+          "acerto": "Isso! input dispara a cada alteração.",
+          "erro": "Num campo de texto, change só dispara ao sair do campo.",
+          "explicacao": "o `input` acompanha cada tecla, ideal para contadores e buscas ao vivo."
+        },
+        {
+          "pergunta": "O que este código faz?",
+          "codigo": "botao.addEventListener(\"click\", mostrar());",
+          "opcoes": [
+            "Executa `mostrar` a cada clique",
+            "Executa `mostrar` uma vez, ao carregar, e não reage aos cliques",
+            "Dá erro de sintaxe",
+            "Executa `mostrar` duas vezes por clique"
+          ],
+          "correta": 1,
+          "dica": "repare nos parênteses depois de `mostrar`.",
+          "acerto": "Mandou bem! Os parênteses chamam a função na hora.",
+          "erro": "Passe a função sem parênteses: addEventListener('click', mostrar).",
+          "explicacao": "`mostrar()` roda imediatamente e o que fica registrado é o retorno dela, não a função."
+        },
+        {
+          "pergunta": "Num grupo de botões com o mesmo handler, como saber qual foi clicado?",
+          "codigo": "botoes.forEach((b) => {\n  b.addEventListener(\"click\", (e) => {\n    console.log(/* ? */);\n  });\n});",
+          "opcoes": [
+            "`botoes.textContent`",
+            "`e.target.textContent`",
+            "`document.textContent`",
+            "`e.preventDefault()`"
+          ],
+          "correta": 1,
+          "dica": "o objeto evento sabe quem o disparou.",
+          "acerto": "Isso! e.target é o elemento clicado.",
+          "erro": "botoes é a lista inteira; e.target é um botão só.",
+          "explicacao": "`e.target` aponta para o elemento exato que recebeu o clique."
+        }
+      ]
+    },
+    {
+      "id": "atividades",
+      "tipo": "atividades",
+      "nome": "Atividades",
+      "intro": [
+        "Para cada atividade, crie um `index.html` com o HTML necessário e ligue um `app.js` no fim do `<body>`.",
+        "Escreva ou cole a sua tentativa no campo de cada atividade para liberar a solução. Outras soluções também valem, desde que passem nos testes do enunciado."
+      ],
+      "itens": [
+        {
+          "n": 1,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie um botão \"Mudar texto\" e um parágrafo. Ao clicar, o parágrafo deve mostrar \"Texto alterado pelo JavaScript!\"."
+          ],
+          "dica": "`addEventListener(\"click\", ...)` e `textContent`.",
+          "solucao": [
+            {
+              "codigo": "<button id=\"botao\">Mudar texto</button>\n<p id=\"paragrafo\">Texto original</p>"
+            },
+            {
+              "codigo": "const botao = document.getElementById(\"botao\");\nconst paragrafo = document.getElementById(\"paragrafo\");\n\nbotao.addEventListener(\"click\", () => {\n  paragrafo.textContent = \"Texto alterado pelo JavaScript!\";\n});"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie um botão \"+1\" e um parágrafo que mostra \"Cliques: 0\". A cada clique, aumente o número."
+          ],
+          "dica": "a variável do contador fica fora do handler.",
+          "solucao": [
+            {
+              "codigo": "<button id=\"mais\">+1</button>\n<p id=\"placar\">Cliques: 0</p>"
+            },
+            {
+              "codigo": "const mais = document.getElementById(\"mais\");\nconst placar = document.getElementById(\"placar\");\nlet cliques = 0;\n\nmais.addEventListener(\"click\", () => {\n  cliques++;\n  placar.textContent = \"Cliques: \" + cliques;\n});"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie um botão \"Modo escuro\" que liga e desliga a classe `escuro` no `<body>`, trocando o texto do botão para \"Modo claro\" quando o modo escuro estiver ativo."
+          ],
+          "dica": "`classList.toggle` e `classList.contains`.",
+          "solucao": [
+            {
+              "codigo": "<style>\n  .escuro { background: #0A2342; color: white; }\n</style>\n<button id=\"tema\">Modo escuro</button>"
+            },
+            {
+              "codigo": "const tema = document.getElementById(\"tema\");\n\ntema.addEventListener(\"click\", () => {\n  document.body.classList.toggle(\"escuro\");\n  if (document.body.classList.contains(\"escuro\")) {\n    tema.textContent = \"Modo claro\";\n  } else {\n    tema.textContent = \"Modo escuro\";\n  }\n});"
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "nivel": "Médio",
+          "enunciado": [
+            "Crie um campo de texto e um parágrafo que repete, ao vivo, o que está sendo digitado, em letras maiúsculas."
+          ],
+          "dica": "evento `input` e `.toUpperCase()`.",
+          "solucao": [
+            {
+              "codigo": "<input id=\"campo\" placeholder=\"Digite algo\">\n<p id=\"espelho\"></p>"
+            },
+            {
+              "codigo": "const campo = document.getElementById(\"campo\");\nconst espelho = document.getElementById(\"espelho\");\n\ncampo.addEventListener(\"input\", () => {\n  espelho.textContent = campo.value.toUpperCase();\n});"
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "nivel": "Médio",
+          "enunciado": [
+            "Crie uma calculadora de IMC com dois campos (peso em kg e altura em m) e um formulário. No envio, mostre o IMC com 1 casa decimal, sem recarregar a página. Se algum campo estiver vazio, mostre um erro."
+          ],
+          "dica": "`submit` + `preventDefault` + `Number()`. IMC = peso ÷ (altura × altura).",
+          "solucao": [
+            {
+              "codigo": "<form id=\"imc\">\n  <input id=\"peso\" type=\"number\" step=\"0.1\" placeholder=\"Peso (kg)\">\n  <input id=\"altura\" type=\"number\" step=\"0.01\" placeholder=\"Altura (m)\">\n  <button type=\"submit\">Calcular</button>\n</form>\n<p id=\"resultado\"></p>"
+            },
+            {
+              "codigo": "const formImc = document.getElementById(\"imc\");\nconst peso = document.getElementById(\"peso\");\nconst altura = document.getElementById(\"altura\");\nconst resultado = document.getElementById(\"resultado\");\n\nformImc.addEventListener(\"submit\", (e) => {\n  e.preventDefault();\n  if (peso.value === \"\" || altura.value === \"\") {\n    resultado.textContent = \"Preencha peso e altura.\";\n    return;\n  }\n  const p = Number(peso.value);\n  const a = Number(altura.value);\n  const imc = p / (a * a);\n  resultado.textContent = `Seu IMC é ${imc.toFixed(1)}`;\n});"
+            }
+          ]
+        },
+        {
+          "n": 6,
+          "nivel": "Médio",
+          "enunciado": [
+            "Crie um `<select>` com três sabores de pizza (cada `value` é o preço) e um parágrafo. Ao escolher um sabor, mostre \"Total: R$ X,00\"."
+          ],
+          "dica": "evento `change` no `<select>`; o `value` vem como texto.",
+          "solucao": [
+            {
+              "codigo": "<select id=\"sabor\">\n  <option value=\"\">Escolha o sabor</option>\n  <option value=\"45\">Calabresa</option>\n  <option value=\"50\">Margherita</option>\n  <option value=\"58\">Quatro queijos</option>\n</select>\n<p id=\"total\"></p>"
+            },
+            {
+              "codigo": "const sabor = document.getElementById(\"sabor\");\nconst total = document.getElementById(\"total\");\n\nsabor.addEventListener(\"change\", () => {\n  if (sabor.value === \"\") {\n    total.textContent = \"\";\n    return;\n  }\n  total.textContent = `Total: R$ ${Number(sabor.value)},00`;\n});"
+            }
+          ]
+        },
+        {
+          "n": 7,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Crie um formulário de login com usuário e senha. O botão \"Entrar\" começa desabilitado e só habilita quando o usuário tem pelo menos 3 caracteres **e** a senha tem pelo menos 6. No envio, mostre \"Bem-vindo(a), usuário!\"."
+          ],
+          "dica": "escute o `input` dos dois campos com a mesma função de verificação.",
+          "solucao": [
+            {
+              "codigo": "<form id=\"login\">\n  <input id=\"usuario\" placeholder=\"Usuário\">\n  <input id=\"senha\" type=\"password\" placeholder=\"Senha\">\n  <button type=\"submit\" id=\"entrar\" disabled>Entrar</button>\n</form>\n<p id=\"saudacao\"></p>"
+            },
+            {
+              "codigo": "const login = document.getElementById(\"login\");\nconst usuario = document.getElementById(\"usuario\");\nconst senha = document.getElementById(\"senha\");\nconst entrar = document.getElementById(\"entrar\");\nconst saudacao = document.getElementById(\"saudacao\");\n\nfunction verificar() {\n  const usuarioOk = usuario.value.trim().length >= 3;\n  const senhaOk = senha.value.length >= 6;\n  entrar.disabled = !(usuarioOk && senhaOk);\n}\n\nusuario.addEventListener(\"input\", verificar);\nsenha.addEventListener(\"input\", verificar);\n\nlogin.addEventListener(\"submit\", (e) => {\n  e.preventDefault();\n  saudacao.textContent = `Bem-vindo(a), ${usuario.value.trim()}!`;\n});"
+            }
+          ]
+        },
+        {
+          "n": 8,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Crie três cards de produto, cada um com um botão \"Adicionar\" (mesma classe). Use um único handler para todos: a cada clique, aumente um contador \"Carrinho: N itens\" e desabilite o botão clicado, trocando o texto dele para \"Adicionado\"."
+          ],
+          "dica": "`querySelectorAll`, `forEach` e `e.target`.",
+          "solucao": [
+            {
+              "codigo": "<div class=\"card\">Caneca <button class=\"add\">Adicionar</button></div>\n<div class=\"card\">Camiseta <button class=\"add\">Adicionar</button></div>\n<div class=\"card\">Adesivo <button class=\"add\">Adicionar</button></div>\n<p id=\"carrinho\">Carrinho: 0 itens</p>"
+            },
+            {
+              "codigo": "const botoesAdd = document.querySelectorAll(\".add\");\nconst carrinho = document.getElementById(\"carrinho\");\nlet itens = 0;\n\nbotoesAdd.forEach((botao) => {\n  botao.addEventListener(\"click\", (e) => {\n    itens++;\n    carrinho.textContent = `Carrinho: ${itens} itens`;\n    e.target.disabled = true;\n    e.target.textContent = \"Adicionado\";\n  });\n});"
+            }
+          ]
+        },
+        {
+          "n": 9,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Explique, com suas palavras e um código de exemplo, por que validamos um formulário no evento `submit` do `<form>`, e não no `click` do botão."
+          ],
+          "dica": "pense em todas as formas de enviar um formulário.",
+          "solucao": [
+            "**Resposta esperada:** o formulário pode ser enviado clicando no botão ou apertando Enter dentro de um campo. O `click` do botão só pega o primeiro caso; o `submit` do formulário pega os dois. Além disso, é no `submit` que usamos `e.preventDefault()` para impedir o recarregamento da página.",
+            {
+              "codigo": "form.addEventListener(\"submit\", (e) => {\n  e.preventDefault(); // vale para clique e para Enter\n  if (form.nome.value.trim() === \"\") {\n    alert(\"Preencha o nome.\");\n    return;\n  }\n  alert(\"Enviado!\");\n});"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

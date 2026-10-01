@@ -1,0 +1,879 @@
+{
+  "numero": 4,
+  "titulo": "Laços de Repetição: for",
+  "etapas": [
+    {
+      "id": "definicoes",
+      "tipo": "leitura",
+      "nome": "Definições",
+      "blocos": [
+        "Um laço de repetição (loop) executa o mesmo bloco de código várias vezes. O `for` é o laço ideal quando sabemos quantas vezes algo deve se repetir: ele junta, numa linha só, onde o contador começa, até quando vai e como avança.",
+        {
+          "tabela": [
+            [
+              "Termo",
+              "O que significa"
+            ],
+            [
+              "Laço de repetição (loop)",
+              "Estrutura que repete um bloco de código enquanto uma condição for verdadeira"
+            ],
+            [
+              "`for`",
+              "Laço com contador, ideal quando o número de repetições é conhecido"
+            ],
+            [
+              "Contador",
+              "Variável que controla o laço (geralmente `i`)"
+            ],
+            [
+              "Iteração (volta, ciclo)",
+              "Cada execução do bloco de código"
+            ],
+            [
+              "Inicialização",
+              "1ª parte do `for`: cria o contador e dá o valor inicial (`let i = 0`)"
+            ],
+            [
+              "Condição",
+              "2ª parte: testada antes de cada volta; se for `false`, o laço termina (`i < 10`)"
+            ],
+            [
+              "Expressão final (passo)",
+              "3ª parte: roda depois de cada volta e atualiza o contador (`i++`)"
+            ],
+            [
+              "Corpo do laço",
+              "O bloco entre `{ }` que se repete"
+            ],
+            [
+              "Incremento",
+              "Aumentar o contador (`i++`, `i += 2`)"
+            ],
+            [
+              "Decremento",
+              "Diminuir o contador (`i--`, `i -= 2`)"
+            ],
+            [
+              "Contagem crescente",
+              "Do menor para o maior valor"
+            ],
+            [
+              "Contagem decrescente",
+              "Do maior para o menor valor (contagem regressiva)"
+            ],
+            [
+              "Salto (passo personalizado)",
+              "Avançar mais de 1 por volta (`i += 5`)"
+            ],
+            [
+              "Loop infinito",
+              "Laço cuja condição nunca fica falsa; trava o programa"
+            ],
+            [
+              "`break`",
+              "Encerra o laço na hora, mesmo que a condição ainda seja verdadeira"
+            ],
+            [
+              "`continue`",
+              "Pula o resto da volta atual e vai direto para a próxima"
+            ],
+            [
+              "Acumulador",
+              "Variável criada fora do laço que guarda um resultado parcial (soma, texto)"
+            ],
+            [
+              "Operador de resto `%`",
+              "Devolve o resto da divisão (`7 % 2` é `1`); usado para testar par e ímpar"
+            ],
+            [
+              "Filtragem",
+              "Usar `if` dentro do laço para agir só nos itens que atendem a um critério"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "para-que-como-e-quando-usamos",
+      "tipo": "leitura",
+      "nome": "Para que, como e quando usamos",
+      "blocos": [
+        "Usamos o `for` para automatizar tarefas repetitivas sem copiar e colar a mesma linha várias vezes.",
+        "**Para que:** contar e numerar itens, gerar tabuadas e sequências, percorrer listas (notas, produtos, alunos), somar totais, filtrar dados, montar textos e desenhos repetidos.",
+        "**Como:** escrevemos as três partes dentro dos parênteses, separadas por ponto e vírgula, e o código a repetir entre chaves:",
+        {
+          "codigo": "for (inicialização; condição; expressão final) {\n  // corpo: o que se repete\n}"
+        },
+        "**Quando usar (e quando não):**",
+        {
+          "tabela": [
+            [
+              "Situação",
+              "`for` é uma boa?"
+            ],
+            [
+              "Repetir algo um número conhecido de vezes (ex.: 10 vezes)",
+              "Sim"
+            ],
+            [
+              "Percorrer todos os itens de uma lista",
+              "Sim"
+            ],
+            [
+              "Contar de trás para frente ou de 5 em 5",
+              "Sim"
+            ],
+            [
+              "Repetir até o usuário digitar a senha certa (não se sabe quantas vezes)",
+              "Melhor `while`"
+            ],
+            [
+              "Executar uma única vez",
+              "Não precisa de laço"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "estruturas",
+      "tipo": "leitura",
+      "nome": "Estruturas",
+      "blocos": [
+        {
+          "h": "3.1 Contagem crescente"
+        },
+        {
+          "codigo": "for (let i = 1; i <= 5; i++) {\n  console.log(i); // 1, 2, 3, 4, 5\n}"
+        },
+        {
+          "h": "3.2 Repetir N vezes (duas formas equivalentes)"
+        },
+        {
+          "codigo": "const N = 3;\nfor (let i = 0; i < N; i++) { /* roda 3 vezes: i = 0, 1, 2 */ }\nfor (let i = 1; i <= N; i++) { /* roda 3 vezes: i = 1, 2, 3 */ }"
+        },
+        {
+          "h": "3.3 Contagem decrescente"
+        },
+        {
+          "codigo": "for (let i = 5; i >= 1; i--) {\n  console.log(i); // 5, 4, 3, 2, 1\n}"
+        },
+        {
+          "h": "3.4 Saltos personalizados"
+        },
+        {
+          "codigo": "for (let i = 0; i <= 20; i += 5) {\n  console.log(i); // 0, 5, 10, 15, 20\n}"
+        },
+        {
+          "h": "3.5 `for` com `if` (filtragem)"
+        },
+        {
+          "codigo": "for (let n = 1; n <= 10; n++) {\n  if (n % 3 === 0) {\n    console.log(n + \" é múltiplo de 3\");\n  }\n}"
+        },
+        {
+          "h": "3.6 `for` com `if / else if / else` (classificação)"
+        },
+        {
+          "codigo": "for (let t = 15; t <= 35; t += 10) {\n  if (t >= 30) {\n    console.log(t + \"°C: quente\");\n  } else if (t >= 20) {\n    console.log(t + \"°C: agradável\");\n  } else {\n    console.log(t + \"°C: frio\");\n  }\n}"
+        },
+        {
+          "h": "3.7 `break` e `continue`"
+        },
+        {
+          "codigo": "for (let i = 1; i <= 10; i++) {\n  if (i === 3) continue; // pula o 3\n  if (i === 6) break;    // para no 6\n  console.log(i);        // 1, 2, 4, 5\n}"
+        },
+        {
+          "h": "3.8 Acumulador numérico"
+        },
+        {
+          "codigo": "let soma = 0;              // fora do laço\nfor (let i = 1; i <= 4; i++) {\n  soma = soma + i;         // ou soma += i\n}\nconsole.log(soma);         // 10"
+        },
+        {
+          "h": "3.9 Acumulador de texto"
+        },
+        {
+          "codigo": "let linha = \"\";\nfor (let i = 1; i <= 3; i++) {\n  linha += \"[\" + i + \"]\";\n}\nconsole.log(linha); // [1][2][3]"
+        },
+        {
+          "h": "3.10 Percorrer uma lista (prévia da Aula 5)"
+        },
+        {
+          "codigo": "const cores = [\"azul\", \"verde\", \"roxo\"];\nfor (let i = 0; i < cores.length; i++) {\n  console.log(cores[i]);\n}"
+        }
+      ]
+    },
+    {
+      "id": "sintaxe-e-simbolos",
+      "tipo": "leitura",
+      "nome": "Sintaxe e símbolos",
+      "blocos": [
+        {
+          "tabela": [
+            [
+              "Símbolo / comando",
+              "O que faz",
+              "Por que existe"
+            ],
+            [
+              "`for`",
+              "Inicia o laço",
+              "Palavra reservada do JavaScript para repetição com contador"
+            ],
+            [
+              "`( ; ; )`",
+              "Separa as três partes do `for`",
+              "Cada ponto e vírgula marca o fim de uma parte"
+            ],
+            [
+              "`let i = 0`",
+              "Cria o contador",
+              "`let` permite que o valor mude a cada volta; `const` daria erro"
+            ],
+            [
+              "`<`, `<=`, `>`, `>=`",
+              "Comparações da condição",
+              "Definem até onde o laço vai"
+            ],
+            [
+              "`i++`",
+              "Soma 1 ao contador",
+              "Atalho de `i = i + 1`"
+            ],
+            [
+              "`i--`",
+              "Subtrai 1 do contador",
+              "Atalho de `i = i - 1`"
+            ],
+            [
+              "`i += 3` / `i -= 3`",
+              "Soma / subtrai 3",
+              "Atalho para saltos (`i = i + 3`)"
+            ],
+            [
+              "`{ }`",
+              "Delimita o corpo do laço",
+              "Tudo dentro das chaves se repete"
+            ],
+            [
+              "`%`",
+              "Resto da divisão",
+              "`n % 2 === 0` testa se `n` é par"
+            ],
+            [
+              "`===`",
+              "Igualdade estrita (valor e tipo)",
+              "Evita surpresas de conversão do `==`"
+            ],
+            [
+              "`!==`",
+              "Diferente estrito",
+              "`n % 2 !== 0` testa se `n` é ímpar"
+            ],
+            [
+              "`break;`",
+              "Sai do laço",
+              "Parar quando já achou o que procurava"
+            ],
+            [
+              "`continue;`",
+              "Vai para a próxima volta",
+              "Ignorar casos específicos sem parar o laço"
+            ],
+            [
+              "`+` com texto",
+              "Concatena (une) textos",
+              "`\"Volta \" + i` vira `\"Volta 1\"`"
+            ],
+            [
+              "`` `${i}` ``",
+              "Template string",
+              "Juntar texto e variáveis de forma mais legível"
+            ],
+            [
+              "`lista.length`",
+              "Quantidade de itens",
+              "Condição segura para percorrer a lista inteira"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logica-por-tras",
+      "tipo": "leitura",
+      "nome": "Lógica por trás",
+      "blocos": [
+        "O `for` segue sempre a mesma ordem:",
+        {
+          "passos": [
+            "**Inicialização:** roda uma única vez, no começo.",
+            "**Condição:** é testada. Se for `false`, o laço termina e o programa segue depois da `}`.",
+            "**Corpo:** se a condição for `true`, o bloco entre chaves executa.",
+            "**Expressão final:** o contador é atualizado.",
+            "Volta ao passo 2."
+          ]
+        },
+        "**Teste de mesa de `for (let i = 1; i <= 3; i++)`:**",
+        {
+          "tabela": [
+            [
+              "Momento",
+              "`i`",
+              "`i <= 3`?",
+              "O que acontece"
+            ],
+            [
+              "Início",
+              "1",
+              "`true`",
+              "Corpo executa"
+            ],
+            [
+              "Após `i++`",
+              "2",
+              "`true`",
+              "Corpo executa"
+            ],
+            [
+              "Após `i++`",
+              "3",
+              "`true`",
+              "Corpo executa"
+            ],
+            [
+              "Após `i++`",
+              "4",
+              "`false`",
+              "Laço termina"
+            ]
+          ]
+        },
+        "O contador chega a 4, mas o corpo nunca roda com `i = 4`: a condição é testada antes.",
+        "**Como contar repetições:** com `i` começando em 0 e `i < N`, ou começando em 1 e `i <= N`, o corpo roda N vezes. Com saltos, conte os valores: `for (let i = 0; i <= 20; i += 5)` roda para 0, 5, 10, 15 e 20, ou seja, 5 vezes.",
+        "**Por que existem loops infinitos:** se o passo nunca leva a condição a ficar falsa, o laço não para. Exemplos: esquecer o `i++`, ou usar `i--` numa condição `i <= 10` começando em 0. Sempre confira se o passo anda **em direção** ao fim.",
+        "**Por que o acumulador fica fora do laço:** tudo o que está dentro das chaves roda de novo a cada volta. Se `let soma = 0` estiver dentro, a soma volta a zero em toda volta e o resultado final é só o último número.",
+        "**`break` x `continue`:** o `break` sai do laço inteiro; o `continue` só abandona a volta atual e segue para a expressão final. Os dois quase sempre aparecem dentro de um `if`."
+      ]
+    },
+    {
+      "id": "exemplo-a",
+      "tipo": "codigo",
+      "nome": "Exemplo A — Contagem básica (contagem.js)",
+      "codigo": [
+        "for (let i = 1; i <= 3; i++) {",
+        "  console.log(\"Volta \" + i);",
+        "}",
+        "console.log(\"Fim do laço.\");"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Cria `i` com 1; o laço roda enquanto `i <= 3`; depois de cada volta, `i` aumenta 1"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Mostra \"Volta 1\", depois \"Volta 2\" e \"Volta 3\""
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Fecha o corpo do laço"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Fora do laço: roda uma única vez, quando `i` chega a 4 e a condição fica falsa"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-b",
+      "tipo": "codigo",
+      "nome": "Exemplo B — Contagem regressiva de 2 em 2 (regressiva.js)",
+      "codigo": [
+        "for (let s = 10; s >= 0; s -= 2) {",
+        "  console.log(\"Faltam \" + s + \" segundos\");",
+        "}",
+        "console.log(\"Decolar!\");"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Começa em 10 (valor alto), roda enquanto `s >= 0` e diminui 2 a cada volta"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Mostra 10, 8, 6, 4, 2 e 0"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Quando `s` vira -2, a condição fica falsa e aparece \"Decolar!\""
+        }
+      ]
+    },
+    {
+      "id": "exemplo-c",
+      "tipo": "codigo",
+      "nome": "Exemplo C — Pulando ímpares com continue (pares.js)",
+      "codigo": [
+        "for (let n = 1; n <= 10; n++) {",
+        "  if (n % 2 !== 0) {",
+        "    continue;",
+        "  }",
+        "  console.log(n + \" é par\");",
+        "}"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Percorre de 1 a 10"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Se o resto da divisão por 2 não é zero, o número é ímpar"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "`continue` pula a linha 5 e vai direto para o `n++`"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Só chega aqui com números pares: 2, 4, 6, 8, 10"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-d",
+      "tipo": "codigo",
+      "nome": "Exemplo D — Parando com break (senha.js)",
+      "codigo": [
+        "const senhaCerta = 7;",
+        "for (let tentativa = 1; tentativa <= 10; tentativa++) {",
+        "  console.log(\"Testando \" + tentativa);",
+        "  if (tentativa === senhaCerta) {",
+        "    console.log(\"Senha encontrada!\");",
+        "    break;",
+        "  }",
+        "}"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Guarda a senha que procuramos"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "O laço poderia ir até 10"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Mostra cada tentativa: 1, 2, 3..."
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Compara a tentativa com a senha"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Na tentativa 7, avisa que encontrou"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "`break` encerra o laço: as tentativas 8, 9 e 10 nunca acontecem"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-e",
+      "tipo": "codigo",
+      "nome": "Exemplo E — Soma e média (media.js)",
+      "codigo": [
+        "const notas = [7, 9, 6, 8];",
+        "let soma = 0;",
+        "for (let i = 0; i < notas.length; i++) {",
+        "  soma = soma + notas[i];",
+        "}",
+        "const media = soma / notas.length;",
+        "console.log(\"Soma: \" + soma);",
+        "console.log(\"Média: \" + media);"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Lista com 4 notas (índices 0 a 3)"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Acumulador criado fora do laço, começando em 0"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "`i` vai de 0 até 3; `notas.length` é 4"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "A cada volta, soma a nota atual: 0+7=7, 7+9=16, 16+6=22, 22+8=30"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Depois do laço, divide a soma pela quantidade: 30 ÷ 4 = 7.5"
+        },
+        {
+          "linhas": [
+            7,
+            8
+          ],
+          "texto": "Mostra \"Soma: 30\" e \"Média: 7.5\""
+        }
+      ]
+    },
+    {
+      "id": "exemplo-f",
+      "tipo": "codigo",
+      "nome": "Exemplo F — Tabuada (tabuada.js)",
+      "codigo": [
+        "const base = 7;",
+        "for (let m = 1; m <= 10; m++) {",
+        "  const resultado = base * m;",
+        "  console.log(`${base} x ${m} = ${resultado}`);",
+        "}"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Número fixo da tabuada"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "O multiplicador `m` vai de 1 a 10"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Calcula o produto; `const` aqui é permitido porque a variável é criada de novo em cada volta"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Template string: mostra \"7 x 1 = 7\" até \"7 x 10 = 70\""
+        }
+      ]
+    },
+    {
+      "id": "como-aplicar",
+      "tipo": "leitura",
+      "nome": "Como aplicar: relatório de vendas da semana",
+      "blocos": [
+        "Junta contagem, `for` percorrendo lista, `if / else`, `continue`, acumulador numérico, contador e acumulador de texto. Salve como `relatorio.js` e rode com `node relatorio.js` (ou cole no console do navegador).",
+        {
+          "codigo": "const dias = [\"Seg\", \"Ter\", \"Qua\", \"Qui\", \"Sex\", \"Sáb\", \"Dom\"];\nconst vendas = [320, 180, 0, 450, 510, 390, 0];\nconst META = 300;\n\nlet total = 0;\nlet diasNaMeta = 0;\nlet relatorio = \"\";\n\nfor (let i = 0; i < dias.length; i++) {\n  if (vendas[i] === 0) {\n    relatorio += `${dias[i]}: loja fechada\\n`;\n    continue;\n  }\n\n  total += vendas[i];\n\n  if (vendas[i] >= META) {\n    diasNaMeta++;\n    relatorio += `${dias[i]}: R$ ${vendas[i]} (meta batida)\\n`;\n  } else {\n    relatorio += `${dias[i]}: R$ ${vendas[i]} (abaixo da meta)\\n`;\n  }\n}\n\nconsole.log(relatorio);\nconsole.log(`Total da semana: R$ ${total}`);\nconsole.log(`Dias na meta: ${diasNaMeta}`);"
+        },
+        "**Saída esperada:**",
+        {
+          "codigo": "Seg: R$ 320 (meta batida)\nTer: R$ 180 (abaixo da meta)\nQua: loja fechada\nQui: R$ 450 (meta batida)\nSex: R$ 510 (meta batida)\nSáb: R$ 390 (meta batida)\nDom: loja fechada\n\nTotal da semana: R$ 1850\nDias na meta: 4"
+        },
+        "**Por que funciona:** o `for` usa `dias.length` como limite, então funciona com qualquer quantidade de dias. O `continue` trata os dias fechados e pula o resto da volta, sem somar nada. `total` e `diasNaMeta` são acumuladores criados fora do laço, e `relatorio` acumula texto, linha por linha (`\\n` é a quebra de linha). O `if / else` decide qual frase entra no relatório em cada dia."
+      ]
+    },
+    {
+      "id": "quiz",
+      "tipo": "quiz",
+      "nome": "Quiz de código",
+      "perguntas": [
+        {
+          "pergunta": "Quantas vezes \"Oi\" aparece?",
+          "codigo": "for (let i = 0; i < 4; i++) {\n  console.log(\"Oi\");\n}",
+          "opcoes": [
+            "3",
+            "4",
+            "5",
+            "Infinitas"
+          ],
+          "correta": 1,
+          "dica": "liste os valores de `i` que passam na condição.",
+          "acerto": "Isso! i = 0, 1, 2 e 3.",
+          "erro": "Com i < 4, o 4 não entra, mas o 0 entra.",
+          "explicacao": "começando em 0 com `i < 4`, o corpo roda para 0, 1, 2 e 3: quatro vezes."
+        },
+        {
+          "pergunta": "O que é mostrado?",
+          "codigo": "for (let i = 10; i >= 0; i -= 5) {\n  console.log(i);\n}",
+          "opcoes": [
+            "10, 5",
+            "10, 5, 0",
+            "5, 0",
+            "10, 5, 0, -5"
+          ],
+          "correta": 1,
+          "dica": "o 0 satisfaz `i >= 0`?",
+          "acerto": "Perfeito! O 0 ainda entra.",
+          "erro": "O -5 não passa na condição; o 0 passa.",
+          "explicacao": "10 e 5 passam, 0 também (0 >= 0), e -5 encerra o laço."
+        },
+        {
+          "pergunta": "Qual é o problema deste código?",
+          "codigo": "for (let i = 1; i <= 5; i--) {\n  console.log(i);\n}",
+          "opcoes": [
+            "Nenhum, mostra 1 a 5",
+            "Mostra 5 a 1",
+            "Loop infinito",
+            "Erro de sintaxe"
+          ],
+          "correta": 2,
+          "dica": "o passo leva `i` para perto ou para longe de 5?",
+          "acerto": "Exato! i só diminui e nunca passa de 5.",
+          "erro": "i-- faz i ir para 0, -1, -2... e i <= 5 continua verdadeiro.",
+          "explicacao": "o passo anda na direção errada; a condição nunca fica falsa."
+        },
+        {
+          "pergunta": "Qual é o valor final de `total`?",
+          "codigo": "let total = 0;\nfor (let i = 1; i <= 4; i++) {\n  total += i * 2;\n}\nconsole.log(total);",
+          "opcoes": [
+            "8",
+            "10",
+            "20",
+            "16"
+          ],
+          "correta": 2,
+          "dica": "some 2, 4, 6 e 8.",
+          "acerto": "Mandou bem! 2 + 4 + 6 + 8 = 20.",
+          "erro": "Cada volta soma o dobro de i ao total.",
+          "explicacao": "o acumulador recebe 2, depois 4, 6 e 8, totalizando 20."
+        },
+        {
+          "pergunta": "O que é mostrado?",
+          "codigo": "for (let i = 1; i <= 5; i++) {\n  if (i === 2) continue;\n  if (i === 4) break;\n  console.log(i);\n}",
+          "opcoes": [
+            "1, 3",
+            "1, 3, 5",
+            "1, 2, 3",
+            "1"
+          ],
+          "correta": 0,
+          "dica": "o que cada comando faz com o resto do laço?",
+          "acerto": "Isso! O 2 é pulado e o 4 para tudo.",
+          "erro": "continue pula uma volta; break encerra o laço.",
+          "explicacao": "1 é mostrado; 2 é pulado; 3 é mostrado; no 4 o `break` encerra, e o 5 nunca é testado."
+        },
+        {
+          "pergunta": "Por que este código mostra 4 e não 10?",
+          "codigo": "for (let i = 1; i <= 4; i++) {\n  let soma = 0;\n  soma += i;\n  console.log(soma);\n}",
+          "opcoes": [
+            "Porque `i` começa em 1",
+            "Porque `soma` volta a 0 em toda volta",
+            "Porque falta o `break`",
+            "Porque `+=` não funciona com números"
+          ],
+          "correta": 1,
+          "dica": "onde o acumulador foi criado?",
+          "acerto": "Perfeito! O acumulador precisa ficar fora do laço.",
+          "erro": "Tudo dentro das chaves roda de novo a cada volta.",
+          "explicacao": "`let soma = 0` dentro do laço zera a soma toda vez; o último valor mostrado é só o 4."
+        }
+      ]
+    },
+    {
+      "id": "atividades",
+      "tipo": "atividades",
+      "nome": "Atividades",
+      "intro": [
+        "Escreva ou cole a sua tentativa no campo de cada atividade para liberar a solução. Outras soluções também valem, desde que passem nos testes do enunciado."
+      ],
+      "itens": [
+        {
+          "n": 1,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Mostre no console os números de 1 a 10, um por linha."
+          ],
+          "dica": "comece em 1 e use `<=` na condição.",
+          "solucao": [
+            {
+              "codigo": "for (let i = 1; i <= 10; i++) {\n  console.log(i);\n}"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Faça uma contagem regressiva de 10 até 1 e, depois do laço, mostre \"Feliz Ano Novo!\"."
+          ],
+          "dica": "comece no valor alto e use `i--`.",
+          "solucao": [
+            {
+              "codigo": "for (let i = 10; i >= 1; i--) {\n  console.log(i);\n}\nconsole.log(\"Feliz Ano Novo!\");"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Mostre os múltiplos de 5 de 0 até 50 usando salto no passo (sem `if`)."
+          ],
+          "dica": "o passo pode ser `i += 5`.",
+          "solucao": [
+            {
+              "codigo": "for (let i = 0; i <= 50; i += 5) {\n  console.log(i);\n}"
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "nivel": "Médio",
+          "enunciado": [
+            "Gere a tabuada do 9 no formato `9 x 1 = 9` até `9 x 10 = 90`."
+          ],
+          "dica": "fixe a base numa constante e varie o multiplicador.",
+          "solucao": [
+            {
+              "codigo": "const base = 9;\nfor (let m = 1; m <= 10; m++) {\n  console.log(`${base} x ${m} = ${base * m}`);\n}"
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "nivel": "Médio",
+          "enunciado": [
+            "Some todos os números de 1 a 100 e mostre o resultado."
+          ],
+          "dica": "crie o acumulador fora do laço. O resultado esperado é 5050.",
+          "solucao": [
+            {
+              "codigo": "let soma = 0;\nfor (let i = 1; i <= 100; i++) {\n  soma += i;\n}\nconsole.log(soma); // 5050"
+            }
+          ]
+        },
+        {
+          "n": 6,
+          "nivel": "Médio",
+          "enunciado": [
+            "De 1 a 20, mostre apenas os números ímpares, usando `continue` para pular os pares."
+          ],
+          "dica": "um número é par quando `n % 2 === 0`.",
+          "solucao": [
+            {
+              "codigo": "for (let n = 1; n <= 20; n++) {\n  if (n % 2 === 0) {\n    continue;\n  }\n  console.log(n);\n}"
+            }
+          ]
+        },
+        {
+          "n": 7,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Dada a lista `const temperaturas = [18, 25, 31, 22, 35, 15];`, mostre cada temperatura classificada como \"frio\" (abaixo de 20), \"agradável\" (de 20 a 29) ou \"quente\" (30 ou mais), e no fim mostre quantos dias foram quentes."
+          ],
+          "dica": "use `if / else if / else` e um contador criado fora do laço.",
+          "solucao": [
+            {
+              "codigo": "const temperaturas = [18, 25, 31, 22, 35, 15];\nlet diasQuentes = 0;\n\nfor (let i = 0; i < temperaturas.length; i++) {\n  const t = temperaturas[i];\n  if (t >= 30) {\n    console.log(`${t}°C: quente`);\n    diasQuentes++;\n  } else if (t >= 20) {\n    console.log(`${t}°C: agradável`);\n  } else {\n    console.log(`${t}°C: frio`);\n  }\n}\nconsole.log(`Dias quentes: ${diasQuentes}`); // 2"
+            }
+          ]
+        },
+        {
+          "n": 8,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Desenhe uma pirâmide de asteriscos com 5 andares, em que cada linha tem um asterisco a mais que a anterior (`*`, `**`, ..., `*****`), usando um acumulador de texto."
+          ],
+          "dica": "a cada volta, acrescente um `\"*\"` à variável e mostre-a.",
+          "solucao": [
+            {
+              "codigo": "const altura = 5;\nlet degrau = \"\";\nfor (let i = 1; i <= altura; i++) {\n  degrau += \"*\";\n  console.log(degrau);\n}"
+            }
+          ]
+        },
+        {
+          "n": 9,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Explique, com suas palavras e um código de exemplo, a diferença entre `break` e `continue`."
+          ],
+          "dica": "pense no que acontece com as voltas seguintes em cada caso.",
+          "solucao": [
+            "**Resposta esperada:** o `break` encerra o laço inteiro na hora; nenhuma volta seguinte acontece. O `continue` abandona só a volta atual e o laço segue normalmente para a próxima.",
+            {
+              "codigo": "for (let i = 1; i <= 5; i++) {\n  if (i === 3) continue; // pula só o 3\n  console.log(i);        // 1, 2, 4, 5\n}\n\nfor (let i = 1; i <= 5; i++) {\n  if (i === 3) break;    // para no 3\n  console.log(i);        // 1, 2\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

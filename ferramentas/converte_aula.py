@@ -46,7 +46,7 @@ def sem_notas_de_slide(linhas):
         if s.startswith("```"):
             fence = not fence
         if not fence and (re.match(r"^\*\*Observaç(ões|ão) (para|sobre) (os |o )?slides?", s, re.I)
-                           or re.match(r"^###\s+Outras correções do material original", s, re.I)):
+                           or re.match(r"^###\s+(Outras\s+)?correções do material original", s, re.I)):
             pulando = True
             continue
         if pulando:
@@ -107,23 +107,26 @@ def blocos(linhas):
 
 def exemplos(linhas):
     """'### Exemplo X — ...' + bloco de código + tabela 'Linha | O que acontece' → código comentado por faixas."""
-    ex, cur = [], None
+    ex, cur, preambulo = [], None, []
     for ln in linhas:
         m = re.match(r"^###\s+(.*)$", ln)
         if m:
             cur = {"titulo": m.group(1).strip(), "linhas": []}; ex.append(cur)
         elif cur is not None:
             cur["linhas"].append(ln)
+        else:
+            preambulo.append(ln)
     etapas = []
     for k, e in enumerate(ex):
-        ls, i, codigo, explic, resto = e["linhas"], 0, None, [], []
+        ls, i, fences, explic, resto = e["linhas"], 0, [], [], []
         while i < len(ls):
             s = ls[i].strip()
-            if codigo is None and s.startswith("```"):
-                codigo, i = [], i + 1
+            if s.startswith("```"):
+                bloco, i = [], i + 1
                 while not ls[i].strip().startswith("```"):
-                    codigo.append(ls[i]); i += 1
-                i += 1; continue
+                    bloco.append(ls[i]); i += 1
+                i += 1
+                fences.append(bloco); continue
             if s.startswith("|"):
                 while i < len(ls) and ls[i].strip().startswith("|"):
                     c = celulas(ls[i])
@@ -133,12 +136,21 @@ def exemplos(linhas):
                     i += 1
                 continue
             resto.append(ls[i]); i += 1
+        # quando há mais de um bloco de código (ex.: HTML e depois o JavaScript), a tabela
+        # de explicação se refere ao último: os anteriores entram como "intro" (contexto).
+        codigo = fences[-1] if fences else None
+        fences_intro = fences[:-1]
         fora = [x["linhas"] for x in explic if not (1 <= x["linhas"][0] <= x["linhas"][1] <= len(codigo or []))]
         if fora:
             sys.exit(f"{e['titulo']}: a tabela cita linhas que não existem no código ({len(codigo or [])} linhas): {fora}")
         m = re.match(r"^Exemplo\s+([A-Z0-9]+)", e["titulo"])
         etapa = {"id": f"exemplo-{m.group(1).lower()}" if m else f"exemplo-{k + 1}", "tipo": "codigo",
-                 "nome": sem_crases(e["titulo"]), "codigo": codigo or [], "explicacoes": explic}
+                 "nome": sem_crases(e["titulo"])}
+        intro = blocos(preambulo) if k == 0 else []
+        intro += [{"codigo": "\n".join(f)} for f in fences_intro]
+        if intro:
+            etapa["intro"] = intro
+        etapa["codigo"], etapa["explicacoes"] = codigo or [], explic
         fim = blocos(resto)
         if fim:
             etapa["fechamento"] = fim
@@ -189,6 +201,51 @@ def enunciados(linhas):
     return intro, out
 
 
+def atividades_com_solucao(linhas):
+    """Formato novo: cada item é '**N.** enunciado', pode ter 'Dica: texto' e termina com
+    <details><summary>Ver solução</summary> ... </details> com a solução (texto e/ou código).
+    O texto antes do primeiro item vira o intro da etapa."""
+    intro, nivel, out, cur, dentro, i = [], None, {}, None, False, 0
+    while i < len(linhas):
+        ln = linhas[i]
+        s = ln.strip()
+        if not dentro:
+            m = re.match(r"^\*\*Nível\s+(.*?)\*\*$", s)
+            if m:
+                nivel, cur = m.group(1).strip().capitalize(), None
+                i += 1; continue
+            m = re.match(r"^\*\*(\d+)\.\*\*\s*(.*)$", s)
+            if m:
+                cur = int(m.group(1))
+                out[cur] = {"nivel": nivel, "enunciado": [m.group(2)], "dica": None, "solucao": []}
+                i += 1; continue
+        if cur is None:
+            intro.append(ln); i += 1; continue
+        if s == "<details>":
+            dentro = True; i += 1; continue
+        if s == "</details>":
+            dentro = False; i += 1; continue
+        if dentro:
+            if not s.startswith("<summary>"):
+                out[cur]["solucao"].append(ln)
+            i += 1; continue
+        m = re.match(r"^Dica:\s*(.*)$", s)
+        if m:
+            out[cur]["dica"] = m.group(1).strip()
+        else:
+            out[cur]["enunciado"].append(ln)
+        i += 1
+
+    itens = []
+    for n in sorted(out):
+        it = {"n": n, "nivel": out[n]["nivel"], "enunciado": blocos(out[n]["enunciado"])}
+        if out[n]["dica"]:
+            it["dica"] = out[n]["dica"]
+        it["solucao"] = blocos(out[n]["solucao"])
+        itens.append(it)
+    return intro, itens
+
+
 def gabarito(linhas, numeros):
     """Marcador de cada solução: '1.' (sozinho na linha, formato antigo) ou '**1.**' /
     '**9. Resposta esperada:** texto...' (negrito, com rótulo opcional na mesma linha)."""
@@ -222,7 +279,7 @@ def converter(md_path):
         elif atual is not None:
             atual["linhas"].append(ln)
 
-    etapas, atv_titulo, atv_intro, enun, gab = [], "Atividades", [], {}, None
+    etapas, atv_titulo, atv_intro, enun, gab, atv_itens = [], "Atividades", [], {}, None, None
     for sec in secoes:
         t, linhas = sec["titulo"], sem_notas_de_slide(sec["linhas"])
         if re.match(r"^Código explicado", t, re.I):
@@ -230,13 +287,20 @@ def converter(md_path):
         elif re.match(r"^Quiz", t, re.I):
             etapas.append(quiz(t, linhas))
         elif re.match(r"^Atividades", t, re.I):
-            atv_titulo, (atv_intro, enun) = t, enunciados(linhas)
+            atv_titulo = t
+            if any(ln.strip() == "<details>" for ln in linhas):
+                atv_intro, atv_itens = atividades_com_solucao(linhas)
+            else:
+                atv_intro, enun = enunciados(linhas)
         elif re.match(r"^Gabarito", t, re.I):
             gab = linhas
         else:
             etapas.append({"id": slug(t.split(":")[0]), "tipo": "leitura", "nome": sem_crases(t), "blocos": blocos(linhas)})
 
-    if enun:
+    if atv_itens is not None:
+        etapas.append({"id": "atividades", "tipo": "atividades", "nome": sem_crases(atv_titulo),
+                       "intro": blocos(atv_intro) + [AVISO_ATIVIDADES], "itens": atv_itens})
+    elif enun:
         intro, sol = gabarito(gab or [], set(enun))
         faltam = [n for n in enun if n not in sol]
         if faltam:
@@ -271,7 +335,7 @@ def conferir(md_path, aula):
             fence = not fence; continue
         if not fence:   # mesmas notas internas que o conversor deixa de fora
             if (re.match(r"^\*\*Observaç(ões|ão) (para|sobre) (os |o )?slides?", s.strip(), re.I)
-                    or re.match(r"^###\s+Outras correções do material original", s.strip(), re.I)):
+                    or re.match(r"^###\s+(Outras\s+)?correções do material original", s.strip(), re.I)):
                 pulando = True; continue
             if pulando and (not s.strip() or s.strip().startswith("- ")):
                 continue
@@ -284,14 +348,15 @@ def conferir(md_path, aula):
         else:
             st = s.strip()
             if (not st or re.match(r"^\|[\s\-:|]+\|$", st) or re.match(r"^##\s+\d+\.", st)
-                    or re.match(r"^\d+\.$", st)):          # "4." sozinho só numera a solução do gabarito
+                    or re.match(r"^\d+\.$", st)                       # "4." sozinho só numera a solução do gabarito
+                    or st in ("<details>", "</details>") or st.startswith("<summary>")):
                 continue
             if st.startswith("Resposta:"):
                 pedacos = [re.sub(r'^(Resposta:\s*[A-E]|Dica:|Acerto:|Erro:|Explicação:)\s*', "", x).strip().strip('"')
                            for x in st.split(" · ")]
             else:
                 pedacos = celulas(st) if st.startswith("|") else [st]
-                pedacos = [re.sub(r"^(#+\s*|\d+\.\s+|- |[A-E]\)\s*|\*\*Q\d+\.\s*|\*\*Nível\s+)", "", p) for p in pedacos]
+                pedacos = [re.sub(r"^(#+\s*|\d+\.\s+|- |[A-E]\)\s*|\*\*Q\d+\.\s*|\*\*Nível\s+|Dica:\s*)", "", p) for p in pedacos]
                 pedacos = [p.strip() for p in pedacos]
                 pedacos = [p[2:-2].strip() if p.startswith("**") and p.endswith("**") else p for p in pedacos]
                 pedacos = [p[:-2].strip() if p.endswith("**") and "**" not in p[:-2] else p for p in pedacos]

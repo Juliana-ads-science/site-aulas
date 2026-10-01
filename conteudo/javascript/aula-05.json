@@ -1,0 +1,916 @@
+{
+  "numero": 5,
+  "titulo": "Arrays: Criando e Acessando Listas",
+  "etapas": [
+    {
+      "id": "definicoes",
+      "tipo": "leitura",
+      "nome": "Definições",
+      "blocos": [
+        "Um array (lista) guarda vários valores sob um único nome, em posições numeradas. Em vez de criar `nota1`, `nota2` e `nota3`, criamos uma lista `notas` e acessamos cada nota pela posição.",
+        {
+          "tabela": [
+            [
+              "Termo",
+              "O que significa"
+            ],
+            [
+              "Array (lista)",
+              "Estrutura que guarda vários valores em sequência, sob um único nome"
+            ],
+            [
+              "Elemento (item)",
+              "Cada valor guardado dentro do array"
+            ],
+            [
+              "Índice",
+              "Número da posição de um elemento; **sempre começa em 0**"
+            ],
+            [
+              "`[ ]` (literal de array)",
+              "Forma de criar um array: `[\"a\", \"b\"]`"
+            ],
+            [
+              "Array vazio",
+              "Array sem elementos: `[]`"
+            ],
+            [
+              "`length`",
+              "Propriedade com a quantidade de elementos"
+            ],
+            [
+              "Último índice",
+              "Sempre `length - 1`"
+            ],
+            [
+              "`undefined`",
+              "Valor devolvido ao acessar um índice que não existe"
+            ],
+            [
+              "Iterar (percorrer)",
+              "Passar por todos os elementos, um por um"
+            ],
+            [
+              "`push()`",
+              "Adiciona elementos no **final** e devolve o novo tamanho"
+            ],
+            [
+              "`pop()`",
+              "Remove o **último** elemento e o devolve"
+            ],
+            [
+              "`unshift()`",
+              "Adiciona elementos no **início** e devolve o novo tamanho"
+            ],
+            [
+              "`shift()`",
+              "Remove o **primeiro** elemento e o devolve"
+            ],
+            [
+              "In-place",
+              "O método altera o próprio array original"
+            ],
+            [
+              "Reindexar",
+              "Renumerar as posições depois de inserir ou remover no início"
+            ],
+            [
+              "Pilha (LIFO)",
+              "Último a entrar, primeiro a sair: `push` + `pop`"
+            ],
+            [
+              "Fila (FIFO)",
+              "Primeiro a entrar, primeiro a sair: `push` + `shift`"
+            ],
+            [
+              "Buraco (empty)",
+              "Posição vazia criada ao atribuir num índice muito à frente"
+            ],
+            [
+              "`Array.isArray()`",
+              "Verifica se um valor é um array (o `typeof` responde só \"object\")"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "para-que-como-e-quando-usamos",
+      "tipo": "leitura",
+      "nome": "Para que, como e quando usamos",
+      "blocos": [
+        "Usamos arrays sempre que temos vários valores relacionados que queremos tratar juntos.",
+        "**Para que:** notas de um aluno, itens de um carrinho, lista de espera, placar de um jogo, dias da semana, produtos de um estoque, resultados vindos de uma API.",
+        "**Como:** criamos com colchetes, acessamos e alteramos pelo índice, descobrimos o tamanho com `length`, percorremos com `for` (ou `while`) e mudamos as pontas com `push`, `pop`, `unshift` e `shift`.",
+        "**Quando usar (e quando não):**",
+        {
+          "tabela": [
+            [
+              "Situação",
+              "Array é uma boa?"
+            ],
+            [
+              "Vários valores do mesmo tipo (notas, nomes, preços)",
+              "Sim"
+            ],
+            [
+              "Quantidade de itens desconhecida ou que muda",
+              "Sim"
+            ],
+            [
+              "Ordem importa (fila, ranking)",
+              "Sim"
+            ],
+            [
+              "Um único valor",
+              "Não: use uma variável comum"
+            ],
+            [
+              "Dados de uma coisa só com nomes diferentes (nome, idade, cidade de uma pessoa)",
+              "Melhor um objeto: `{ nome: \"Ana\", idade: 20 }`"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "estruturas",
+      "tipo": "leitura",
+      "nome": "Estruturas",
+      "blocos": [
+        {
+          "h": "3.1 Criar"
+        },
+        {
+          "codigo": "const numeros = [10, 20, 30];\nconst nomes = [\"Maria\", \"João\", \"Ana\"];\nconst vazio = [];\nconst misto = [\"texto\", 42, true]; // permitido, mas pouco organizado"
+        },
+        {
+          "h": "3.2 Acessar pelo índice"
+        },
+        {
+          "codigo": "nomes[0]; // \"Maria\" (primeiro)\nnomes[2]; // \"Ana\"   (terceiro)\nnomes[5]; // undefined (não existe)"
+        },
+        {
+          "h": "3.3 Modificar um elemento"
+        },
+        {
+          "codigo": "nomes[1] = \"Joana\"; // [\"Maria\", \"Joana\", \"Ana\"]"
+        },
+        {
+          "h": "3.4 Tamanho e último elemento"
+        },
+        {
+          "codigo": "nomes.length;                // 3\nnomes[nomes.length - 1];     // \"Ana\""
+        },
+        {
+          "h": "3.5 Percorrer com `for`"
+        },
+        {
+          "codigo": "for (let i = 0; i < nomes.length; i++) {\n  console.log(i, nomes[i]);\n}"
+        },
+        {
+          "h": "3.6 Percorrer com `while`"
+        },
+        {
+          "codigo": "let i = 0;\nwhile (i < nomes.length) {\n  console.log(nomes[i]);\n  i++; // sem isso, loop infinito\n}"
+        },
+        {
+          "h": "3.7 Inserir e remover nas pontas"
+        },
+        {
+          "codigo": "const lista = [\"B\", \"C\"];\nlista.push(\"D\");     // final  → [\"B\", \"C\", \"D\"]\nlista.unshift(\"A\");  // início → [\"A\", \"B\", \"C\", \"D\"]\nlista.pop();         // tira \"D\" → [\"A\", \"B\", \"C\"]\nlista.shift();       // tira \"A\" → [\"B\", \"C\"]"
+        },
+        {
+          "h": "3.8 Guardar o retorno dos métodos"
+        },
+        {
+          "codigo": "const novoTamanho = lista.push(\"X\"); // número: novo length\nconst removido = lista.pop();        // o próprio elemento: \"X\""
+        },
+        {
+          "h": "3.9 Soma e média com `for`"
+        },
+        {
+          "codigo": "let soma = 0;\nfor (let i = 0; i < numeros.length; i++) {\n  soma += numeros[i];\n}\nconst media = soma / numeros.length;"
+        },
+        {
+          "h": "3.10 Transformação em massa"
+        },
+        {
+          "codigo": "for (let i = 0; i < precos.length; i++) {\n  precos[i] = precos[i] * 1.1; // aumenta 10% em todos\n}"
+        }
+      ]
+    },
+    {
+      "id": "sintaxe-e-simbolos",
+      "tipo": "leitura",
+      "nome": "Sintaxe e símbolos",
+      "blocos": [
+        {
+          "tabela": [
+            [
+              "Símbolo / comando",
+              "O que faz",
+              "Por que existe"
+            ],
+            [
+              "`[ ]` ao criar",
+              "Cria o array",
+              "Forma literal, curta e recomendada"
+            ],
+            [
+              "`,` entre itens",
+              "Separa os elementos",
+              "Cada vírgula marca um novo item"
+            ],
+            [
+              "`lista[i]`",
+              "Acessa a posição `i`",
+              "Ler ou trocar um elemento específico"
+            ],
+            [
+              "`lista[i] = valor`",
+              "Substitui o elemento",
+              "Atualizar um item sem recriar a lista"
+            ],
+            [
+              "`.length` (sem parênteses)",
+              "Quantidade de itens",
+              "É propriedade, não método"
+            ],
+            [
+              "`length - 1`",
+              "Índice do último item",
+              "O índice começa em 0, o tamanho começa em 1"
+            ],
+            [
+              "`.push(x)`",
+              "Adiciona no fim",
+              "Coletar itens em ordem"
+            ],
+            [
+              "`.pop()`",
+              "Remove do fim",
+              "Desfazer o último, pilha"
+            ],
+            [
+              "`.unshift(x)`",
+              "Adiciona no início",
+              "Mais recente primeiro"
+            ],
+            [
+              "`.shift()`",
+              "Remove do início",
+              "Atender uma fila"
+            ],
+            [
+              "`( )` nos métodos",
+              "Executa o método",
+              "`push` sem parênteses não faz nada"
+            ],
+            [
+              "`const lista = [...]`",
+              "Variável que sempre aponta para o mesmo array",
+              "O conteúdo pode mudar; o que não pode é trocar por outro array"
+            ],
+            [
+              "`i < lista.length`",
+              "Condição de percurso",
+              "Garante que nunca acessamos um índice inexistente"
+            ],
+            [
+              "`.toFixed(2)`",
+              "Número com 2 casas decimais (vira texto)",
+              "Mostrar preços e médias"
+            ],
+            [
+              "`typeof []`",
+              "Responde `\"object\"`",
+              "Em JS, array é um tipo especial de objeto"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logica-por-tras",
+      "tipo": "leitura",
+      "nome": "Lógica por trás",
+      "blocos": [
+        "Pense no array como um armário com gavetas numeradas a partir de 0. O nome do array é o armário; o índice é o número da gaveta.",
+        "**Por que o índice começa em 0:** o índice indica quantas posições você anda a partir do começo. O primeiro item está a 0 passos do início, o segundo a 1 passo, e assim por diante. Por isso, num array de 5 itens, os índices válidos vão de 0 a 4, e o último é sempre `length - 1`.",
+        "**Por que `i < lista.length` e não `<=`:** com `<=`, o laço tentaria acessar `lista[lista.length]`, que não existe, e receberia `undefined`.",
+        "**Pontas do array:**",
+        {
+          "tabela": [
+            [
+              "Método",
+              "Onde",
+              "Altera o array?",
+              "Devolve",
+              "Reindexa?"
+            ],
+            [
+              "`push`",
+              "Fim",
+              "Sim",
+              "Novo tamanho",
+              "Não"
+            ],
+            [
+              "`pop`",
+              "Fim",
+              "Sim",
+              "Item removido",
+              "Não"
+            ],
+            [
+              "`unshift`",
+              "Início",
+              "Sim",
+              "Novo tamanho",
+              "Sim, todos andam uma casa"
+            ],
+            [
+              "`shift`",
+              "Início",
+              "Sim",
+              "Item removido",
+              "Sim, todos voltam uma casa"
+            ]
+          ]
+        },
+        "Como `unshift` e `shift` renumeram todos os itens, eles são mais lentos em listas muito grandes. Em listas pequenas a diferença não aparece.",
+        "**Por que `const` aceita `push`:** `const` impede trocar a variável por outro valor (`lista = []` dá erro), mas não impede mudar o conteúdo do array que ela guarda. É como manter o mesmo armário e trocar o que está nas gavetas.",
+        "**Cuidado com buracos:** atribuir `lista[10] = \"x\"` num array de 3 itens cria as posições 3 a 9 vazias e muda o `length` para 11. E `lista[1] = undefined` não remove o item: a gaveta continua existindo, só fica vazia. Para remover do meio existe o `splice`, assunto de uma próxima aula."
+      ]
+    },
+    {
+      "id": "exemplo-a",
+      "tipo": "codigo",
+      "nome": "Exemplo A — Criar, acessar e medir (frutas.js)",
+      "codigo": [
+        "const frutas = [\"maçã\", \"banana\", \"uva\"];",
+        "console.log(frutas[0]);",
+        "console.log(frutas[2]);",
+        "console.log(frutas[3]);",
+        "console.log(frutas.length);",
+        "console.log(frutas[frutas.length - 1]);"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Cria o array com 3 elementos (índices 0, 1 e 2)"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Mostra \"maçã\", o primeiro elemento"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Mostra \"uva\", o terceiro"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "O índice 3 não existe: mostra `undefined`"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Mostra 3, a quantidade de itens"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "`frutas.length - 1` vale 2, então mostra \"uva\", o último"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-b",
+      "tipo": "codigo",
+      "nome": "Exemplo B — Carrinho com push e pop (carrinho.js)",
+      "codigo": [
+        "const carrinho = [\"arroz\", \"feijão\"];",
+        "carrinho[1] = \"feijão preto\";",
+        "const tamanho = carrinho.push(\"café\");",
+        "console.log(tamanho);",
+        "const removido = carrinho.pop();",
+        "console.log(removido);",
+        "console.log(carrinho);"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Carrinho começa com 2 itens"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Troca o item do índice 1: agora é \"feijão preto\""
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "`push` coloca \"café\" no fim e devolve o novo tamanho"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Mostra 3"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "`pop` tira o último (\"café\") e o devolve"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Mostra \"café\""
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "Mostra `[\"arroz\", \"feijão preto\"]`"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-c",
+      "tipo": "codigo",
+      "nome": "Exemplo C — Fila de atendimento (fila.js)",
+      "codigo": [
+        "const fila = [\"Ana\", \"Bruno\"];",
+        "fila.unshift(\"Carla (prioridade)\");",
+        "const atendido = fila.shift();",
+        "console.log(\"Atendido: \" + atendido);",
+        "fila.push(\"Davi\");",
+        "console.log(fila);"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Fila com Ana e Bruno"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "`unshift` coloca Carla na frente: `[\"Carla (prioridade)\", \"Ana\", \"Bruno\"]`"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "`shift` tira a primeira pessoa (Carla) e guarda em `atendido`"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Mostra \"Atendido: Carla (prioridade)\""
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Davi chega e entra no fim"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Mostra `[\"Ana\", \"Bruno\", \"Davi\"]`"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-d",
+      "tipo": "codigo",
+      "nome": "Exemplo D — Percorrendo com while (precos.js)",
+      "codigo": [
+        "const precos = [12.5, 30, 8.9];",
+        "let i = 0;",
+        "while (i < precos.length) {",
+        "  console.log(`Item ${i + 1}: R$ ${precos[i].toFixed(2)}`);",
+        "  i++;",
+        "}"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Lista com 3 preços"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "No `while`, o contador é criado antes do laço"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Repete enquanto `i` for menor que 3"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Mostra \"Item 1: R$ 12.50\", \"Item 2: R$ 30.00\" e \"Item 3: R$ 8.90\"; `i + 1` só deixa a numeração mais amigável"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Avança o contador; sem esta linha, o laço nunca termina"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-e",
+      "tipo": "codigo",
+      "nome": "Exemplo E — Padronizando nomes (nomes.js)",
+      "codigo": [
+        "const nomes = [\"ana\", \"bRUNO\", \"carla\"];",
+        "for (let i = 0; i < nomes.length; i++) {",
+        "  const nome = nomes[i].toLowerCase();",
+        "  nomes[i] = nome.charAt(0).toUpperCase() + nome.slice(1);",
+        "}",
+        "console.log(nomes);"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Nomes escritos de qualquer jeito"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Percorre todos os índices"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Deixa o nome atual todo em minúsculas (\"bruno\")"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Primeira letra em maiúscula + resto a partir da posição 1, e grava de volta no mesmo índice"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Mostra `[\"Ana\", \"Bruno\", \"Carla\"]`: o array original foi alterado"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-f",
+      "tipo": "codigo",
+      "nome": "Exemplo F — O perigo dos buracos (buracos.js)",
+      "codigo": [
+        "const letras = [\"A\", \"B\", \"C\"];",
+        "letras[5] = \"F\";",
+        "console.log(letras.length);",
+        "console.log(letras);",
+        "console.log(letras[4]);"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "3 letras, índices 0 a 2"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Grava no índice 5, pulando o 3 e o 4"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Mostra 6: o tamanho conta até o maior índice + 1"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Mostra `[\"A\", \"B\", \"C\", <2 empty items>, \"F\"]`"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Mostra `undefined`: a posição 4 existe na contagem, mas está vazia"
+        }
+      ]
+    },
+    {
+      "id": "como-aplicar",
+      "tipo": "leitura",
+      "nome": "Como aplicar: placar de um jogo",
+      "blocos": [
+        "Junta criação, acesso, modificação, `push`, `length`, `for` com acumulador e busca do maior valor. Salve como `placar.js` e rode com `node placar.js`.",
+        {
+          "codigo": "const jogadores = [\"Ana\", \"Bruno\", \"Carla\"];\nconst pontos = [120, 95, 140];\n\n// Um novo jogador entrou na partida\njogadores.push(\"Davi\");\npontos.push(115);\n\n// Bruno ganhou um bônus de 30 pontos\npontos[1] = pontos[1] + 30;\n\nlet soma = 0;\nlet indiceLider = 0;\nfor (let i = 0; i < pontos.length; i++) {\n  soma += pontos[i];\n  if (pontos[i] > pontos[indiceLider]) {\n    indiceLider = i;\n  }\n}\nconst media = soma / pontos.length;\n\nfor (let i = 0; i < jogadores.length; i++) {\n  console.log(`${i + 1}. ${jogadores[i]}: ${pontos[i]} pts`);\n}\nconsole.log(`Média: ${media.toFixed(1)} pts`);\nconsole.log(`Líder: ${jogadores[indiceLider]} (${pontos[indiceLider]} pts)`);"
+        },
+        "**Saída esperada:**",
+        {
+          "codigo": "1. Ana: 120 pts\n2. Bruno: 125 pts\n3. Carla: 140 pts\n4. Davi: 115 pts\nMédia: 125.0 pts\nLíder: Carla (140 pts)"
+        },
+        "**Por que funciona:** os dois arrays andam juntos pelo índice: `jogadores[2]` e `pontos[2]` são da mesma pessoa. Por isso, todo `push` em um precisa ser feito no outro. O bônus troca o valor de uma posição sem recriar a lista. No `for`, a soma vai acumulando, e `indiceLider` guarda a posição do maior placar visto até agora: sempre que aparece um valor maior, a posição é atualizada. O segundo `for` só exibe o resultado."
+      ]
+    },
+    {
+      "id": "quiz",
+      "tipo": "quiz",
+      "nome": "Quiz de código",
+      "perguntas": [
+        {
+          "pergunta": "O que aparece no console?",
+          "codigo": "const cores = [\"azul\", \"verde\", \"roxo\"];\nconsole.log(cores[1]);",
+          "opcoes": [
+            "azul",
+            "verde",
+            "roxo",
+            "undefined"
+          ],
+          "correta": 1,
+          "dica": "o primeiro índice é 0.",
+          "acerto": "Isso! O índice 1 é o segundo item.",
+          "erro": "Conte a partir do 0: azul é 0, verde é 1.",
+          "explicacao": "os índices são 0, 1 e 2; o 1 aponta para \"verde\"."
+        },
+        {
+          "pergunta": "Qual linha mostra o último elemento de qualquer array `lista`?",
+          "opcoes": [
+            "`lista[lista.length]`",
+            "`lista[lista.length - 1]`",
+            "`lista[-1]`",
+            "`lista.last`"
+          ],
+          "correta": 1,
+          "dica": "o último índice é um a menos que o tamanho.",
+          "acerto": "Perfeito! length - 1 sempre aponta para o último.",
+          "erro": "lista[lista.length] não existe; índices vão até length - 1.",
+          "explicacao": "num array de 4 itens, o último índice é 3, ou seja, `length - 1`."
+        },
+        {
+          "pergunta": "O que é mostrado?",
+          "codigo": "const fila = [\"A\", \"B\", \"C\"];\nconst x = fila.shift();\nconsole.log(x, fila.length);",
+          "opcoes": [
+            "C 2",
+            "A 2",
+            "A 3",
+            "2 A"
+          ],
+          "correta": 1,
+          "dica": "`shift` mexe em qual ponta e devolve o quê?",
+          "acerto": "Exato! Tira o primeiro e o devolve.",
+          "erro": "shift remove do início; pop remove do fim.",
+          "explicacao": "`x` recebe \"A\", e a fila fica com 2 itens."
+        },
+        {
+          "pergunta": "O que `push` devolve?",
+          "codigo": "const lista = [5, 10];\nconst r = lista.push(15);\nconsole.log(r);",
+          "opcoes": [
+            "15",
+            "`[5, 10, 15]`",
+            "3",
+            "undefined"
+          ],
+          "correta": 2,
+          "dica": "`push` e `pop` devolvem coisas diferentes.",
+          "acerto": "Isso! push devolve o novo tamanho.",
+          "erro": "Quem devolve o elemento é o pop; o push devolve o length.",
+          "explicacao": "depois de adicionar 15, a lista tem 3 itens, e esse número é o retorno."
+        },
+        {
+          "pergunta": "Qual é o problema deste laço?",
+          "codigo": "const notas = [8, 6, 9];\nfor (let i = 0; i <= notas.length; i++) {\n  console.log(notas[i]);\n}",
+          "opcoes": [
+            "Nenhum",
+            "Mostra um `undefined` no final",
+            "Pula a primeira nota",
+            "Loop infinito"
+          ],
+          "correta": 1,
+          "dica": "com `<=`, `i` chega a qual valor?",
+          "acerto": "Perfeito! O i = 3 não existe no array.",
+          "erro": "Use i < notas.length para parar no último índice.",
+          "explicacao": "com `<=`, a última volta acessa `notas[3]`, que é `undefined`."
+        },
+        {
+          "pergunta": "Qual é o resultado?",
+          "codigo": "const nums = [1, 2, 3];\nfor (let i = 0; i < nums.length; i++) {\n  nums[i] = nums[i] * 10;\n}\nconsole.log(nums);",
+          "opcoes": [
+            "`[1, 2, 3]`",
+            "`[10, 20, 30]`",
+            "`[10, 2, 3]`",
+            "Erro, porque `nums` é `const`"
+          ],
+          "correta": 1,
+          "dica": "`const` impede trocar o array inteiro, não os itens.",
+          "acerto": "Mandou bem! Cada posição foi multiplicada.",
+          "erro": "Com const, o conteúdo do array ainda pode mudar.",
+          "explicacao": "o laço reescreve cada posição com o valor multiplicado por 10."
+        }
+      ]
+    },
+    {
+      "id": "atividades",
+      "tipo": "atividades",
+      "nome": "Atividades",
+      "intro": [
+        "Escreva ou cole a sua tentativa no campo de cada atividade para liberar a solução. Outras soluções também valem, desde que passem nos testes do enunciado."
+      ],
+      "itens": [
+        {
+          "n": 1,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie um array com 5 filmes de que você gosta e mostre o primeiro, o terceiro e o último (use `length` para o último)."
+          ],
+          "dica": "o último índice é `length - 1`.",
+          "solucao": [
+            {
+              "codigo": "const filmes = [\"Divertida Mente\", \"Toy Story\", \"Coco\", \"Up\", \"Wall-E\"];\nconsole.log(filmes[0]);\nconsole.log(filmes[2]);\nconsole.log(filmes[filmes.length - 1]);"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Dado `const semana = [\"Seg\", \"Ter\", \"Qua\", \"Qui\", \"Sex\"];`, troque \"Qua\" por \"Quarta\" e mostre o array."
+          ],
+          "dica": "descubra o índice de \"Qua\" e use atribuição.",
+          "solucao": [
+            {
+              "codigo": "const semana = [\"Seg\", \"Ter\", \"Qua\", \"Qui\", \"Sex\"];\nsemana[2] = \"Quarta\";\nconsole.log(semana);"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie uma lista de compras vazia, adicione \"pão\", \"leite\" e \"ovos\" com `push`, e mostre quantos itens ela tem."
+          ],
+          "dica": "comece com `[]`.",
+          "solucao": [
+            {
+              "codigo": "const compras = [];\ncompras.push(\"pão\");\ncompras.push(\"leite\");\ncompras.push(\"ovos\");\nconsole.log(compras.length); // 3"
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "nivel": "Médio",
+          "enunciado": [
+            "Percorra `const alunos = [\"Lia\", \"Rui\", \"Bia\", \"Gil\"];` com `for` e mostre `1. Lia`, `2. Rui` e assim por diante."
+          ],
+          "dica": "o índice começa em 0, mas a numeração para o usuário começa em 1.",
+          "solucao": [
+            {
+              "codigo": "const alunos = [\"Lia\", \"Rui\", \"Bia\", \"Gil\"];\nfor (let i = 0; i < alunos.length; i++) {\n  console.log(`${i + 1}. ${alunos[i]}`);\n}"
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "nivel": "Médio",
+          "enunciado": [
+            "Calcule a soma e a média de `const gastos = [45.9, 120, 33.5, 80.6];` e mostre a média com 2 casas decimais."
+          ],
+          "dica": "o acumulador fica fora do laço; a média é a soma dividida pelo `length`. O resultado é 70.00.",
+          "solucao": [
+            {
+              "codigo": "const gastos = [45.9, 120, 33.5, 80.6];\nlet soma = 0;\nfor (let i = 0; i < gastos.length; i++) {\n  soma += gastos[i];\n}\nconst media = soma / gastos.length;\nconsole.log(`Soma: R$ ${soma.toFixed(2)}`);   // 280.00\nconsole.log(`Média: R$ ${media.toFixed(2)}`); // 70.00"
+            }
+          ]
+        },
+        {
+          "n": 6,
+          "nivel": "Médio",
+          "enunciado": [
+            "Simule uma fila de banco: comece com `[\"Ana\", \"Bruno\", \"Carla\"]`, atenda duas pessoas com `shift` (mostrando quem foi atendido) e, depois, adicione \"Davi\" no fim. Mostre a fila final."
+          ],
+          "dica": "guarde o retorno de `shift` numa variável.",
+          "solucao": [
+            {
+              "codigo": "const fila = [\"Ana\", \"Bruno\", \"Carla\"];\nconsole.log(\"Atendido: \" + fila.shift()); // Ana\nconsole.log(\"Atendido: \" + fila.shift()); // Bruno\nfila.push(\"Davi\");\nconsole.log(fila); // [\"Carla\", \"Davi\"]"
+            }
+          ]
+        },
+        {
+          "n": 7,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Dado `const precos = [10, 25, 40, 8];`, aplique 10% de aumento em todos os preços **no próprio array** e mostre o resultado com 2 casas decimais."
+          ],
+          "dica": "use `precos[i] = precos[i] * 1.1` dentro do `for`.",
+          "solucao": [
+            {
+              "codigo": "const precos = [10, 25, 40, 8];\nfor (let i = 0; i < precos.length; i++) {\n  precos[i] = precos[i] * 1.1;\n}\nfor (let i = 0; i < precos.length; i++) {\n  console.log(`R$ ${precos[i].toFixed(2)}`); // 11.00, 27.50, 44.00, 8.80\n}"
+            }
+          ]
+        },
+        {
+          "n": 8,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Encontre o maior e o menor valor de `const temperaturas = [22, 31, 18, 27, 15, 29];` usando um único `for` (sem `Math.max`)."
+          ],
+          "dica": "comece guardando o primeiro elemento como maior e como menor, e compare com os demais.",
+          "solucao": [
+            {
+              "codigo": "const temperaturas = [22, 31, 18, 27, 15, 29];\nlet maior = temperaturas[0];\nlet menor = temperaturas[0];\n\nfor (let i = 1; i < temperaturas.length; i++) {\n  if (temperaturas[i] > maior) maior = temperaturas[i];\n  if (temperaturas[i] < menor) menor = temperaturas[i];\n}\nconsole.log(`Maior: ${maior}°C, menor: ${menor}°C`); // 31 e 15"
+            }
+          ]
+        },
+        {
+          "n": 9,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Explique, com suas palavras e um código de exemplo, a diferença entre usar o array como pilha (`push` + `pop`) e como fila (`push` + `shift`)."
+          ],
+          "dica": "pense em quem sai primeiro em cada caso.",
+          "solucao": [
+            "**Resposta esperada:** na pilha, o último item que entrou é o primeiro a sair (como uma pilha de pratos). Na fila, o primeiro que entrou é o primeiro a sair (como uma fila de banco).",
+            {
+              "codigo": "const pilha = [];\npilha.push(\"prato 1\");\npilha.push(\"prato 2\");\nconsole.log(pilha.pop()); // \"prato 2\" (último que entrou)\n\nconst fila = [];\nfila.push(\"cliente 1\");\nfila.push(\"cliente 2\");\nconsole.log(fila.shift()); // \"cliente 1\" (primeiro que entrou)"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
