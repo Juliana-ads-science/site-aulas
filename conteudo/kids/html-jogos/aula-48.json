@@ -1,0 +1,815 @@
+{
+  "numero": 48,
+  "titulo": "Projeto: Jogo de Escolha e Consequência",
+  "etapas": [
+    {
+      "id": "conversa",
+      "tipo": "conversa",
+      "nome": "Conversa com o Bit",
+      "falas": [
+        "Dia de projeto! 🎮",
+        "Você vai criar um jogo onde cada escolha do jogador leva a um caminho diferente.",
+        "Cada cena é uma página HTML, e os links conectam tudo.",
+        "Vamos desenhar o mapa do jogo e montar as peças!"
+      ]
+    },
+    {
+      "id": "definicoes",
+      "tipo": "leitura",
+      "nome": "Definições",
+      "blocos": [
+        "Hoje é dia de projeto! Você vai criar um **jogo de escolhas**: uma história em que o jogador decide o que fazer, e cada decisão leva a um caminho diferente. Cada cena é um arquivo HTML, e as escolhas são links.",
+        {
+          "tabela": [
+            [
+              "Palavra",
+              "O que significa"
+            ],
+            [
+              "Jogo de escolha e consequência",
+              "Jogo em que as decisões do jogador mudam a história"
+            ],
+            [
+              "Cena",
+              "Um momento da história; no nosso jogo, cada cena é um arquivo `.html`"
+            ],
+            [
+              "Escolha",
+              "Um link que leva para a próxima cena"
+            ],
+            [
+              "Consequência",
+              "O que acontece por causa da escolha"
+            ],
+            [
+              "Bifurcação",
+              "Quando a história se divide em dois ou mais caminhos"
+            ],
+            [
+              "Narrativa não linear",
+              "História que não tem um caminho só"
+            ],
+            [
+              "Fluxograma (mapa do jogo)",
+              "Desenho com as cenas e as setas entre elas"
+            ],
+            [
+              "Final",
+              "Cena que encerra a história: vitória ou game over"
+            ],
+            [
+              "Beco sem saída",
+              "Página sem nenhum link; o jogador fica preso"
+            ],
+            [
+              "`target=\"_blank\"`",
+              "Abre o link numa aba nova"
+            ],
+            [
+              "Link externo",
+              "Link para um site da internet, fora do seu jogo"
+            ],
+            [
+              "Página de créditos",
+              "Página com quem fez o jogo"
+            ],
+            [
+              "Teste (QA)",
+              "Clicar em tudo para conferir se funciona"
+            ],
+            [
+              "Erro 404",
+              "\"Página não encontrada\": o link aponta para um arquivo que não existe"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "para-que-como-e-quando-usamos",
+      "tipo": "leitura",
+      "nome": "Para que, como e quando usamos",
+      "blocos": [
+        "**Para que:** contar histórias interativas, criar aventuras, quizzes com consequências e até jogos educativos (escolheu a resposta certa, avança; errou, recebe uma dica).",
+        "**Como:**",
+        {
+          "passos": [
+            "Desenhe o mapa do jogo no papel (as cenas e as setas).",
+            "Crie uma pasta e, dentro dela, um arquivo para cada cena.",
+            "Escreva a história de cada cena e coloque os links das escolhas.",
+            "Coloque as imagens numa pasta `imagens/`.",
+            "Teste todos os caminhos."
+          ]
+        },
+        {
+          "codigo": "floresta-misteriosa/\n├── index.html\n├── floresta.html\n├── caverna.html\n├── rio.html\n├── final-tesouro.html\n├── final-vila.html\n├── gameover.html\n├── creditos.html\n└── imagens/\n    └── floresta.png"
+        },
+        "**Regras de ouro:**",
+        {
+          "tabela": [
+            [
+              "Regra",
+              "Por quê"
+            ],
+            [
+              "O primeiro arquivo se chama `index.html`",
+              "É ele que o navegador e o GitHub abrem primeiro"
+            ],
+            [
+              "Nomes em minúsculas, sem espaço e sem acento",
+              "Evita links quebrados"
+            ],
+            [
+              "Toda página tem pelo menos um link",
+              "Nada de beco sem saída"
+            ],
+            [
+              "Pelo menos dois finais diferentes",
+              "As escolhas precisam importar"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "estruturas",
+      "tipo": "leitura",
+      "nome": "Estruturas",
+      "blocos": [
+        {
+          "h": "3.1 Uma cena"
+        },
+        {
+          "codigo": "<h1>A floresta</h1>\n<p>Está escurecendo. Você ouve um barulho entre as árvores.</p>"
+        },
+        {
+          "h": "3.2 Uma bifurcação (duas escolhas)"
+        },
+        {
+          "codigo": "<p><a href=\"caverna.html\">Entrar na caverna</a></p>\n<p><a href=\"rio.html\">Seguir o rio</a></p>"
+        },
+        {
+          "h": "3.3 Escolhas organizadas numa lista"
+        },
+        {
+          "codigo": "<nav>\n  <ul>\n    <li><a href=\"caverna.html\">Entrar na caverna</a></li>\n    <li><a href=\"rio.html\">Seguir o rio</a></li>\n  </ul>\n</nav>"
+        },
+        {
+          "h": "3.4 Imagem da cena"
+        },
+        {
+          "codigo": "<img src=\"imagens/floresta.png\" alt=\"Floresta escura com uma caverna ao fundo\" width=\"300\">"
+        },
+        {
+          "h": "3.5 Link que abre em outra aba"
+        },
+        {
+          "codigo": "<a href=\"https://pt.wikipedia.org/wiki/Dragão\" target=\"_blank\">Saiba mais sobre dragões</a>"
+        },
+        {
+          "h": "3.6 Cor de fundo da consequência"
+        },
+        {
+          "codigo": "<body style=\"background-color: #ffcccc;\">  <!-- algo ruim aconteceu -->"
+        },
+        {
+          "h": "3.7 Mesmo visual em todas as cenas"
+        },
+        {
+          "codigo": "<body style=\"text-align: center; font-family: sans-serif; max-width: 600px; margin: auto;\">"
+        }
+      ]
+    },
+    {
+      "id": "sintaxe-e-simbolos",
+      "tipo": "leitura",
+      "nome": "Sintaxe e símbolos",
+      "blocos": [
+        {
+          "tabela": [
+            [
+              "Símbolo / comando",
+              "O que faz",
+              "Por que existe"
+            ],
+            [
+              "`<a href=\"cena.html\">`",
+              "Escolha que leva a outra cena",
+              "É assim que o jogador \"anda\" pela história"
+            ],
+            [
+              "`<nav>`",
+              "Área de navegação",
+              "Agrupa as escolhas da cena"
+            ],
+            [
+              "`<ul>` / `<li>`",
+              "Lista / item",
+              "Deixa as escolhas organizadas"
+            ],
+            [
+              "`<img src=\"...\" alt=\"...\">`",
+              "Mostra uma imagem",
+              "Ilustra a cena"
+            ],
+            [
+              "`src=\"imagens/x.png\"`",
+              "Caminho da imagem dentro da pasta `imagens`",
+              "A barra `/` entra numa pasta"
+            ],
+            [
+              "`alt=\"...\"`",
+              "Descrição da imagem",
+              "Aparece se a imagem não carregar"
+            ],
+            [
+              "`width=\"300\"`",
+              "Largura em pixels",
+              "Imagem não fica gigante"
+            ],
+            [
+              "`target=\"_blank\"`",
+              "Abre em aba nova",
+              "O jogador não perde o jogo"
+            ],
+            [
+              "`<title>`",
+              "Nome da aba",
+              "Mostra em qual cena o jogador está"
+            ],
+            [
+              "`<hr>`",
+              "Linha separadora",
+              "Separa a história dos botões"
+            ],
+            [
+              "`style=\"...\"`",
+              "Estilo rápido",
+              "Cores e alinhamento"
+            ],
+            [
+              "`max-width` + `margin: auto`",
+              "Largura máxima centralizada",
+              "O texto não fica esticado em telas grandes"
+            ],
+            [
+              "`<strong>`",
+              "Texto em negrito",
+              "Destacar algo importante"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logica-por-tras",
+      "tipo": "leitura",
+      "nome": "Lógica por trás",
+      "blocos": [
+        "**Bit diz:** \"Antes de programar, desenhe! Um mapa no papel evita que você se perca no meio de tantos arquivos.\"",
+        "**O mapa do nosso projeto:**",
+        {
+          "codigo": "index ──► floresta ──┬──► caverna ──┬──► final-tesouro  (vitória)\n                     │              └──► gameover\n                     └──► rio ──────┬──► final-vila     (vitória)\n                                    └──► gameover"
+        },
+        "**Cada arquivo é uma cena nova:** o jogo não \"muda o texto\" da mesma página. Ao clicar, o navegador abre outro arquivo. Isso é ótimo: para mudar uma parte da história, você mexe só no arquivo daquela cena.",
+        "**A história precisa \"lembrar\" a escolha:** se o jogador escolheu entrar na caverna, a `caverna.html` deve começar falando da caverna (\"Está frio e escuro aqui dentro...\"). Assim ele sente que a escolha importou.",
+        "**Consequência é mais que texto:** a cor do fundo, a imagem e o título mostram o resultado da escolha antes mesmo de o jogador ler.",
+        "**Como achar link quebrado:** clique em todos os links. Se aparecer \"arquivo não encontrado\" ou \"404\", compare letra por letra o nome no `href` com o nome do arquivo na pasta.",
+        "**Checklist do projeto:**",
+        {
+          "passos": [
+            "O arquivo principal se chama `index.html`?",
+            "Toda página tem pelo menos um link?",
+            "Toda imagem tem `alt`?",
+            "A história tem começo, meio e pelo menos dois finais?",
+            "Você testou todos os caminhos do mapa?"
+          ]
+        }
+      ]
+    },
+    {
+      "id": "exemplo-a",
+      "tipo": "codigo",
+      "nome": "Exemplo A — A cena com bifurcação (floresta.html)",
+      "previa": true,
+      "codigo": [
+        "<!DOCTYPE html>",
+        "<html lang=\"pt-br\">",
+        "<head>",
+        "  <meta charset=\"UTF-8\">",
+        "  <title>A Floresta Misteriosa - A trilha</title>",
+        "</head>",
+        "<body style=\"text-align: center; font-family: sans-serif; max-width: 600px; margin: auto;\">",
+        "  <h1>🌲 A trilha</h1>",
+        "  <img src=\"imagens/floresta.png\" alt=\"Trilha na floresta com uma caverna à esquerda e um rio à direita\" width=\"300\">",
+        "  <p>A trilha se divide. À esquerda, uma caverna escura. À direita, o barulho de um rio.</p>",
+        "  <nav>",
+        "    <ul style=\"list-style: none; padding: 0;\">",
+        "      <li><a href=\"caverna.html\">Entrar na caverna</a></li>",
+        "      <li><a href=\"rio.html\">Seguir o rio</a></li>",
+        "    </ul>",
+        "  </nav>",
+        "</body>",
+        "</html>"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "A aba mostra o nome do jogo e da cena"
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "Mesmo visual em todas as cenas: centralizado e com largura máxima"
+        },
+        {
+          "linhas": [
+            8,
+            8
+          ],
+          "texto": "Título da cena"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "Imagem da pasta `imagens`, com descrição no `alt`"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "A situação que o jogador precisa resolver"
+        },
+        {
+          "linhas": [
+            11,
+            16
+          ],
+          "texto": "As escolhas, organizadas numa lista sem bolinhas"
+        },
+        {
+          "linhas": [
+            13,
+            14
+          ],
+          "texto": "A bifurcação: dois links, dois caminhos"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-b",
+      "tipo": "codigo",
+      "nome": "Exemplo B — A cena de continuação (caverna.html)",
+      "previa": true,
+      "codigo": [
+        "<!DOCTYPE html>",
+        "<html lang=\"pt-br\">",
+        "<head>",
+        "  <meta charset=\"UTF-8\">",
+        "  <title>A Floresta Misteriosa - A caverna</title>",
+        "</head>",
+        "<body style=\"text-align: center; font-family: sans-serif; max-width: 600px; margin: auto;\">",
+        "  <h1>🕳️ A caverna</h1>",
+        "  <p>Está frio e escuro aqui dentro. Lá no fundo, algo brilha... e algo ronca.</p>",
+        "  <p><a href=\"final-tesouro.html\">Andar na ponta dos pés até o brilho</a></p>",
+        "  <p><a href=\"gameover.html\">Gritar \"Tem alguém aí?\"</a></p>",
+        "  <hr>",
+        "  <p><a href=\"floresta.html\">Voltar para a trilha</a></p>",
+        "</body>",
+        "</html>"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "A história continua de onde a escolha levou: o jogador está na caverna"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "Escolha boa: leva a um final de vitória"
+        },
+        {
+          "linhas": [
+            11,
+            11
+          ],
+          "texto": "Escolha ruim: leva ao game over"
+        },
+        {
+          "linhas": [
+            12,
+            12
+          ],
+          "texto": "Uma linha separa as escolhas do \"voltar\""
+        },
+        {
+          "linhas": [
+            13,
+            13
+          ],
+          "texto": "Opção de voltar e tentar o outro caminho"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-c",
+      "tipo": "codigo",
+      "nome": "Exemplo C — O game over da consequência (gameover.html)",
+      "previa": true,
+      "codigo": [
+        "<!DOCTYPE html>",
+        "<html lang=\"pt-br\">",
+        "<head>",
+        "  <meta charset=\"UTF-8\">",
+        "  <title>A Floresta Misteriosa - Game Over</title>",
+        "</head>",
+        "<body style=\"background-color: #ffcccc; text-align: center; font-family: sans-serif;\">",
+        "  <h1>💥 GAME OVER</h1>",
+        "  <p>Ops! Sua escolha acordou quem não devia.</p>",
+        "  <p><strong>Dica:</strong> na floresta, silêncio e atenção são seus melhores amigos.</p>",
+        "  <hr>",
+        "  <p><a href=\"index.html\">Recomeçar a aventura</a></p>",
+        "</body>",
+        "</html>"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "Fundo vermelho-claro: o jogador percebe na hora que algo deu errado"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "A consequência da escolha"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "Uma dica em negrito para a próxima tentativa"
+        },
+        {
+          "linhas": [
+            12,
+            12
+          ],
+          "texto": "O caminho de volta ao começo"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-d",
+      "tipo": "codigo",
+      "nome": "Exemplo D — Créditos com link externo (creditos.html)",
+      "previa": true,
+      "codigo": [
+        "<!DOCTYPE html>",
+        "<html lang=\"pt-br\">",
+        "<head>",
+        "  <meta charset=\"UTF-8\">",
+        "  <title>A Floresta Misteriosa - Créditos</title>",
+        "</head>",
+        "<body style=\"text-align: center; font-family: sans-serif;\">",
+        "  <h1>Créditos</h1>",
+        "  <ul style=\"list-style: none; padding: 0;\">",
+        "    <li>História e código: Seu Nome</li>",
+        "    <li>Ferramentas: HTML e um editor de texto</li>",
+        "  </ul>",
+        "  <p><a href=\"https://developer.mozilla.org/pt-BR/docs/Web/HTML\" target=\"_blank\">Aprenda mais HTML</a></p>",
+        "  <p><a href=\"index.html\">Voltar ao menu</a></p>",
+        "</body>",
+        "</html>"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            9,
+            12
+          ],
+          "texto": "Lista com quem fez o jogo e como"
+        },
+        {
+          "linhas": [
+            13,
+            13
+          ],
+          "texto": "Link para um site externo; o `target=\"_blank\"` abre numa aba nova, e o jogo continua aberto"
+        },
+        {
+          "linhas": [
+            14,
+            14
+          ],
+          "texto": "Volta ao menu"
+        }
+      ]
+    },
+    {
+      "id": "como-aplicar",
+      "tipo": "leitura",
+      "nome": "Como aplicar: A Floresta Misteriosa",
+      "blocos": [
+        "Monte o projeto completo com o mapa da seção 5. Os arquivos `floresta.html`, `caverna.html`, `gameover.html` e `creditos.html` estão no item 6. Faltam estes quatro:",
+        "**index.html**",
+        {
+          "codigo": "<!DOCTYPE html>\n<html lang=\"pt-br\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>A Floresta Misteriosa</title>\n</head>\n<body style=\"background-color: #e3f2e1; text-align: center; font-family: sans-serif; max-width: 600px; margin: auto;\">\n  <h1>🌳 A Floresta Misteriosa</h1>\n  <p>Você se perdeu da sua turma no passeio. Escolha bem o caminho para voltar!</p>\n  <p><a href=\"floresta.html\" style=\"font-size: 24px;\">▶ Começar</a></p>\n  <p><a href=\"creditos.html\">Créditos</a></p>\n</body>\n</html>"
+        },
+        "**rio.html**",
+        {
+          "codigo": "<!DOCTYPE html>\n<html lang=\"pt-br\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>A Floresta Misteriosa - O rio</title>\n</head>\n<body style=\"text-align: center; font-family: sans-serif; max-width: 600px; margin: auto;\">\n  <h1>🌊 O rio</h1>\n  <p>O rio é rápido. Há uma canoa amarrada e, mais adiante, uma ponte de cordas.</p>\n  <p><a href=\"final-vila.html\">Atravessar pela ponte, segurando nas cordas</a></p>\n  <p><a href=\"gameover.html\">Pular na canoa sem remo</a></p>\n  <hr>\n  <p><a href=\"floresta.html\">Voltar para a trilha</a></p>\n</body>\n</html>"
+        },
+        "**final-tesouro.html**",
+        {
+          "codigo": "<!DOCTYPE html>\n<html lang=\"pt-br\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>A Floresta Misteriosa - O tesouro</title>\n</head>\n<body style=\"background-color: #fff6cc; text-align: center; font-family: sans-serif;\">\n  <h1 style=\"color: #b8860b;\">🏆 Final do Tesouro!</h1>\n  <p>O brilho era um baú! Dentro dele, um mapa que mostra o caminho de volta.</p>\n  <p>Seu caminho: Trilha → Caverna → Silêncio</p>\n  <hr>\n  <p><a href=\"index.html\">Jogar de novo e descobrir outro final</a></p>\n</body>\n</html>"
+        },
+        "**final-vila.html**",
+        {
+          "codigo": "<!DOCTYPE html>\n<html lang=\"pt-br\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>A Floresta Misteriosa - A vila</title>\n</head>\n<body style=\"background-color: #d4f8d4; text-align: center; font-family: sans-serif;\">\n  <h1 style=\"color: green;\">🏡 Final da Vila!</h1>\n  <p>Do outro lado da ponte, você vê as luzes da vila. Sua turma está lá esperando!</p>\n  <p>Seu caminho: Trilha → Rio → Ponte</p>\n  <hr>\n  <p><a href=\"index.html\">Jogar de novo e descobrir outro final</a></p>\n</body>\n</html>"
+        },
+        "**Por que funciona:** todas as cenas ficam na mesma pasta, com nomes em minúsculas, então os links só precisam do nome do arquivo. A trilha é a bifurcação principal, e cada caminho tem uma escolha boa e uma ruim, o que dá dois finais de vitória e um game over. Todas as páginas têm saída: as cenas do meio têm \"voltar\", e os finais têm \"jogar de novo\". As cores contam a consequência: verde e dourado nas vitórias, vermelho no game over. As páginas de vitória ainda mostram o caminho que o jogador fez, para ele lembrar das próprias escolhas."
+      ]
+    },
+    {
+      "id": "quiz",
+      "tipo": "quiz",
+      "nome": "Quiz de código",
+      "perguntas": [
+        {
+          "pergunta": "O que é uma bifurcação no jogo?",
+          "opcoes": [
+            "Uma página sem links",
+            "Um ponto em que a história se divide em caminhos diferentes",
+            "Uma imagem da cena"
+          ],
+          "correta": 1,
+          "dica": "pense numa estrada que se divide em duas.",
+          "acerto": "Isso! Dois links, dois caminhos.",
+          "erro": "Página sem link é um beco sem saída.",
+          "explicacao": "a bifurcação é feita com dois ou mais links para cenas diferentes."
+        },
+        {
+          "pergunta": "O que o `target=\"_blank\"` faz?",
+          "codigo": "<a href=\"https://pt.wikipedia.org\" target=\"_blank\">Pesquisar</a>",
+          "opcoes": [
+            "Abre o link numa aba nova",
+            "Deixa o link invisível",
+            "Apaga a página"
+          ],
+          "correta": 0,
+          "dica": "o jogo precisa continuar aberto.",
+          "acerto": "Perfeito! O jogo fica na aba de antes.",
+          "erro": "_blank quer dizer 'em branco': uma aba nova.",
+          "explicacao": "o site externo abre em outra aba e o jogador não perde o jogo."
+        },
+        {
+          "pergunta": "Qual destas páginas é um beco sem saída?",
+          "opcoes": [
+            "Uma página com um link \"Voltar\"",
+            "Uma página só com título e texto",
+            "Uma página com duas escolhas"
+          ],
+          "correta": 1,
+          "dica": "dá para sair dela clicando em algo?",
+          "acerto": "Isso! Sem link, o jogador fica preso.",
+          "erro": "As outras têm pelo menos um link.",
+          "explicacao": "toda página precisa de pelo menos um `<a>`."
+        },
+        {
+          "pergunta": "Qual é o melhor nome para um arquivo de cena?",
+          "opcoes": [
+            "`Cena Da Caverna.html`",
+            "`cena-da-caverna.html`",
+            "`CenaDaCáverna.html`"
+          ],
+          "correta": 1,
+          "dica": "minúsculas, sem espaço, sem acento.",
+          "acerto": "Mandou bem! Assim o link nunca quebra.",
+          "erro": "Espaços, maiúsculas e acentos podem quebrar o link.",
+          "explicacao": "nomes simples e em minúsculas funcionam em qualquer computador e no GitHub."
+        },
+        {
+          "pergunta": "A imagem não aparece e no lugar dela surge o texto \"Dragão dormindo\". De onde veio esse texto?",
+          "codigo": "<img src=\"imagens/dragao.png\" alt=\"Dragão dormindo\">",
+          "opcoes": [
+            "Do `src`",
+            "Do `alt`",
+            "Do `<title>`"
+          ],
+          "correta": 1,
+          "dica": "qual atributo descreve a imagem?",
+          "acerto": "Perfeito! O alt aparece quando a imagem falha.",
+          "erro": "O src é o caminho; o alt é a descrição.",
+          "explicacao": "se a imagem não carrega, o navegador mostra o texto do `alt`."
+        },
+        {
+          "pergunta": "O que você deve fazer ANTES de começar a criar os arquivos?",
+          "opcoes": [
+            "Escolher as cores",
+            "Desenhar o mapa do jogo",
+            "Escrever os créditos"
+          ],
+          "correta": 1,
+          "dica": "o que evita que você se perca?",
+          "acerto": "Isso! O mapa mostra todas as cenas e setas.",
+          "erro": "Cores e créditos podem vir depois.",
+          "explicacao": "com o mapa, você sabe quantos arquivos criar e para onde cada link vai."
+        }
+      ]
+    },
+    {
+      "id": "atividades",
+      "tipo": "atividades",
+      "nome": "Atividades",
+      "intro": [
+        "Escreva ou cole a sua tentativa no campo de cada atividade para liberar a solução. Outras soluções também valem, desde que passem nos testes do enunciado."
+      ],
+      "itens": [
+        {
+          "n": 1,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie uma cena chamada `porta.html` com um título, uma frase de história e duas escolhas: `sala.html` e `jardim.html`."
+          ],
+          "dica": "dois `<a href=\"...\">`.",
+          "solucao": [
+            {
+              "codigo": "<!DOCTYPE html>\n<html lang=\"pt-br\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>A porta</title>\n</head>\n<body style=\"text-align: center;\">\n  <h1>A porta misteriosa</h1>\n  <p>A porta se abriu sozinha. Para onde você vai?</p>\n  <p><a href=\"sala.html\">Entrar na sala</a></p>\n  <p><a href=\"jardim.html\">Ir para o jardim</a></p>\n</body>\n</html>"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Coloque uma imagem na sua cena, da pasta `imagens`, com um `alt` que descreva bem o que aparece nela."
+          ],
+          "dica": "o `alt` deve contar o que a imagem mostra, como se a pessoa não pudesse ver.",
+          "solucao": [
+            {
+              "codigo": "<img src=\"imagens/porta.png\" alt=\"Porta de madeira antiga, entreaberta, com luz saindo pela fresta\" width=\"300\">"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie uma página `creditos.html` com seu nome, o nome do jogo e um link de volta para o `index.html`."
+          ],
+          "dica": "use uma lista para organizar.",
+          "solucao": [
+            {
+              "codigo": "<!DOCTYPE html>\n<html lang=\"pt-br\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>Créditos</title>\n</head>\n<body style=\"text-align: center;\">\n  <h1>Créditos</h1>\n  <ul style=\"list-style: none; padding: 0;\">\n    <li>Jogo: A Porta Misteriosa</li>\n    <li>Criado por: Seu Nome</li>\n  </ul>\n  <p><a href=\"index.html\">Voltar ao menu</a></p>\n</body>\n</html>"
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "nivel": "Médio",
+          "enunciado": [
+            "Desenhe (em texto) o mapa de um jogo seu com pelo menos 6 cenas e 2 finais diferentes."
+          ],
+          "dica": "use setas `→` e escreva o nome de cada arquivo.",
+          "solucao": [
+            {
+              "codigo": "index → praia ──┬──► barco ──┬──► final-ilha      (vitória)\n                │            └──► gameover\n                └──► farol ──┬──► final-resgate   (vitória)\n                             └──► gameover"
+            },
+            "São 7 arquivos: `index`, `praia`, `barco`, `farol`, `final-ilha`, `final-resgate` e `gameover`."
+          ]
+        },
+        {
+          "n": 5,
+          "nivel": "Médio",
+          "enunciado": [
+            "Na página de game over, mude a cor do fundo para vermelho-claro e acrescente uma dica em negrito."
+          ],
+          "dica": "`style=\"background-color: #ffcccc;\"` e `<strong>`.",
+          "solucao": [
+            {
+              "codigo": "<body style=\"background-color: #ffcccc; text-align: center;\">\n  <h1>GAME OVER</h1>\n  <p>O barco afundou!</p>\n  <p><strong>Dica:</strong> confira se o barco tem remos antes de entrar.</p>\n  <p><a href=\"index.html\">Recomeçar</a></p>\n</body>"
+            }
+          ]
+        },
+        {
+          "n": 6,
+          "nivel": "Médio",
+          "enunciado": [
+            "Na sua tela de vitória, mostre o caminho que o jogador fez para chegar até ali, e um link para jogar de novo."
+          ],
+          "dica": "escreva as cenas na ordem, separadas por setas.",
+          "solucao": [
+            {
+              "codigo": "<body style=\"background-color: #d4f8d4; text-align: center;\">\n  <h1>🏝️ Você chegou à ilha!</h1>\n  <p>Seu caminho: Praia → Barco → Remar com calma</p>\n  <hr>\n  <p><a href=\"index.html\">Jogar de novo e descobrir outro final</a></p>\n</body>"
+            }
+          ]
+        },
+        {
+          "n": 7,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Construa o jogo completo da atividade 4: todos os arquivos, com o mesmo visual em todas as cenas, imagens com `alt`, dois finais de vitória e um game over."
+          ],
+          "dica": "copie o esqueleto de uma página pronta e mude só a história e os links.",
+          "solucao": [
+            "Cada arquivo segue o mesmo modelo. Exemplos de duas cenas:",
+            "**praia.html**",
+            {
+              "codigo": "<!DOCTYPE html>\n<html lang=\"pt-br\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>Náufrago - A praia</title>\n</head>\n<body style=\"text-align: center; font-family: sans-serif; max-width: 600px; margin: auto;\">\n  <h1>🏖️ A praia</h1>\n  <img src=\"imagens/praia.png\" alt=\"Praia deserta com um barco à esquerda e um farol à direita\" width=\"300\">\n  <p>Você acordou numa praia deserta. Há um barco velho e, longe, um farol.</p>\n  <p><a href=\"barco.html\">Ir até o barco</a></p>\n  <p><a href=\"farol.html\">Caminhar até o farol</a></p>\n</body>\n</html>"
+            },
+            "**farol.html**",
+            {
+              "codigo": "<!DOCTYPE html>\n<html lang=\"pt-br\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>Náufrago - O farol</title>\n</head>\n<body style=\"text-align: center; font-family: sans-serif; max-width: 600px; margin: auto;\">\n  <h1>🗼 O farol</h1>\n  <p>No alto do farol há uma lanterna e um rádio antigo.</p>\n  <p><a href=\"final-resgate.html\">Ligar o rádio e pedir ajuda</a></p>\n  <p><a href=\"gameover.html\">Subir no telhado do farol</a></p>\n  <hr>\n  <p><a href=\"praia.html\">Voltar para a praia</a></p>\n</body>\n</html>"
+            },
+            "As outras cenas (`barco.html`, os finais e o `gameover.html`) seguem o mesmo padrão."
+          ]
+        },
+        {
+          "n": 8,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Faça o teste completo (QA) do seu jogo: monte uma tabela com todas as páginas e todos os links, clique em cada um e anote se funcionou. Corrija o que quebrar."
+          ],
+          "dica": "um link que mostra \"404\" quase sempre tem o nome do arquivo escrito diferente.",
+          "solucao": [
+            {
+              "tabela": [
+                [
+                  "Página",
+                  "Link",
+                  "Destino",
+                  "Funcionou?"
+                ],
+                [
+                  "index.html",
+                  "Começar",
+                  "praia.html",
+                  "Sim"
+                ],
+                [
+                  "praia.html",
+                  "Ir até o barco",
+                  "barco.html",
+                  "Sim"
+                ],
+                [
+                  "praia.html",
+                  "Caminhar até o farol",
+                  "farol.html",
+                  "Não: o arquivo estava salvo como `Farol.html`. Renomeado para `farol.html`"
+                ],
+                [
+                  "farol.html",
+                  "Ligar o rádio",
+                  "final-resgate.html",
+                  "Sim"
+                ],
+                [
+                  "farol.html",
+                  "Subir no telhado",
+                  "gameover.html",
+                  "Sim"
+                ],
+                [
+                  "gameover.html",
+                  "Recomeçar",
+                  "index.html",
+                  "Sim"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "n": 9,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Explique com suas palavras como um jogo feito só com HTML consegue ter \"escolhas\" e \"consequências\"."
+          ],
+          "dica": "o que acontece quando o jogador clica num link?",
+          "solucao": [
+            "**Resposta esperada:** cada cena do jogo é uma página HTML diferente. As escolhas são links: cada link leva para uma página diferente, e essa página conta o que aconteceu por causa da escolha (a consequência). Como cada caminho leva a cenas diferentes, o jogador pode chegar a finais diferentes, dependendo do que escolher."
+          ]
+        }
+      ]
+    }
+  ]
+}

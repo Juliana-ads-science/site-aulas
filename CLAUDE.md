@@ -103,6 +103,16 @@ A professora entrega o documento **completo, com as respostas**. Cabe ao Claude 
 - Simulação: `memoria` com valor `null` remove a variável (ex.: locais de uma função que terminou); `limparTela` recomeça a saída (ex.: rerun do Streamlit); `rotuloTela` troca o nome da caixa ("Console" no JavaScript).
 - Regras do LEIA-ME: não publicar "Na correção", "Observação para o slide", "Ajustes em alguns exemplos dos slides" nem instruções do tipo "peça que o aluno"; gabaritos só atrás de "Ver solução". Nas aulas 1 a 4 (formato Material Complementar), as mensagens de acerto/erro dos quizzes são escritas por Claude, curtas. As aulas 8 e 12 (Python) e a 3 (JavaScript) já trazem essas mensagens.
 
+## Área Kids (outubro de 2026)
+
+- **Navegação:** item **"Kids"** no menu lateral, separado do grupo "Trilhas" (como "Início" e "Meu progresso"). Ao clicar, abre a rota `#/kids`: uma página-hub com um card por trilha kids (o mesmo `cardTrilha` das trilhas adultas, com barra de progresso). O card leva para a trilha normalmente (`viewTrilha`, que já tinha suporte a `publico: "kids"`). A página Início (adulto) não lista mais as trilhas kids — elas só aparecem na aba Kids.
+- **Trilhas kids:** `roblox` (`conteudo/kids/roblox/`, linguagem `lua`, primeira aula: 41) e `html-jogos` (`conteudo/kids/html-jogos/`, linguagem `html`, aulas 47 e 48). `pasta` no `indice.json` aceita subpastas (`kids/roblox`); criar outra trilha kids segue a mesma regra das trilhas adultas (JSON da aula + id no `indice.json`).
+- **Realce de sintaxe:** `LINGUAGENS` em `js/app.js` ganhou `lua` e `html`, no mesmo formato de `python`/`javascript` (palavras-chave, "funções" e uma regex de comentário/string/número/identificador).
+- **Etapa "conversa":** o material novo das aulas kids não trazia falas do Bit, então Claude escreveu 3 a 4 falas curtas apresentando o assunto e colocou como a primeira etapa da aula (antes de "Definições"). Usa o schema que já existia (`conversa` → `falas[]`); nenhuma mudança de código foi necessária.
+- **Pré-visualização HTML ("Ver como fica"):** etapas `codigo` no formato `codigo`+`explicacoes` aceitam `"previa": true` quando o código é uma página HTML simples e autocontida. Isso mostra um botão "Ver como fica" que abre um `<iframe>` com `srcdoc` e `sandbox="allow-scripts"` (sem `allow-same-origin`, de propósito: a página de exemplo não deve conseguir ler nem afetar o site). Usado nos quatro exemplos das aulas 47 e 48 de `html-jogos`; não existe no `ferramentas/converte_aula.py` — é acrescentado à mão no JSON depois da conversão, aula por aula, conforme o exemplo for simples o bastante.
+- **Progresso sem colisão de ids:** a chave de progresso já é `trilha/aula/etapa` (ver `marcar`/`feito` em `js/app.js`), então o id de uma etapa só precisa ser único dentro da própria aula. Etapas kids (`quiz`, `exemplo-a`, `atividades`...) não colidem com as mesmas etapas de aulas adultas, e por isso não foi preciso usar nenhum prefixo.
+- **LGPD:** nenhuma coleta nova de dados. Contas kids continuam só com apelido e senha, criadas pela professora.
+
 ## Segurança (não desfazer)
 
 - **Chaves:** no código só entram chaves públicas: a publishable key do Supabase e a Site Key do Turnstile (`js/config.js`). A Secret Key do Turnstile e a service_role/secret key do Supabase **nunca** vão para o repositório.

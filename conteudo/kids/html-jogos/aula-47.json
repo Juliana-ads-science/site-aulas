@@ -1,0 +1,912 @@
+{
+  "numero": 47,
+  "titulo": "Sala de Vitória e Game Over com Links",
+  "etapas": [
+    {
+      "id": "conversa",
+      "tipo": "conversa",
+      "nome": "Conversa com o Bit",
+      "falas": [
+        "Oi! Todo jogo precisa de um final, não é? 🏆",
+        "Hoje você vai criar a tela de vitória e a tela de game over do seu jogo.",
+        "Cada tela é um arquivo HTML diferente, ligado por links.",
+        "Vamos fazer o jogador comemorar ou tentar de novo!"
+      ]
+    },
+    {
+      "id": "definicoes",
+      "tipo": "leitura",
+      "nome": "Definições",
+      "blocos": [
+        "Todo jogo precisa de um final! Hoje você vai criar a **sala de vitória** (quando o jogador ganha) e a tela de **game over** (quando ele perde), e ligar tudo com links. Cada tela do jogo é um arquivo `.html` diferente.",
+        {
+          "tabela": [
+            [
+              "Palavra",
+              "O que significa"
+            ],
+            [
+              "Página HTML",
+              "Um arquivo `.html`; no nosso jogo, cada arquivo é uma tela"
+            ],
+            [
+              "Tela (estado do jogo)",
+              "Um momento do jogo: menu, fase, vitória, derrota"
+            ],
+            [
+              "Link",
+              "Texto ou botão que leva para outra página"
+            ],
+            [
+              "`<a href=\"...\">`",
+              "A tag do link; o `href` diz para onde ir"
+            ],
+            [
+              "Caminho relativo",
+              "O nome do arquivo de destino, sem o endereço completo (`vitoria.html`)"
+            ],
+            [
+              "`index.html`",
+              "O arquivo principal: a porta de entrada do jogo"
+            ],
+            [
+              "Sala de vitória",
+              "A tela de \"Você venceu!\""
+            ],
+            [
+              "Game over",
+              "A tela de \"Fim de jogo, tente de novo\""
+            ],
+            [
+              "`<h1>`",
+              "O título maior da página"
+            ],
+            [
+              "`<p>`",
+              "Um parágrafo de texto"
+            ],
+            [
+              "`<div>`",
+              "Uma \"caixa\" para agrupar coisas"
+            ],
+            [
+              "`<button>`",
+              "Um botão"
+            ],
+            [
+              "`style=\"...\"`",
+              "Estilo direto na tag: cor, tamanho, alinhamento"
+            ],
+            [
+              "`<img>`",
+              "Uma imagem"
+            ],
+            [
+              "`<ul>` e `<li>`",
+              "Uma lista e cada item dela"
+            ],
+            [
+              "`<hr>`",
+              "Uma linha horizontal"
+            ],
+            [
+              "URL",
+              "O endereço que aparece no topo do navegador"
+            ],
+            [
+              "Link quebrado",
+              "Link que leva a um arquivo que não existe"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "para-que-como-e-quando-usamos",
+      "tipo": "leitura",
+      "nome": "Para que, como e quando usamos",
+      "blocos": [
+        "**Para que:** mostrar ao jogador que ele ganhou ou perdeu, e sempre dar um jeito de jogar de novo.",
+        "**Como:** criamos um arquivo para cada tela, todos **na mesma pasta**, e ligamos uns aos outros com `<a href=\"nome-do-arquivo.html\">`.",
+        {
+          "codigo": "meu-jogo/\n├── index.html      ← menu\n├── fase1.html      ← a fase\n├── vitoria.html    ← você venceu\n└── gameover.html   ← fim de jogo"
+        },
+        "**Quando usar cada tela:**",
+        {
+          "tabela": [
+            [
+              "Situação",
+              "Para onde o jogador vai"
+            ],
+            [
+              "Começou o jogo",
+              "`index.html` (menu)"
+            ],
+            [
+              "Escolheu o caminho certo",
+              "`vitoria.html`"
+            ],
+            [
+              "Escolheu o caminho errado",
+              "`gameover.html`"
+            ],
+            [
+              "Quer jogar de novo",
+              "Volta para `index.html` ou `fase1.html`"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "estruturas",
+      "tipo": "leitura",
+      "nome": "Estruturas",
+      "blocos": [
+        {
+          "h": "3.1 Esqueleto de qualquer tela"
+        },
+        {
+          "codigo": "<!DOCTYPE html>\n<html lang=\"pt-br\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>Nome da tela</title>\n</head>\n<body>\n  <!-- o conteúdo da tela vem aqui -->\n</body>\n</html>"
+        },
+        {
+          "h": "3.2 Link para outra tela"
+        },
+        {
+          "codigo": "<a href=\"vitoria.html\">Abrir o baú</a>"
+        },
+        {
+          "h": "3.3 Fundo colorido na tela inteira"
+        },
+        {
+          "codigo": "<body style=\"background-color: lightgreen;\">"
+        },
+        {
+          "h": "3.4 Título e texto centralizados"
+        },
+        {
+          "codigo": "<h1 style=\"text-align: center;\">Você venceu!</h1>"
+        },
+        {
+          "h": "3.5 Caixa com borda"
+        },
+        {
+          "codigo": "<div style=\"border: 3px solid green; padding: 20px; border-radius: 10px;\">\n  ...\n</div>"
+        },
+        {
+          "h": "3.6 Botão que muda de tela"
+        },
+        {
+          "codigo": "<button onclick=\"window.location.href='fase1.html'\">Tentar de novo</button>"
+        },
+        {
+          "h": "3.7 Lista de conquistas"
+        },
+        {
+          "codigo": "<ul>\n  <li>Moedas: 10</li>\n  <li>Chave dourada</li>\n</ul>"
+        },
+        {
+          "h": "3.8 Imagem com texto alternativo"
+        },
+        {
+          "codigo": "<img src=\"imagens/trofeu.png\" alt=\"Troféu dourado\" width=\"120\">"
+        }
+      ]
+    },
+    {
+      "id": "sintaxe-e-simbolos",
+      "tipo": "leitura",
+      "nome": "Sintaxe e símbolos",
+      "blocos": [
+        {
+          "tabela": [
+            [
+              "Símbolo / comando",
+              "O que faz",
+              "Por que existe"
+            ],
+            [
+              "`< >`",
+              "Abre e fecha uma tag",
+              "Tudo no HTML é feito de tags"
+            ],
+            [
+              "`</tag>`",
+              "Fecha a tag",
+              "A barra indica o fim"
+            ],
+            [
+              "`href=\"...\"`",
+              "Destino do link",
+              "\"Para onde este link vai?\""
+            ],
+            [
+              "`.html`",
+              "Final do nome do arquivo",
+              "Diz que é uma página"
+            ],
+            [
+              "`style=\"...\"`",
+              "Estilo dentro da tag",
+              "Mudar cor e posição rapidinho"
+            ],
+            [
+              "`;` dentro do style",
+              "Separa os estilos",
+              "`color: red; font-size: 20px;`"
+            ],
+            [
+              "`background-color`",
+              "Cor do fundo",
+              "Verde para vitória, vermelho para derrota"
+            ],
+            [
+              "`color`",
+              "Cor do texto",
+              "Destacar o título"
+            ],
+            [
+              "`text-align: center`",
+              "Centraliza",
+              "Tela de fim de jogo fica no meio"
+            ],
+            [
+              "`padding`",
+              "Espaço dentro da caixa",
+              "O texto não encosta na borda"
+            ],
+            [
+              "`border-radius`",
+              "Arredonda os cantos",
+              "Visual mais bonito"
+            ],
+            [
+              "`text-decoration: none`",
+              "Tira o sublinhado do link",
+              "Link com cara de botão"
+            ],
+            [
+              "`onclick=\"...\"`",
+              "O que fazer ao clicar",
+              "Faz o botão mudar de página"
+            ],
+            [
+              "`window.location.href='x.html'`",
+              "Manda o navegador para outra página",
+              "Um botão funcionar como link"
+            ],
+            [
+              "`alt=\"...\"`",
+              "Descreve a imagem",
+              "Aparece se a imagem não carregar e ajuda quem usa leitor de tela"
+            ],
+            [
+              "`<!-- ... -->`",
+              "Comentário",
+              "Anotação que não aparece na tela"
+            ],
+            [
+              "`&lt;`",
+              "Mostra o sinal `<` na tela",
+              "Para escrever tags como texto"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logica-por-tras",
+      "tipo": "leitura",
+      "nome": "Lógica por trás",
+      "blocos": [
+        "**Bit diz:** \"Pense no seu jogo como um livro: cada página HTML é um capítulo, e os links são as setas que levam ao próximo!\"",
+        "**O caminho do jogador:**",
+        {
+          "passos": [
+            "Ele abre o `index.html` (menu).",
+            "Clica em \"Começar\" e vai para a `fase1.html`.",
+            "Na fase, faz uma escolha:"
+          ]
+        },
+        {
+          "lista": [
+            "acertou: vai para `vitoria.html`;",
+            "errou: vai para `gameover.html`."
+          ]
+        },
+        {
+          "passos": [
+            "Nas duas telas finais, existe um link para voltar e jogar de novo."
+          ]
+        },
+        "**Por que todos os arquivos na mesma pasta:** o `href=\"vitoria.html\"` diz ao navegador \"procure um arquivo chamado `vitoria.html` aqui do lado\". Se o arquivo estiver em outra pasta ou com outro nome, o navegador não acha e mostra uma página de erro.",
+        "**O nome precisa ser IGUALZINHO:** `Vitoria.html` e `vitoria.html` são nomes diferentes para muitos computadores e para o GitHub. Regra de ouro: **tudo em letras minúsculas, sem espaços e sem acentos** (`game-over.html`, nunca `Game Over.html`).",
+        "**Por que a tela final precisa de um link de volta:** se o jogador ganhar ou perder e não tiver onde clicar, ele fica preso. Essa tela vira um \"beco sem saída\". Toda tela precisa de pelo menos um caminho.",
+        "**Cores contam a história:**",
+        {
+          "tabela": [
+            [
+              "Tela",
+              "Cores",
+              "Por quê"
+            ],
+            [
+              "Vitória",
+              "Verde, dourado, amarelo",
+              "Sensação de festa e conquista"
+            ],
+            [
+              "Game over",
+              "Vermelho, cinza, preto",
+              "Sensação de \"acabou\""
+            ],
+            [
+              "Fase",
+              "Neutras",
+              "Não dar a resposta antes da hora"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "exemplo-a",
+      "tipo": "codigo",
+      "nome": "Exemplo A — A fase com duas escolhas (fase1.html)",
+      "previa": true,
+      "codigo": [
+        "<!DOCTYPE html>",
+        "<html lang=\"pt-br\">",
+        "<head>",
+        "  <meta charset=\"UTF-8\">",
+        "  <title>Fase 1 - A sala do tesouro</title>",
+        "</head>",
+        "<body style=\"text-align: center; font-family: sans-serif;\">",
+        "  <h1>A sala do tesouro</h1>",
+        "  <p>Você entrou numa sala escura. Há um baú e um dragão dormindo.</p>",
+        "  <p><a href=\"vitoria.html\">🎁 Abrir o baú bem devagar</a></p>",
+        "  <p><a href=\"gameover.html\">🐉 Fazer carinho no dragão</a></p>",
+        "</body>",
+        "</html>"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Avisa ao navegador que é uma página HTML moderna"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Permite acentos como \"ã\" e \"ç\""
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "O nome que aparece na aba do navegador"
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "Centraliza tudo e usa uma letra fácil de ler"
+        },
+        {
+          "linhas": [
+            8,
+            8
+          ],
+          "texto": "Título da cena"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "A história: o que o jogador está vendo"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "Escolha certa: leva para a vitória"
+        },
+        {
+          "linhas": [
+            11,
+            11
+          ],
+          "texto": "Escolha errada: leva para o game over"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-b",
+      "tipo": "codigo",
+      "nome": "Exemplo B — A sala de vitória (vitoria.html)",
+      "previa": true,
+      "codigo": [
+        "<!DOCTYPE html>",
+        "<html lang=\"pt-br\">",
+        "<head>",
+        "  <meta charset=\"UTF-8\">",
+        "  <title>Você venceu!</title>",
+        "</head>",
+        "<body style=\"background-color: #d4f8d4; text-align: center; font-family: sans-serif;\">",
+        "  <div style=\"border: 4px solid gold; padding: 20px; border-radius: 15px; margin: 40px auto; max-width: 400px;\">",
+        "    <h1 style=\"color: green;\">🏆 Você venceu!</h1>",
+        "    <p>Você abriu o baú sem acordar o dragão. Que estratégia!</p>",
+        "    <ul style=\"text-align: left;\">",
+        "      <li>100 moedas de ouro</li>",
+        "      <li>1 espada brilhante</li>",
+        "    </ul>",
+        "    <p><a href=\"index.html\">Voltar ao menu</a></p>",
+        "  </div>",
+        "</body>",
+        "</html>"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "Fundo verde-claro (#d4f8d4) e tudo centralizado"
+        },
+        {
+          "linhas": [
+            8,
+            8
+          ],
+          "texto": "Uma caixa com borda dourada, cantos arredondados, centralizada (`margin: 40px auto`) e com largura máxima"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "Título grande em verde"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "Mensagem de parabéns ligada à história"
+        },
+        {
+          "linhas": [
+            11,
+            14
+          ],
+          "texto": "Lista com os prêmios; dentro da lista, o texto fica alinhado à esquerda"
+        },
+        {
+          "linhas": [
+            15,
+            15
+          ],
+          "texto": "O link de volta: a vitória nunca é um beco sem saída"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-c",
+      "tipo": "codigo",
+      "nome": "Exemplo C — O game over com botão (gameover.html)",
+      "previa": true,
+      "codigo": [
+        "<!DOCTYPE html>",
+        "<html lang=\"pt-br\">",
+        "<head>",
+        "  <meta charset=\"UTF-8\">",
+        "  <title>Game Over</title>",
+        "</head>",
+        "<body style=\"background-color: #2b2b2b; color: white; text-align: center; font-family: sans-serif; margin-top: 80px;\">",
+        "  <h1 style=\"color: #ff5c5c; font-size: 48px;\">GAME OVER</h1>",
+        "  <h3>O dragão acordou de mau humor! 🔥</h3>",
+        "  <p>Dica: dragões não gostam de carinho. Tente outra escolha!</p>",
+        "  <button onclick=\"window.location.href='fase1.html'\" style=\"font-size: 20px; padding: 10px 20px;\">",
+        "    Tentar de novo",
+        "  </button>",
+        "</body>",
+        "</html>"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "Fundo cinza-escuro, texto branco e um espaço no topo (`margin-top`)"
+        },
+        {
+          "linhas": [
+            8,
+            8
+          ],
+          "texto": "Título vermelho e grande"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "O motivo da derrota: o jogador entende o que aconteceu"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "Uma dica para ele não desistir"
+        },
+        {
+          "linhas": [
+            11,
+            11
+          ],
+          "texto": "Botão: ao clicar, o navegador vai para `fase1.html`"
+        },
+        {
+          "linhas": [
+            12,
+            12
+          ],
+          "texto": "O texto do botão"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-d",
+      "tipo": "codigo",
+      "nome": "Exemplo D — O menu (index.html)",
+      "previa": true,
+      "codigo": [
+        "<!DOCTYPE html>",
+        "<html lang=\"pt-br\">",
+        "<head>",
+        "  <meta charset=\"UTF-8\">",
+        "  <title>A Sala do Tesouro</title>",
+        "</head>",
+        "<body style=\"text-align: center; font-family: sans-serif;\">",
+        "  <h1>A Sala do Tesouro</h1>",
+        "  <p>Encontre o tesouro sem acordar o dragão.</p>",
+        "  <ul style=\"list-style: none; padding: 0;\">",
+        "    <li><a href=\"fase1.html\">▶ Começar</a></li>",
+        "    <li><a href=\"creditos.html\">Créditos</a></li>",
+        "  </ul>",
+        "</body>",
+        "</html>"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            8,
+            9
+          ],
+          "texto": "Nome do jogo e a regra em uma frase"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "Lista sem bolinhas (`list-style: none`)"
+        },
+        {
+          "linhas": [
+            11,
+            11
+          ],
+          "texto": "Leva para a fase"
+        },
+        {
+          "linhas": [
+            12,
+            12
+          ],
+          "texto": "Leva para a página de créditos (que você pode criar depois)"
+        }
+      ]
+    },
+    {
+      "id": "como-aplicar",
+      "tipo": "leitura",
+      "nome": "Como aplicar: o jogo da porta secreta",
+      "blocos": [
+        "Crie uma pasta `porta-secreta` com os quatro arquivos abaixo e abra o `index.html` no navegador.",
+        "**index.html**",
+        {
+          "codigo": "<!DOCTYPE html>\n<html lang=\"pt-br\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>A Porta Secreta</title>\n</head>\n<body style=\"background-color: #e8eef7; text-align: center; font-family: sans-serif;\">\n  <h1>🚪 A Porta Secreta</h1>\n  <p>Três portas. Só uma leva ao tesouro. Escolha com cuidado!</p>\n  <p><a href=\"fase1.html\" style=\"font-size: 24px;\">▶ Começar</a></p>\n</body>\n</html>"
+        },
+        "**fase1.html**",
+        {
+          "codigo": "<!DOCTYPE html>\n<html lang=\"pt-br\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>Escolha uma porta</title>\n</head>\n<body style=\"text-align: center; font-family: sans-serif;\">\n  <h1>Escolha uma porta</h1>\n  <p>Na porta vermelha, você ouve um rugido. Na azul, silêncio. Na verde, um tilintar de moedas.</p>\n  <p><a href=\"gameover.html\">🔴 Porta vermelha</a></p>\n  <p><a href=\"gameover.html\">🔵 Porta azul</a></p>\n  <p><a href=\"vitoria.html\">🟢 Porta verde</a></p>\n</body>\n</html>"
+        },
+        "**vitoria.html**",
+        {
+          "codigo": "<!DOCTYPE html>\n<html lang=\"pt-br\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>Tesouro encontrado!</title>\n</head>\n<body style=\"background-color: #fff6cc; text-align: center; font-family: sans-serif;\">\n  <div style=\"border: 4px solid gold; padding: 20px; border-radius: 15px; margin: 40px auto; max-width: 420px;\">\n    <h1 style=\"color: #b8860b;\">🏆 Tesouro encontrado!</h1>\n    <p>Você seguiu o som das moedas. Esperto!</p>\n    <ul style=\"text-align: left;\">\n      <li>500 moedas de ouro</li>\n      <li>1 coroa de rei</li>\n    </ul>\n  </div>\n  <hr>\n  <p><a href=\"index.html\">Jogar de novo</a></p>\n</body>\n</html>"
+        },
+        "**gameover.html**",
+        {
+          "codigo": "<!DOCTYPE html>\n<html lang=\"pt-br\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>Game Over</title>\n</head>\n<body style=\"background-color: #3a0d0d; color: white; text-align: center; font-family: sans-serif; margin-top: 80px;\">\n  <h1 style=\"color: #ff6b6b;\">GAME OVER</h1>\n  <h3>Essa porta não era a certa...</h3>\n  <p>Dica: escute com atenção o que vem de cada porta.</p>\n  <a href=\"fase1.html\" style=\"background-color: white; color: #3a0d0d; padding: 10px 20px; border-radius: 8px; text-decoration: none;\">Tentar de novo</a>\n</body>\n</html>"
+        },
+        "**Por que funciona:** os quatro arquivos estão na mesma pasta, então os links só precisam do nome do arquivo. Cada tela tem cores que combinam com o momento: neutra na fase, dourada na vitória e escura na derrota. Duas portas levam ao game over e uma à vitória, e as telas finais sempre têm um caminho de volta, então o jogador nunca fica preso. Teste o círculo completo: Menu → Fase → Vitória → Menu, e depois Menu → Fase → Game over → Fase."
+      ]
+    },
+    {
+      "id": "quiz",
+      "tipo": "quiz",
+      "nome": "Quiz de código",
+      "perguntas": [
+        {
+          "pergunta": "Para onde este link leva?",
+          "codigo": "<a href=\"gameover.html\">Pular no buraco</a>",
+          "opcoes": [
+            "Para a página `gameover.html`",
+            "Para um site da internet",
+            "Para lugar nenhum"
+          ],
+          "correta": 0,
+          "dica": "olhe o que está dentro do `href`.",
+          "acerto": "Isso! O href é o destino.",
+          "erro": "O href aponta para um arquivo da sua pasta.",
+          "explicacao": "ao clicar, o navegador abre o arquivo `gameover.html` da mesma pasta."
+        },
+        {
+          "pergunta": "O arquivo se chama `Vitoria.html`, mas o link diz `vitoria.html`. O que pode acontecer?",
+          "opcoes": [
+            "Funciona sempre",
+            "O link pode quebrar",
+            "O navegador corrige sozinho"
+          ],
+          "correta": 1,
+          "dica": "maiúscula e minúscula contam.",
+          "acerto": "Perfeito! Os nomes precisam ser idênticos.",
+          "erro": "Em muitos computadores (e no GitHub), V e v são diferentes.",
+          "explicacao": "use sempre letras minúsculas nos nomes dos arquivos."
+        },
+        {
+          "pergunta": "O que falta nesta tela de vitória?",
+          "codigo": "<body>\n  <h1>Você venceu!</h1>\n  <p>Parabéns!</p>\n</body>",
+          "opcoes": [
+            "Uma imagem",
+            "Um link para jogar de novo",
+            "Uma cor de fundo"
+          ],
+          "correta": 1,
+          "dica": "o jogador consegue sair dessa tela?",
+          "acerto": "Isso! Sem link, é um beco sem saída.",
+          "erro": "Imagem e cor ajudam, mas o essencial é o caminho de volta.",
+          "explicacao": "toda tela precisa de pelo menos um link."
+        },
+        {
+          "pergunta": "Qual cor combina mais com uma tela de game over?",
+          "opcoes": [
+            "Verde-claro com dourado",
+            "Cinza-escuro com vermelho",
+            "Amarelo com rosa"
+          ],
+          "correta": 1,
+          "dica": "que sensação o jogador deve ter?",
+          "acerto": "Mandou bem! Cores escuras passam a ideia de fim.",
+          "erro": "Verde e dourado parecem festa, combinam com a vitória.",
+          "explicacao": "as cores ajudam o jogador a entender o resultado sem ler."
+        },
+        {
+          "pergunta": "O que este botão faz?",
+          "codigo": "<button onclick=\"window.location.href='index.html'\">Menu</button>",
+          "opcoes": [
+            "Fecha o navegador",
+            "Leva para o `index.html`",
+            "Recarrega a mesma página"
+          ],
+          "correta": 1,
+          "dica": "leia o que está depois do `href=`.",
+          "acerto": "Isso! O botão funciona como um link.",
+          "erro": "window.location.href troca a página pela indicada.",
+          "explicacao": "ao clicar, o navegador vai para `index.html`."
+        },
+        {
+          "pergunta": "Para que serve o `alt` na imagem?",
+          "codigo": "<img src=\"imagens/dragao.png\" alt=\"Dragão soltando fogo\">",
+          "opcoes": [
+            "Deixar a imagem maior",
+            "Descrever a imagem se ela não carregar",
+            "Mudar a cor da imagem"
+          ],
+          "correta": 1,
+          "dica": "e se o arquivo da imagem sumir?",
+          "acerto": "Perfeito! O alt descreve a imagem.",
+          "erro": "O tamanho é o width; o alt é a descrição.",
+          "explicacao": "o texto do `alt` aparece no lugar da imagem e ajuda quem usa leitor de tela."
+        }
+      ]
+    },
+    {
+      "id": "atividades",
+      "tipo": "atividades",
+      "nome": "Atividades",
+      "intro": [
+        "Escreva ou cole a sua tentativa no campo de cada atividade para liberar a solução. Outras soluções também valem, desde que passem nos testes do enunciado."
+      ],
+      "itens": [
+        {
+          "n": 1,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie uma `vitoria.html` com fundo amarelo-claro, um título \"Você venceu!\" e um link \"Jogar de novo\" que leva ao `index.html`."
+          ],
+          "dica": "`style=\"background-color: ...\"` no `<body>`.",
+          "solucao": [
+            {
+              "codigo": "<!DOCTYPE html>\n<html lang=\"pt-br\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>Vitória</title>\n</head>\n<body style=\"background-color: lightyellow; text-align: center;\">\n  <h1>Você venceu!</h1>\n  <p><a href=\"index.html\">Jogar de novo</a></p>\n</body>\n</html>"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie uma `gameover.html` com fundo preto, título \"GAME OVER\" em vermelho e o texto \"Sua energia acabou!\"."
+          ],
+          "dica": "no `<body>`, mude também a cor do texto para branco.",
+          "solucao": [
+            {
+              "codigo": "<!DOCTYPE html>\n<html lang=\"pt-br\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>Game Over</title>\n</head>\n<body style=\"background-color: black; color: white; text-align: center;\">\n  <h1 style=\"color: red;\">GAME OVER</h1>\n  <p>Sua energia acabou!</p>\n  <p><a href=\"index.html\" style=\"color: white;\">Tentar de novo</a></p>\n</body>\n</html>"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Na sua tela de vitória, acrescente uma lista com três prêmios que o jogador ganhou."
+          ],
+          "dica": "`<ul>` com três `<li>`.",
+          "solucao": [
+            {
+              "codigo": "<ul>\n  <li>50 moedas</li>\n  <li>Escudo de madeira</li>\n  <li>Poção de vida</li>\n</ul>"
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "nivel": "Médio",
+          "enunciado": [
+            "Transforme o link \"Tentar de novo\" do game over num botão que leva para `fase1.html`."
+          ],
+          "dica": "`onclick=\"window.location.href='...'\"`.",
+          "solucao": [
+            {
+              "codigo": "<button onclick=\"window.location.href='fase1.html'\" style=\"font-size: 20px; padding: 10px 20px;\">\n  Tentar de novo\n</button>"
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "nivel": "Médio",
+          "enunciado": [
+            "Coloque a mensagem da vitória dentro de uma caixa com borda verde de 3px, cantos arredondados e um espaço interno de 20px."
+          ],
+          "dica": "use uma `<div>` com `border`, `border-radius` e `padding`.",
+          "solucao": [
+            {
+              "codigo": "<div style=\"border: 3px solid green; border-radius: 12px; padding: 20px; max-width: 400px; margin: 30px auto;\">\n  <h1>Você venceu!</h1>\n  <p>Você salvou a vila do monstro!</p>\n  <p><a href=\"index.html\">Voltar ao menu</a></p>\n</div>"
+            }
+          ]
+        },
+        {
+          "n": 6,
+          "nivel": "Médio",
+          "enunciado": [
+            "Crie uma fase com **três** escolhas: duas levam ao game over e uma à vitória."
+          ],
+          "dica": "três links `<a>` com destinos diferentes.",
+          "solucao": [
+            {
+              "codigo": "<!DOCTYPE html>\n<html lang=\"pt-br\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>A ponte</title>\n</head>\n<body style=\"text-align: center;\">\n  <h1>A ponte velha</h1>\n  <p>Como você vai atravessar o rio?</p>\n  <p><a href=\"gameover.html\">Correr pela ponte quebrada</a></p>\n  <p><a href=\"gameover.html\">Nadar contra a correnteza</a></p>\n  <p><a href=\"vitoria.html\">Usar o barquinho da margem</a></p>\n</body>\n</html>"
+            }
+          ]
+        },
+        {
+          "n": 7,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Crie um jogo completo com 4 arquivos (`index.html`, `fase1.html`, `vitoria.html`, `gameover.html`) sobre um tema seu. Toda página precisa ter pelo menos um link, e as telas finais precisam ter cores diferentes."
+          ],
+          "dica": "desenhe as setas no papel antes de começar.",
+          "solucao": [
+            "Exemplo com o tema \"Robô perdido\":",
+            "**index.html**",
+            {
+              "codigo": "<!DOCTYPE html>\n<html lang=\"pt-br\">\n<head><meta charset=\"UTF-8\"><title>Robô perdido</title></head>\n<body style=\"text-align: center;\">\n  <h1>🤖 Robô perdido</h1>\n  <p>Ajude o robô a voltar para a base!</p>\n  <p><a href=\"fase1.html\">Começar</a></p>\n</body>\n</html>"
+            },
+            "**fase1.html**",
+            {
+              "codigo": "<!DOCTYPE html>\n<html lang=\"pt-br\">\n<head><meta charset=\"UTF-8\"><title>A bateria</title></head>\n<body style=\"text-align: center;\">\n  <h1>A bateria está acabando!</h1>\n  <p><a href=\"vitoria.html\">Seguir a placa \"Base →\"</a></p>\n  <p><a href=\"gameover.html\">Entrar no túnel escuro</a></p>\n</body>\n</html>"
+            },
+            "**vitoria.html**",
+            {
+              "codigo": "<!DOCTYPE html>\n<html lang=\"pt-br\">\n<head><meta charset=\"UTF-8\"><title>Base!</title></head>\n<body style=\"background-color: #d4f8d4; text-align: center;\">\n  <h1>Você chegou na base!</h1>\n  <p><a href=\"index.html\">Jogar de novo</a></p>\n</body>\n</html>"
+            },
+            "**gameover.html**",
+            {
+              "codigo": "<!DOCTYPE html>\n<html lang=\"pt-br\">\n<head><meta charset=\"UTF-8\"><title>Game Over</title></head>\n<body style=\"background-color: #2b2b2b; color: white; text-align: center;\">\n  <h1>GAME OVER</h1>\n  <p>A bateria acabou no túnel...</p>\n  <p><a href=\"fase1.html\" style=\"color: white;\">Tentar de novo</a></p>\n</body>\n</html>"
+            }
+          ]
+        },
+        {
+          "n": 8,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Faça a \"tabela de rotas\" do seu jogo da atividade 7: para cada página, anote para onde cada link leva. Depois clique em todos os links e marque se funcionou."
+          ],
+          "dica": "se algum link mostrar \"arquivo não encontrado\", compare o nome no `href` com o nome do arquivo na pasta.",
+          "solucao": [
+            {
+              "tabela": [
+                [
+                  "Página",
+                  "Link",
+                  "Leva para",
+                  "Funcionou?"
+                ],
+                [
+                  "index.html",
+                  "Começar",
+                  "fase1.html",
+                  "Sim"
+                ],
+                [
+                  "fase1.html",
+                  "Seguir a placa",
+                  "vitoria.html",
+                  "Sim"
+                ],
+                [
+                  "fase1.html",
+                  "Entrar no túnel",
+                  "gameover.html",
+                  "Sim"
+                ],
+                [
+                  "vitoria.html",
+                  "Jogar de novo",
+                  "index.html",
+                  "Sim"
+                ],
+                [
+                  "gameover.html",
+                  "Tentar de novo",
+                  "fase1.html",
+                  "Sim"
+                ]
+              ]
+            }
+          ]
+        },
+        {
+          "n": 9,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Explique com suas palavras por que toda tela final precisa de um link de volta."
+          ],
+          "dica": "pense no que o jogador faria se não tivesse onde clicar.",
+          "solucao": [
+            "**Resposta esperada:** sem um link, o jogador fica preso na tela, sem saber o que fazer. Isso se chama \"beco sem saída\". Ele provavelmente fecharia o jogo e não jogaria de novo. Com o link \"Jogar de novo\" ou \"Tentar de novo\", ele pode recomeçar, tentar outro caminho e continuar se divertindo."
+          ]
+        }
+      ]
+    }
+  ]
+}

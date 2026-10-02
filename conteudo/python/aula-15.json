@@ -1,0 +1,1022 @@
+{
+  "numero": 15,
+  "titulo": "Programação Orientada a Objetos I: Classes, Objetos, Atributos e Métodos",
+  "etapas": [
+    {
+      "id": "definicoes",
+      "tipo": "leitura",
+      "nome": "Definições",
+      "blocos": [
+        "A Programação Orientada a Objetos (POO) organiza o código em **objetos**, que juntam dados (atributos) e ações (métodos). Em vez de ter variáveis e funções soltas, cada coisa do sistema (uma conta, um produto, um aluno) vira um objeto que sabe guardar os próprios dados e executar as próprias ações.",
+        {
+          "tabela": [
+            [
+              "Termo",
+              "O que significa"
+            ],
+            [
+              "Paradigma",
+              "Um jeito de organizar e pensar o código"
+            ],
+            [
+              "Programação procedural",
+              "Código organizado em funções que recebem dados separados delas"
+            ],
+            [
+              "Programação funcional",
+              "Código organizado em funções \"puras\", que transformam dados sem alterar nada fora delas"
+            ],
+            [
+              "POO",
+              "Código organizado em objetos que juntam dados e comportamentos"
+            ],
+            [
+              "Classe",
+              "O molde (a planta) que define quais atributos e métodos os objetos terão"
+            ],
+            [
+              "Objeto (instância)",
+              "Algo concreto criado a partir da classe, com os próprios valores"
+            ],
+            [
+              "Instanciar",
+              "Criar um objeto a partir da classe: `conta = ContaBancaria(\"Ana\")`"
+            ],
+            [
+              "Atributo",
+              "Variável que pertence ao objeto e guarda o estado dele (`conta.saldo`)"
+            ],
+            [
+              "Método",
+              "Função definida dentro da classe; é uma ação do objeto (`conta.depositar(50)`)"
+            ],
+            [
+              "Estado",
+              "Os valores dos atributos de um objeto num dado momento"
+            ],
+            [
+              "`__init__`",
+              "Método especial chamado automaticamente ao criar o objeto; inicializa os atributos"
+            ],
+            [
+              "Construtor",
+              "Nome usado no dia a dia para o `__init__` (tecnicamente, ele é um inicializador)"
+            ],
+            [
+              "`self`",
+              "Referência ao próprio objeto que está executando o método"
+            ],
+            [
+              "Atributo de instância",
+              "Pertence a cada objeto; cada um tem o seu valor (`self.nome`)"
+            ],
+            [
+              "Atributo de classe",
+              "Pertence à classe e é compartilhado por todos os objetos"
+            ],
+            [
+              "Notação de ponto",
+              "`objeto.atributo` e `objeto.metodo()`"
+            ],
+            [
+              "Encapsulamento",
+              "Manter dados e as ações que mexem neles dentro do mesmo objeto (aprofundado na Aula 17)"
+            ],
+            [
+              "`ValueError`",
+              "Erro usado para avisar que um valor recebido não é válido"
+            ],
+            [
+              "`raise`",
+              "Comando que lança (dispara) um erro"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "para-que-como-e-quando-usamos",
+      "tipo": "leitura",
+      "nome": "Para que, como e quando usamos",
+      "blocos": [
+        "Usamos POO para modelar \"coisas\" do sistema que têm dados e ações próprias.",
+        "**Para que:** contas bancárias, produtos de um estoque, alunos com notas, personagens de jogo, livros de uma biblioteca, usuários de um site. Cada um vira uma classe, e cada exemplar vira um objeto.",
+        "**Como:** criamos a classe com `class`, definimos o `__init__` para preparar os atributos, escrevemos métodos que usam `self` para ler e alterar esses atributos e criamos quantos objetos quisermos chamando a classe como uma função.",
+        "**Quando usar (e quando não):**",
+        {
+          "tabela": [
+            [
+              "Situação",
+              "POO é uma boa?"
+            ],
+            [
+              "Várias \"coisas\" do mesmo tipo, cada uma com seus dados (100 alunos)",
+              "Sim"
+            ],
+            [
+              "Dados que mudam com ações (saldo que sobe e desce)",
+              "Sim"
+            ],
+            [
+              "Sistemas que vão crescer e ganhar funcionalidades",
+              "Sim"
+            ],
+            [
+              "Regras que precisam proteger os dados (não sacar mais que o saldo)",
+              "Sim"
+            ],
+            [
+              "Um script curto, de uma tarefa só (somar uma lista)",
+              "Não precisa: uma função resolve"
+            ],
+            [
+              "Transformar listas de dados sem guardar estado",
+              "Funções e compreensões costumam ser mais simples"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "estruturas",
+      "tipo": "leitura",
+      "nome": "Estruturas",
+      "blocos": [
+        {
+          "h": "3.1 Classe mínima"
+        },
+        {
+          "codigo": "class Pessoa:\n    pass            # classe vazia, só para existir\n\np = Pessoa()        # instancia um objeto"
+        },
+        {
+          "h": "3.2 Classe com `__init__` e atributos"
+        },
+        {
+          "codigo": "class Pessoa:\n    def __init__(self, nome, idade):\n        self.nome = nome\n        self.idade = idade\n\nana = Pessoa(\"Ana\", 20)\nprint(ana.nome)     # Ana"
+        },
+        {
+          "h": "3.3 Método de instância"
+        },
+        {
+          "codigo": "class Pessoa:\n    def __init__(self, nome):\n        self.nome = nome\n\n    def apresentar(self):\n        print(f\"Olá, eu sou {self.nome}!\")\n\nPessoa(\"Bia\").apresentar()"
+        },
+        {
+          "h": "3.4 Método que altera o estado"
+        },
+        {
+          "codigo": "class Contador:\n    def __init__(self):\n        self.valor = 0\n\n    def incrementar(self, passo=1):\n        self.valor += passo"
+        },
+        {
+          "h": "3.5 Método que devolve um valor"
+        },
+        {
+          "codigo": "class Retangulo:\n    def __init__(self, largura, altura):\n        self.largura = largura\n        self.altura = altura\n\n    def area(self):\n        return self.largura * self.altura"
+        },
+        {
+          "h": "3.6 Atributo de classe"
+        },
+        {
+          "codigo": "class Aluno:\n    escola = \"Linha a Linha\"   # compartilhado\n    total = 0                  # contador da classe\n\n    def __init__(self, nome):\n        self.nome = nome       # de cada aluno\n        Aluno.total += 1"
+        },
+        {
+          "h": "3.7 Validação no construtor"
+        },
+        {
+          "codigo": "class Produto:\n    def __init__(self, nome, preco):\n        if preco < 0:\n            raise ValueError(\"O preço não pode ser negativo.\")\n        self.nome = nome\n        self.preco = preco"
+        },
+        {
+          "h": "3.8 Tratando o erro de criação"
+        },
+        {
+          "codigo": "try:\n    p = Produto(\"Caderno\", -10)\nexcept ValueError as erro:\n    print(\"Erro:\", erro)"
+        },
+        {
+          "h": "3.9 Lista de objetos"
+        },
+        {
+          "codigo": "turma = [Pessoa(\"Ana\", 20), Pessoa(\"Rui\", 22)]\nfor pessoa in turma:\n    print(pessoa.nome)"
+        }
+      ]
+    },
+    {
+      "id": "sintaxe-e-simbolos",
+      "tipo": "leitura",
+      "nome": "Sintaxe e símbolos",
+      "blocos": [
+        {
+          "tabela": [
+            [
+              "Símbolo / comando",
+              "O que faz",
+              "Por que existe"
+            ],
+            [
+              "`class Nome:`",
+              "Cria uma classe",
+              "Palavra reservada; o nome começa com maiúscula por convenção (PascalCase)"
+            ],
+            [
+              "`:` + indentação",
+              "Delimita o corpo da classe e dos métodos",
+              "Regra de blocos do Python"
+            ],
+            [
+              "`pass`",
+              "Não faz nada",
+              "Permite deixar um bloco vazio sem erro"
+            ],
+            [
+              "`def metodo(self, ...):`",
+              "Cria um método",
+              "Função dentro da classe; o primeiro parâmetro recebe o objeto"
+            ],
+            [
+              "`__init__`",
+              "Inicializador",
+              "Os dois sublinhados (dunder) marcam métodos especiais chamados pelo Python"
+            ],
+            [
+              "`self`",
+              "O próprio objeto",
+              "Liga o método aos dados daquele objeto específico"
+            ],
+            [
+              "`self.nome = nome`",
+              "Cria um atributo no objeto",
+              "À esquerda, o atributo; à direita, o parâmetro recebido"
+            ],
+            [
+              "`Classe(argumentos)`",
+              "Instancia",
+              "Cria o objeto e chama o `__init__` com esses argumentos"
+            ],
+            [
+              "`objeto.atributo`",
+              "Lê o atributo",
+              "Notação de ponto: \"o atributo deste objeto\""
+            ],
+            [
+              "`objeto.metodo()`",
+              "Chama o método",
+              "O Python passa o objeto como `self` sozinho"
+            ],
+            [
+              "`Classe.atributo`",
+              "Lê o atributo de classe",
+              "Valor compartilhado; altere pela classe"
+            ],
+            [
+              "`parametro=valor`",
+              "Valor padrão",
+              "O argumento vira opcional: `ContaBancaria(\"Bia\")`"
+            ],
+            [
+              "`return`",
+              "Devolve um resultado",
+              "Métodos que calculam algo (área, média)"
+            ],
+            [
+              "`raise ValueError(\"msg\")`",
+              "Lança um erro",
+              "Impedir que o objeto nasça com dados inválidos"
+            ],
+            [
+              "`try / except`",
+              "Captura o erro",
+              "O programa continua mesmo que a criação falhe"
+            ],
+            [
+              "`f\"{valor:.2f}\"`",
+              "f-string com 2 casas",
+              "Mostrar valores monetários"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logica-por-tras",
+      "tipo": "leitura",
+      "nome": "Lógica por trás",
+      "blocos": [
+        "**Classe x objeto:** a classe é a planta da casa; os objetos são as casas construídas a partir dela. A planta diz que toda casa tem quartos e uma cor, mas cada casa tem a sua cor. Da mesma forma, `ContaBancaria` diz que toda conta tem titular e saldo, e `conta_ana` e `conta_bia` têm valores próprios.",
+        "**O que acontece em `conta = ContaBancaria(\"Ana\", 100)`:**",
+        {
+          "passos": [
+            "O Python cria um objeto novo e vazio na memória.",
+            "Chama `ContaBancaria.__init__(objeto_novo, \"Ana\", 100)`.",
+            "Dentro do `__init__`, `self` é esse objeto novo: `self.titular = \"Ana\"` e `self.saldo = 100` criam os atributos.",
+            "O objeto pronto é guardado na variável `conta`."
+          ]
+        },
+        "**O papel do `self`:** quando você escreve `conta.depositar(50)`, o Python executa `ContaBancaria.depositar(conta, 50)`. O objeto que vem antes do ponto vira o `self`. É assim que o mesmo método `depositar` sabe que deve mexer no saldo da Ana, e não no da Bia.",
+        "**Atributo de instância x de classe:**",
+        {
+          "tabela": [
+            [
+              "",
+              "De instância",
+              "De classe"
+            ],
+            [
+              "Onde é criado",
+              "No `__init__`, com `self.`",
+              "Direto no corpo da classe"
+            ],
+            [
+              "Quem tem",
+              "Cada objeto tem o seu",
+              "Um só, compartilhado"
+            ],
+            [
+              "Exemplo",
+              "`self.nome`",
+              "`escola = \"Linha a Linha\"`"
+            ],
+            [
+              "Como alterar",
+              "`objeto.nome = ...`",
+              "`Classe.escola = ...`"
+            ]
+          ]
+        },
+        "Cuidado: `aluno1.escola = \"Outra\"` **não** altera o atributo da classe. Esse comando cria um atributo de instância novo, só em `aluno1`, que esconde o da classe. Os outros alunos continuam vendo o valor original. Para mudar para todos, altere `Aluno.escola`.",
+        "**Por que validar no construtor:** se o objeto nasce com dados errados (preço negativo, idade -5), todos os métodos passam a trabalhar com lixo. Lançar um `ValueError` no `__init__` impede que o objeto seja criado, e o `try / except` decide o que fazer com o erro.",
+        "**Por que métodos protegem o estado:** quando o saldo só muda pelos métodos `depositar` e `sacar`, as regras (não sacar mais que o saldo) ficam num lugar só. Se qualquer parte do código pudesse fazer `conta.saldo = -1000`, as regras seriam inúteis. Na Aula 17 veremos como reforçar essa proteção."
+      ]
+    },
+    {
+      "id": "exemplo-a",
+      "tipo": "codigo",
+      "nome": "Exemplo A — Do procedural para a classe (retangulo.py)",
+      "codigo": [
+        "largura1, altura1 = 5, 3",
+        "def calcular_area(largura, altura):",
+        "    return largura * altura",
+        "print(calcular_area(largura1, altura1))",
+        "",
+        "class Retangulo:",
+        "    def __init__(self, largura, altura):",
+        "        self.largura = largura",
+        "        self.altura = altura",
+        "",
+        "    def area(self):",
+        "        return self.largura * self.altura",
+        "",
+        "r = Retangulo(5, 3)",
+        "print(r.area())"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Versão procedural: os dados ficam em variáveis soltas"
+        },
+        {
+          "linhas": [
+            2,
+            3
+          ],
+          "texto": "A função recebe os dados por parâmetro e não \"pertence\" a nenhum retângulo"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Mostra 15"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Versão POO: cria o molde `Retangulo`"
+        },
+        {
+          "linhas": [
+            7,
+            9
+          ],
+          "texto": "O `__init__` guarda largura e altura dentro de cada objeto"
+        },
+        {
+          "linhas": [
+            11,
+            12
+          ],
+          "texto": "O método usa os dados do próprio objeto, via `self`"
+        },
+        {
+          "linhas": [
+            14,
+            14
+          ],
+          "texto": "Cria um retângulo concreto 5 × 3"
+        },
+        {
+          "linhas": [
+            15,
+            15
+          ],
+          "texto": "Chama o método; mostra 15. Os dados e a ação agora andam juntos"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-b",
+      "tipo": "codigo",
+      "nome": "Exemplo B — Conta bancária (conta.py)",
+      "codigo": [
+        "class ContaBancaria:",
+        "    def __init__(self, titular, saldo=0):",
+        "        self.titular = titular",
+        "        self.saldo = saldo",
+        "",
+        "    def depositar(self, valor):",
+        "        self.saldo += valor",
+        "        print(f\"Depósito de R$ {valor:.2f}. Saldo: R$ {self.saldo:.2f}\")",
+        "",
+        "    def sacar(self, valor):",
+        "        if valor > self.saldo:",
+        "            print(\"Saldo insuficiente.\")",
+        "            return",
+        "        self.saldo -= valor",
+        "        print(f\"Saque de R$ {valor:.2f}. Saldo: R$ {self.saldo:.2f}\")",
+        "",
+        "conta_ana = ContaBancaria(\"Ana\", 100)",
+        "conta_bia = ContaBancaria(\"Bia\")",
+        "conta_ana.depositar(50)",
+        "conta_bia.sacar(30)",
+        "print(conta_ana.saldo, conta_bia.saldo)"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "`saldo=0` torna o saldo inicial opcional"
+        },
+        {
+          "linhas": [
+            3,
+            4
+          ],
+          "texto": "Cria os atributos `titular` e `saldo` no objeto"
+        },
+        {
+          "linhas": [
+            6,
+            8
+          ],
+          "texto": "Soma o valor ao saldo **deste** objeto e mostra o novo saldo"
+        },
+        {
+          "linhas": [
+            10,
+            12
+          ],
+          "texto": "Se não houver saldo, avisa e `return` encerra o método sem sacar"
+        },
+        {
+          "linhas": [
+            13,
+            14
+          ],
+          "texto": "Senão, desconta e mostra"
+        },
+        {
+          "linhas": [
+            16,
+            16
+          ],
+          "texto": "Conta da Ana com R$ 100"
+        },
+        {
+          "linhas": [
+            17,
+            17
+          ],
+          "texto": "Conta da Bia com o saldo padrão, 0"
+        },
+        {
+          "linhas": [
+            18,
+            18
+          ],
+          "texto": "Mostra \"Depósito de R$ 50.00. Saldo: R$ 150.00\""
+        },
+        {
+          "linhas": [
+            19,
+            19
+          ],
+          "texto": "Mostra \"Saldo insuficiente.\" e o saldo da Bia não muda"
+        },
+        {
+          "linhas": [
+            20,
+            20
+          ],
+          "texto": "Mostra `150 0`: cada objeto tem o próprio saldo"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-c",
+      "tipo": "codigo",
+      "nome": "Exemplo C — Atributo de classe (alunos.py)",
+      "codigo": [
+        "class Aluno:",
+        "    escola = \"Linha a Linha\"",
+        "    total = 0",
+        "",
+        "    def __init__(self, nome):",
+        "        self.nome = nome",
+        "        Aluno.total += 1",
+        "",
+        "a1 = Aluno(\"Lia\")",
+        "a2 = Aluno(\"Rui\")",
+        "print(a1.escola, a2.escola)",
+        "print(Aluno.total)",
+        "a1.escola = \"Outra Escola\"",
+        "print(a1.escola, a2.escola, Aluno.escola)"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            2,
+            3
+          ],
+          "texto": "Atributos de classe: existem uma única vez e valem para todos"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Atributo de instância: cada aluno tem o seu nome"
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "Cada novo aluno soma 1 ao contador **da classe**"
+        },
+        {
+          "linhas": [
+            11,
+            11
+          ],
+          "texto": "Os dois mostram \"Linha a Linha\" (valor compartilhado)"
+        },
+        {
+          "linhas": [
+            12,
+            12
+          ],
+          "texto": "Mostra 2: dois objetos foram criados"
+        },
+        {
+          "linhas": [
+            13,
+            13
+          ],
+          "texto": "Cria um atributo `escola` só em `a1`, que passa a esconder o da classe"
+        },
+        {
+          "linhas": [
+            14,
+            14
+          ],
+          "texto": "Mostra \"Outra Escola Linha a Linha Linha a Linha\": `a2` e a classe não mudaram"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-d",
+      "tipo": "codigo",
+      "nome": "Exemplo D — Validação no construtor (produto.py)",
+      "codigo": [
+        "class Produto:",
+        "    def __init__(self, nome, preco):",
+        "        if preco < 0:",
+        "            raise ValueError(\"O preço não pode ser negativo.\")",
+        "        self.nome = nome",
+        "        self.preco = preco",
+        "",
+        "try:",
+        "    p1 = Produto(\"Caneca\", 25.0)",
+        "    print(\"Criado:\", p1.nome)",
+        "    p2 = Produto(\"Caderno\", -10)",
+        "    print(\"Criado:\", p2.nome)",
+        "except ValueError as erro:",
+        "    print(\"Erro:\", erro)"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            3,
+            4
+          ],
+          "texto": "Antes de criar os atributos, confere o preço; se for negativo, lança o erro"
+        },
+        {
+          "linhas": [
+            5,
+            6
+          ],
+          "texto": "Só chega aqui com dados válidos"
+        },
+        {
+          "linhas": [
+            9,
+            10
+          ],
+          "texto": "Caneca é criada: mostra \"Criado: Caneca\""
+        },
+        {
+          "linhas": [
+            11,
+            11
+          ],
+          "texto": "O construtor lança `ValueError`; o objeto `p2` nunca chega a existir"
+        },
+        {
+          "linhas": [
+            12,
+            12
+          ],
+          "texto": "Não executa: o erro pulou direto para o `except`"
+        },
+        {
+          "linhas": [
+            13,
+            14
+          ],
+          "texto": "Mostra \"Erro: O preço não pode ser negativo.\""
+        }
+      ]
+    },
+    {
+      "id": "exemplo-e",
+      "tipo": "codigo",
+      "nome": "Exemplo E — O que o self realmente é (self.py)",
+      "codigo": [
+        "conta = ContaBancaria(\"Caio\", 10)",
+        "conta.depositar(5)",
+        "ContaBancaria.depositar(conta, 5)"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Usa a classe do Exemplo B"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Forma normal: mostra \"Saldo: R$ 15.00\""
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Forma \"por baixo dos panos\": o objeto é passado explicitamente como `self`; mostra \"Saldo: R$ 20.00\""
+        }
+      ],
+      "fechamento": [
+        "As linhas 2 e 3 fazem a mesma coisa. Por isso o `self` aparece na definição do método, mas não na chamada."
+      ]
+    },
+    {
+      "id": "exemplo-f",
+      "tipo": "codigo",
+      "nome": "Exemplo F — Método que protege o estado (livro.py)",
+      "codigo": [
+        "class Livro:",
+        "    def __init__(self, titulo):",
+        "        self.titulo = titulo",
+        "        self.disponivel = True",
+        "",
+        "    def emprestar(self):",
+        "        if not self.disponivel:",
+        "            print(f\"'{self.titulo}' já está emprestado.\")",
+        "            return False",
+        "        self.disponivel = False",
+        "        print(f\"'{self.titulo}' emprestado.\")",
+        "        return True",
+        "",
+        "    def devolver(self):",
+        "        self.disponivel = True",
+        "        print(f\"'{self.titulo}' devolvido.\")",
+        "",
+        "livro = Livro(\"Dom Casmurro\")",
+        "livro.emprestar()",
+        "livro.emprestar()",
+        "livro.devolver()",
+        "livro.emprestar()"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Todo livro nasce disponível"
+        },
+        {
+          "linhas": [
+            7,
+            9
+          ],
+          "texto": "Se já estiver emprestado, avisa e devolve `False`"
+        },
+        {
+          "linhas": [
+            10,
+            12
+          ],
+          "texto": "Senão, marca como indisponível e devolve `True`"
+        },
+        {
+          "linhas": [
+            14,
+            16
+          ],
+          "texto": "Devolver torna o livro disponível de novo"
+        },
+        {
+          "linhas": [
+            19,
+            19
+          ],
+          "texto": "\"'Dom Casmurro' emprestado.\""
+        },
+        {
+          "linhas": [
+            20,
+            20
+          ],
+          "texto": "\"'Dom Casmurro' já está emprestado.\" (o método barrou a ação)"
+        },
+        {
+          "linhas": [
+            21,
+            22
+          ],
+          "texto": "Devolve e empresta de novo"
+        }
+      ]
+    },
+    {
+      "id": "como-aplicar",
+      "tipo": "leitura",
+      "nome": "Como aplicar: controle de estoque de uma papelaria",
+      "blocos": [
+        "Junta classe, `__init__` com validação, atributos de instância e de classe, métodos que alteram estado, métodos que devolvem valores e uma lista de objetos. Salve como `estoque.py` e rode com `python estoque.py`.",
+        {
+          "codigo": "class Produto:\n    total_cadastrados = 0\n    ESTOQUE_MINIMO = 5\n\n    def __init__(self, nome, preco, quantidade=0):\n        if preco <= 0:\n            raise ValueError(f\"Preço inválido para {nome}.\")\n        if quantidade < 0:\n            raise ValueError(f\"Quantidade inválida para {nome}.\")\n        self.nome = nome\n        self.preco = preco\n        self.quantidade = quantidade\n        Produto.total_cadastrados += 1\n\n    def entrada(self, qtd):\n        self.quantidade += qtd\n\n    def saida(self, qtd):\n        if qtd > self.quantidade:\n            print(f\"Estoque insuficiente de {self.nome}: há {self.quantidade}.\")\n            return\n        self.quantidade -= qtd\n\n    def valor_em_estoque(self):\n        return self.preco * self.quantidade\n\n    def precisa_repor(self):\n        return self.quantidade < Produto.ESTOQUE_MINIMO\n\n    def resumo(self):\n        alerta = \" (repor!)\" if self.precisa_repor() else \"\"\n        return f\"{self.nome}: {self.quantidade} un. x R$ {self.preco:.2f} = R$ {self.valor_em_estoque():.2f}{alerta}\"\n\n\nestoque = [\n    Produto(\"Caneta\", 2.50, 40),\n    Produto(\"Caderno\", 18.90, 12),\n    Produto(\"Mochila\", 120.00, 3),\n]\n\nestoque[0].saida(15)\nestoque[1].saida(20)\nestoque[2].entrada(1)\n\ntotal = 0\nfor produto in estoque:\n    print(produto.resumo())\n    total += produto.valor_em_estoque()\n\nprint(f\"Produtos cadastrados: {Produto.total_cadastrados}\")\nprint(f\"Valor total do estoque: R$ {total:.2f}\")"
+        },
+        "**Saída esperada:**",
+        {
+          "codigo": "Estoque insuficiente de Caderno: há 12.\nCaneta: 25 un. x R$ 2.50 = R$ 62.50\nCaderno: 12 un. x R$ 18.90 = R$ 226.80\nMochila: 4 un. x R$ 120.00 = R$ 480.00 (repor!)\nProdutos cadastrados: 3\nValor total do estoque: R$ 769.30"
+        },
+        "**Por que funciona:** cada produto guarda o próprio nome, preço e quantidade, e só muda a quantidade pelos métodos `entrada` e `saida`, que aplicam a regra de não vender mais do que existe. `total_cadastrados` e `ESTOQUE_MINIMO` são atributos de classe: o contador é o mesmo para todos, e o mínimo vale para todo produto (o nome em maiúsculas indica que é uma constante). O construtor recusa preço e quantidade inválidos. No laço final, o código não sabe nada sobre preço ou quantidade: só pede a cada objeto o seu `resumo()` e o seu `valor_em_estoque()`."
+      ]
+    },
+    {
+      "id": "quiz",
+      "tipo": "quiz",
+      "nome": "Quiz de código",
+      "perguntas": [
+        {
+          "pergunta": "O que é impresso?",
+          "codigo": "class Gato:\n    def __init__(self, nome):\n        self.nome = nome\n\ng1 = Gato(\"Mimi\")\ng2 = Gato(\"Tom\")\nprint(g2.nome)",
+          "opcoes": [
+            "Mimi",
+            "Tom",
+            "nome",
+            "Erro"
+          ],
+          "correta": 1,
+          "dica": "cada objeto guarda o próprio valor.",
+          "acerto": "Isso! Cada instância tem seu atributo.",
+          "erro": "g1 e g2 são objetos diferentes, com nomes diferentes.",
+          "explicacao": "`g2` foi criado com \"Tom\", e `self.nome` guardou esse valor só nele."
+        },
+        {
+          "pergunta": "Qual é o erro deste código?",
+          "codigo": "class Contador:\n    def __init__(self):\n        self.valor = 0\n\n    def somar():\n        self.valor += 1",
+          "opcoes": [
+            "Falta `return` no `__init__`",
+            "O método `somar` não recebe `self`",
+            "`valor` precisa ser atributo de classe",
+            "Não há erro"
+          ],
+          "correta": 1,
+          "dica": "como o método vai saber qual objeto alterar?",
+          "acerto": "Perfeito! Todo método de instância recebe self primeiro.",
+          "erro": "O __init__ não precisa de return; o problema está em somar.",
+          "explicacao": "ao chamar `c.somar()`, o Python passa o objeto como argumento, e `somar()` sem parâmetros dá `TypeError`."
+        },
+        {
+          "pergunta": "O que é impresso?",
+          "codigo": "class Jogo:\n    jogadores = 0\n    def __init__(self):\n        Jogo.jogadores += 1\n\nJogo(); Jogo(); Jogo()\nprint(Jogo.jogadores)",
+          "opcoes": [
+            "0",
+            "1",
+            "3",
+            "Erro"
+          ],
+          "correta": 2,
+          "dica": "o contador é da classe ou de cada objeto?",
+          "acerto": "Exato! O atributo de classe é compartilhado.",
+          "erro": "Cada criação soma 1 no mesmo contador.",
+          "explicacao": "os três objetos incrementam o mesmo `Jogo.jogadores`."
+        },
+        {
+          "pergunta": "Quando o `__init__` é executado?",
+          "opcoes": [
+            "Só quando chamamos `objeto.__init__()`",
+            "Automaticamente, ao criar o objeto com `Classe(...)`",
+            "Ao final do programa",
+            "Ao acessar qualquer atributo"
+          ],
+          "correta": 1,
+          "dica": "pense no momento em que o objeto nasce.",
+          "acerto": "Isso! Instanciar dispara o __init__.",
+          "erro": "Você não precisa chamá-lo; o Python chama por você.",
+          "explicacao": "`Classe(args)` cria o objeto e chama `__init__` com esses argumentos."
+        },
+        {
+          "pergunta": "O que é impresso?",
+          "codigo": "class Caixa:\n    cor = \"azul\"\n\nc1 = Caixa()\nc2 = Caixa()\nc1.cor = \"verde\"\nprint(c2.cor)",
+          "opcoes": [
+            "verde",
+            "azul",
+            "Erro",
+            "None"
+          ],
+          "correta": 1,
+          "dica": "`c1.cor = ...` muda a classe ou só `c1`?",
+          "acerto": "Mandou bem! Só c1 ganhou uma cor própria.",
+          "erro": "Atribuir pelo objeto cria um atributo só nele.",
+          "explicacao": "`c2` continua lendo o atributo da classe, que ainda é \"azul\"."
+        },
+        {
+          "pergunta": "O que acontece?",
+          "codigo": "class Idade:\n    def __init__(self, anos):\n        if anos < 0:\n            raise ValueError(\"Idade inválida\")\n        self.anos = anos\n\ni = Idade(-3)\nprint(\"Criado!\")",
+          "opcoes": [
+            "Mostra \"Criado!\"",
+            "O programa para com `ValueError: Idade inválida`",
+            "Cria o objeto com `anos = 0`",
+            "Mostra `None`"
+          ],
+          "correta": 1,
+          "dica": "existe algum `try / except`?",
+          "acerto": "Isso! Sem tratamento, o erro interrompe o programa.",
+          "erro": "raise interrompe o __init__; o objeto não é criado.",
+          "explicacao": "o construtor lança o erro e, como ninguém o captura, o programa termina antes do `print`."
+        }
+      ]
+    },
+    {
+      "id": "atividades",
+      "tipo": "atividades",
+      "nome": "Atividades",
+      "intro": [
+        "Escreva ou cole a sua tentativa no campo de cada atividade para liberar a solução. Outras soluções também valem, desde que passem nos testes do enunciado."
+      ],
+      "itens": [
+        {
+          "n": 1,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie a classe `Cachorro` com os atributos `nome`, `raca` e `idade` e o método `latir()`, que mostra \"<nome> diz: Au au!\". Crie dois cachorros e faça os dois latirem."
+          ],
+          "dica": "os três atributos são criados no `__init__` com `self.`.",
+          "solucao": [
+            {
+              "codigo": "class Cachorro:\n    def __init__(self, nome, raca, idade):\n        self.nome = nome\n        self.raca = raca\n        self.idade = idade\n\n    def latir(self):\n        print(f\"{self.nome} diz: Au au!\")\n\nrex = Cachorro(\"Rex\", \"Vira-lata\", 3)\nbob = Cachorro(\"Bob\", \"Poodle\", 5)\nrex.latir()\nbob.latir()"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie a classe `Lampada`, que começa apagada, com um método `alternar()` que liga ou desliga e um método `estado()` que devolve \"acesa\" ou \"apagada\"."
+          ],
+          "dica": "guarde um booleano e use `not` para inverter.",
+          "solucao": [
+            {
+              "codigo": "class Lampada:\n    def __init__(self):\n        self.ligada = False\n\n    def alternar(self):\n        self.ligada = not self.ligada\n\n    def estado(self):\n        return \"acesa\" if self.ligada else \"apagada\"\n\nlampada = Lampada()\nlampada.alternar()\nprint(lampada.estado())  # acesa\nlampada.alternar()\nprint(lampada.estado())  # apagada"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie a classe `Circulo` com o atributo `raio`, um atributo de classe `PI = 3.14159` e os métodos `area()` e `perimetro()`. Mostre os dois valores para um círculo de raio 3, com 2 casas decimais."
+          ],
+          "dica": "área = PI × raio²; perímetro = 2 × PI × raio.",
+          "solucao": [
+            {
+              "codigo": "class Circulo:\n    PI = 3.14159\n\n    def __init__(self, raio):\n        self.raio = raio\n\n    def area(self):\n        return Circulo.PI * self.raio ** 2\n\n    def perimetro(self):\n        return 2 * Circulo.PI * self.raio\n\nc = Circulo(3)\nprint(f\"Área: {c.area():.2f}, perímetro: {c.perimetro():.2f}\")  # 28.27 e 18.85"
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "nivel": "Médio",
+          "enunciado": [
+            "Crie a classe `Termometro` com o atributo `celsius`, um método `para_fahrenheit()` e um método `classificar()` que devolve \"frio\" (abaixo de 20), \"agradável\" (de 20 a 29) ou \"quente\" (30 ou mais). Teste com 15, 25 e 32 graus."
+          ],
+          "dica": "°F = °C × 9 / 5 + 32.",
+          "solucao": [
+            {
+              "codigo": "class Termometro:\n    def __init__(self, celsius):\n        self.celsius = celsius\n\n    def para_fahrenheit(self):\n        return self.celsius * 9 / 5 + 32\n\n    def classificar(self):\n        if self.celsius >= 30:\n            return \"quente\"\n        elif self.celsius >= 20:\n            return \"agradável\"\n        return \"frio\"\n\nfor t in [Termometro(15), Termometro(25), Termometro(32)]:\n    print(f\"{t.celsius}°C = {t.para_fahrenheit():.1f}°F ({t.classificar()})\")"
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "nivel": "Médio",
+          "enunciado": [
+            "Crie a classe `Usuario` em que cada novo usuário recebe um `id` sequencial (1, 2, 3...), usando um atributo de classe como contador."
+          ],
+          "dica": "incremente o contador da classe no `__init__` e copie o valor para `self.id`.",
+          "solucao": [
+            {
+              "codigo": "class Usuario:\n    total = 0\n\n    def __init__(self, nome):\n        self.nome = nome\n        Usuario.total += 1\n        self.id = Usuario.total\n\nu1 = Usuario(\"Ana\")\nu2 = Usuario(\"Bia\")\nu3 = Usuario(\"Caio\")\nprint(u1.id, u2.id, u3.id)  # 1 2 3\nprint(Usuario.total)        # 3"
+            }
+          ]
+        },
+        {
+          "n": 6,
+          "nivel": "Médio",
+          "enunciado": [
+            "Crie a classe `Aluno` com `nome` e uma lista `notas` que começa vazia. Faça os métodos `adicionar_nota(nota)` (que recusa notas fora de 0 a 10), `media()` e `situacao()` (\"Aprovado\" com média 7 ou mais, senão \"Recuperação\")."
+          ],
+          "dica": "a lista é criada no `__init__` com `self.notas = []`; cuide da média com a lista vazia.",
+          "solucao": [
+            {
+              "codigo": "class Aluno:\n    def __init__(self, nome):\n        self.nome = nome\n        self.notas = []\n\n    def adicionar_nota(self, nota):\n        if nota < 0 or nota > 10:\n            print(\"Nota inválida:\", nota)\n            return\n        self.notas.append(nota)\n\n    def media(self):\n        if len(self.notas) == 0:\n            return 0\n        return sum(self.notas) / len(self.notas)\n\n    def situacao(self):\n        return \"Aprovado\" if self.media() >= 7 else \"Recuperação\"\n\naluno = Aluno(\"Lia\")\nfor n in [8, 6.5, 9, 11]:\n    aluno.adicionar_nota(n)\nprint(f\"{aluno.nome}: média {aluno.media():.2f} - {aluno.situacao()}\")\n# Nota inválida: 11\n# Lia: média 7.83 - Aprovado"
+            }
+          ]
+        },
+        {
+          "n": 7,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Crie a classe `Cofrinho` com uma `meta` (o construtor deve lançar `ValueError` se a meta não for maior que zero), um `saldo` que começa em 0, e os métodos `guardar(valor)` (recusa valores menores ou iguais a zero), `progresso()` (percentual da meta, no máximo 100) e `atingiu()`. Teste também a criação com meta 0 dentro de um `try / except`."
+          ],
+          "dica": "`min(valor, 100)` limita o percentual.",
+          "solucao": [
+            {
+              "codigo": "class Cofrinho:\n    def __init__(self, meta):\n        if meta <= 0:\n            raise ValueError(\"A meta deve ser maior que zero.\")\n        self.meta = meta\n        self.saldo = 0\n\n    def guardar(self, valor):\n        if valor <= 0:\n            print(\"Valor inválido.\")\n            return\n        self.saldo += valor\n\n    def progresso(self):\n        return min(self.saldo / self.meta * 100, 100)\n\n    def atingiu(self):\n        return self.saldo >= self.meta\n\ncofre = Cofrinho(500)\nfor v in [100, 150, -20, 300]:\n    cofre.guardar(v)\nprint(f\"Progresso: {cofre.progresso():.0f}% | Meta atingida? {cofre.atingiu()}\")\n\ntry:\n    Cofrinho(0)\nexcept ValueError as erro:\n    print(\"Erro:\", erro)"
+            }
+          ]
+        },
+        {
+          "n": 8,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Crie a classe `Biblioteca`, com uma lista de objetos `Livro` (use a classe do Exemplo F), e os métodos `adicionar(livro)`, `emprestar(titulo)` (procura o livro pelo título e chama o método `emprestar` dele) e `disponiveis()`, que devolve os títulos disponíveis."
+          ],
+          "dica": "percorra a lista com `for` e compare `livro.titulo == titulo`.",
+          "solucao": [
+            {
+              "codigo": "class Biblioteca:\n    def __init__(self):\n        self.livros = []\n\n    def adicionar(self, livro):\n        self.livros.append(livro)\n\n    def emprestar(self, titulo):\n        for livro in self.livros:\n            if livro.titulo == titulo:\n                return livro.emprestar()\n        print(f\"'{titulo}' não está no acervo.\")\n        return False\n\n    def disponiveis(self):\n        titulos = []\n        for livro in self.livros:\n            if livro.disponivel:\n                titulos.append(livro.titulo)\n        return titulos\n\nbib = Biblioteca()\nbib.adicionar(Livro(\"Dom Casmurro\"))\nbib.adicionar(Livro(\"Iracema\"))\nbib.emprestar(\"Iracema\")\nbib.emprestar(\"O Cortiço\")\nprint(bib.disponiveis())  # ['Dom Casmurro']"
+            }
+          ]
+        },
+        {
+          "n": 9,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Explique, com suas palavras e um código de exemplo, a diferença entre atributo de instância e atributo de classe, e o que acontece quando fazemos `objeto.atributo_de_classe = novo_valor`."
+          ],
+          "dica": "pense em quem \"enxerga\" a mudança.",
+          "solucao": [
+            "**Resposta esperada:** o atributo de instância é criado com `self.` no `__init__`, e cada objeto tem o seu valor. O atributo de classe é criado no corpo da classe e é compartilhado por todos. Atribuir pelo objeto não muda o da classe: cria um atributo novo só naquele objeto, que passa a esconder o da classe. Para mudar para todos, atribua pela classe.",
+            {
+              "codigo": "class Carro:\n    rodas = 4                 # de classe\n\n    def __init__(self, modelo):\n        self.modelo = modelo  # de instância\n\na = Carro(\"Gol\")\nb = Carro(\"Uno\")\na.rodas = 3                   # só o \"a\" muda\nprint(a.rodas, b.rodas)       # 3 4\nCarro.rodas = 6               # muda para quem não tem o próprio\nprint(a.rodas, b.rodas)       # 3 6"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

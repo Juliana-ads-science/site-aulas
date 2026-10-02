@@ -1,0 +1,1092 @@
+{
+  "numero": 17,
+  "titulo": "Programação Orientada a Objetos III: Encapsulamento, @property, Associação, Agregação e Composição",
+  "etapas": [
+    {
+      "id": "definicoes",
+      "tipo": "leitura",
+      "nome": "Definições",
+      "blocos": [
+        "Encapsulamento é proteger os dados de um objeto e deixar que eles mudem só pelos caminhos que a própria classe oferece. Associação, agregação e composição descrevem como objetos de classes diferentes se relacionam: quem conhece quem, quem contém quem e quem depende de quem para existir.",
+        {
+          "tabela": [
+            [
+              "Termo",
+              "O que significa"
+            ],
+            [
+              "Encapsulamento",
+              "Juntar dados e métodos e controlar o acesso aos dados"
+            ],
+            [
+              "Ocultação de informação",
+              "Esconder os detalhes internos e expor só o necessário"
+            ],
+            [
+              "Interface pública",
+              "Métodos e propriedades que o resto do código deve usar"
+            ],
+            [
+              "Atributo público",
+              "`self.nome`: pode ser lido e alterado de fora"
+            ],
+            [
+              "Atributo protegido",
+              "`self._nome` (um sublinhado): convenção de \"uso interno, não mexa\""
+            ],
+            [
+              "Atributo \"privado\"",
+              "`self.__nome` (dois sublinhados): o Python renomeia o atributo para dificultar o acesso de fora"
+            ],
+            [
+              "Name mangling",
+              "A renomeação automática de `__nome` para `_Classe__nome`"
+            ],
+            [
+              "Getter",
+              "Método que devolve o valor de um atributo protegido (`get_idade()`)"
+            ],
+            [
+              "Setter",
+              "Método que valida e altera um atributo protegido (`set_idade(31)`)"
+            ],
+            [
+              "`@property`",
+              "Decorador que faz um método ser acessado como atributo (`conta.saldo`)"
+            ],
+            [
+              "`@nome.setter`",
+              "Define o que acontece em `objeto.nome = valor`"
+            ],
+            [
+              "Propriedade somente leitura",
+              "`@property` sem setter: pode ler, não pode atribuir"
+            ],
+            [
+              "Propriedade calculada",
+              "Valor calculado na hora a partir de outros atributos (`area`, `total`)"
+            ],
+            [
+              "Associação",
+              "Um objeto conhece outro e guarda uma referência a ele (Disciplina conhece o Professor)"
+            ],
+            [
+              "Agregação",
+              "\"Todo-parte\" fraca: o todo guarda partes que existem por conta própria (Playlist e Música)"
+            ],
+            [
+              "Composição",
+              "\"Todo-parte\" forte: o todo cria as partes, que não fazem sentido fora dele (Pedido e Item)"
+            ],
+            [
+              "Ciclo de vida",
+              "Quando um objeto é criado e quando deixa de existir"
+            ],
+            [
+              "Referência",
+              "O que uma variável ou atributo guarda: o \"endereço\" do objeto, não uma cópia"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "para-que-como-e-quando-usamos",
+      "tipo": "leitura",
+      "nome": "Para que, como e quando usamos",
+      "blocos": [
+        "Usamos encapsulamento para que nenhum código consiga deixar um objeto num estado inválido, e as relações entre classes para montar sistemas a partir de peças pequenas.",
+        "**Para que:** impedir saldo negativo ou preço zerado, esconder senhas, mostrar valores calculados (total do pedido, área), ligar alunos a turmas, músicas a playlists, itens a pedidos.",
+        "**Como:** marcamos os atributos internos com `__`, expomos o acesso por `@property` (com setter quando a alteração for permitida e precisar de validação) e, nas relações, guardamos referências a outros objetos: recebidas por parâmetro (associação e agregação) ou criadas dentro da classe (composição).",
+        "**Quando usar cada relação:**",
+        {
+          "tabela": [
+            [
+              "Situação",
+              "Relação"
+            ],
+            [
+              "Um objeto só precisa \"conhecer\" outro (Livro e Autor)",
+              "Associação"
+            ],
+            [
+              "O todo reúne partes que existem sozinhas e podem estar em vários todos (Turma e Alunos)",
+              "Agregação"
+            ],
+            [
+              "A parte só existe dentro do todo e é criada por ele (Pedido e Itens do pedido)",
+              "Composição"
+            ],
+            [
+              "\"X **é um** Y\"",
+              "Não é nenhuma destas: é herança (Aula 16)"
+            ]
+          ]
+        },
+        "**Quando não exagerar:** um atributo simples, que pode receber qualquer valor, não precisa de getter, setter nem `@property`. Comece com `self.nome` e só transforme em propriedade quando surgir uma regra; quem usa a classe nem vai perceber a troca."
+      ]
+    },
+    {
+      "id": "estruturas",
+      "tipo": "leitura",
+      "nome": "Estruturas",
+      "blocos": [
+        {
+          "h": "3.1 Níveis de acesso"
+        },
+        {
+          "codigo": "class Conta:\n    def __init__(self):\n        self.titular = \"Ana\"     # público\n        self._agencia = \"0001\"   # protegido (convenção)\n        self.__saldo = 0         # \"privado\" (name mangling)"
+        },
+        {
+          "h": "3.2 Getter e setter tradicionais"
+        },
+        {
+          "codigo": "class Pessoa:\n    def get_idade(self):\n        return self.__idade\n\n    def set_idade(self, nova):\n        if nova < 0:\n            raise ValueError(\"Idade inválida.\")\n        self.__idade = nova"
+        },
+        {
+          "h": "3.3 `@property` com setter"
+        },
+        {
+          "codigo": "class Produto:\n    @property\n    def preco(self):\n        return self.__preco\n\n    @preco.setter\n    def preco(self, valor):\n        if valor <= 0:\n            raise ValueError(\"Preço inválido.\")\n        self.__preco = valor"
+        },
+        {
+          "h": "3.4 Propriedade somente leitura (calculada)"
+        },
+        {
+          "codigo": "class Retangulo:\n    @property\n    def area(self):\n        return self.largura * self.altura   # r.area, sem parênteses"
+        },
+        {
+          "h": "3.5 Associação"
+        },
+        {
+          "codigo": "class Disciplina:\n    def __init__(self, nome, professor):\n        self.professor = professor   # recebe um objeto pronto"
+        },
+        {
+          "h": "3.6 Agregação"
+        },
+        {
+          "codigo": "class Turma:\n    def __init__(self):\n        self.alunos = []             # coleção de partes\n\n    def matricular(self, aluno):     # recebe partes já existentes\n        self.alunos.append(aluno)"
+        },
+        {
+          "h": "3.7 Composição"
+        },
+        {
+          "codigo": "class Pedido:\n    def __init__(self):\n        self.__itens = []\n\n    def adicionar_item(self, produto, preco):\n        self.__itens.append(ItemPedido(produto, preco))  # o todo cria a parte"
+        }
+      ]
+    },
+    {
+      "id": "sintaxe-e-simbolos",
+      "tipo": "leitura",
+      "nome": "Sintaxe e símbolos",
+      "blocos": [
+        {
+          "tabela": [
+            [
+              "Símbolo / comando",
+              "O que faz",
+              "Por que existe"
+            ],
+            [
+              "`self._nome`",
+              "Atributo protegido",
+              "Avisa outros programadores que é de uso interno; o Python não bloqueia"
+            ],
+            [
+              "`self.__nome`",
+              "Atributo \"privado\"",
+              "O Python troca o nome para `_Classe__nome`; o acesso por fora dá `AttributeError`"
+            ],
+            [
+              "`objeto._Classe__nome`",
+              "Acesso forçado ao \"privado\"",
+              "Mostra que a privacidade em Python é por convenção"
+            ],
+            [
+              "`def get_x(self):`",
+              "Getter",
+              "Leitura controlada (estilo Java)"
+            ],
+            [
+              "`def set_x(self, v):`",
+              "Setter",
+              "Alteração com validação (estilo Java)"
+            ],
+            [
+              "`@property`",
+              "Transforma o método em \"atributo\"",
+              "Leitura com `objeto.x`, sem parênteses"
+            ],
+            [
+              "`@x.setter`",
+              "Define a atribuição",
+              "`objeto.x = valor` passa pela validação"
+            ],
+            [
+              "Mesmo nome no `@property` e no `@x.setter`",
+              "Liga leitura e escrita",
+              "Os dois métodos se chamam `x`"
+            ],
+            [
+              "`self.preco = preco` no `__init__`",
+              "Já passa pelo setter",
+              "A validação vale também na criação"
+            ],
+            [
+              "`raise ValueError` no setter",
+              "Recusa valores inválidos",
+              "O objeto nunca fica num estado errado"
+            ],
+            [
+              "`AttributeError: ... has no setter`",
+              "Erro ao atribuir numa propriedade sem setter",
+              "Garante que valores calculados não sejam alterados"
+            ],
+            [
+              "`self.outro = objeto`",
+              "Guarda uma referência",
+              "Base de associação, agregação e composição"
+            ],
+            [
+              "`self.lista = []` + `append`",
+              "Coleção de objetos",
+              "Base da agregação e da composição"
+            ],
+            [
+              "`Classe(...)` dentro de um método",
+              "O todo cria a parte",
+              "Marca da composição"
+            ],
+            [
+              "`sum(item.subtotal for item in itens)`",
+              "Soma um valor de cada objeto",
+              "Calcular totais a partir das partes"
+            ],
+            [
+              "`list(self.__extrato)`",
+              "Devolve uma cópia da lista",
+              "Quem recebe a cópia não altera a original"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logica-por-tras",
+      "tipo": "leitura",
+      "nome": "Lógica por trás",
+      "blocos": [
+        "**Por que encapsular:** se qualquer parte do código pode fazer `conta.saldo = -500`, as regras do método `sacar` não servem para nada. Quando o atributo é interno e só muda por métodos ou propriedades com validação, as regras ficam num lugar só e valem sempre.",
+        "**Como o Python \"protege\" atributos:**",
+        {
+          "tabela": [
+            [
+              "Forma",
+              "O que o Python faz",
+              "Acesso de fora"
+            ],
+            [
+              "`self.nome`",
+              "Nada",
+              "Livre"
+            ],
+            [
+              "`self._nome`",
+              "Nada; é só um aviso",
+              "Livre, mas não se deve usar"
+            ],
+            [
+              "`self.__nome`",
+              "Renomeia para `self._Classe__nome`",
+              "`objeto.__nome` dá erro; `objeto._Classe__nome` funciona"
+            ]
+          ]
+        },
+        "O Python não tem privacidade real. O `__` serve para evitar o acesso por engano e, principalmente, para evitar que uma subclasse sobrescreva sem querer um atributo interno da mãe.",
+        "**Por que `@property` em vez de get/set:** com get/set o uso fica `p.set_preco(10)` e `p.get_preco()`. Com `@property` o uso fica `p.preco = 10` e `p.preco`, e a validação continua acontecendo. Além disso, se a classe começou com um atributo público e depois precisou de regra, basta transformá-lo em propriedade: o código que usa a classe não muda nada.",
+        "**O que acontece em `p.preco = 10`:**",
+        {
+          "passos": [
+            "O Python vê que `preco` é uma propriedade.",
+            "Chama o método do `@preco.setter` com `valor = 10`.",
+            "O setter valida e guarda em `self.__preco`."
+          ]
+        },
+        "E em `p.preco`, o Python chama o método do `@property`, que devolve `self.__preco`.",
+        "**Associação, agregação e composição:**",
+        {
+          "tabela": [
+            [
+              "",
+              "Associação",
+              "Agregação",
+              "Composição"
+            ],
+            [
+              "Relação",
+              "\"conhece\"",
+              "\"tem\" (fraco)",
+              "\"é feito de\" (forte)"
+            ],
+            [
+              "Quem cria a parte",
+              "Código de fora",
+              "Código de fora",
+              "O próprio todo"
+            ],
+            [
+              "A parte existe sem o todo?",
+              "Sim",
+              "Sim",
+              "Não faz sentido"
+            ],
+            [
+              "A parte pode estar em vários todos?",
+              "Sim",
+              "Sim",
+              "Não"
+            ],
+            [
+              "Exemplo",
+              "Disciplina → Professor",
+              "Playlist → Músicas",
+              "Pedido → Itens"
+            ]
+          ]
+        },
+        "**Sobre \"destruir\" objetos:** em Python, `del objeto` apaga só aquele nome. O objeto continua existindo enquanto houver alguma referência a ele; quando não sobra nenhuma, o Python o remove da memória sozinho. Por isso, na agregação, apagar a playlist não apaga as músicas: as variáveis `m1` e `m2` ainda apontam para elas. Na composição, os itens só são referenciados pelo pedido; quando o pedido some, os itens somem junto."
+      ]
+    },
+    {
+      "id": "exemplo-a",
+      "tipo": "codigo",
+      "nome": "Exemplo A — Público, protegido e \"privado\" (acesso.py)",
+      "codigo": [
+        "class Conta:",
+        "    def __init__(self, titular, saldo):",
+        "        self.titular = titular      # público",
+        "        self._agencia = \"0001\"      # protegido (convenção)",
+        "        self.__saldo = saldo        # \"privado\" (name mangling)",
+        "",
+        "    def ver_saldo(self):",
+        "        return self.__saldo",
+        "",
+        "c = Conta(\"Ana\", 100)",
+        "print(c.titular, c._agencia)",
+        "print(c.ver_saldo())",
+        "try:",
+        "    print(c.__saldo)",
+        "except AttributeError as erro:",
+        "    print(\"Erro:\", erro)",
+        "print(c._Conta__saldo)"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Atributo público"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Um sublinhado: aviso de uso interno, mas acessível"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Dois sublinhados: o Python guarda como `_Conta__saldo`"
+        },
+        {
+          "linhas": [
+            7,
+            8
+          ],
+          "texto": "Dentro da classe, `self.__saldo` funciona normalmente"
+        },
+        {
+          "linhas": [
+            11,
+            11
+          ],
+          "texto": "Mostra `Ana 0001`: o protegido não é bloqueado"
+        },
+        {
+          "linhas": [
+            12,
+            12
+          ],
+          "texto": "Mostra 100: o caminho certo para ler o saldo"
+        },
+        {
+          "linhas": [
+            13,
+            16
+          ],
+          "texto": "Acesso direto falha com `AttributeError`"
+        },
+        {
+          "linhas": [
+            17,
+            17
+          ],
+          "texto": "Mostra 100: com o nome renomeado, dá para acessar. A privacidade é por convenção"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-b",
+      "tipo": "codigo",
+      "nome": "Exemplo B — Getter e setter tradicionais (pessoa.py)",
+      "codigo": [
+        "class Pessoa:",
+        "    def __init__(self, nome, idade):",
+        "        self.__nome = nome",
+        "        self.set_idade(idade)",
+        "",
+        "    def get_idade(self):",
+        "        return self.__idade",
+        "",
+        "    def set_idade(self, nova):",
+        "        if not isinstance(nova, int) or nova < 0 or nova > 150:",
+        "            raise ValueError(\"Idade deve ser um inteiro entre 0 e 150.\")",
+        "        self.__idade = nova",
+        "",
+        "p = Pessoa(\"Rui\", 30)",
+        "p.set_idade(31)",
+        "print(p.get_idade())",
+        "try:",
+        "    p.set_idade(-2)",
+        "except ValueError as erro:",
+        "    print(\"Erro:\", erro)"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "O construtor usa o próprio setter: a validação vale também na criação"
+        },
+        {
+          "linhas": [
+            6,
+            7
+          ],
+          "texto": "Getter: a única forma de ler a idade de fora"
+        },
+        {
+          "linhas": [
+            9,
+            12
+          ],
+          "texto": "Setter: confere tipo e faixa antes de gravar"
+        },
+        {
+          "linhas": [
+            15,
+            16
+          ],
+          "texto": "Altera e lê pelos métodos: mostra 31"
+        },
+        {
+          "linhas": [
+            17,
+            20
+          ],
+          "texto": "Idade negativa é recusada: mostra a mensagem de erro, e a idade continua 31"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-c",
+      "tipo": "codigo",
+      "nome": "Exemplo C — @property com setter e propriedade calculada (retangulo.py)",
+      "codigo": [
+        "class Retangulo:",
+        "    def __init__(self, largura, altura):",
+        "        self.largura = largura",
+        "        self.altura = altura",
+        "",
+        "    @property",
+        "    def largura(self):",
+        "        return self.__largura",
+        "",
+        "    @largura.setter",
+        "    def largura(self, valor):",
+        "        if valor <= 0:",
+        "            raise ValueError(\"A largura deve ser positiva.\")",
+        "        self.__largura = valor",
+        "",
+        "    @property",
+        "    def area(self):",
+        "        return self.largura * self.altura",
+        "",
+        "r = Retangulo(4, 5)",
+        "print(r.largura, r.area)",
+        "r.largura = 10",
+        "print(r.area)",
+        "try:",
+        "    r.largura = 0",
+        "except ValueError as erro:",
+        "    print(\"Erro:\", erro)",
+        "try:",
+        "    r.area = 100",
+        "except AttributeError as erro:",
+        "    print(\"Erro:\", erro)"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Parece uma atribuição comum, mas passa pelo setter da linha 10"
+        },
+        {
+          "linhas": [
+            6,
+            8
+          ],
+          "texto": "Leitura: `r.largura` devolve o valor interno"
+        },
+        {
+          "linhas": [
+            10,
+            14
+          ],
+          "texto": "Escrita: `r.largura = x` valida antes de guardar"
+        },
+        {
+          "linhas": [
+            16,
+            18
+          ],
+          "texto": "Propriedade calculada, sem setter: sempre reflete os valores atuais"
+        },
+        {
+          "linhas": [
+            21,
+            21
+          ],
+          "texto": "Mostra `4 20` (sem parênteses em `area`)"
+        },
+        {
+          "linhas": [
+            22,
+            23
+          ],
+          "texto": "Muda a largura e a área acompanha: mostra 50"
+        },
+        {
+          "linhas": [
+            24,
+            27
+          ],
+          "texto": "Largura 0 é recusada pelo setter"
+        },
+        {
+          "linhas": [
+            28,
+            31
+          ],
+          "texto": "`area` não tem setter: dá `AttributeError`"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-d",
+      "tipo": "codigo",
+      "nome": "Exemplo D — Associação (disciplina.py)",
+      "codigo": [
+        "class Professor:",
+        "    def __init__(self, nome):",
+        "        self.nome = nome",
+        "",
+        "class Disciplina:",
+        "    def __init__(self, nome, professor):",
+        "        self.nome = nome",
+        "        self.professor = professor",
+        "",
+        "    def resumo(self):",
+        "        return f\"{self.nome}, com {self.professor.nome}\"",
+        "",
+        "julia = Professor(\"Juliana\")",
+        "python = Disciplina(\"Python\", julia)",
+        "js = Disciplina(\"JavaScript\", julia)",
+        "print(python.resumo())",
+        "julia.nome = \"Juliana Carvalho\"",
+        "print(js.resumo())"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            8,
+            8
+          ],
+          "texto": "Guarda a referência ao objeto `Professor`, não uma cópia do nome"
+        },
+        {
+          "linhas": [
+            11,
+            11
+          ],
+          "texto": "Navega pela referência: `self.professor.nome`"
+        },
+        {
+          "linhas": [
+            13,
+            13
+          ],
+          "texto": "O professor existe por conta própria"
+        },
+        {
+          "linhas": [
+            14,
+            15
+          ],
+          "texto": "Duas disciplinas apontam para o **mesmo** professor"
+        },
+        {
+          "linhas": [
+            16,
+            16
+          ],
+          "texto": "\"Python, com Juliana\""
+        },
+        {
+          "linhas": [
+            17,
+            18
+          ],
+          "texto": "Mudar o professor reflete em todas as disciplinas: \"JavaScript, com Juliana Carvalho\""
+        }
+      ]
+    },
+    {
+      "id": "exemplo-e",
+      "tipo": "codigo",
+      "nome": "Exemplo E — Agregação (playlist.py)",
+      "codigo": [
+        "class Musica:",
+        "    def __init__(self, titulo, duracao):",
+        "        self.titulo = titulo",
+        "        self.duracao = duracao",
+        "",
+        "class Playlist:",
+        "    def __init__(self, nome):",
+        "        self.nome = nome",
+        "        self.musicas = []",
+        "",
+        "    def adicionar(self, musica):",
+        "        self.musicas.append(musica)",
+        "",
+        "    def duracao_total(self):",
+        "        return sum(m.duracao for m in self.musicas)",
+        "",
+        "m1 = Musica(\"Aquarela\", 260)",
+        "m2 = Musica(\"Garota de Ipanema\", 315)",
+        "estudo = Playlist(\"Estudo\")",
+        "treino = Playlist(\"Treino\")",
+        "estudo.adicionar(m1)",
+        "estudo.adicionar(m2)",
+        "treino.adicionar(m2)",
+        "print(estudo.duracao_total(), treino.duracao_total())",
+        "del estudo",
+        "print(m2.titulo)"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "A playlist guarda uma lista de referências"
+        },
+        {
+          "linhas": [
+            11,
+            12
+          ],
+          "texto": "Recebe músicas que já existem: a playlist não as cria"
+        },
+        {
+          "linhas": [
+            14,
+            15
+          ],
+          "texto": "Soma a duração de cada música (em segundos)"
+        },
+        {
+          "linhas": [
+            17,
+            18
+          ],
+          "texto": "As músicas são criadas fora de qualquer playlist"
+        },
+        {
+          "linhas": [
+            21,
+            23
+          ],
+          "texto": "A mesma música `m2` entra em duas playlists"
+        },
+        {
+          "linhas": [
+            24,
+            24
+          ],
+          "texto": "Mostra `575 315`"
+        },
+        {
+          "linhas": [
+            25,
+            25
+          ],
+          "texto": "Apaga a playlist \"Estudo\""
+        },
+        {
+          "linhas": [
+            26,
+            26
+          ],
+          "texto": "Mostra \"Garota de Ipanema\": as partes continuam existindo"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-f",
+      "tipo": "codigo",
+      "nome": "Exemplo F — Composição (pedido.py)",
+      "codigo": [
+        "class ItemPedido:",
+        "    def __init__(self, produto, preco, quantidade):",
+        "        self.produto = produto",
+        "        self.preco = preco",
+        "        self.quantidade = quantidade",
+        "",
+        "    @property",
+        "    def subtotal(self):",
+        "        return self.preco * self.quantidade",
+        "",
+        "class Pedido:",
+        "    def __init__(self, cliente):",
+        "        self.cliente = cliente",
+        "        self.__itens = []",
+        "",
+        "    def adicionar_item(self, produto, preco, quantidade=1):",
+        "        self.__itens.append(ItemPedido(produto, preco, quantidade))",
+        "",
+        "    @property",
+        "    def total(self):",
+        "        return sum(item.subtotal for item in self.__itens)",
+        "",
+        "    @property",
+        "    def quantidade_itens(self):",
+        "        return len(self.__itens)",
+        "",
+        "pedido = Pedido(\"Bia\")",
+        "pedido.adicionar_item(\"Café\", 12.50, 2)",
+        "pedido.adicionar_item(\"Pão de queijo\", 4.00, 3)",
+        "print(pedido.quantidade_itens, f\"{pedido.total:.2f}\")"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            7,
+            9
+          ],
+          "texto": "Cada item sabe calcular o próprio subtotal"
+        },
+        {
+          "linhas": [
+            14,
+            14
+          ],
+          "texto": "A lista de itens é interna ao pedido"
+        },
+        {
+          "linhas": [
+            16,
+            17
+          ],
+          "texto": "O pedido recebe os **dados** e cria o `ItemPedido` ele mesmo: marca da composição"
+        },
+        {
+          "linhas": [
+            19,
+            21
+          ],
+          "texto": "O total é calculado na hora; não existe um atributo `total` que alguém possa alterar"
+        },
+        {
+          "linhas": [
+            23,
+            25
+          ],
+          "texto": "Quantidade de itens, também somente leitura"
+        },
+        {
+          "linhas": [
+            28,
+            29
+          ],
+          "texto": "Ninguém de fora cria ou guarda os itens"
+        },
+        {
+          "linhas": [
+            30,
+            30
+          ],
+          "texto": "Mostra `2 37.00` (25,00 + 12,00)"
+        }
+      ]
+    },
+    {
+      "id": "como-aplicar",
+      "tipo": "leitura",
+      "nome": "Como aplicar: loja virtual",
+      "blocos": [
+        "Junta encapsulamento (`__`), `@property` com setter e somente leitura, associação (carrinho conhece o cliente), agregação (o item aponta para um produto que existe sozinho) e composição (o carrinho cria os próprios itens). Salve como `loja.py` e rode com `python loja.py`.",
+        {
+          "codigo": "class Produto:\n    def __init__(self, nome, preco, estoque):\n        self.nome = nome\n        self.preco = preco\n        self.__estoque = estoque\n\n    @property\n    def preco(self):\n        return self.__preco\n\n    @preco.setter\n    def preco(self, valor):\n        if valor <= 0:\n            raise ValueError(\"O preço deve ser maior que zero.\")\n        self.__preco = valor\n\n    @property\n    def estoque(self):\n        return self.__estoque\n\n    def baixar_estoque(self, qtd):\n        if qtd > self.__estoque:\n            raise ValueError(f\"Só há {self.__estoque} unidade(s) de {self.nome}.\")\n        self.__estoque -= qtd\n\n\nclass Cliente:\n    def __init__(self, nome, email):\n        self.nome = nome\n        self.email = email\n\n\nclass ItemCarrinho:\n    def __init__(self, produto, quantidade):\n        self.produto = produto\n        self.quantidade = quantidade\n\n    @property\n    def subtotal(self):\n        return self.produto.preco * self.quantidade\n\n\nclass Carrinho:\n    def __init__(self, cliente):\n        self.cliente = cliente\n        self.__itens = []\n\n    def adicionar(self, produto, quantidade=1):\n        if quantidade > produto.estoque:\n            print(f\"Não há {quantidade} unidade(s) de {produto.nome} em estoque.\")\n            return\n        self.__itens.append(ItemCarrinho(produto, quantidade))\n\n    @property\n    def total(self):\n        return sum(item.subtotal for item in self.__itens)\n\n    def finalizar(self):\n        for item in self.__itens:\n            item.produto.baixar_estoque(item.quantidade)\n        print(f\"Pedido de {self.cliente.nome} confirmado: R$ {self.total:.2f}\")\n        for item in self.__itens:\n            print(f\"  {item.quantidade}x {item.produto.nome} = R$ {item.subtotal:.2f}\")\n        self.__itens = []\n\n\ncaneca = Produto(\"Caneca\", 35.00, 10)\ncamiseta = Produto(\"Camiseta\", 59.90, 2)\nbia = Cliente(\"Bia\", \"bia@email.com\")\n\ncarrinho = Carrinho(bia)\ncarrinho.adicionar(caneca, 2)\ncarrinho.adicionar(camiseta, 3)\ncarrinho.adicionar(camiseta, 1)\ncarrinho.finalizar()\n\nprint(f\"Estoque: caneca {caneca.estoque}, camiseta {camiseta.estoque}\")\ntry:\n    caneca.preco = -5\nexcept ValueError as erro:\n    print(\"Erro:\", erro)\nprint(f\"Carrinho vazio? {carrinho.total == 0}\")"
+        },
+        "**Saída esperada:**",
+        {
+          "codigo": "Não há 3 unidade(s) de Camiseta em estoque.\nPedido de Bia confirmado: R$ 129.90\n  2x Caneca = R$ 70.00\n  1x Camiseta = R$ 59.90\nEstoque: caneca 8, camiseta 1\nErro: O preço deve ser maior que zero.\nCarrinho vazio? True"
+        },
+        "**Por que funciona:** o `Produto` protege preço e estoque. O preço passa sempre pelo setter (inclusive no `__init__`), e o estoque só pode ser lido pela propriedade e só diminui pelo método `baixar_estoque`, que tem a regra. O `Carrinho` conhece o `Cliente` (associação) e cria os `ItemCarrinho` ele mesmo (composição): ninguém de fora consegue mexer na lista de itens. Cada item aponta para um `Produto` que existe por conta própria e é o mesmo objeto do estoque da loja (agregação). Por isso, ao finalizar, a baixa de estoque aparece nos produtos originais. O `total` é uma propriedade calculada: sempre bate com os itens e não pode ser alterado à mão."
+      ]
+    },
+    {
+      "id": "quiz",
+      "tipo": "quiz",
+      "nome": "Quiz de código",
+      "perguntas": [
+        {
+          "pergunta": "O que acontece?",
+          "codigo": "class Cofre:\n    def __init__(self):\n        self.__senha = \"1234\"\n\nc = Cofre()\nprint(c.__senha)",
+          "opcoes": [
+            "Mostra 1234",
+            "`AttributeError`",
+            "Mostra `None`",
+            "`SyntaxError`"
+          ],
+          "correta": 1,
+          "dica": "o que o Python faz com nomes que começam com `__`?",
+          "acerto": "Isso! O nome foi trocado para _Cofre__senha.",
+          "erro": "Com dois sublinhados, o acesso direto de fora falha.",
+          "explicacao": "por causa do name mangling, o atributo se chama `_Cofre__senha`, e `__senha` não existe por fora."
+        },
+        {
+          "pergunta": "O que é impresso?",
+          "codigo": "class Produto:\n    def __init__(self, preco):\n        self.preco = preco\n\n    @property\n    def preco(self):\n        return self.__preco\n\n    @preco.setter\n    def preco(self, valor):\n        self.__preco = max(valor, 1)\n\np = Produto(-10)\nprint(p.preco)",
+          "opcoes": [
+            "-10",
+            "1",
+            "0",
+            "Erro"
+          ],
+          "correta": 1,
+          "dica": "a atribuição do `__init__` passa pelo setter?",
+          "acerto": "Perfeito! O setter também roda na criação.",
+          "erro": "self.preco = ... chama o setter, que troca -10 por 1.",
+          "explicacao": "`max(-10, 1)` é 1; o valor inválido nunca chega a ser guardado."
+        },
+        {
+          "pergunta": "O que acontece em `r.area = 50`?",
+          "codigo": "class Quadrado:\n    def __init__(self, lado):\n        self.lado = lado\n\n    @property\n    def area(self):\n        return self.lado ** 2\n\nr = Quadrado(3)\nr.area = 50",
+          "opcoes": [
+            "A área vira 50",
+            "O lado vira √50",
+            "`AttributeError`: a propriedade não tem setter",
+            "Nada acontece"
+          ],
+          "correta": 2,
+          "dica": "existe `@area.setter`?",
+          "acerto": "Isso! Propriedade sem setter é somente leitura.",
+          "erro": "Sem setter, o Python não sabe como atribuir.",
+          "explicacao": "`area` é calculada a partir de `lado` e não pode ser atribuída diretamente."
+        },
+        {
+          "pergunta": "Que relação existe entre `Turma` e `Aluno`?",
+          "codigo": "lia = Aluno(\"Lia\")\nturma_a = Turma()\nturma_b = Turma()\nturma_a.matricular(lia)\nturma_b.matricular(lia)",
+          "opcoes": [
+            "Herança",
+            "Composição",
+            "Agregação",
+            "Nenhuma"
+          ],
+          "correta": 2,
+          "dica": "o aluno existe fora da turma? Pode estar em duas?",
+          "acerto": "Mandou bem! As partes existem sozinhas e são compartilhadas.",
+          "erro": "Na composição, o todo cria a parte e ela não é compartilhada.",
+          "explicacao": "`lia` é criada fora, e as duas turmas guardam referências a ela."
+        },
+        {
+          "pergunta": "Que relação existe aqui?",
+          "codigo": "class Casa:\n    def __init__(self):\n        self.comodos = [Comodo(\"Sala\"), Comodo(\"Cozinha\")]",
+          "opcoes": [
+            "Agregação",
+            "Composição",
+            "Herança",
+            "Associação simples"
+          ],
+          "correta": 1,
+          "dica": "quem cria os cômodos?",
+          "acerto": "Isso! O todo cria as partes.",
+          "erro": "Os cômodos nascem dentro da casa: é composição.",
+          "explicacao": "os `Comodo` são criados pela `Casa` e só existem dentro dela."
+        },
+        {
+          "pergunta": "O que é impresso?",
+          "codigo": "class Autor:\n    def __init__(self, nome):\n        self.nome = nome\n\nclass Livro:\n    def __init__(self, titulo, autor):\n        self.titulo = titulo\n        self.autor = autor\n\na = Autor(\"Clarice\")\nl1 = Livro(\"A Hora da Estrela\", a)\nl2 = Livro(\"Perto do Coração Selvagem\", a)\na.nome = \"Clarice Lispector\"\nprint(l2.autor.nome)",
+          "opcoes": [
+            "Clarice",
+            "Clarice Lispector",
+            "Erro",
+            "A Hora da Estrela"
+          ],
+          "correta": 1,
+          "dica": "os livros guardam uma cópia do autor ou uma referência?",
+          "acerto": "Perfeito! Os dois livros apontam para o mesmo objeto.",
+          "erro": "O atributo guarda a referência, não uma cópia.",
+          "explicacao": "alterar o objeto `a` muda o que todos os livros associados a ele enxergam."
+        }
+      ]
+    },
+    {
+      "id": "atividades",
+      "tipo": "atividades",
+      "nome": "Atividades",
+      "intro": [
+        "Escreva ou cole a sua tentativa no campo de cada atividade para liberar a solução. Outras soluções também valem, desde que passem nos testes do enunciado."
+      ],
+      "itens": [
+        {
+          "n": 1,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie a classe `Temperatura` com a propriedade `celsius` (com setter que recusa valores abaixo de -273,15) e a propriedade somente leitura `fahrenheit`. Teste com 25 °C, depois mude para 100 °C e tente -300 °C."
+          ],
+          "dica": "°F = °C × 9 / 5 + 32.",
+          "solucao": [
+            {
+              "codigo": "class Temperatura:\n    def __init__(self, celsius):\n        self.celsius = celsius\n\n    @property\n    def celsius(self):\n        return self.__celsius\n\n    @celsius.setter\n    def celsius(self, valor):\n        if valor < -273.15:\n            raise ValueError(\"Abaixo do zero absoluto.\")\n        self.__celsius = valor\n\n    @property\n    def fahrenheit(self):\n        return self.__celsius * 9 / 5 + 32\n\nt = Temperatura(25)\nprint(t.fahrenheit)   # 77.0\nt.celsius = 100\nprint(t.fahrenheit)   # 212.0\ntry:\n    t.celsius = -300\nexcept ValueError as erro:\n    print(\"Erro:\", erro)"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie as classes `Autor` (nome) e `Livro` (título e autor, como objeto) e um método `ficha()` no livro que devolve \"Título — Nome do autor\". Crie dois livros do mesmo autor."
+          ],
+          "dica": "o livro guarda a referência ao autor e lê `self.autor.nome`.",
+          "solucao": [
+            {
+              "codigo": "class Autor:\n    def __init__(self, nome):\n        self.nome = nome\n\nclass Livro:\n    def __init__(self, titulo, autor):\n        self.titulo = titulo\n        self.autor = autor\n\n    def ficha(self):\n        return f\"{self.titulo} — {self.autor.nome}\"\n\nmachado = Autor(\"Machado de Assis\")\nprint(Livro(\"Dom Casmurro\", machado).ficha())\nprint(Livro(\"Quincas Borba\", machado).ficha())"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie a classe `Carro` que, no `__init__`, cria o próprio `Motor` (com `potencia`), guardado num atributo \"privado\". O carro tem um método `ligar()` que liga o motor e devolve \"Modelo ligado (N cv)\"."
+          ],
+          "dica": "é composição: o `Motor(...)` é criado dentro do `__init__` do carro.",
+          "solucao": [
+            {
+              "codigo": "class Motor:\n    def __init__(self, potencia):\n        self.potencia = potencia\n        self.ligado = False\n\nclass Carro:\n    def __init__(self, modelo, potencia):\n        self.modelo = modelo\n        self.__motor = Motor(potencia)\n\n    def ligar(self):\n        self.__motor.ligado = True\n        return f\"{self.modelo} ligado ({self.__motor.potencia} cv)\"\n\nprint(Carro(\"Onix\", 116).ligar())  # Onix ligado (116 cv)"
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "nivel": "Médio",
+          "enunciado": [
+            "Crie a classe `Senha` que só aceita valores com pelo menos 8 caracteres. Ao ler `senha.valor`, mostre asteriscos no lugar dos caracteres, e ofereça um método `conferir(tentativa)` que diz se a tentativa está certa."
+          ],
+          "dica": "guarde o texto real em `__valor`; o `@property` devolve `\"*\" * len(...)`.",
+          "solucao": [
+            {
+              "codigo": "class Senha:\n    def __init__(self, valor):\n        self.valor = valor\n\n    @property\n    def valor(self):\n        return \"*\" * len(self.__valor)\n\n    @valor.setter\n    def valor(self, novo):\n        if len(novo) < 8:\n            raise ValueError(\"A senha precisa de pelo menos 8 caracteres.\")\n        self.__valor = novo\n\n    def conferir(self, tentativa):\n        return tentativa == self.__valor\n\ns = Senha(\"python2026\")\nprint(s.valor)                  # **********\nprint(s.conferir(\"python2026\")) # True\nprint(s.conferir(\"abc\"))        # False\ntry:\n    s.valor = \"123\"\nexcept ValueError as erro:\n    print(\"Erro:\", erro)"
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "nivel": "Médio",
+          "enunciado": [
+            "Crie as classes `Aluno` e `Turma` (agregação). A turma tem `codigo`, uma lista de alunos, o método `matricular(aluno)` (que recusa alunos já matriculados) e `lista()`, que devolve os nomes. Matricule a mesma aluna em duas turmas."
+          ],
+          "dica": "`aluno in self.alunos` verifica se o objeto já está na lista.",
+          "solucao": [
+            {
+              "codigo": "class Aluno:\n    def __init__(self, nome):\n        self.nome = nome\n\nclass Turma:\n    def __init__(self, codigo):\n        self.codigo = codigo\n        self.alunos = []\n\n    def matricular(self, aluno):\n        if aluno in self.alunos:\n            print(f\"{aluno.nome} já está na turma {self.codigo}.\")\n            return\n        self.alunos.append(aluno)\n\n    def lista(self):\n        return [a.nome for a in self.alunos]\n\nlia = Aluno(\"Lia\")\nrui = Aluno(\"Rui\")\nmanha = Turma(\"PY-M\")\nnoite = Turma(\"PY-N\")\nmanha.matricular(lia)\nmanha.matricular(rui)\nnoite.matricular(lia)\nmanha.matricular(lia)              # Lia já está na turma PY-M.\nprint(manha.lista(), noite.lista())  # ['Lia', 'Rui'] ['Lia']"
+            }
+          ]
+        },
+        {
+          "n": 6,
+          "nivel": "Médio",
+          "enunciado": [
+            "Reescreva a classe `Pessoa` do Exemplo B trocando `get_idade` e `set_idade` por uma propriedade `idade`, mantendo a mesma validação."
+          ],
+          "dica": "o `__init__` passa a fazer `self.idade = idade`.",
+          "solucao": [
+            {
+              "codigo": "class Pessoa:\n    def __init__(self, nome, idade):\n        self.nome = nome\n        self.idade = idade\n\n    @property\n    def idade(self):\n        return self.__idade\n\n    @idade.setter\n    def idade(self, nova):\n        if not isinstance(nova, int) or nova < 0 or nova > 150:\n            raise ValueError(\"Idade deve ser um inteiro entre 0 e 150.\")\n        self.__idade = nova\n\np = Pessoa(\"Rui\", 30)\np.idade = 31\nprint(p.idade)  # 31\ntry:\n    p.idade = -2\nexcept ValueError as erro:\n    print(\"Erro:\", erro)"
+            }
+          ]
+        },
+        {
+          "n": 7,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Crie a classe `Conta` com saldo e extrato \"privados\". O saldo só pode ser lido (propriedade sem setter) e muda por `depositar` e `sacar`, que lançam `ValueError` para valores inválidos ou saldo insuficiente. A propriedade `extrato` deve devolver uma **cópia** da lista, para que ninguém consiga alterar o histórico por fora."
+          ],
+          "dica": "`list(self.__extrato)` cria uma cópia.",
+          "solucao": [
+            {
+              "codigo": "class Conta:\n    def __init__(self, titular, saldo=0):\n        self.titular = titular\n        self.__saldo = saldo\n        self.__extrato = []\n\n    @property\n    def saldo(self):\n        return self.__saldo\n\n    @property\n    def extrato(self):\n        return list(self.__extrato)\n\n    def depositar(self, valor):\n        if valor <= 0:\n            raise ValueError(\"Depósito deve ser positivo.\")\n        self.__saldo += valor\n        self.__extrato.append(f\"+{valor:.2f}\")\n\n    def sacar(self, valor):\n        if valor > self.__saldo:\n            raise ValueError(\"Saldo insuficiente.\")\n        self.__saldo -= valor\n        self.__extrato.append(f\"-{valor:.2f}\")\n\nc = Conta(\"Ana\")\nc.depositar(200)\nc.sacar(50)\ntry:\n    c.sacar(500)\nexcept ValueError as erro:\n    print(\"Erro:\", erro)\nprint(c.saldo, c.extrato)    # 150 ['+200.00', '-50.00']\nc.extrato.append(\"+1000.00\") # altera só a cópia\nprint(c.extrato)             # ['+200.00', '-50.00']\ntry:\n    c.saldo = 999\nexcept AttributeError as erro:\n    print(\"Erro:\", erro)"
+            }
+          ]
+        },
+        {
+          "n": 8,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Monte um sistema de restaurante: `Prato` (nome e preço, com setter que recusa preço ≤ 0), `Comanda` (composição: cria os próprios itens a partir de um prato e de uma quantidade, e tem as propriedades `total` e `taxa_servico` de 10%) e `Mesa` (associação: conhece a comanda atual). Mostre a conta de uma mesa com 2 pratos de R$ 42,00 e 1 de R$ 18,50."
+          ],
+          "dica": "`ItemComanda` guarda a referência ao `Prato` (agregação) e calcula o subtotal.",
+          "solucao": [
+            {
+              "codigo": "class Prato:\n    def __init__(self, nome, preco):\n        self.nome = nome\n        self.preco = preco\n\n    @property\n    def preco(self):\n        return self.__preco\n\n    @preco.setter\n    def preco(self, valor):\n        if valor <= 0:\n            raise ValueError(\"Preço inválido.\")\n        self.__preco = valor\n\nclass ItemComanda:\n    def __init__(self, prato, quantidade):\n        self.prato = prato\n        self.quantidade = quantidade\n\n    @property\n    def subtotal(self):\n        return self.prato.preco * self.quantidade\n\nclass Comanda:\n    def __init__(self):\n        self.__itens = []\n\n    def pedir(self, prato, quantidade=1):\n        self.__itens.append(ItemComanda(prato, quantidade))\n\n    @property\n    def total(self):\n        return sum(item.subtotal for item in self.__itens)\n\n    @property\n    def taxa_servico(self):\n        return self.total * 0.10\n\nclass Mesa:\n    def __init__(self, numero):\n        self.numero = numero\n        self.comanda = Comanda()\n\n    def fechar(self):\n        t = self.comanda.total\n        taxa = self.comanda.taxa_servico\n        return f\"Mesa {self.numero}: R$ {t:.2f} + 10% (R$ {taxa:.2f}) = R$ {t + taxa:.2f}\"\n\nrisoto = Prato(\"Risoto\", 42.00)\nsuco = Prato(\"Suco\", 18.50)\nmesa = Mesa(7)\nmesa.comanda.pedir(risoto, 2)\nmesa.comanda.pedir(suco)\nprint(mesa.fechar())\n# Mesa 7: R$ 102.50 + 10% (R$ 10.25) = R$ 112.75"
+            }
+          ]
+        },
+        {
+          "n": 9,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Explique, com suas palavras e um exemplo de cada, a diferença entre associação, agregação e composição."
+          ],
+          "dica": "pense em quem cria a parte e se ela existe sozinha.",
+          "solucao": [
+            "**Resposta esperada:** na associação, um objeto só conhece outro e guarda uma referência a ele (uma disciplina conhece o professor). Na agregação, o todo reúne partes que foram criadas fora dele, existem sozinhas e podem estar em vários todos (uma playlist com músicas). Na composição, o todo cria as próprias partes, que não fazem sentido fora dele e não são compartilhadas (um pedido e seus itens).",
+            {
+              "codigo": "# Associação: a disciplina conhece um professor criado fora\ndisciplina = Disciplina(\"Python\", Professor(\"Juliana\"))\n\n# Agregação: a mesma música em duas playlists\nmusica = Musica(\"Aquarela\", 260)\nestudo.adicionar(musica)\ntreino.adicionar(musica)\n\n# Composição: o pedido cria os próprios itens\npedido = Pedido(\"Bia\")\npedido.adicionar_item(\"Café\", 12.50, 2)"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

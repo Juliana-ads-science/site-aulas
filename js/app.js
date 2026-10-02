@@ -156,8 +156,7 @@ function pendente(T, A) {
 const link = (t, a, e) => `#/aula/${t}/${a}/${e}`;
 const rotaPadrao = () => {
   if (usuario.perfil === "adulto") return "#/inicio";
-  const k = trilhasVisiveis()[0];
-  return k ? `#/trilha/${k.id}` : "#/progresso";
+  return trilhasVisiveis().some(ehKids) ? "#/kids" : "#/progresso";
 };
 
 /* ---------- realce de sintaxe ----------
@@ -172,6 +171,16 @@ const LINGUAGENS = {
     kw: new Set("let const var if else while do for break continue function return true false null undefined new typeof of in".split(" ")),
     fn: new Set("console log prompt Number String Math isNaN".split(" ")),
     re: /(\/\/.*$)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*'|`(?:[^`\\]|\\.)*`)|(\b\d+(?:\.\d+)?\b)|([A-Za-z_$][\w$]*)/g
+  },
+  lua: {
+    kw: new Set("and break do else elseif end false for function if in local nil not or repeat return then true until while".split(" ")),
+    fn: new Set("print pairs ipairs tostring tonumber type require wait task workspace game script math string table Instance Vector3 CFrame BrickColor Enum Players".split(" ")),
+    re: /(--.*$)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(\b\d+(?:\.\d+)?\b)|([A-Za-z_]\w*)/g
+  },
+  html: {
+    kw: new Set("html head body title meta link style script div span p a h1 h2 h3 h4 ul ol li button input form label select option textarea img br hr nav table tr td th DOCTYPE".split(" ")),
+    fn: new Set(),
+    re: /(<!--[\s\S]*?-->)|("[^"]*"|'[^']*')|(\b\d+(?:\.\d+)?\b)|([A-Za-z_][\w-]*)/g
   }
 };
 let linguagemAtual = "python";
@@ -514,12 +523,8 @@ function desenharNav(ativo) {
   const item = (href, txt, extra = "", cls = "") => `<a href="${href}" class="${cls} ${ativo === href ? "ativo" : ""}">${txt}${extra}</a>`;
   let h = "";
   const kids = ts.filter(ehKids);
-  if (usuario.perfil === "adulto") {
-    h += item("#/inicio", "Início");
-    if (kids.length) h += item(`#/trilha/${kids[0].id}`, "Espaço Kids");
-  } else {
-    h += kids.map(t => item(`#/trilha/${t.id}`, esc(t.titulo))).join("");
-  }
+  if (usuario.perfil === "adulto") h += item("#/inicio", "Início");
+  if (kids.length) h += item("#/kids", "Kids");
   h += item("#/progresso", "Meu progresso");
   const adultas = ts.filter(t => !ehKids(t));
   if (adultas.length) {
@@ -540,13 +545,18 @@ function rota() {
   const [v, ...r] = location.hash.replace(/^#\/?/, "").split("/").map(decodeURIComponent);
   let navAtivo = "#/" + [v, r[0]].filter(Boolean).join("/");
 
-  if (v === "trilha" && achaTrilha(r[0]) && trilhasVisiveis().includes(achaTrilha(r[0]))) viewTrilha(achaTrilha(r[0]));
+  if (v === "kids") { viewKids(); navAtivo = "#/kids"; }
+  else if (v === "trilha" && achaTrilha(r[0]) && trilhasVisiveis().includes(achaTrilha(r[0]))) {
+    const T = achaTrilha(r[0]);
+    if (ehKids(T)) navAtivo = "#/kids";
+    viewTrilha(T);
+  }
   else if (v === "aula") {
     const T = achaTrilha(r[0]), A = achaAula(T, r[1]);
     if (!A || !trilhasVisiveis().includes(T)) { location.hash = rotaPadrao(); return; }
     const es = etapasDe(A);
     const e = es.find(x => x.id === r[2]) ? r[2] : es[0].id;
-    navAtivo = `#/trilha/${T.id}`;
+    navAtivo = ehKids(T) ? "#/kids" : `#/trilha/${T.id}`;
     viewAula(T, A, e);
   }
   else if (v === "progresso") { document.body.classList.toggle("kids", usuario.perfil === "kids"); viewProgresso(); }
@@ -593,7 +603,16 @@ function viewInicio() {
       <a class="btn claro" href="${link(alvo.T.id, alvo.A.id, alvo.e)}">Continuar aula</a>
     </div>` : `<div class="continuar"><div><h2>Você concluiu todas as trilhas</h2><p>Novas aulas aparecem aqui assim que forem publicadas.</p></div></div>`}
     <h2 class="secao-titulo">Suas trilhas</h2>
-    <div class="trilhas">${trilhasVisiveis().map(cardTrilha).join("")}</div>`;
+    <div class="trilhas">${trilhasVisiveis().filter(t => !ehKids(t)).map(cardTrilha).join("")}</div>`;
+}
+
+function viewKids() {
+  document.body.classList.add("kids");
+  const ts = trilhasVisiveis().filter(ehKids);
+  $("#view").innerHTML = `
+    <div class="saudacao"><h1>Kids</h1><p class="muted">Escolha o seu mundo para continuar.</p></div>
+    <div class="bit-cena" style="margin:0 0 28px"><div class="bit">${mascote("uau")}</div><div class="balao"><p>Oi! Vamos programar juntos?</p></div></div>
+    <div class="trilhas">${ts.map(cardTrilha).join("")}</div>`;
 }
 
 function viewTrilha(T) {
@@ -780,7 +799,18 @@ function viewCodigoFaixas(T, A, etapa, box) {
         <div class="explain-nav"><button class="btn ghost" id="lAnt">Anterior</button><button class="btn" id="lProx">Próxima</button></div>
         <div class="contagem" id="contagem"></div></div>
     </div>
+    ${etapa.previa ? `<div class="previa"><button class="btn ghost" id="verPrevia">Ver como fica</button>
+      <iframe id="framePrevia" title="Pré-visualização da página" sandbox="allow-scripts" hidden></iframe></div>` : ""}
     ${etapa.fechamento ? `<div class="leitura" style="margin-top:18px">${blocos([].concat(etapa.fechamento))}</div>` : ""}`;
+  if (etapa.previa) {
+    const btnPrevia = $("#verPrevia", box), framePrevia = $("#framePrevia", box);
+    btnPrevia.onclick = () => {
+      const mostrando = framePrevia.hidden;
+      framePrevia.hidden = !mostrando;
+      btnPrevia.textContent = mostrando ? "Esconder" : "Ver como fica";
+      if (mostrando) framePrevia.srcdoc = C.join("\n");
+    };
+  }
   const mostrar = k => {
     atual = k; vistas.add(k);
     const [de, ate] = faixa(X[k]);

@@ -15,6 +15,9 @@
         "aula-08",
         "aula-12",
         "aula-13",
+        "aula-15",
+        "aula-16",
+        "aula-17",
         "aula-18",
         "aula-24"
       ]
@@ -55,6 +58,29 @@
       "titulo": "Informática Básica",
       "descricao": "Os primeiros passos no computador: arquivos, pastas, internet e as ferramentas do dia a dia.",
       "aulas": []
+    },
+    {
+      "id": "roblox",
+      "pasta": "kids/roblox",
+      "publico": "kids",
+      "linguagem": "lua",
+      "titulo": "Roblox",
+      "descricao": "Crie jogos no Roblox Studio com Lua: personagens, desafios e inimigos.",
+      "aulas": [
+        "aula-41"
+      ]
+    },
+    {
+      "id": "html-jogos",
+      "pasta": "kids/html-jogos",
+      "publico": "kids",
+      "linguagem": "html",
+      "titulo": "HTML para Jogos",
+      "descricao": "Monte jogos de escolhas com páginas HTML, links e telas de vitória ou derrota.",
+      "aulas": [
+        "aula-47",
+        "aula-48"
+      ]
     }
   ]
 }

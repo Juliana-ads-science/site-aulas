@@ -1,0 +1,878 @@
+{
+  "numero": 41,
+  "titulo": "Desafio com Inimigos Simples",
+  "etapas": [
+    {
+      "id": "conversa",
+      "tipo": "conversa",
+      "nome": "Conversa com o Bit",
+      "falas": [
+        "Oi! Hoje vamos criar um inimigo de verdade no seu jogo! 🤖",
+        "Ele vai andar sozinho pelo mapa e tirar vida de quem encostar nele.",
+        "Vamos usar o Humanoid para fazer ele andar, e o Touched para saber quando alguém chegou perto.",
+        "Prepare o Roblox Studio. Vamos programar!"
+      ]
+    },
+    {
+      "id": "definicoes",
+      "tipo": "leitura",
+      "nome": "Definições",
+      "blocos": [
+        "Hoje você vai criar um **inimigo** no Roblox Studio: um personagem que anda sozinho pelo mapa e faz o jogador perder vida quando encosta nele. É ele que deixa a sua fase mais difícil e divertida!",
+        {
+          "tabela": [
+            [
+              "Palavra",
+              "O que significa"
+            ],
+            [
+              "NPC",
+              "Personagem que o jogo controla sozinho, sem ninguém jogando com ele"
+            ],
+            [
+              "Inimigo",
+              "Um NPC que cria desafios para o jogador"
+            ],
+            [
+              "Modelo (Model)",
+              "Um grupo de peças que formam uma coisa só, como um personagem"
+            ],
+            [
+              "Humanoid",
+              "A \"peça mágica\" que faz o modelo andar, pular e ter vida"
+            ],
+            [
+              "HumanoidRootPart",
+              "A peça invisível no meio do corpo; é ela que se move de verdade"
+            ],
+            [
+              "Script",
+              "O lugar onde escrevemos o código em Lua"
+            ],
+            [
+              "`script.Parent`",
+              "O objeto onde o script está guardado (aqui, o inimigo)"
+            ],
+            [
+              "Propriedade",
+              "Uma característica que podemos mudar: cor, tamanho, velocidade"
+            ],
+            [
+              "`WalkSpeed`",
+              "Velocidade de caminhada; o padrão do jogador é 16"
+            ],
+            [
+              "`Health`",
+              "Vida do personagem; começa em 100"
+            ],
+            [
+              "`Vector3`",
+              "Uma posição no mapa com três números: X, Y (altura) e Z"
+            ],
+            [
+              "`MoveTo`",
+              "Comando que manda o personagem andar até um ponto"
+            ],
+            [
+              "Patrulha",
+              "O inimigo andando de um lado para o outro sem parar"
+            ],
+            [
+              "`while true do`",
+              "Repetição que nunca acaba"
+            ],
+            [
+              "`task.wait(2)`",
+              "Espera 2 segundos antes de continuar"
+            ],
+            [
+              "Evento",
+              "Algo que acontece no jogo, como um toque"
+            ],
+            [
+              "`Touched`",
+              "Evento que avisa quando alguma coisa encosta numa peça"
+            ],
+            [
+              "`TakeDamage`",
+              "Tira um pedaço da vida do personagem"
+            ],
+            [
+              "Cooldown (debounce)",
+              "Um tempo de descanso para o inimigo não atacar mil vezes seguidas"
+            ],
+            [
+              "Anchored",
+              "Peça \"pregada\" no lugar; o inimigo **não** pode estar ancorado"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "para-que-como-e-quando-usamos",
+      "tipo": "leitura",
+      "nome": "Para que, como e quando usamos",
+      "blocos": [
+        "**Para que:** inimigos deixam o jogo com desafio. O jogador precisa observar, esperar a hora certa e pular ou correr para passar.",
+        "**Como:**",
+        {
+          "passos": [
+            "Criamos um personagem com o **Rig Builder** (aba Avatar → Rig Builder → R15).",
+            "Colocamos um **Script** dentro dele.",
+            "No script, mandamos o inimigo andar (`MoveTo`) e tirar vida de quem encostar (`Touched` + `TakeDamage`)."
+          ]
+        },
+        "**Quando usar:**",
+        {
+          "tabela": [
+            [
+              "Situação",
+              "Que inimigo usar"
+            ],
+            [
+              "Fase fácil, para quem está começando",
+              "Inimigo lento, que tira pouca vida"
+            ],
+            [
+              "Corredor que o jogador precisa atravessar",
+              "Inimigo patrulhando de um lado para o outro"
+            ],
+            [
+              "Obby difícil",
+              "Inimigo rápido, que derruba na hora (`Health = 0`)"
+            ],
+            [
+              "Fase de exploração tranquila",
+              "Talvez nenhum inimigo! Nem todo jogo precisa de perigo"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "estruturas",
+      "tipo": "leitura",
+      "nome": "Estruturas",
+      "blocos": [
+        {
+          "h": "3.1 Pegar o inimigo e o Humanoid"
+        },
+        {
+          "codigo": "local inimigo = script.Parent\nlocal humanoide = inimigo:WaitForChild(\"Humanoid\")"
+        },
+        {
+          "h": "3.2 Mudar a velocidade"
+        },
+        {
+          "codigo": "humanoide.WalkSpeed = 10   -- mais lento que o jogador (16)"
+        },
+        {
+          "h": "3.3 Mudar a cor"
+        },
+        {
+          "codigo": "inimigo:WaitForChild(\"Head\").BrickColor = BrickColor.new(\"Bright red\")"
+        },
+        {
+          "h": "3.4 Andar até um ponto"
+        },
+        {
+          "codigo": "humanoide:MoveTo(Vector3.new(20, 0, 20))\nhumanoide.MoveToFinished:Wait()   -- espera chegar"
+        },
+        {
+          "h": "3.5 Andar até um bloco do mapa"
+        },
+        {
+          "codigo": "local pontoA = workspace:WaitForChild(\"PontoA\")\nhumanoide:MoveTo(pontoA.Position)"
+        },
+        {
+          "h": "3.6 Repetir para sempre"
+        },
+        {
+          "codigo": "while true do\n    -- o que estiver aqui se repete\n    task.wait(1)\nend"
+        },
+        {
+          "h": "3.7 Perceber um toque"
+        },
+        {
+          "codigo": "local corpo = inimigo:WaitForChild(\"HumanoidRootPart\")\ncorpo.Touched:Connect(function(parteQueTocou)\n    print(\"Alguém encostou!\")\nend)"
+        },
+        {
+          "h": "3.8 Tirar vida"
+        },
+        {
+          "codigo": "humanoideDoJogador:TakeDamage(20)  -- tira 20 de vida\nhumanoideDoJogador.Health = 0      -- derruba na hora"
+        }
+      ]
+    },
+    {
+      "id": "sintaxe-e-simbolos",
+      "tipo": "leitura",
+      "nome": "Sintaxe e símbolos",
+      "blocos": [
+        {
+          "tabela": [
+            [
+              "Símbolo / comando",
+              "O que faz",
+              "Por que existe"
+            ],
+            [
+              "`local`",
+              "Cria uma variável",
+              "Guarda algo para usar depois"
+            ],
+            [
+              "`=`",
+              "Guarda um valor na variável",
+              "`local vida = 100`"
+            ],
+            [
+              "`.` (ponto)",
+              "Entra numa propriedade ou num filho",
+              "`humanoide.WalkSpeed`"
+            ],
+            [
+              "`:` (dois-pontos)",
+              "Chama uma ação do objeto",
+              "`humanoide:MoveTo(...)`, `humanoide:TakeDamage(20)`"
+            ],
+            [
+              "`\"texto\"`",
+              "Texto (string)",
+              "Nomes de peças e mensagens"
+            ],
+            [
+              "`WaitForChild(\"Nome\")`",
+              "Espera a peça existir e devolve ela",
+              "Às vezes o script roda antes da peça carregar"
+            ],
+            [
+              "`FindFirstChild(\"Nome\")`",
+              "Procura a peça; devolve `nil` se não achar",
+              "Bom para perguntar \"existe?\""
+            ],
+            [
+              "`nil`",
+              "\"Nada\"",
+              "Resposta quando algo não existe"
+            ],
+            [
+              "`if ... then ... end`",
+              "Faz algo só se for verdade",
+              "Filtrar quem encostou"
+            ],
+            [
+              "`and`",
+              "\"E\": as duas coisas precisam ser verdade",
+              "`if humanoide and podeAtacar then`"
+            ],
+            [
+              "`~=`",
+              "\"Diferente de\"",
+              "`personagem ~= inimigo`"
+            ],
+            [
+              "`..`",
+              "Junta textos",
+              "`\"Olá, \" .. nome`"
+            ],
+            [
+              "`--`",
+              "Comentário",
+              "Uma anotação que o jogo ignora"
+            ],
+            [
+              "`function(...) ... end`",
+              "Um bloco de código que roda depois",
+              "O que fazer quando o toque acontecer"
+            ],
+            [
+              "`:Connect(...)`",
+              "Liga o evento à função",
+              "\"Quando tocar, faça isto\""
+            ],
+            [
+              "`true` / `false`",
+              "Verdadeiro / falso",
+              "Controlar se o inimigo pode atacar"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logica-por-tras",
+      "tipo": "leitura",
+      "nome": "Lógica por trás",
+      "blocos": [
+        "**Bit diz:** \"O computador é muito rápido e muito obediente. Ele faz exatamente o que você escreve, na ordem que você escreve!\"",
+        "**Como a patrulha funciona:**",
+        {
+          "passos": [
+            "O inimigo recebe a ordem de ir até o Ponto A (`MoveTo`).",
+            "O script espera ele chegar (`MoveToFinished:Wait()`).",
+            "Descansa um pouquinho (`task.wait(1)`).",
+            "Recebe a ordem de ir até o Ponto B e faz o mesmo.",
+            "O `while true do` faz tudo isso de novo, para sempre."
+          ]
+        },
+        "**Por que esperar:** o código roda muito mais rápido que o personagem anda. Se você mandar ir ao Ponto A e logo depois ao Ponto B, sem esperar, ele nem chega ao A: a segunda ordem \"atropela\" a primeira.",
+        "**Como o inimigo sabe que foi um jogador:** o `Touched` avisa que **uma peça** encostou, por exemplo o pé do jogador. Então subimos um nível com `.Parent` (do pé para o personagem inteiro) e perguntamos: \"esse personagem tem Humanoid?\". Se tiver, é alguém vivo. Se for uma parede, não tem Humanoid, e o inimigo ignora.",
+        "**Por que o cooldown:** o `Touched` dispara muitas vezes por segundo enquanto as peças estão encostadas. Sem um descanso, o jogador perderia toda a vida num piscar de olhos. A variável `podeAtacar` funciona como um semáforo: fica vermelha por 2 segundos depois de cada ataque.",
+        "**Ordem importa:** o `while true do` nunca termina. Tudo o que estiver **depois** dele no script nunca vai rodar. Por isso ligamos o `Touched` **antes** da patrulha.",
+        "**Problemas comuns:**",
+        {
+          "tabela": [
+            [
+              "O que acontece",
+              "O que conferir"
+            ],
+            [
+              "O inimigo não sai do lugar",
+              "As peças dele estão com `Anchored` marcado? Desmarque"
+            ],
+            [
+              "O inimigo afunda ou flutua",
+              "Coloque ele em pé, encostando no chão"
+            ],
+            [
+              "O inimigo não tira vida",
+              "Você escreveu `TakeDamage` com dois-pontos `:`?"
+            ],
+            [
+              "O jogador perde toda a vida de uma vez",
+              "Faltou o cooldown"
+            ],
+            [
+              "Aparece erro \"is not a valid member\"",
+              "Confira o nome da peça: letras maiúsculas e minúsculas contam"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "exemplo-a",
+      "tipo": "codigo",
+      "nome": "Exemplo A — Inimigo lento e vermelho (AparenciaInimigo)",
+      "intro": [
+        "Para todos os exemplos: crie um inimigo com **Avatar → Rig Builder → R15** e coloque um **Script** dentro dele (botão direito no modelo → Insert Object → Script)."
+      ],
+      "codigo": [
+        "local inimigo = script.Parent",
+        "local humanoide = inimigo:WaitForChild(\"Humanoid\")",
+        "",
+        "humanoide.WalkSpeed = 8",
+        "inimigo:WaitForChild(\"Head\").BrickColor = BrickColor.new(\"Bright red\")",
+        "print(\"Inimigo pronto: \" .. inimigo.Name)"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "`script.Parent` é o modelo onde o script está: o nosso inimigo"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Espera o Humanoid carregar e guarda numa variável"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Velocidade 8: metade da velocidade do jogador"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Pinta a cabeça de vermelho para todo mundo saber que ele é perigoso"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Mostra no Output o nome do inimigo, para confirmar que o script está rodando"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-b",
+      "tipo": "codigo",
+      "nome": "Exemplo B — Patrulha entre dois blocos (Patrulha)",
+      "codigo": [
+        "local inimigo = script.Parent",
+        "local humanoide = inimigo:WaitForChild(\"Humanoid\")",
+        "local pontoA = workspace:WaitForChild(\"PontoA\")",
+        "local pontoB = workspace:WaitForChild(\"PontoB\")",
+        "",
+        "while true do",
+        "    humanoide:MoveTo(pontoA.Position)",
+        "    humanoide.MoveToFinished:Wait()",
+        "    task.wait(1)",
+        "    humanoide:MoveTo(pontoB.Position)",
+        "    humanoide.MoveToFinished:Wait()",
+        "    task.wait(1)",
+        "end"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            3,
+            4
+          ],
+          "texto": "Pega os dois blocos que marcam o caminho"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Começa a repetição infinita"
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "Manda o inimigo andar até o Ponto A (ele vira o corpo sozinho)"
+        },
+        {
+          "linhas": [
+            8,
+            8
+          ],
+          "texto": "Espera ele chegar"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "Descansa 1 segundo"
+        },
+        {
+          "linhas": [
+            10,
+            12
+          ],
+          "texto": "Faz a mesma coisa com o Ponto B"
+        },
+        {
+          "linhas": [
+            13,
+            13
+          ],
+          "texto": "Volta para a linha 7 e repete para sempre"
+        }
+      ],
+      "fechamento": [
+        "Antes: crie dois blocos no mapa, chame de **PontoA** e **PontoB**, marque `Anchored`, desmarque `CanCollide` e deixe `Transparency` em 1 (invisíveis).",
+        "Usar blocos é mais fácil que escrever números: é só arrastar o bloco para mudar o caminho."
+      ]
+    },
+    {
+      "id": "exemplo-c",
+      "tipo": "codigo",
+      "nome": "Exemplo C — Quem encostou? (DetectarToque)",
+      "codigo": [
+        "local inimigo = script.Parent",
+        "local corpo = inimigo:WaitForChild(\"HumanoidRootPart\")",
+        "",
+        "corpo.Touched:Connect(function(parteQueTocou)",
+        "    local personagem = parteQueTocou.Parent",
+        "    local humanoide = personagem:FindFirstChild(\"Humanoid\")",
+        "    if humanoide and personagem ~= inimigo then",
+        "        print(personagem.Name .. \" encostou no inimigo!\")",
+        "    end",
+        "end)"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Pega a peça do meio do corpo do inimigo"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "\"Quando alguém tocar no corpo, rode esta função\""
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Sobe do pedaço que encostou (um pé, uma mão) para o personagem inteiro"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Procura um Humanoid nesse personagem"
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "Só continua se achou um Humanoid **e** se não é o próprio inimigo"
+        },
+        {
+          "linhas": [
+            8,
+            8
+          ],
+          "texto": "Mostra, por exemplo, \"Ana encostou no inimigo!\""
+        }
+      ]
+    },
+    {
+      "id": "exemplo-d",
+      "tipo": "codigo",
+      "nome": "Exemplo D — Tirando vida com descanso (AtaqueInimigo)",
+      "codigo": [
+        "local inimigo = script.Parent",
+        "local corpo = inimigo:WaitForChild(\"HumanoidRootPart\")",
+        "local podeAtacar = true",
+        "",
+        "corpo.Touched:Connect(function(parteQueTocou)",
+        "    local personagem = parteQueTocou.Parent",
+        "    local humanoide = personagem:FindFirstChild(\"Humanoid\")",
+        "    if humanoide and personagem ~= inimigo and podeAtacar then",
+        "        podeAtacar = false",
+        "        humanoide:TakeDamage(25)",
+        "        task.wait(2)",
+        "        podeAtacar = true",
+        "    end",
+        "end)"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "O \"semáforo\" começa verde: pode atacar"
+        },
+        {
+          "linhas": [
+            8,
+            8
+          ],
+          "texto": "Precisa ser alguém vivo, não o inimigo, e o semáforo precisa estar verde"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "Semáforo vermelho: nenhum outro ataque agora"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "Tira 25 de vida. Com 4 golpes, o jogador cai"
+        },
+        {
+          "linhas": [
+            11,
+            11
+          ],
+          "texto": "Descansa 2 segundos"
+        },
+        {
+          "linhas": [
+            12,
+            12
+          ],
+          "texto": "Semáforo verde de novo"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-e",
+      "tipo": "codigo",
+      "nome": "Exemplo E — Som de alerta (SomInimigo)",
+      "codigo": [
+        "local inimigo = script.Parent",
+        "local corpo = inimigo:WaitForChild(\"HumanoidRootPart\")",
+        "local rugido = corpo:WaitForChild(\"Rugido\")",
+        "",
+        "corpo.Touched:Connect(function(parteQueTocou)",
+        "    if parteQueTocou.Parent:FindFirstChild(\"Humanoid\") and not rugido.IsPlaying then",
+        "        rugido:Play()",
+        "    end",
+        "end)"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Pega o som que você colocou dentro do corpo"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Se foi alguém vivo **e** o som não estiver tocando ainda..."
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "...toca o rugido. O `not rugido.IsPlaying` impede que o som recomece a cada toque"
+        }
+      ],
+      "fechamento": [
+        "Antes: coloque um objeto **Sound** dentro da HumanoidRootPart do inimigo, chame de **Rugido** e escolha um som na Toolbox."
+      ]
+    },
+    {
+      "id": "como-aplicar",
+      "tipo": "leitura",
+      "nome": "Como aplicar: o guarda do corredor",
+      "blocos": [
+        "Junta tudo: inimigo vermelho, patrulha entre dois blocos, dano só em jogadores de verdade, cooldown e som. Crie o Rig R15, os blocos **PontoA** e **PontoB** e o som **Rugido** dentro da HumanoidRootPart. Depois coloque este Script dentro do inimigo:",
+        {
+          "codigo": "local Players = game:GetService(\"Players\")\n\nlocal inimigo = script.Parent\nlocal humanoide = inimigo:WaitForChild(\"Humanoid\")\nlocal corpo = inimigo:WaitForChild(\"HumanoidRootPart\")\nlocal rugido = corpo:WaitForChild(\"Rugido\")\nlocal pontoA = workspace:WaitForChild(\"PontoA\")\nlocal pontoB = workspace:WaitForChild(\"PontoB\")\n\nlocal DANO = 25\nlocal DESCANSO = 2\nlocal podeAtacar = true\n\n-- Aparência e velocidade\nhumanoide.WalkSpeed = 12\ninimigo:WaitForChild(\"Head\").BrickColor = BrickColor.new(\"Bright red\")\n\n-- Ataque: só em jogadores de verdade\ncorpo.Touched:Connect(function(parteQueTocou)\n    local personagem = parteQueTocou.Parent\n    local jogador = Players:GetPlayerFromCharacter(personagem)\n    if jogador and podeAtacar then\n        podeAtacar = false\n        personagem.Humanoid:TakeDamage(DANO)\n        rugido:Play()\n        print(jogador.Name .. \" levou \" .. DANO .. \" de dano!\")\n        task.wait(DESCANSO)\n        podeAtacar = true\n    end\nend)\n\n-- Patrulha (fica por último, porque nunca termina)\nwhile true do\n    humanoide:MoveTo(pontoA.Position)\n    humanoide.MoveToFinished:Wait()\n    task.wait(1)\n    humanoide:MoveTo(pontoB.Position)\n    humanoide.MoveToFinished:Wait()\n    task.wait(1)\nend"
+        },
+        "**Por que funciona:** no começo, o script pega tudo de que precisa e guarda os números importantes (`DANO` e `DESCANSO`) em variáveis com letras maiúsculas, fáceis de achar e mudar. O `GetPlayerFromCharacter` só devolve alguém se o personagem pertencer a um jogador de verdade, então outros NPCs não levam dano. O cooldown deixa o jogo justo, e o rugido avisa que o golpe aconteceu. A patrulha fica no final porque o `while true do` nunca acaba: se estivesse antes, o ataque nunca seria ligado."
+      ]
+    },
+    {
+      "id": "quiz",
+      "tipo": "quiz",
+      "nome": "Quiz de código",
+      "perguntas": [
+        {
+          "pergunta": "Para que serve o Humanoid?",
+          "opcoes": [
+            "Dar cor ao personagem",
+            "Fazer o personagem andar, pular e ter vida",
+            "Tocar sons"
+          ],
+          "correta": 1,
+          "dica": "sem ele, o personagem é uma estátua.",
+          "acerto": "Isso! O Humanoid dá vida ao personagem.",
+          "erro": "Cor e som são outras coisas; o Humanoid é o que faz andar e ter vida.",
+          "explicacao": "o Humanoid controla movimento, pulo e a vida (`Health`)."
+        },
+        {
+          "pergunta": "O que esta linha faz?",
+          "codigo": "humanoide.WalkSpeed = 32",
+          "opcoes": [
+            "O inimigo fica duas vezes mais rápido que o jogador",
+            "O inimigo fica mais lento que o jogador",
+            "O inimigo pula mais alto"
+          ],
+          "correta": 0,
+          "dica": "a velocidade normal do jogador é 16.",
+          "acerto": "Perfeito! 32 é o dobro de 16.",
+          "erro": "Pulo é JumpPower; WalkSpeed é a velocidade de andar.",
+          "explicacao": "com 32, o inimigo corre o dobro do padrão."
+        },
+        {
+          "pergunta": "Qual linha está certa para tirar 20 de vida?",
+          "opcoes": [
+            "`humanoide.TakeDamage(20)`",
+            "`humanoide:TakeDamage(20)`",
+            "`TakeDamage = 20`"
+          ],
+          "correta": 1,
+          "dica": "ações usam dois-pontos.",
+          "acerto": "Isso! Ações do objeto usam `:`.",
+          "erro": "Com ponto, o Roblox dá erro; use dois-pontos.",
+          "explicacao": "`TakeDamage` é uma ação (método), então é chamada com `:`."
+        },
+        {
+          "pergunta": "O inimigo tira toda a vida do jogador num segundo. O que está faltando?",
+          "opcoes": [
+            "Um cooldown (`podeAtacar`)",
+            "Mais velocidade",
+            "Uma cor diferente"
+          ],
+          "correta": 0,
+          "dica": "o toque acontece muitas vezes seguidas.",
+          "acerto": "Mandou bem! O cooldown dá um descanso entre os ataques.",
+          "erro": "O problema é atacar várias vezes seguidas.",
+          "explicacao": "sem o descanso, cada toque repetido tira vida de novo."
+        },
+        {
+          "pergunta": "Por que o `while true do` fica no final do script?",
+          "opcoes": [
+            "Porque o Roblox exige",
+            "Porque ele nunca termina, e o que vem depois nunca rodaria",
+            "Porque ele é mais lento"
+          ],
+          "correta": 1,
+          "dica": "o que acontece depois de uma repetição infinita?",
+          "acerto": "Isso! O código depois dele nunca seria lido.",
+          "erro": "Não é regra do Roblox; é a ordem do código.",
+          "explicacao": "o script fica preso dentro do `while true do` para sempre."
+        },
+        {
+          "pergunta": "Seu inimigo não sai do lugar. O que conferir primeiro?",
+          "opcoes": [
+            "Se as peças estão com `Anchored` marcado",
+            "Se a cor está vermelha",
+            "Se o som está tocando"
+          ],
+          "correta": 0,
+          "dica": "peça \"pregada\" não se mexe.",
+          "acerto": "Perfeito! Inimigo ancorado não anda.",
+          "erro": "Cor e som não impedem o movimento.",
+          "explicacao": "`Anchored` trava a peça no lugar; o inimigo precisa estar solto."
+        }
+      ]
+    },
+    {
+      "id": "atividades",
+      "tipo": "atividades",
+      "nome": "Atividades",
+      "intro": [
+        "Escreva ou cole a sua tentativa no campo de cada atividade para liberar a solução. Outras soluções também valem, desde que passem nos testes do enunciado."
+      ],
+      "itens": [
+        {
+          "n": 1,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Deixe seu inimigo bem lento (velocidade 6) e mostre no Output a mensagem \"O inimigo acordou!\"."
+          ],
+          "dica": "`WalkSpeed` e `print`.",
+          "solucao": [
+            {
+              "codigo": "local inimigo = script.Parent\nlocal humanoide = inimigo:WaitForChild(\"Humanoid\")\n\nhumanoide.WalkSpeed = 6\nprint(\"O inimigo acordou!\")"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Pinte a cabeça do inimigo de verde (\"Lime green\") e deixe ele com só 50 de vida."
+          ],
+          "dica": "a vida é a propriedade `Health`; a vida máxima é `MaxHealth`.",
+          "solucao": [
+            {
+              "codigo": "local inimigo = script.Parent\nlocal humanoide = inimigo:WaitForChild(\"Humanoid\")\n\ninimigo:WaitForChild(\"Head\").BrickColor = BrickColor.new(\"Lime green\")\nhumanoide.MaxHealth = 50\nhumanoide.Health = 50"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Faça o inimigo andar até um bloco chamado **Bandeira** e, quando chegar, mostrar \"Cheguei na bandeira!\"."
+          ],
+          "dica": "use `MoveToFinished:Wait()` antes do `print`.",
+          "solucao": [
+            {
+              "codigo": "local inimigo = script.Parent\nlocal humanoide = inimigo:WaitForChild(\"Humanoid\")\nlocal bandeira = workspace:WaitForChild(\"Bandeira\")\n\nhumanoide:MoveTo(bandeira.Position)\nhumanoide.MoveToFinished:Wait()\nprint(\"Cheguei na bandeira!\")"
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "nivel": "Médio",
+          "enunciado": [
+            "Crie uma patrulha com **três** pontos (PontoA, PontoB e PontoC), formando um triângulo, com 1 segundo de descanso em cada ponto."
+          ],
+          "dica": "é a patrulha do Exemplo B com um passo a mais.",
+          "solucao": [
+            {
+              "codigo": "local inimigo = script.Parent\nlocal humanoide = inimigo:WaitForChild(\"Humanoid\")\nlocal pontoA = workspace:WaitForChild(\"PontoA\")\nlocal pontoB = workspace:WaitForChild(\"PontoB\")\nlocal pontoC = workspace:WaitForChild(\"PontoC\")\n\nwhile true do\n    humanoide:MoveTo(pontoA.Position)\n    humanoide.MoveToFinished:Wait()\n    task.wait(1)\n    humanoide:MoveTo(pontoB.Position)\n    humanoide.MoveToFinished:Wait()\n    task.wait(1)\n    humanoide:MoveTo(pontoC.Position)\n    humanoide.MoveToFinished:Wait()\n    task.wait(1)\nend"
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "nivel": "Médio",
+          "enunciado": [
+            "Faça o inimigo tirar 10 de vida a cada toque, com 3 segundos de descanso entre os ataques."
+          ],
+          "dica": "é o Exemplo D com outros números.",
+          "solucao": [
+            {
+              "codigo": "local inimigo = script.Parent\nlocal corpo = inimigo:WaitForChild(\"HumanoidRootPart\")\nlocal podeAtacar = true\n\ncorpo.Touched:Connect(function(parteQueTocou)\n    local personagem = parteQueTocou.Parent\n    local humanoide = personagem:FindFirstChild(\"Humanoid\")\n    if humanoide and personagem ~= inimigo and podeAtacar then\n        podeAtacar = false\n        humanoide:TakeDamage(10)\n        task.wait(3)\n        podeAtacar = true\n    end\nend)"
+            }
+          ]
+        },
+        {
+          "n": 6,
+          "nivel": "Médio",
+          "enunciado": [
+            "Crie um \"inimigo fantasma\" que derruba o jogador na hora (`Health = 0`), mas só se for um jogador de verdade, e mostra no Output \"Booo! Pegou <nome>!\"."
+          ],
+          "dica": "use `Players:GetPlayerFromCharacter(personagem)`.",
+          "solucao": [
+            {
+              "codigo": "local Players = game:GetService(\"Players\")\nlocal inimigo = script.Parent\nlocal corpo = inimigo:WaitForChild(\"HumanoidRootPart\")\n\ncorpo.Touched:Connect(function(parteQueTocou)\n    local personagem = parteQueTocou.Parent\n    local jogador = Players:GetPlayerFromCharacter(personagem)\n    if jogador then\n        personagem.Humanoid.Health = 0\n        print(\"Booo! Pegou \" .. jogador.Name .. \"!\")\n    end\nend)"
+            }
+          ]
+        },
+        {
+          "n": 7,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Faça um inimigo que fica **mais rápido a cada volta** da patrulha: começa com velocidade 8 e ganha +2 a cada volta, até o máximo de 20."
+          ],
+          "dica": "guarde a velocidade numa variável e use `math.min(velocidade + 2, 20)`.",
+          "solucao": [
+            {
+              "codigo": "local inimigo = script.Parent\nlocal humanoide = inimigo:WaitForChild(\"Humanoid\")\nlocal pontoA = workspace:WaitForChild(\"PontoA\")\nlocal pontoB = workspace:WaitForChild(\"PontoB\")\nlocal velocidade = 8\n\nwhile true do\n    humanoide.WalkSpeed = velocidade\n    humanoide:MoveTo(pontoA.Position)\n    humanoide.MoveToFinished:Wait()\n    humanoide:MoveTo(pontoB.Position)\n    humanoide.MoveToFinished:Wait()\n    velocidade = math.min(velocidade + 2, 20)\n    print(\"Nova velocidade: \" .. velocidade)\nend"
+            }
+          ]
+        },
+        {
+          "n": 8,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Monte o guarda completo da seção 7, mas com uma mudança: quando o jogador estiver com menos de 30 de vida, o inimigo para de atacar e mostra \"Vou te dar uma chance...\"."
+          ],
+          "dica": "confira `personagem.Humanoid.Health < 30` antes de tirar vida.",
+          "solucao": [
+            {
+              "codigo": "local Players = game:GetService(\"Players\")\n\nlocal inimigo = script.Parent\nlocal humanoide = inimigo:WaitForChild(\"Humanoid\")\nlocal corpo = inimigo:WaitForChild(\"HumanoidRootPart\")\nlocal pontoA = workspace:WaitForChild(\"PontoA\")\nlocal pontoB = workspace:WaitForChild(\"PontoB\")\nlocal podeAtacar = true\n\ncorpo.Touched:Connect(function(parteQueTocou)\n    local personagem = parteQueTocou.Parent\n    local jogador = Players:GetPlayerFromCharacter(personagem)\n    if jogador and podeAtacar then\n        local vidaDoJogador = personagem.Humanoid\n        if vidaDoJogador.Health < 30 then\n            print(\"Vou te dar uma chance...\")\n            return\n        end\n        podeAtacar = false\n        vidaDoJogador:TakeDamage(25)\n        task.wait(2)\n        podeAtacar = true\n    end\nend)\n\nwhile true do\n    humanoide:MoveTo(pontoA.Position)\n    humanoide.MoveToFinished:Wait()\n    task.wait(1)\n    humanoide:MoveTo(pontoB.Position)\n    humanoide.MoveToFinished:Wait()\n    task.wait(1)\nend"
+            }
+          ]
+        },
+        {
+          "n": 9,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Explique com suas palavras por que o inimigo precisa de um **cooldown**, e o que aconteceria sem ele."
+          ],
+          "dica": "pense em quantas vezes o `Touched` acontece quando você fica encostado.",
+          "solucao": [
+            "**Resposta esperada:** o `Touched` acontece muitas vezes por segundo enquanto o jogador está encostado no inimigo. Sem o cooldown, cada um desses toques tiraria vida, e o jogador perderia tudo quase na hora, sem chance de fugir. Com o cooldown, o inimigo ataca uma vez, descansa alguns segundos e só então pode atacar de novo, o que deixa o jogo justo.",
+            {
+              "codigo": "local podeAtacar = true\n-- ...\nif podeAtacar then\n    podeAtacar = false      -- para de atacar\n    humanoide:TakeDamage(20)\n    task.wait(2)            -- descansa\n    podeAtacar = true       -- pode atacar de novo\nend"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,1011 @@
+{
+  "numero": 16,
+  "titulo": "Programação Orientada a Objetos II: Herança, super() e Polimorfismo",
+  "etapas": [
+    {
+      "id": "definicoes",
+      "tipo": "leitura",
+      "nome": "Definições",
+      "blocos": [
+        "Herança permite criar uma classe nova a partir de outra, aproveitando o que ela já tem e acrescentando ou mudando só o necessário. Com a sobrescrita e o `super()`, cada classe filha pode ajustar o comportamento herdado. O polimorfismo é o resultado: objetos de classes diferentes respondem à mesma chamada, cada um do seu jeito.",
+        {
+          "tabela": [
+            [
+              "Termo",
+              "O que significa"
+            ],
+            [
+              "Herança",
+              "Uma classe recebe os atributos e métodos de outra"
+            ],
+            [
+              "Superclasse (classe mãe, classe base)",
+              "A classe de onde se herda"
+            ],
+            [
+              "Subclasse (classe filha, derivada)",
+              "A classe que herda"
+            ],
+            [
+              "Relação \"é um\" (is-a)",
+              "Teste da herança: um Cachorro **é um** Animal"
+            ],
+            [
+              "DRY (Don't Repeat Yourself)",
+              "Princípio de não repetir código; a herança ajuda a segui-lo"
+            ],
+            [
+              "Hierarquia de classes",
+              "A árvore formada pelas relações de herança"
+            ],
+            [
+              "Sobrescrita (override)",
+              "A subclasse redefine um método que já existe na superclasse"
+            ],
+            [
+              "`super()`",
+              "Acessa a versão do método na próxima classe da hierarquia"
+            ],
+            [
+              "`super().__init__(...)`",
+              "Chama o inicializador da superclasse"
+            ],
+            [
+              "Herança múltipla",
+              "Uma classe herda de duas ou mais classes"
+            ],
+            [
+              "Problema do diamante",
+              "Duas mães que herdam da mesma avó: qual versão do método vale?"
+            ],
+            [
+              "MRO (Method Resolution Order)",
+              "A ordem em que o Python procura um método na hierarquia"
+            ],
+            [
+              "`Classe.__mro__` / `Classe.mro()`",
+              "Mostram a MRO"
+            ],
+            [
+              "Polimorfismo",
+              "\"Muitas formas\": a mesma chamada executa comportamentos diferentes conforme o objeto"
+            ],
+            [
+              "Interface comum",
+              "Conjunto de métodos que todas as classes da hierarquia oferecem"
+            ],
+            [
+              "Classe abstrata",
+              "Classe que não pode ser instanciada e serve de contrato para as filhas"
+            ],
+            [
+              "Método abstrato",
+              "Método declarado na classe abstrata que as filhas são obrigadas a implementar"
+            ],
+            [
+              "`abc`, `ABC`, `@abstractmethod`",
+              "Ferramentas do Python para criar classes e métodos abstratos"
+            ],
+            [
+              "Sobrecarga (overload)",
+              "Vários métodos com o mesmo nome e parâmetros diferentes; o Python não tem isso de forma nativa"
+            ],
+            [
+              "`isinstance(obj, Classe)`",
+              "Diz se o objeto é daquela classe ou de uma filha dela"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "para-que-como-e-quando-usamos",
+      "tipo": "leitura",
+      "nome": "Para que, como e quando usamos",
+      "blocos": [
+        "Usamos herança para reaproveitar o que é comum e especializar o que é diferente; usamos polimorfismo para tratar objetos diferentes com o mesmo código.",
+        "**Para que:** tipos de funcionário (todos têm nome e salário, mas o cálculo muda), formas de pagamento (Pix, cartão, boleto), formas geométricas, personagens de jogo, tipos de notificação (e-mail, SMS).",
+        "**Como:** declaramos a filha com `class Filha(Mae):`, chamamos `super().__init__(...)` quando a filha tem atributos próprios, sobrescrevemos os métodos que mudam e, quando quisermos obrigar as filhas a implementar algo, usamos uma classe abstrata.",
+        "**Quando usar (e quando não):**",
+        {
+          "tabela": [
+            [
+              "Situação",
+              "Herança é uma boa?"
+            ],
+            [
+              "A frase \"X **é um** Y\" faz sentido (Gerente é um Funcionário)",
+              "Sim"
+            ],
+            [
+              "Várias classes compartilham atributos e métodos",
+              "Sim"
+            ],
+            [
+              "Você quer tratar tipos diferentes com o mesmo laço",
+              "Sim (polimorfismo)"
+            ],
+            [
+              "A relação é \"X **tem um** Y\" (Carro tem um Motor)",
+              "Não: use composição (Aula 17)"
+            ],
+            [
+              "Herdar só para aproveitar um método solto",
+              "Não: prefira uma função ou composição"
+            ],
+            [
+              "Hierarquias muito profundas (5, 6 níveis)",
+              "Evite: o código fica difícil de entender"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "estruturas",
+      "tipo": "leitura",
+      "nome": "Estruturas",
+      "blocos": [
+        {
+          "h": "3.1 Herança simples"
+        },
+        {
+          "codigo": "class Animal:\n    def __init__(self, nome):\n        self.nome = nome\n\nclass Gato(Animal):     # Gato herda tudo de Animal\n    pass\n\nprint(Gato(\"Mimi\").nome)  # Mimi"
+        },
+        {
+          "h": "3.2 Filha com atributos próprios"
+        },
+        {
+          "codigo": "class Cachorro(Animal):\n    def __init__(self, nome, raca):\n        super().__init__(nome)   # a mãe cuida do nome\n        self.raca = raca         # a filha cuida da raça"
+        },
+        {
+          "h": "3.3 Sobrescrita"
+        },
+        {
+          "codigo": "class Animal:\n    def som(self):\n        return \"...\"\n\nclass Pato(Animal):\n    def som(self):          # substitui o da mãe\n        return \"Quack\""
+        },
+        {
+          "h": "3.4 Estendendo com `super()`"
+        },
+        {
+          "codigo": "class Pato(Animal):\n    def som(self):\n        base = super().som()       # usa o da mãe\n        return base + \" Quack\"     # e acrescenta"
+        },
+        {
+          "h": "3.5 Polimorfismo"
+        },
+        {
+          "codigo": "for animal in [Pato(\"Donald\"), Cachorro(\"Rex\", \"SRD\")]:\n    print(animal.som())     # cada um responde do seu jeito"
+        },
+        {
+          "h": "3.6 Classe abstrata"
+        },
+        {
+          "codigo": "from abc import ABC, abstractmethod\n\nclass Forma(ABC):\n    @abstractmethod\n    def area(self):\n        pass\n\nclass Quadrado(Forma):\n    def __init__(self, lado):\n        self.lado = lado\n\n    def area(self):          # obrigatório\n        return self.lado ** 2"
+        },
+        {
+          "h": "3.7 Herança múltipla e MRO"
+        },
+        {
+          "codigo": "class D(B, C):\n    pass\n\nprint(D.__mro__)   # ordem de busca: D, B, C, A, object"
+        },
+        {
+          "h": "3.8 \"Sobrecarga\" com valor padrão"
+        },
+        {
+          "codigo": "class Calculadora:\n    def somar(self, a, b, c=0):\n        return a + b + c"
+        }
+      ]
+    },
+    {
+      "id": "sintaxe-e-simbolos",
+      "tipo": "leitura",
+      "nome": "Sintaxe e símbolos",
+      "blocos": [
+        {
+          "tabela": [
+            [
+              "Símbolo / comando",
+              "O que faz",
+              "Por que existe"
+            ],
+            [
+              "`class Filha(Mae):`",
+              "Declara a herança",
+              "A mãe vai entre parênteses"
+            ],
+            [
+              "`class D(B, C):`",
+              "Herança múltipla",
+              "A ordem dos parênteses influencia a MRO"
+            ],
+            [
+              "`super()`",
+              "Representa a próxima classe na MRO",
+              "Chamar a versão da mãe sem escrever o nome dela"
+            ],
+            [
+              "`super().__init__(args)`",
+              "Roda o inicializador da mãe",
+              "Os atributos da mãe precisam ser criados também"
+            ],
+            [
+              "`super().metodo()`",
+              "Roda o método da mãe",
+              "Estender em vez de reescrever"
+            ],
+            [
+              "Mesmo nome de método na filha",
+              "Sobrescreve",
+              "O Python usa a versão mais próxima do objeto"
+            ],
+            [
+              "`pass`",
+              "Corpo vazio",
+              "Uma filha que só herda, ou um método abstrato"
+            ],
+            [
+              "`from abc import ABC, abstractmethod`",
+              "Importa as ferramentas",
+              "ABC = Abstract Base Class"
+            ],
+            [
+              "`class Forma(ABC):`",
+              "Marca a classe como abstrata",
+              "Herdar de `ABC` ativa as verificações"
+            ],
+            [
+              "`@abstractmethod`",
+              "Decorador que marca o método como obrigatório",
+              "Filhas sem ele não podem ser instanciadas"
+            ],
+            [
+              "`@`",
+              "Aplica um decorador",
+              "Modifica a função logo abaixo"
+            ],
+            [
+              "`Classe.__mro__`",
+              "Tupla com a ordem de busca",
+              "Entender qual método será usado"
+            ],
+            [
+              "`isinstance(obj, Classe)`",
+              "Verifica o tipo, aceitando filhas",
+              "Um Cachorro também é um Animal"
+            ],
+            [
+              "`type(obj).__name__`",
+              "Nome da classe do objeto",
+              "Mostrar o tipo num relatório"
+            ],
+            [
+              "`TypeError`",
+              "Erro ao instanciar uma classe abstrata incompleta",
+              "O Python obriga o contrato a ser cumprido"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logica-por-tras",
+      "tipo": "leitura",
+      "nome": "Lógica por trás",
+      "blocos": [
+        "**Como o Python encontra um método:** ao executar `rex.emitir_som()`, o Python procura `emitir_som` primeiro na classe do objeto (`Cachorro`). Se não achar, sobe para a mãe (`Animal`), depois para a avó, até chegar em `object`, a mãe de todas as classes. A primeira versão encontrada é a usada. Por isso a sobrescrita funciona: a versão da filha é encontrada antes.",
+        "**A filha herda o `__init__`?** Sim. Se a filha não define um `__init__`, usa o da mãe (no Exemplo A, `Gato(\"Mimi\")` funciona sem `__init__` próprio). Mas se a filha define um `__init__`, ele substitui o da mãe. Aí é preciso chamar `super().__init__(...)`, senão os atributos da mãe (como `self.nome`) nunca são criados.",
+        "**Sobrescrever x estender:**",
+        {
+          "tabela": [
+            [
+              "",
+              "Sobrescrever",
+              "Estender com `super()`"
+            ],
+            [
+              "O que faz",
+              "Troca o comportamento da mãe",
+              "Mantém o da mãe e acrescenta"
+            ],
+            [
+              "Quando usar",
+              "O comportamento é totalmente diferente",
+              "O comportamento base continua valendo"
+            ],
+            [
+              "Exemplo",
+              "`som()` do Pato",
+              "`enviar()` que registra e depois manda e-mail"
+            ]
+          ]
+        },
+        "**Por que polimorfismo simplifica:** sem ele, um laço sobre funcionários precisaria de vários `if tipo == \"gerente\" ... elif tipo == \"vendedor\"`. Com ele, o laço só chama `funcionario.calcular_salario()`, e cada objeto sabe calcular o seu. Para incluir um tipo novo, basta criar a classe; o laço não muda.",
+        "**Por que classes abstratas:** elas transformam a interface comum em contrato. Se alguém criar uma subclasse e esquecer o método obrigatório, o Python recusa a criação do objeto com `TypeError`, em vez de deixar o erro aparecer muito depois.",
+        "**MRO e o diamante:** em `class D(B, C)`, com `B` e `C` herdando de `A`, a ordem de busca é `D → B → C → A → object`. Dentro de `B`, `super()` não significa \"a mãe de B\", e sim \"a próxima classe da MRO\", que é `C`. É assim que, no Exemplo E, cada classe é chamada uma única vez.",
+        "**Sobrescrita x sobrecarga:** sobrescrever é redefinir na filha um método da mãe. Sobrecarregar seria ter, na mesma classe, vários métodos com o mesmo nome e parâmetros diferentes. O Python não faz sobrecarga: se você define dois métodos com o mesmo nome, o segundo apaga o primeiro. O comportamento é imitado com valores padrão (`c=0`) ou `*args`."
+      ]
+    },
+    {
+      "id": "exemplo-a",
+      "tipo": "codigo",
+      "nome": "Exemplo A — Herança, super() e sobrescrita (animais.py)",
+      "codigo": [
+        "class Animal:",
+        "    def __init__(self, nome):",
+        "        self.nome = nome",
+        "",
+        "    def emitir_som(self):",
+        "        return \"...\"",
+        "",
+        "    def apresentar(self):",
+        "        print(f\"{self.nome} faz {self.emitir_som()}\")",
+        "",
+        "class Cachorro(Animal):",
+        "    def __init__(self, nome, raca):",
+        "        super().__init__(nome)",
+        "        self.raca = raca",
+        "",
+        "    def emitir_som(self):",
+        "        return \"Au au\"",
+        "",
+        "class Gato(Animal):",
+        "    def emitir_som(self):",
+        "        return \"Miau\"",
+        "",
+        "rex = Cachorro(\"Rex\", \"Vira-lata\")",
+        "mimi = Gato(\"Mimi\")",
+        "rex.apresentar()",
+        "mimi.apresentar()",
+        "print(rex.raca, isinstance(rex, Animal))"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            9
+          ],
+          "texto": "A superclasse define o nome, um som genérico e o método `apresentar`"
+        },
+        {
+          "linhas": [
+            8,
+            9
+          ],
+          "texto": "`apresentar` chama `self.emitir_som()`: a versão usada depende do objeto"
+        },
+        {
+          "linhas": [
+            11,
+            11
+          ],
+          "texto": "`Cachorro` herda de `Animal`"
+        },
+        {
+          "linhas": [
+            12,
+            14
+          ],
+          "texto": "`__init__` próprio: chama o da mãe para criar `nome` e depois cria `raca`"
+        },
+        {
+          "linhas": [
+            16,
+            17
+          ],
+          "texto": "Sobrescreve `emitir_som`"
+        },
+        {
+          "linhas": [
+            19,
+            21
+          ],
+          "texto": "`Gato` não define `__init__`: herda o da mãe"
+        },
+        {
+          "linhas": [
+            23,
+            24
+          ],
+          "texto": "Cria os objetos (o gato usa o `__init__` de `Animal`)"
+        },
+        {
+          "linhas": [
+            25,
+            25
+          ],
+          "texto": "`apresentar` vem da mãe, mas o som vem do cachorro: \"Rex faz Au au\""
+        },
+        {
+          "linhas": [
+            26,
+            26
+          ],
+          "texto": "\"Mimi faz Miau\""
+        },
+        {
+          "linhas": [
+            27,
+            27
+          ],
+          "texto": "Mostra `Vira-lata True`: um Cachorro também é um Animal"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-b",
+      "tipo": "codigo",
+      "nome": "Exemplo B — Estendendo com super() (notificacao.py)",
+      "codigo": [
+        "class Notificacao:",
+        "    def __init__(self, destino):",
+        "        self.destino = destino",
+        "",
+        "    def enviar(self, mensagem):",
+        "        print(f\"[registro] mensagem para {self.destino}\")",
+        "",
+        "class NotificacaoEmail(Notificacao):",
+        "    def enviar(self, mensagem):",
+        "        super().enviar(mensagem)",
+        "        print(f\"E-mail para {self.destino}: {mensagem}\")",
+        "",
+        "NotificacaoEmail(\"ana@email.com\").enviar(\"Sua aula começa às 19h\")"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            5,
+            6
+          ],
+          "texto": "Comportamento base: registra o envio"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "A filha sobrescreve `enviar`"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "Mas antes chama a versão da mãe, que faz o registro"
+        },
+        {
+          "linhas": [
+            11,
+            11
+          ],
+          "texto": "Depois acrescenta o envio do e-mail"
+        },
+        {
+          "linhas": [
+            13,
+            13
+          ],
+          "texto": "Mostra as duas linhas: primeiro o registro, depois o e-mail"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-c",
+      "tipo": "codigo",
+      "nome": "Exemplo C — Polimorfismo com formas (formas.py)",
+      "codigo": [
+        "class Forma:",
+        "    def area(self):",
+        "        return 0",
+        "",
+        "class Retangulo(Forma):",
+        "    def __init__(self, largura, altura):",
+        "        self.largura = largura",
+        "        self.altura = altura",
+        "",
+        "    def area(self):",
+        "        return self.largura * self.altura",
+        "",
+        "class Circulo(Forma):",
+        "    def __init__(self, raio):",
+        "        self.raio = raio",
+        "",
+        "    def area(self):",
+        "        return 3.14159 * self.raio ** 2",
+        "",
+        "formas = [Retangulo(4, 5), Circulo(2), Retangulo(1, 3)]",
+        "total = 0",
+        "for forma in formas:",
+        "    print(f\"{type(forma).__name__}: {forma.area():.2f}\")",
+        "    total += forma.area()",
+        "print(f\"Área total: {total:.2f}\")"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            3
+          ],
+          "texto": "Interface comum: toda forma tem `area()`"
+        },
+        {
+          "linhas": [
+            5,
+            11
+          ],
+          "texto": "Retângulo sobrescreve com largura × altura"
+        },
+        {
+          "linhas": [
+            13,
+            18
+          ],
+          "texto": "Círculo sobrescreve com π × raio²"
+        },
+        {
+          "linhas": [
+            20,
+            20
+          ],
+          "texto": "Uma lista mistura tipos diferentes"
+        },
+        {
+          "linhas": [
+            22,
+            22
+          ],
+          "texto": "O laço trata todos do mesmo jeito"
+        },
+        {
+          "linhas": [
+            23,
+            23
+          ],
+          "texto": "Cada objeto calcula a própria área: 20.00, 12.57 e 3.00"
+        },
+        {
+          "linhas": [
+            25,
+            25
+          ],
+          "texto": "Mostra \"Área total: 35.57\""
+        }
+      ]
+    },
+    {
+      "id": "exemplo-d",
+      "tipo": "codigo",
+      "nome": "Exemplo D — Classe abstrata (pagamentos.py)",
+      "codigo": [
+        "from abc import ABC, abstractmethod",
+        "",
+        "class Pagamento(ABC):",
+        "    def __init__(self, valor):",
+        "        self.valor = valor",
+        "",
+        "    @abstractmethod",
+        "    def processar(self):",
+        "        pass",
+        "",
+        "class Pix(Pagamento):",
+        "    def processar(self):",
+        "        return f\"Pix de R$ {self.valor:.2f} aprovado na hora\"",
+        "",
+        "class Boleto(Pagamento):",
+        "    def processar(self):",
+        "        return f\"Boleto de R$ {self.valor:.2f} gerado (até 3 dias úteis)\"",
+        "",
+        "for p in [Pix(50), Boleto(120)]:",
+        "    print(p.processar())",
+        "",
+        "try:",
+        "    Pagamento(10)",
+        "except TypeError as erro:",
+        "    print(\"Erro:\", erro)"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Importa as ferramentas de classe abstrata"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "`Pagamento` herda de `ABC`: vira um contrato"
+        },
+        {
+          "linhas": [
+            4,
+            5
+          ],
+          "texto": "A classe abstrata pode ter `__init__` e atributos normais"
+        },
+        {
+          "linhas": [
+            7,
+            9
+          ],
+          "texto": "`processar` é obrigatório para as filhas"
+        },
+        {
+          "linhas": [
+            11,
+            17
+          ],
+          "texto": "Pix e Boleto cumprem o contrato, cada um do seu jeito"
+        },
+        {
+          "linhas": [
+            19,
+            20
+          ],
+          "texto": "Polimorfismo: mesma chamada, mensagens diferentes"
+        },
+        {
+          "linhas": [
+            22,
+            25
+          ],
+          "texto": "Tentar criar um `Pagamento` direto dá `TypeError`: classes abstratas não podem ser instanciadas"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-e",
+      "tipo": "codigo",
+      "nome": "Exemplo E — Diamante e MRO (diamante.py)",
+      "codigo": [
+        "class A:",
+        "    def falar(self):",
+        "        print(\"A\")",
+        "",
+        "class B(A):",
+        "    def falar(self):",
+        "        print(\"B\")",
+        "        super().falar()",
+        "",
+        "class C(A):",
+        "    def falar(self):",
+        "        print(\"C\")",
+        "        super().falar()",
+        "",
+        "class D(B, C):",
+        "    def falar(self):",
+        "        print(\"D\")",
+        "        super().falar()",
+        "",
+        "D().falar()",
+        "print([classe.__name__ for classe in D.__mro__])"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            13
+          ],
+          "texto": "`B` e `C` herdam de `A`: o formato de diamante"
+        },
+        {
+          "linhas": [
+            8,
+            8
+          ],
+          "texto": "Dentro de `B`, `super()` aponta para `C` (o próximo da MRO de D), não para `A`"
+        },
+        {
+          "linhas": [
+            15,
+            15
+          ],
+          "texto": "`D` herda de `B` e `C`, nessa ordem"
+        },
+        {
+          "linhas": [
+            17,
+            18
+          ],
+          "texto": "Mostra \"D\" e chama o próximo da MRO"
+        },
+        {
+          "linhas": [
+            20,
+            20
+          ],
+          "texto": "Saída: D, B, C, A. Cada classe é chamada uma vez só"
+        },
+        {
+          "linhas": [
+            21,
+            21
+          ],
+          "texto": "Mostra `['D', 'B', 'C', 'A', 'object']`"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-f",
+      "tipo": "codigo",
+      "nome": "Exemplo F — \"Sobrecarga\" no Python (sobrecarga.py)",
+      "codigo": [
+        "class Calculadora:",
+        "    def somar(self, a, b, c=0):",
+        "        return a + b + c",
+        "",
+        "calc = Calculadora()",
+        "print(calc.somar(2, 3))",
+        "print(calc.somar(2, 3, 4))"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Um único método; `c=0` torna o terceiro número opcional"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Com 2 argumentos: mostra 5"
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "Com 3 argumentos: mostra 9"
+        }
+      ],
+      "fechamento": [
+        "Em Java seriam dois métodos `somar` com parâmetros diferentes. No Python, se escrevermos dois `def somar`, o segundo apaga o primeiro."
+      ]
+    },
+    {
+      "id": "como-aplicar",
+      "tipo": "leitura",
+      "nome": "Como aplicar: folha de pagamento",
+      "blocos": [
+        "Junta classe abstrata, herança em dois níveis, `super().__init__`, `super()` em método comum, sobrescrita e polimorfismo. Salve como `folha.py` e rode com `python folha.py`.",
+        {
+          "codigo": "from abc import ABC, abstractmethod\n\nclass Funcionario(ABC):\n    def __init__(self, nome, salario_base):\n        self.nome = nome\n        self.salario_base = salario_base\n\n    @abstractmethod\n    def calcular_salario(self):\n        pass\n\n    def contracheque(self):\n        return f\"{self.nome} ({type(self).__name__}): R$ {self.calcular_salario():.2f}\"\n\n\nclass Desenvolvedor(Funcionario):\n    def calcular_salario(self):\n        return self.salario_base\n\n\nclass Gerente(Funcionario):\n    def __init__(self, nome, salario_base, bonus):\n        super().__init__(nome, salario_base)\n        self.bonus = bonus\n\n    def calcular_salario(self):\n        return self.salario_base + self.bonus\n\n\nclass Vendedor(Funcionario):\n    def __init__(self, nome, salario_base, vendas, taxa=0.05):\n        super().__init__(nome, salario_base)\n        self.vendas = vendas\n        self.taxa = taxa\n\n    def calcular_salario(self):\n        return self.salario_base + self.vendas * self.taxa\n\n\nclass Estagiario(Desenvolvedor):\n    def calcular_salario(self):\n        return super().calcular_salario() * 0.5\n\n\nequipe = [\n    Desenvolvedor(\"Ana\", 6000),\n    Gerente(\"Bruno\", 8000, 2000),\n    Vendedor(\"Carla\", 2500, 40000),\n    Estagiario(\"Davi\", 3000),\n]\n\ntotal = 0\nfor funcionario in equipe:\n    print(funcionario.contracheque())\n    total += funcionario.calcular_salario()\nprint(f\"Folha total: R$ {total:.2f}\")"
+        },
+        "**Saída esperada:**",
+        {
+          "codigo": "Ana (Desenvolvedor): R$ 6000.00\nBruno (Gerente): R$ 10000.00\nCarla (Vendedor): R$ 4500.00\nDavi (Estagiario): R$ 1500.00\nFolha total: R$ 22000.00"
+        },
+        "**Por que funciona:** `Funcionario` é o contrato: todo funcionário tem nome, salário base e precisa saber calcular o salário. O método `contracheque` fica na mãe e serve para todos, porque chama `self.calcular_salario()`, que cada filha implementa. Gerente e Vendedor têm atributos próprios, então chamam `super().__init__` para a mãe criar o nome e o salário base. O Estagiário herda de Desenvolvedor e usa `super().calcular_salario()` para pegar o salário dele e aplicar os 50%. O laço final não tem nenhum `if` de tipo: o polimorfismo escolhe o cálculo certo para cada objeto."
+      ]
+    },
+    {
+      "id": "quiz",
+      "tipo": "quiz",
+      "nome": "Quiz de código",
+      "perguntas": [
+        {
+          "pergunta": "O que é impresso?",
+          "codigo": "class Veiculo:\n    def rodas(self):\n        return 4\n\nclass Moto(Veiculo):\n    def rodas(self):\n        return 2\n\nprint(Moto().rodas())",
+          "opcoes": [
+            "4",
+            "2",
+            "6",
+            "Erro"
+          ],
+          "correta": 1,
+          "dica": "onde o Python procura o método primeiro?",
+          "acerto": "Isso! A versão da filha vem antes.",
+          "erro": "A sobrescrita substitui o método da mãe para objetos da filha.",
+          "explicacao": "o Python começa a busca em `Moto` e encontra `rodas` ali."
+        },
+        {
+          "pergunta": "Qual é o problema deste código?",
+          "codigo": "class Pessoa:\n    def __init__(self, nome):\n        self.nome = nome\n\nclass Aluno(Pessoa):\n    def __init__(self, nome, matricula):\n        self.matricula = matricula\n\na = Aluno(\"Lia\", 123)\nprint(a.nome)",
+          "opcoes": [
+            "Nenhum, mostra \"Lia\"",
+            "`AttributeError`: `nome` nunca foi criado",
+            "`Aluno` não pode ter `__init__`",
+            "Mostra `None`"
+          ],
+          "correta": 1,
+          "dica": "quem cria `self.nome`?",
+          "acerto": "Exato! Faltou super().__init__(nome).",
+          "erro": "O __init__ da filha substituiu o da mãe.",
+          "explicacao": "como `Aluno` tem `__init__` próprio, o da `Pessoa` não roda, e `self.nome` não existe."
+        },
+        {
+          "pergunta": "O que é impresso?",
+          "codigo": "class Base:\n    def ola(self):\n        return \"Olá\"\n\nclass Filha(Base):\n    def ola(self):\n        return super().ola() + \", mundo!\"\n\nprint(Filha().ola())",
+          "opcoes": [
+            "Olá",
+            ", mundo!",
+            "Olá, mundo!",
+            "Erro"
+          ],
+          "correta": 2,
+          "dica": "`super().ola()` devolve o quê?",
+          "acerto": "Perfeito! A filha estendeu o método da mãe.",
+          "erro": "super() chama a versão da mãe, e a filha acrescenta texto.",
+          "explicacao": "`super().ola()` devolve \"Olá\", e a filha concatena \", mundo!\"."
+        },
+        {
+          "pergunta": "O que acontece?",
+          "codigo": "from abc import ABC, abstractmethod\n\nclass Animal(ABC):\n    @abstractmethod\n    def som(self):\n        pass\n\nclass Peixe(Animal):\n    pass\n\np = Peixe()",
+          "opcoes": [
+            "Cria o peixe normalmente",
+            "`TypeError`: `Peixe` não implementou `som`",
+            "`p.som()` devolve `None`",
+            "`SyntaxError`"
+          ],
+          "correta": 1,
+          "dica": "a filha cumpriu o contrato?",
+          "acerto": "Isso! Classe abstrata obriga a implementação.",
+          "erro": "Sem implementar o método abstrato, a filha também fica abstrata.",
+          "explicacao": "como `Peixe` não definiu `som`, continua abstrata e não pode ser instanciada."
+        },
+        {
+          "pergunta": "O que é impresso?",
+          "codigo": "class Ave:\n    def mover(self): return \"voa\"\nclass Pinguim(Ave):\n    def mover(self): return \"nada\"\nclass Pardal(Ave):\n    pass\n\nfor ave in [Pardal(), Pinguim()]:\n    print(ave.mover())",
+          "opcoes": [
+            "voa, voa",
+            "nada, nada",
+            "voa, nada",
+            "nada, voa"
+          ],
+          "correta": 2,
+          "dica": "quem sobrescreveu `mover`?",
+          "acerto": "Mandou bem! Polimorfismo em ação.",
+          "erro": "Pardal herda 'voa'; Pinguim sobrescreve com 'nada'.",
+          "explicacao": "o Pardal usa o método herdado e o Pinguim usa o próprio."
+        },
+        {
+          "pergunta": "Qual é a MRO de `D`?",
+          "codigo": "class A: pass\nclass B(A): pass\nclass C(A): pass\nclass D(C, B): pass",
+          "opcoes": [
+            "D, B, C, A, object",
+            "D, C, B, A, object",
+            "D, A, B, C, object",
+            "D, C, A, B, object"
+          ],
+          "correta": 1,
+          "dica": "a ordem dentro dos parênteses importa.",
+          "acerto": "Perfeito! C vem antes de B porque foi escrita primeiro.",
+          "erro": "A avó A só aparece depois de todas as mães.",
+          "explicacao": "o Python segue a ordem declarada (`C`, depois `B`) e deixa a classe comum `A` para depois das duas."
+        }
+      ]
+    },
+    {
+      "id": "atividades",
+      "tipo": "atividades",
+      "nome": "Atividades",
+      "intro": [
+        "Escreva ou cole a sua tentativa no campo de cada atividade para liberar a solução. Outras soluções também valem, desde que passem nos testes do enunciado."
+      ],
+      "itens": [
+        {
+          "n": 1,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie a classe `Veiculo` com `marca`, `modelo` e o método `descrever()`, que devolve \"marca modelo\". Crie a filha `Moto`, com o atributo extra `cilindradas`, que sobrescreve `descrever()` acrescentando \"(N cc)\" usando `super()`."
+          ],
+          "dica": "na `Moto`, chame `super().__init__(marca, modelo)` e `super().descrever()`.",
+          "solucao": [
+            {
+              "codigo": "class Veiculo:\n    def __init__(self, marca, modelo):\n        self.marca = marca\n        self.modelo = modelo\n\n    def descrever(self):\n        return f\"{self.marca} {self.modelo}\"\n\nclass Moto(Veiculo):\n    def __init__(self, marca, modelo, cilindradas):\n        super().__init__(marca, modelo)\n        self.cilindradas = cilindradas\n\n    def descrever(self):\n        return f\"{super().descrever()} ({self.cilindradas} cc)\"\n\nprint(Veiculo(\"Fiat\", \"Uno\").descrever())   # Fiat Uno\nprint(Moto(\"Honda\", \"CG\", 160).descrever())  # Honda CG (160 cc)"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie a classe `Instrumento` com o método `tocar()` e três filhas (`Violao`, `Bateria` e `Flauta`), cada uma com o próprio som. Percorra uma lista com os três e mostre \"Nome: som\"."
+          ],
+          "dica": "`type(objeto).__name__` devolve o nome da classe.",
+          "solucao": [
+            {
+              "codigo": "class Instrumento:\n    def tocar(self):\n        return \"...\"\n\nclass Violao(Instrumento):\n    def tocar(self):\n        return \"Dlen dlen\"\n\nclass Bateria(Instrumento):\n    def tocar(self):\n        return \"Tum tum pá\"\n\nclass Flauta(Instrumento):\n    def tocar(self):\n        return \"Fiiu fiiu\"\n\nfor instrumento in [Violao(), Bateria(), Flauta()]:\n    print(f\"{type(instrumento).__name__}: {instrumento.tocar()}\")"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Usando as classes da atividade 1, verifique com `isinstance` se uma `Moto` é um `Veiculo` e se um `Veiculo` é uma `Moto`, e explique o resultado num comentário."
+          ],
+          "dica": "a herança vale numa direção só.",
+          "solucao": [
+            {
+              "codigo": "m = Moto(\"Yamaha\", \"Fazer\", 250)\nv = Veiculo(\"VW\", \"Gol\")\nprint(isinstance(m, Veiculo))  # True: toda Moto é um Veiculo\nprint(isinstance(v, Moto))     # False: nem todo Veiculo é uma Moto"
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "nivel": "Médio",
+          "enunciado": [
+            "Crie a classe `Conta` com `titular`, `saldo` e um método `sacar(valor)` que recusa saques maiores que o saldo. Crie `ContaCorrente`, que cobra uma taxa de R$ 2,00 por saque, reaproveitando o `sacar` da mãe com `super()`."
+          ],
+          "dica": "a filha chama `super().sacar(valor + taxa)`.",
+          "solucao": [
+            {
+              "codigo": "class Conta:\n    def __init__(self, titular, saldo=0):\n        self.titular = titular\n        self.saldo = saldo\n\n    def sacar(self, valor):\n        if valor > self.saldo:\n            print(\"Saldo insuficiente.\")\n            return False\n        self.saldo -= valor\n        return True\n\nclass ContaCorrente(Conta):\n    TAXA = 2.0\n\n    def sacar(self, valor):\n        return super().sacar(valor + ContaCorrente.TAXA)\n\nc1 = Conta(\"Ana\", 100)\nc2 = ContaCorrente(\"Bia\", 100)\nc1.sacar(50)\nc2.sacar(50)\nprint(c1.saldo, c2.saldo)  # 50 48.0\nc2.sacar(48)               # Saldo insuficiente. (48 + 2 > 48)"
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "nivel": "Médio",
+          "enunciado": [
+            "Crie a classe abstrata `Forma` com os métodos abstratos `area()` e `perimetro()`, e as filhas `Quadrado` e `Triangulo` (com os três lados; use a fórmula de Herão para a área). Mostre área e perímetro de um quadrado de lado 4 e de um triângulo 3, 4, 5."
+          ],
+          "dica": "Herão: `s = perímetro / 2` e `área = (s(s−a)(s−b)(s−c)) ** 0.5`.",
+          "solucao": [
+            {
+              "codigo": "from abc import ABC, abstractmethod\n\nclass Forma(ABC):\n    @abstractmethod\n    def area(self):\n        pass\n\n    @abstractmethod\n    def perimetro(self):\n        pass\n\nclass Quadrado(Forma):\n    def __init__(self, lado):\n        self.lado = lado\n\n    def area(self):\n        return self.lado ** 2\n\n    def perimetro(self):\n        return 4 * self.lado\n\nclass Triangulo(Forma):\n    def __init__(self, a, b, c):\n        self.a, self.b, self.c = a, b, c\n\n    def perimetro(self):\n        return self.a + self.b + self.c\n\n    def area(self):\n        s = self.perimetro() / 2\n        return (s * (s - self.a) * (s - self.b) * (s - self.c)) ** 0.5\n\nfor forma in [Quadrado(4), Triangulo(3, 4, 5)]:\n    print(f\"{type(forma).__name__}: área {forma.area():.1f}, perímetro {forma.perimetro():.1f}\")\n# Quadrado: área 16.0, perímetro 16.0\n# Triangulo: área 6.0, perímetro 12.0"
+            }
+          ]
+        },
+        {
+          "n": 6,
+          "nivel": "Médio",
+          "enunciado": [
+            "Com a `Forma` da atividade 5, crie uma classe `Incompleta` que implementa só `area()` e tente instanciá-la dentro de um `try / except`, mostrando a mensagem de erro."
+          ],
+          "dica": "o erro é um `TypeError`.",
+          "solucao": [
+            {
+              "codigo": "class Incompleta(Forma):\n    def area(self):\n        return 1\n\ntry:\n    Incompleta()\nexcept TypeError as erro:\n    print(\"Erro:\", erro)\n# Erro: Can't instantiate abstract class Incompleta ... abstract method 'perimetro'"
+            }
+          ]
+        },
+        {
+          "n": 7,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Crie um mini jogo de batalha: `Personagem` (nome, vida = 100, `atacar()` devolve 10, `receber_dano(dano)` sem deixar a vida abaixo de 0), `Guerreiro` (ataque é o dobro do da mãe, usando `super()`) e `Mago` (vida 80, mana 50; cada ataque gasta 10 de mana e causa 25; sem mana, ataca como um personagem comum). Simule 2 rodadas entre um Guerreiro e um Mago com 15 de mana."
+          ],
+          "dica": "no `Mago`, passe `vida=80` para o `super().__init__`.",
+          "solucao": [
+            {
+              "codigo": "class Personagem:\n    def __init__(self, nome, vida=100):\n        self.nome = nome\n        self.vida = vida\n\n    def atacar(self):\n        return 10\n\n    def receber_dano(self, dano):\n        self.vida = max(0, self.vida - dano)\n\nclass Guerreiro(Personagem):\n    def atacar(self):\n        return super().atacar() * 2\n\nclass Mago(Personagem):\n    def __init__(self, nome, mana=50):\n        super().__init__(nome, vida=80)\n        self.mana = mana\n\n    def atacar(self):\n        if self.mana >= 10:\n            self.mana -= 10\n            return 25\n        return super().atacar()\n\ng = Guerreiro(\"Thor\")\nm = Mago(\"Merlin\", mana=15)\nfor rodada in range(1, 3):\n    m.receber_dano(g.atacar())\n    g.receber_dano(m.atacar())\n    print(f\"Rodada {rodada}: {g.nome} {g.vida} | {m.nome} {m.vida} (mana {m.mana})\")\n# Rodada 1: Thor 75 | Merlin 60 (mana 5)\n# Rodada 2: Thor 65 | Merlin 40 (mana 5)"
+            }
+          ]
+        },
+        {
+          "n": 8,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Acrescente à folha de pagamento da seção 7 a classe `Freelancer`, que recebe `horas` e `valor_hora` (sem salário base: passe 0 para a mãe), e inclua um freelancer de 80 horas a R$ 90,00 na equipe. O laço não deve ser alterado."
+          ],
+          "dica": "o polimorfismo garante que o laço continue funcionando.",
+          "solucao": [
+            {
+              "codigo": "class Freelancer(Funcionario):\n    def __init__(self, nome, horas, valor_hora):\n        super().__init__(nome, 0)\n        self.horas = horas\n        self.valor_hora = valor_hora\n\n    def calcular_salario(self):\n        return self.horas * self.valor_hora\n\nequipe.append(Freelancer(\"Eva\", 80, 90))\n\ntotal = 0\nfor funcionario in equipe:\n    print(funcionario.contracheque())\n    total += funcionario.calcular_salario()\nprint(f\"Folha total: R$ {total:.2f}\")\n# Eva (Freelancer): R$ 7200.00\n# Folha total: R$ 29200.00"
+            }
+          ]
+        },
+        {
+          "n": 9,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Explique, com suas palavras e um código de exemplo, a diferença entre sobrescrita e sobrecarga, e como o Python lida com cada uma."
+          ],
+          "dica": "uma depende de herança; a outra, não.",
+          "solucao": [
+            "**Resposta esperada:** sobrescrita é a filha redefinir um método que existe na mãe; o Python faz isso normalmente e usa a versão mais próxima do objeto. Sobrecarga seria ter, na mesma classe, vários métodos com o mesmo nome e parâmetros diferentes; o Python não faz isso, porque o último `def` com o mesmo nome apaga os anteriores. A alternativa é usar valores padrão ou `*args`.",
+            {
+              "codigo": "# Sobrescrita\nclass Animal:\n    def som(self):\n        return \"...\"\n\nclass Vaca(Animal):\n    def som(self):\n        return \"Muu\"\n\n# \"Sobrecarga\" no estilo Python\nclass Saudacao:\n    def ola(self, nome=None):\n        if nome is None:\n            return \"Olá!\"\n        return f\"Olá, {nome}!\"\n\nprint(Vaca().som())            # Muu\nprint(Saudacao().ola())        # Olá!\nprint(Saudacao().ola(\"Lia\"))   # Olá, Lia!"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
