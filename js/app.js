@@ -181,11 +181,17 @@ const LINGUAGENS = {
     kw: new Set("html head body title meta link style script div span p a h1 h2 h3 h4 ul ol li button input form label select option textarea img br hr nav table tr td th DOCTYPE".split(" ")),
     fn: new Set(),
     re: /(<!--[\s\S]*?-->)|("[^"]*"|'[^']*')|(\b\d+(?:\.\d+)?\b)|([A-Za-z_][\w-]*)/g
+  },
+  sql: {
+    ci: true,
+    kw: new Set("SELECT FROM WHERE AND OR NOT IN IS NULL LIKE BETWEEN AS DISTINCT ORDER BY GROUP HAVING LIMIT OFFSET ASC DESC JOIN INNER LEFT RIGHT FULL OUTER CROSS ON UNION ALL INSERT INTO VALUES UPDATE SET DELETE CREATE TABLE IF EXISTS DROP ALTER ADD COLUMN PRIMARY KEY FOREIGN REFERENCES DEFAULT UNIQUE CHECK INDEX VIEW CASE WHEN THEN ELSE END TRUE FALSE AUTOINCREMENT".split(" ")),
+    fn: new Set("COUNT SUM AVG MIN MAX ROUND UPPER LOWER LENGTH TRIM SUBSTR SUBSTRING REPLACE COALESCE IFNULL ABS DATE STRFTIME NOW CAST".split(" ")),
+    re: /(--.*$|\/\*.*?\*\/)|('(?:[^']|'')*'|"[^"]*")|(\b\d+(?:\.\d+)?\b)|([A-Za-z_]\w*)/g
   }
 };
 let linguagemAtual = "python";
-function hl(src) {
-  const L = LINGUAGENS[linguagemAtual] || LINGUAGENS.python, KW = L.kw, FN = L.fn;
+function hl(src, lang) {
+  const L = LINGUAGENS[lang] || LINGUAGENS[linguagemAtual] || LINGUAGENS.python, KW = L.kw, FN = L.fn;
   const re = new RegExp(L.re.source, "g");
   let out = "", last = 0, m;
   while ((m = re.exec(src))) {
@@ -194,8 +200,8 @@ function hl(src) {
     if (m[1]) out += `<span class="c">${esc(t)}</span>`;
     else if (m[2]) out += `<span class="s">${esc(t)}</span>`;
     else if (m[3]) out += `<span class="n">${t}</span>`;
-    else if (KW.has(t)) out += `<span class="k">${t}</span>`;
-    else if (FN.has(t) || src[re.lastIndex] === "(") out += `<span class="f">${t}</span>`;
+    else if (KW.has(L.ci ? t.toUpperCase() : t)) out += `<span class="k">${t}</span>`;
+    else if (FN.has(L.ci ? t.toUpperCase() : t) || src[re.lastIndex] === "(") out += `<span class="f">${t}</span>`;
     else out += t;
     last = re.lastIndex;
   }
@@ -691,7 +697,7 @@ function blocos(lista) {
     if (b.h) return `<h2>${fmt(b.h)}</h2>`;
     if (b.lista) return `<ul>${b.lista.map(x => `<li>${fmt(x)}</li>`).join("")}</ul>`;
     if (b.passos) return `<ol>${b.passos.map(x => `<li>${fmt(x)}</li>`).join("")}</ol>`;
-    if (b.codigo != null) return `<pre class="bloco-codigo">${b.codigo.split("\n").map(hl).join("\n")}</pre>`;
+    if (b.codigo != null) return `<pre class="bloco-codigo">${b.codigo.split("\n").map(l => hl(l, b.linguagem)).join("\n")}</pre>`;
     if (b.nota) return `<div class="nota">${fmt(b.nota)}</div>`;
     if (b.tabela) {
       const [cab, ...linhas] = b.tabela;
@@ -764,7 +770,7 @@ function viewCodigo(T, A, etapa, box) {
   box.innerHTML = `${etapa.intro ? `<div class="leitura">${blocos([].concat(etapa.intro))}</div>` : ""}
     <p class="dica-topo">Clique em qualquer linha para ver o que ela faz, ou use os botões para ir passo a passo.</p>
     <div class="explorer">
-      <div class="code" role="list">${L.map((l, i) => `<button class="ln" role="listitem" data-i="${i}" aria-label="Linha ${i + 1}"><span class="num">${i + 1}</span><span class="src">${hl(l.linha) || " "}</span></button>`).join("")}</div>
+      <div class="code" role="list">${L.map((l, i) => `<button class="ln" role="listitem" data-i="${i}" aria-label="Linha ${i + 1}"><span class="num">${i + 1}</span><span class="src">${hl(l.linha, etapa.linguagem) || " "}</span></button>`).join("")}</div>
       <div class="explain" aria-live="polite"><div id="expTexto"></div>
         <div class="explain-nav"><button class="btn ghost" id="lAnt">Linha anterior</button><button class="btn" id="lProx">Próxima linha</button></div>
         <div class="contagem" id="contagem"></div></div>
@@ -772,7 +778,7 @@ function viewCodigo(T, A, etapa, box) {
   const mostrar = i => {
     atual = i; vistas.add(i);
     $$(".ln", box).forEach((el, j) => { el.classList.toggle("ativa", j === i); el.classList.toggle("vista", vistas.has(j)); });
-    $("#expTexto").innerHTML = `<div class="qual">Linha ${i + 1}</div>${L[i].linha.trim() ? `<pre>${hl(L[i].linha)}</pre>` : "<pre> </pre>"}<p>${fmt(L[i].explica)}</p>`;
+    $("#expTexto").innerHTML = `<div class="qual">Linha ${i + 1}</div>${L[i].linha.trim() ? `<pre>${hl(L[i].linha, etapa.linguagem)}</pre>` : "<pre> </pre>"}<p>${fmt(L[i].explica)}</p>`;
     $("#lAnt").disabled = i === 0; $("#lProx").disabled = i === L.length - 1;
     $("#contagem").textContent = `${vistas.size} de ${L.length} linhas exploradas`;
     if (vistas.size === L.length && !feito(T.id, A.id, etapa.id)) { marcar(T.id, A.id, etapa.id); atualizarRail(T, A, etapa.id); }
@@ -791,7 +797,7 @@ function viewCodigoFaixas(T, A, etapa, box) {
     <p class="dica-topo">Clique em qualquer linha para ver o que ela faz, ou use os botões para ir passo a passo.</p>
     <div class="explorer">
       <div class="code" role="list">${C.map((l, i) => {
-        const x = daLinha(i + 1), conteudo = `<span class="num">${i + 1}</span><span class="src">${hl(l) || " "}</span>`;
+        const x = daLinha(i + 1), conteudo = `<span class="num">${i + 1}</span><span class="src">${hl(l, etapa.linguagem) || " "}</span>`;
         return x < 0 ? `<div class="ln" role="listitem">${conteudo}</div>`
           : `<button class="ln" role="listitem" data-x="${x}" aria-label="Linha ${i + 1}">${conteudo}</button>`;
       }).join("")}</div>
@@ -818,7 +824,7 @@ function viewCodigoFaixas(T, A, etapa, box) {
       el.classList.toggle("ativa", j + 1 >= de && j + 1 <= ate);
       el.classList.toggle("vista", el.dataset.x != null && vistas.has(+el.dataset.x));
     });
-    const trecho = C.slice(de - 1, ate).map(hl).join("\n");
+    const trecho = C.slice(de - 1, ate).map(l => hl(l, etapa.linguagem)).join("\n");
     $("#expTexto").innerHTML = `<div class="qual">${de === ate ? `Linha ${de}` : `Linhas ${de}–${ate}`}</div><pre>${trecho || " "}</pre><p>${fmt(X[k].texto)}</p>`;
     $("#lAnt").disabled = k === 0; $("#lProx").disabled = k === X.length - 1;
     $("#contagem").textContent = `${vistas.size} de ${X.length} explicações vistas`;
@@ -883,7 +889,7 @@ function viewQuiz(T, A, etapa, box) {
       <div class="q-prog" aria-hidden="true">${Q.map((_, j) => `<i class="${j < i ? "feita" : ""}"></i>`).join("")}</div>
       <div class="q-num">Pergunta ${i + 1} de ${Q.length}</div>
       <div class="q-pergunta">${fmt(q.pergunta)}</div>
-      ${q.codigo ? `<pre class="bloco-codigo">${q.codigo.split("\n").map(hl).join("\n")}</pre>` : ""}
+      ${q.codigo ? `<pre class="bloco-codigo">${q.codigo.split("\n").map(l => hl(l, q.linguagem)).join("\n")}</pre>` : ""}
       ${q.dica ? `<div class="q-dica"><button class="link-btn" id="verDica" aria-expanded="false">Ver dica</button><div class="caixa" id="caixaDica" hidden>${fmt(q.dica)}</div></div>` : ""}
       <div id="opcoes">${q.opcoes.map((o, j) => `<button class="opcao" data-j="${j}"><span class="letra">${letras[j]}</span><span>${fmt(o)}</span></button>`).join("")}</div>
       <div id="fb" aria-live="polite"></div></div>`;

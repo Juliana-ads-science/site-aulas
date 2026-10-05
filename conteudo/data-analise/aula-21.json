@@ -1,0 +1,916 @@
+{
+  "numero": 21,
+  "titulo": "Introdução a Banco de Dados e SQL",
+  "etapas": [
+    {
+      "id": "definicoes",
+      "tipo": "leitura",
+      "nome": "Definições",
+      "blocos": [
+        "Um banco de dados guarda informações de forma organizada, segura e fácil de consultar. Nos bancos relacionais, os dados ficam em tabelas ligadas entre si, e conversamos com eles usando SQL. Nesta aula você vai criar um banco, tabelas com chaves primárias e estrangeiras, inserir, consultar, alterar e apagar dados.",
+        {
+          "tabela": [
+            [
+              "Termo",
+              "O que significa"
+            ],
+            [
+              "Banco de dados",
+              "Sistema organizado para guardar, gerenciar e recuperar dados"
+            ],
+            [
+              "SGBD",
+              "Sistema Gerenciador de Banco de Dados: o programa que roda o banco (MySQL, PostgreSQL, SQLite, SQL Server)"
+            ],
+            [
+              "Banco relacional",
+              "Banco que guarda os dados em tabelas que se relacionam (modelo de Edgar F. Codd)"
+            ],
+            [
+              "Tabela",
+              "Estrutura com linhas e colunas que representa uma entidade (alunos, livros)"
+            ],
+            [
+              "Registro (linha, tupla)",
+              "Uma ocorrência da entidade: um aluno, um livro"
+            ],
+            [
+              "Coluna (campo, atributo)",
+              "Uma característica: nome, data de nascimento"
+            ],
+            [
+              "SQL",
+              "Structured Query Language: a linguagem padrão dos bancos relacionais"
+            ],
+            [
+              "Linguagem declarativa",
+              "Você diz **o que** quer, e o banco decide **como** buscar"
+            ],
+            [
+              "Tipo de dado",
+              "O tipo que a coluna aceita: `INT`, `VARCHAR`, `DECIMAL`, `DATE`, `BOOLEAN`"
+            ],
+            [
+              "Restrição (constraint)",
+              "Regra que o banco impõe: `NOT NULL`, `UNIQUE`, `PRIMARY KEY`, `FOREIGN KEY`, `DEFAULT`"
+            ],
+            [
+              "Chave primária (PK)",
+              "Coluna que identifica cada registro de forma única"
+            ],
+            [
+              "`AUTO_INCREMENT`",
+              "O próprio banco gera o próximo número da PK (no MySQL)"
+            ],
+            [
+              "Chave estrangeira (FK)",
+              "Coluna que aponta para a PK de outra tabela, criando a relação"
+            ],
+            [
+              "Integridade referencial",
+              "Garantia de que toda FK aponta para um registro que existe"
+            ],
+            [
+              "Registro órfão",
+              "Registro cuja FK aponta para algo que não existe mais"
+            ],
+            [
+              "DDL",
+              "Comandos que definem a estrutura: `CREATE`, `ALTER`, `DROP`"
+            ],
+            [
+              "DML",
+              "Comandos que mexem nos dados: `INSERT`, `SELECT`, `UPDATE`, `DELETE`"
+            ],
+            [
+              "`WHERE`",
+              "Filtro que diz em quais registros o comando age"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "para-que-como-e-quando-usamos",
+      "tipo": "leitura",
+      "nome": "Para que, como e quando usamos",
+      "blocos": [
+        "**Para que:** praticamente todo sistema guarda dados num banco: cadastro de usuários, carrinho de compras, notas de alunos, empréstimos de livros, mensagens de uma rede social.",
+        "**Como:**",
+        {
+          "passos": [
+            "Planejamos as entidades e as relações (modelagem).",
+            "Criamos o banco (`CREATE DATABASE`) e entramos nele (`USE`).",
+            "Criamos as tabelas (`CREATE TABLE`) com tipos e restrições.",
+            "Inserimos dados (`INSERT INTO`).",
+            "Consultamos (`SELECT`), alteramos (`UPDATE`) e apagamos (`DELETE`), sempre com `WHERE` pela chave primária."
+          ]
+        },
+        "**Arquivo x banco de dados:**",
+        {
+          "tabela": [
+            [
+              "Situação",
+              "Arquivo (.txt, .csv)",
+              "Banco de dados"
+            ],
+            [
+              "Poucos dados, uso pessoal",
+              "Serve",
+              "Exagero"
+            ],
+            [
+              "Muitos dados e buscas frequentes",
+              "Lento e trabalhoso",
+              "Rápido"
+            ],
+            [
+              "Garantir que a idade seja número e a data seja data",
+              "Ninguém impede erro",
+              "O tipo da coluna impede"
+            ],
+            [
+              "Várias pessoas usando ao mesmo tempo",
+              "Risco de sobrescrever",
+              "O SGBD controla"
+            ],
+            [
+              "Relacionar informações (livro e autor)",
+              "Dados repetidos",
+              "Chave estrangeira"
+            ]
+          ]
+        },
+        "**MySQL x SQLite:** o MySQL é um servidor, muito usado em sites. O SQLite é um banco num único arquivo, sem servidor, ótimo para aprender e para aplicativos pequenos, e já vem com o Python. Os exemplos da aula usam a sintaxe do MySQL (como nos slides); a aplicação final usa SQLite pelo Python."
+      ]
+    },
+    {
+      "id": "estruturas",
+      "tipo": "leitura",
+      "nome": "Estruturas",
+      "blocos": [
+        {
+          "h": "3.1 Criar e usar um banco"
+        },
+        {
+          "codigo": "CREATE DATABASE IF NOT EXISTS biblioteca_db;\nUSE biblioteca_db;",
+          "linguagem": "sql"
+        },
+        {
+          "h": "3.2 Criar uma tabela"
+        },
+        {
+          "codigo": "CREATE TABLE autores (\n    id INT AUTO_INCREMENT PRIMARY KEY,\n    nome VARCHAR(100) NOT NULL,\n    pais VARCHAR(50)\n);",
+          "linguagem": "sql"
+        },
+        {
+          "h": "3.3 Tabela com chave estrangeira"
+        },
+        {
+          "codigo": "CREATE TABLE livros (\n    id INT AUTO_INCREMENT PRIMARY KEY,\n    titulo VARCHAR(150) NOT NULL,\n    ano INT,\n    autor_id INT NOT NULL,\n    FOREIGN KEY (autor_id) REFERENCES autores(id)\n);",
+          "linguagem": "sql"
+        },
+        {
+          "h": "3.4 Inserir um ou vários registros"
+        },
+        {
+          "codigo": "INSERT INTO autores (nome, pais) VALUES ('Machado de Assis', 'Brasil');\n\nINSERT INTO autores (nome, pais) VALUES\n    ('Clarice Lispector', 'Brasil'),\n    ('George Orwell', 'Reino Unido');",
+          "linguagem": "sql"
+        },
+        {
+          "h": "3.5 Consultar"
+        },
+        {
+          "codigo": "SELECT * FROM autores;            -- todas as colunas\nSELECT nome, pais FROM autores;   -- só algumas colunas\nSELECT * FROM livros WHERE id = 1;",
+          "linguagem": "sql"
+        },
+        {
+          "h": "3.6 Alterar e apagar pela chave primária"
+        },
+        {
+          "codigo": "UPDATE livros SET ano = 1900 WHERE id = 1;\nDELETE FROM livros WHERE id = 2;",
+          "linguagem": "sql"
+        },
+        {
+          "h": "3.7 Mudar a estrutura"
+        },
+        {
+          "codigo": "ALTER TABLE autores ADD COLUMN nascimento DATE;\nDROP TABLE IF EXISTS emprestimos;\nDROP DATABASE IF EXISTS teste_db;   -- apaga TUDO",
+          "linguagem": "sql"
+        }
+      ]
+    },
+    {
+      "id": "sintaxe-e-simbolos",
+      "tipo": "leitura",
+      "nome": "Sintaxe e símbolos",
+      "blocos": [
+        {
+          "tabela": [
+            [
+              "Símbolo / comando",
+              "O que faz",
+              "Por que existe"
+            ],
+            [
+              "`;`",
+              "Termina um comando",
+              "Separa vários comandos no mesmo script"
+            ],
+            [
+              "`--`",
+              "Comentário",
+              "Explicar o script"
+            ],
+            [
+              "Maiúsculas (`SELECT`, `FROM`)",
+              "Palavras-chave do SQL",
+              "Só convenção: o SQL não diferencia, mas fica mais legível"
+            ],
+            [
+              "`'texto'`",
+              "Valor de texto ou data",
+              "Textos e datas vão entre aspas simples"
+            ],
+            [
+              "`( )` no `CREATE TABLE`",
+              "Lista as colunas",
+              "Cada coluna separada por vírgula"
+            ],
+            [
+              "`INT`",
+              "Inteiro",
+              "IDs, quantidades, anos"
+            ],
+            [
+              "`VARCHAR(100)`",
+              "Texto de até 100 caracteres",
+              "Nomes, e-mails"
+            ],
+            [
+              "`DECIMAL(10, 2)`",
+              "Número exato com 2 casas",
+              "Dinheiro (mais preciso que `FLOAT`)"
+            ],
+            [
+              "`DATE`",
+              "Data no formato `'AAAA-MM-DD'`",
+              "Nascimento, matrícula"
+            ],
+            [
+              "`BOOLEAN`",
+              "Verdadeiro/falso",
+              "No MySQL vira `TINYINT(1)`: 1 = verdadeiro, 0 = falso"
+            ],
+            [
+              "`TIMESTAMP DEFAULT CURRENT_TIMESTAMP`",
+              "Data e hora preenchidas sozinhas",
+              "Registrar quando o dado foi criado"
+            ],
+            [
+              "`NOT NULL`",
+              "Campo obrigatório",
+              "Impede registros incompletos"
+            ],
+            [
+              "`UNIQUE`",
+              "Valor não pode repetir",
+              "Dois clientes não podem ter o mesmo e-mail"
+            ],
+            [
+              "`PRIMARY KEY`",
+              "Identificador único e obrigatório",
+              "O \"endereço\" de cada linha"
+            ],
+            [
+              "`FOREIGN KEY (...) REFERENCES tabela(coluna)`",
+              "Cria a relação",
+              "Garante que o valor existe na outra tabela"
+            ],
+            [
+              "`IF EXISTS` / `IF NOT EXISTS`",
+              "Só executa se fizer sentido",
+              "Evita erro ao rodar o script de novo"
+            ],
+            [
+              "`*`",
+              "Todas as colunas",
+              "Inspeção rápida"
+            ],
+            [
+              "`WHERE coluna = valor`",
+              "Filtra os registros",
+              "Sem `WHERE`, `UPDATE` e `DELETE` agem na tabela inteira"
+            ],
+            [
+              "`VALUES (...), (...)`",
+              "Vários registros num comando",
+              "Inserção mais eficiente"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logica-por-tras",
+      "tipo": "leitura",
+      "nome": "Lógica por trás",
+      "blocos": [
+        "**Por que tabelas separadas:** se cada livro guardasse o nome do autor, \"Machado de Assis\" seria digitado em vários livros. Um erro de digitação criaria um \"autor\" novo, e uma correção exigiria mudar todas as linhas. Com uma tabela `autores`, o nome existe uma vez só, e cada livro guarda apenas o `autor_id`.",
+        {
+          "codigo": "autores                         livros\nid | nome                       id | titulo           | autor_id\n1  | Machado de Assis  ◄─────── 1  | Dom Casmurro     | 1\n2  | Clarice Lispector ◄─────── 3  | A Hora da Estrela| 2"
+        },
+        "**O papel da chave primária:** nomes se repetem, mas a PK nunca. Por isso `UPDATE` e `DELETE` devem usar a PK no `WHERE`: `DELETE FROM alunos WHERE nome = 'Maria'` pode apagar várias Marias; `WHERE id = 7` apaga só uma.",
+        "**O papel da chave estrangeira:** o banco recusa:",
+        {
+          "passos": [
+            "inserir um livro com `autor_id` que não existe;",
+            "apagar um autor que ainda tem livros."
+          ]
+        },
+        "Isso impede registros órfãos sem você precisar escrever nenhuma verificação no programa.",
+        "**A ordem importa:**",
+        {
+          "tabela": [
+            [
+              "Ao criar",
+              "Ao apagar"
+            ],
+            [
+              "Primeiro a tabela \"mãe\" (`autores`), depois a que tem a FK (`livros`)",
+              "Primeiro a que tem a FK (`livros`), depois a \"mãe\" (`autores`)"
+            ]
+          ]
+        },
+        "**SQL é declarativo:** em Python, para achar os livros de 1977, você escreveria um laço com `if`. Em SQL, basta pedir `SELECT * FROM livros WHERE ano = 1977;` e o banco escolhe o melhor jeito de buscar.",
+        "**Cuidados com comandos destrutivos:** `DROP TABLE` e `DROP DATABASE` apagam a estrutura e os dados para sempre. E `UPDATE` ou `DELETE` sem `WHERE` alteram ou apagam todas as linhas. Antes de rodar, faça um `SELECT` com o mesmo `WHERE` para ver o que será afetado.",
+        "**Diferenças do SQLite:** a PK automática é `INTEGER PRIMARY KEY AUTOINCREMENT`; não existe `CREATE DATABASE` nem `USE` (o banco é o próprio arquivo); a verificação de chave estrangeira só funciona depois de `PRAGMA foreign_keys = ON`; e os tipos são flexíveis: o SQLite aceita `'dez de janeiro'` numa coluna `DATE`, coisa que o MySQL (no modo estrito, o padrão) recusa."
+      ]
+    },
+    {
+      "id": "exemplo-a",
+      "tipo": "codigo",
+      "nome": "Exemplo A — Banco e tabelas relacionadas (criar_biblioteca.sql)",
+      "linguagem": "sql",
+      "codigo": [
+        "CREATE DATABASE IF NOT EXISTS biblioteca_db;",
+        "USE biblioteca_db;",
+        "",
+        "CREATE TABLE autores (",
+        "    id INT AUTO_INCREMENT PRIMARY KEY,",
+        "    nome VARCHAR(100) NOT NULL,",
+        "    pais VARCHAR(50)",
+        ");",
+        "",
+        "CREATE TABLE livros (",
+        "    id INT AUTO_INCREMENT PRIMARY KEY,",
+        "    titulo VARCHAR(150) NOT NULL,",
+        "    ano INT,",
+        "    disponivel BOOLEAN DEFAULT TRUE,",
+        "    autor_id INT NOT NULL,",
+        "    FOREIGN KEY (autor_id) REFERENCES autores(id)",
+        ");"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Cria o banco, se ainda não existir"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Todos os comandos seguintes valem para `biblioteca_db`"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Cria a tabela \"mãe\" primeiro"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "PK numérica gerada pelo banco: 1, 2, 3..."
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Nome obrigatório, até 100 caracteres"
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "País opcional (pode ficar vazio)"
+        },
+        {
+          "linhas": [
+            10,
+            15
+          ],
+          "texto": "Tabela de livros; `disponivel` começa como verdadeiro se não for informado"
+        },
+        {
+          "linhas": [
+            15,
+            15
+          ],
+          "texto": "`autor_id` é obrigatório: todo livro tem autor"
+        },
+        {
+          "linhas": [
+            16,
+            16
+          ],
+          "texto": "Liga `livros.autor_id` a `autores.id`"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-b",
+      "tipo": "codigo",
+      "nome": "Exemplo B — Inserindo e consultando (dados_iniciais.sql)",
+      "linguagem": "sql",
+      "codigo": [
+        "INSERT INTO autores (nome, pais) VALUES",
+        "    ('Machado de Assis', 'Brasil'),",
+        "    ('Clarice Lispector', 'Brasil'),",
+        "    ('George Orwell', 'Reino Unido');",
+        "",
+        "INSERT INTO livros (titulo, ano, autor_id) VALUES",
+        "    ('Dom Casmurro', 1899, 1),",
+        "    ('Memórias Póstumas de Brás Cubas', 1881, 1),",
+        "    ('A Hora da Estrela', 1977, 2),",
+        "    ('1984', 1949, 3);",
+        "",
+        "SELECT * FROM livros;"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Lista as colunas que vamos preencher; o `id` fica de fora, porque o banco gera"
+        },
+        {
+          "linhas": [
+            2,
+            4
+          ],
+          "texto": "Três autores num comando só; recebem os ids 1, 2 e 3"
+        },
+        {
+          "linhas": [
+            6,
+            10
+          ],
+          "texto": "Os livros usam esses ids no `autor_id`: os dois primeiros são do Machado (1)"
+        },
+        {
+          "linhas": [
+            12,
+            12
+          ],
+          "texto": "Mostra todos os livros"
+        }
+      ],
+      "fechamento": [
+        "Resultado do `SELECT`:",
+        {
+          "codigo": "+----+---------------------------------+------+------------+----------+\n| id | titulo                          | ano  | disponivel | autor_id |\n+----+---------------------------------+------+------------+----------+\n|  1 | Dom Casmurro                    | 1899 |          1 |        1 |\n|  2 | Memórias Póstumas de Brás Cubas | 1881 |          1 |        1 |\n|  3 | A Hora da Estrela               | 1977 |          1 |        2 |\n|  4 | 1984                            | 1949 |          1 |        3 |\n+----+---------------------------------+------+------------+----------+"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-c",
+      "tipo": "codigo",
+      "nome": "Exemplo C — Tipos e restrições (clientes.sql)",
+      "linguagem": "sql",
+      "codigo": [
+        "CREATE TABLE clientes (",
+        "    id INT AUTO_INCREMENT PRIMARY KEY,",
+        "    nome VARCHAR(100) NOT NULL,",
+        "    email VARCHAR(100) NOT NULL UNIQUE,",
+        "    limite_credito DECIMAL(10, 2) DEFAULT 0.00,",
+        "    ativo BOOLEAN DEFAULT TRUE,",
+        "    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP",
+        ");",
+        "",
+        "INSERT INTO clientes (nome, email) VALUES ('Ana Lima', 'ana@email.com');",
+        "INSERT INTO clientes (nome, email) VALUES ('Ana Souza', 'ana@email.com');"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "E-mail obrigatório e único"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Dinheiro com 2 casas exatas; começa em 0.00"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Cliente nasce ativo"
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "Data e hora da criação preenchidas sozinhas"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "Funciona: limite, ativo e data são preenchidos pelos `DEFAULT`"
+        },
+        {
+          "linhas": [
+            11,
+            11
+          ],
+          "texto": "Erro de entrada duplicada: o e-mail já existe (`UNIQUE`)"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-d",
+      "tipo": "codigo",
+      "nome": "Exemplo D — Chave primária em ação (manutencao.sql)",
+      "linguagem": "sql",
+      "codigo": [
+        "SELECT * FROM livros WHERE id = 4;",
+        "UPDATE livros SET disponivel = FALSE WHERE id = 4;",
+        "SELECT id, titulo, disponivel FROM livros WHERE id = 4;",
+        "DELETE FROM livros WHERE id = 2;"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Confere antes: é mesmo o livro \"1984\"?"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Marca só o livro 4 como emprestado"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Confere depois: `disponivel` agora é 0"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Apaga só o livro 2. Sem o `WHERE`, todos os livros seriam apagados"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-e",
+      "tipo": "codigo",
+      "nome": "Exemplo E — Chave estrangeira protegendo os dados (integridade.sql)",
+      "linguagem": "sql",
+      "codigo": [
+        "INSERT INTO livros (titulo, ano, autor_id) VALUES ('Livro fantasma', 2020, 99);",
+        "DELETE FROM autores WHERE id = 1;"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Erro: não existe autor com id 99, então o livro seria órfão"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Erro: o Machado de Assis ainda tem livros ligados a ele"
+        }
+      ],
+      "fechamento": [
+        "Para apagar o autor 1, primeiro é preciso apagar (ou passar para outro autor) os livros dele."
+      ]
+    },
+    {
+      "id": "exemplo-f",
+      "tipo": "codigo",
+      "nome": "Exemplo F — Apagando na ordem certa (limpar.sql)",
+      "linguagem": "sql",
+      "codigo": [
+        "DROP TABLE IF EXISTS livros;",
+        "DROP TABLE IF EXISTS autores;",
+        "DROP DATABASE IF EXISTS biblioteca_db;"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Primeiro a tabela que tem a FK"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Depois a tabela \"mãe\"; na ordem inversa, o banco recusaria"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Apaga o banco inteiro: use só em ambiente de testes"
+        }
+      ]
+    },
+    {
+      "id": "como-aplicar",
+      "tipo": "leitura",
+      "nome": "Como aplicar: biblioteca com Python e SQLite",
+      "blocos": [
+        "Junta criação de tabelas, PK, FK, inserção múltipla, `SELECT`, `UPDATE`, `DELETE` e os erros de integridade, tudo pelo Python, sem instalar nada. Salve como `biblioteca.py` e rode com `python biblioteca.py`.",
+        {
+          "codigo": "import sqlite3\n\nconexao = sqlite3.connect(\"biblioteca.db\")\nconexao.execute(\"PRAGMA foreign_keys = ON\")\ncursor = conexao.cursor()\n\n# Recomeça do zero a cada execução\ncursor.execute(\"DROP TABLE IF EXISTS livros\")\ncursor.execute(\"DROP TABLE IF EXISTS autores\")\n\ncursor.execute(\"\"\"\n    CREATE TABLE autores (\n        id INTEGER PRIMARY KEY AUTOINCREMENT,\n        nome VARCHAR(100) NOT NULL,\n        pais VARCHAR(50)\n    )\n\"\"\")\ncursor.execute(\"\"\"\n    CREATE TABLE livros (\n        id INTEGER PRIMARY KEY AUTOINCREMENT,\n        titulo VARCHAR(150) NOT NULL,\n        ano INTEGER,\n        disponivel BOOLEAN DEFAULT 1,\n        autor_id INTEGER NOT NULL,\n        FOREIGN KEY (autor_id) REFERENCES autores(id)\n    )\n\"\"\")\n\ncursor.executemany(\n    \"INSERT INTO autores (nome, pais) VALUES (?, ?)\",\n    [(\"Machado de Assis\", \"Brasil\"), (\"Clarice Lispector\", \"Brasil\"), (\"George Orwell\", \"Reino Unido\")],\n)\ncursor.executemany(\n    \"INSERT INTO livros (titulo, ano, autor_id) VALUES (?, ?, ?)\",\n    [(\"Dom Casmurro\", 1899, 1), (\"Memórias Póstumas de Brás Cubas\", 1881, 1),\n     (\"A Hora da Estrela\", 1977, 2), (\"1984\", 1949, 3)],\n)\nconexao.commit()\n\nprint(\"Autores:\")\nfor linha in cursor.execute(\"SELECT * FROM autores\"):\n    print(\" \", linha)\n\nprint(\"Livros:\")\nfor linha in cursor.execute(\"SELECT * FROM livros\"):\n    print(\" \", linha)\n\n# Emprestar o livro de id 4 (a chave primária identifica o registro)\ncursor.execute(\"UPDATE livros SET disponivel = 0 WHERE id = 4\")\n# Remover o livro de id 2\ncursor.execute(\"DELETE FROM livros WHERE id = 2\")\nconexao.commit()\n\nprint(\"Livros depois do UPDATE e do DELETE:\")\nfor linha in cursor.execute(\"SELECT id, titulo, disponivel FROM livros\"):\n    print(\" \", linha)\n\n# A chave estrangeira em ação\ntry:\n    cursor.execute(\"INSERT INTO livros (titulo, ano, autor_id) VALUES ('Livro fantasma', 2020, 99)\")\nexcept sqlite3.IntegrityError as erro:\n    print(\"Inserção recusada:\", erro)\n\ntry:\n    cursor.execute(\"DELETE FROM autores WHERE id = 1\")\nexcept sqlite3.IntegrityError as erro:\n    print(\"Exclusão recusada:\", erro)\n\nconexao.close()"
+        },
+        "**Saída esperada:**",
+        {
+          "codigo": "Autores:\n  (1, 'Machado de Assis', 'Brasil')\n  (2, 'Clarice Lispector', 'Brasil')\n  (3, 'George Orwell', 'Reino Unido')\nLivros:\n  (1, 'Dom Casmurro', 1899, 1, 1)\n  (2, 'Memórias Póstumas de Brás Cubas', 1881, 1, 1)\n  (3, 'A Hora da Estrela', 1977, 1, 2)\n  (4, '1984', 1949, 1, 3)\nLivros depois do UPDATE e do DELETE:\n  (1, 'Dom Casmurro', 1)\n  (3, 'A Hora da Estrela', 1)\n  (4, '1984', 0)\nInserção recusada: FOREIGN KEY constraint failed\nExclusão recusada: FOREIGN KEY constraint failed"
+        },
+        "**Por que funciona:** `sqlite3.connect` cria o arquivo `biblioteca.db`, que é o banco inteiro. O `PRAGMA foreign_keys = ON` liga a verificação das chaves estrangeiras, que no SQLite vem desligada. Os `DROP TABLE IF EXISTS` no começo, na ordem filho → mãe, deixam o script rodar quantas vezes quiser. As tabelas são criadas na ordem mãe → filho. O `executemany` com `?` insere vários registros e deixa o próprio SQLite tratar os valores, o que evita erros com aspas e protege contra SQL injection. O `commit()` grava as mudanças no arquivo. No fim, as duas tentativas proibidas caem no `except sqlite3.IntegrityError`: o banco protegeu os dados sozinho."
+      ]
+    },
+    {
+      "id": "quiz",
+      "tipo": "quiz",
+      "nome": "Quiz de código",
+      "perguntas": [
+        {
+          "pergunta": "O que este comando faz?",
+          "codigo": "SELECT * FROM alunos;",
+          "linguagem": "sql",
+          "opcoes": [
+            "Apaga todos os alunos",
+            "Mostra todas as colunas de todos os alunos",
+            "Mostra só a primeira coluna",
+            "Conta quantos alunos existem"
+          ],
+          "correta": 1,
+          "dica": "o que significa o `*`?",
+          "acerto": "Isso! O * é 'todas as colunas'.",
+          "erro": "Sem WHERE, o SELECT traz todos os registros.",
+          "explicacao": "`SELECT *` lista todas as colunas, e sem filtro vêm todas as linhas."
+        },
+        {
+          "pergunta": "Qual coluna é a chave estrangeira?",
+          "codigo": "CREATE TABLE matriculas (\n    id INT AUTO_INCREMENT PRIMARY KEY,\n    aluno_id INT,\n    data_matricula DATE,\n    FOREIGN KEY (aluno_id) REFERENCES alunos(id)\n);",
+          "linguagem": "sql",
+          "opcoes": [
+            "`id`",
+            "`aluno_id`",
+            "`data_matricula`",
+            "`alunos`"
+          ],
+          "correta": 1,
+          "dica": "qual coluna aponta para outra tabela?",
+          "acerto": "Perfeito! aluno_id referencia alunos.id.",
+          "erro": "id é a chave primária desta tabela.",
+          "explicacao": "a FK liga cada matrícula a um aluno existente."
+        },
+        {
+          "pergunta": "O que acontece?",
+          "codigo": "DELETE FROM produtos;",
+          "linguagem": "sql",
+          "opcoes": [
+            "Apaga o primeiro produto",
+            "Apaga todos os produtos",
+            "Dá erro de sintaxe",
+            "Apaga a tabela `produtos`"
+          ],
+          "correta": 1,
+          "dica": "tem `WHERE`?",
+          "acerto": "Exato! Sem WHERE, todas as linhas somem.",
+          "erro": "A tabela continua existindo; o DROP TABLE é que apaga a estrutura.",
+          "explicacao": "o `DELETE` sem filtro remove todos os registros, mas a tabela (vazia) permanece."
+        },
+        {
+          "pergunta": "Qual tipo é o mais indicado para um preço?",
+          "opcoes": [
+            "`VARCHAR(10)`",
+            "`INT`",
+            "`DECIMAL(10, 2)`",
+            "`DATE`"
+          ],
+          "correta": 2,
+          "dica": "preço tem centavos e precisa ser exato.",
+          "acerto": "Isso! DECIMAL guarda as casas decimais exatas.",
+          "erro": "INT perde os centavos; VARCHAR impede contas.",
+          "explicacao": "`DECIMAL(10, 2)` é o padrão para dinheiro."
+        },
+        {
+          "pergunta": "O livro tem `autor_id = 5`, mas não existe autor com id 5. Com a FK criada, o que acontece no `INSERT`?",
+          "opcoes": [
+            "O livro é inserido normalmente",
+            "O banco recusa a inserção",
+            "O banco cria o autor 5 sozinho",
+            "O `autor_id` vira 0"
+          ],
+          "correta": 1,
+          "dica": "o que a integridade referencial garante?",
+          "acerto": "Mandou bem! Nada de registro órfão.",
+          "erro": "A FK só aceita valores que existem na tabela referenciada.",
+          "explicacao": "o banco retorna um erro de chave estrangeira e não grava a linha."
+        },
+        {
+          "pergunta": "Qual é a ordem correta para apagar as tabelas?",
+          "codigo": "-- livros tem uma FK para autores",
+          "linguagem": "sql",
+          "opcoes": [
+            "`DROP TABLE autores;` e depois `DROP TABLE livros;`",
+            "`DROP TABLE livros;` e depois `DROP TABLE autores;`",
+            "Tanto faz",
+            "Só dá para apagar com `DROP DATABASE`"
+          ],
+          "correta": 1,
+          "dica": "quem depende de quem?",
+          "acerto": "Perfeito! Primeiro quem tem a FK.",
+          "erro": "Apagar a 'mãe' primeiro quebraria a referência dos livros.",
+          "explicacao": "a tabela que referencia precisa sair antes da tabela referenciada."
+        }
+      ]
+    },
+    {
+      "id": "atividades",
+      "tipo": "atividades",
+      "nome": "Atividades",
+      "intro": [
+        "Escreva ou cole a sua tentativa no campo de cada atividade para liberar a solução. Outras soluções também valem, desde que passem nos testes do enunciado."
+      ],
+      "itens": [
+        {
+          "n": 1,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie o banco `escola_db` (se não existir) e selecione-o para uso."
+          ],
+          "dica": "`CREATE DATABASE IF NOT EXISTS` e `USE`.",
+          "solucao": [
+            {
+              "codigo": "CREATE DATABASE IF NOT EXISTS escola_db;\nUSE escola_db;",
+              "linguagem": "sql"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie a tabela `turmas` com `id` (PK automática), `nome` (texto obrigatório de até 50 caracteres) e `ano` (inteiro)."
+          ],
+          "dica": "`INT AUTO_INCREMENT PRIMARY KEY`.",
+          "solucao": [
+            {
+              "codigo": "CREATE TABLE turmas (\n    id INT AUTO_INCREMENT PRIMARY KEY,\n    nome VARCHAR(50) NOT NULL,\n    ano INT\n);",
+              "linguagem": "sql"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Insira três turmas num único comando e mostre todas."
+          ],
+          "dica": "vários conjuntos de `VALUES` separados por vírgula.",
+          "solucao": [
+            {
+              "codigo": "INSERT INTO turmas (nome, ano) VALUES\n    ('Python Manhã', 2026),\n    ('Python Noite', 2026),\n    ('JavaScript Sábado', 2026);\n\nSELECT * FROM turmas;",
+              "linguagem": "sql"
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "nivel": "Médio",
+          "enunciado": [
+            "Crie a tabela `alunos` com `id`, `nome` (obrigatório), `email` (único), `data_nascimento` (data) e `turma_id`, ligada à tabela `turmas`."
+          ],
+          "dica": "a FK vai no fim, com `REFERENCES turmas(id)`.",
+          "solucao": [
+            {
+              "codigo": "CREATE TABLE alunos (\n    id INT AUTO_INCREMENT PRIMARY KEY,\n    nome VARCHAR(100) NOT NULL,\n    email VARCHAR(100) UNIQUE,\n    data_nascimento DATE,\n    turma_id INT,\n    FOREIGN KEY (turma_id) REFERENCES turmas(id)\n);",
+              "linguagem": "sql"
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "nivel": "Médio",
+          "enunciado": [
+            "Insira dois alunos na turma 1 e um na turma 2. Depois, mostre só o nome e o e-mail de todos."
+          ],
+          "dica": "datas no formato `'AAAA-MM-DD'`; no `SELECT`, liste as colunas.",
+          "solucao": [
+            {
+              "codigo": "INSERT INTO alunos (nome, email, data_nascimento, turma_id) VALUES\n    ('Lia Santos', 'lia@email.com', '2005-03-14', 1),\n    ('Rui Costa', 'rui@email.com', '2004-11-02', 1),\n    ('Bia Alves', 'bia@email.com', '2006-07-21', 2);\n\nSELECT nome, email FROM alunos;",
+              "linguagem": "sql"
+            }
+          ]
+        },
+        {
+          "n": 6,
+          "nivel": "Médio",
+          "enunciado": [
+            "O aluno de id 2 mudou de turma: passe-o para a turma 3. Depois, apague o aluno de id 3. Antes de cada comando, confira o registro com um `SELECT`."
+          ],
+          "dica": "sempre `WHERE id = ...`.",
+          "solucao": [
+            {
+              "codigo": "SELECT * FROM alunos WHERE id = 2;\nUPDATE alunos SET turma_id = 3 WHERE id = 2;\n\nSELECT * FROM alunos WHERE id = 3;\nDELETE FROM alunos WHERE id = 3;",
+              "linguagem": "sql"
+            }
+          ]
+        },
+        {
+          "n": 7,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Modele um sistema de aluguel de filmes com as tabelas `clientes`, `filmes` e `alugueis`. A tabela `alugueis` deve ter duas chaves estrangeiras (cliente e filme), a data do aluguel e um campo que indica se o filme já foi devolvido (começa como falso)."
+          ],
+          "dica": "crie primeiro as tabelas \"mãe\".",
+          "solucao": [
+            {
+              "codigo": "CREATE TABLE clientes (\n    id INT AUTO_INCREMENT PRIMARY KEY,\n    nome VARCHAR(100) NOT NULL,\n    email VARCHAR(100) NOT NULL UNIQUE\n);\n\nCREATE TABLE filmes (\n    id INT AUTO_INCREMENT PRIMARY KEY,\n    titulo VARCHAR(150) NOT NULL,\n    ano INT,\n    preco_diaria DECIMAL(6, 2) NOT NULL\n);\n\nCREATE TABLE alugueis (\n    id INT AUTO_INCREMENT PRIMARY KEY,\n    cliente_id INT NOT NULL,\n    filme_id INT NOT NULL,\n    data_aluguel DATE NOT NULL,\n    devolvido BOOLEAN DEFAULT FALSE,\n    FOREIGN KEY (cliente_id) REFERENCES clientes(id),\n    FOREIGN KEY (filme_id) REFERENCES filmes(id)\n);",
+              "linguagem": "sql"
+            }
+          ]
+        },
+        {
+          "n": 8,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Em Python com SQLite, crie as tabelas `turmas` e `alunos` (com FK), insira dados com `executemany` e mostre que o banco recusa um aluno numa turma inexistente."
+          ],
+          "dica": "não esqueça o `PRAGMA foreign_keys = ON` e o `commit()`.",
+          "solucao": [
+            {
+              "codigo": "import sqlite3\n\nconexao = sqlite3.connect(\":memory:\")  # banco temporário, só na memória\nconexao.execute(\"PRAGMA foreign_keys = ON\")\ncursor = conexao.cursor()\n\ncursor.execute(\"CREATE TABLE turmas (id INTEGER PRIMARY KEY AUTOINCREMENT, nome TEXT NOT NULL)\")\ncursor.execute(\"\"\"\n    CREATE TABLE alunos (\n        id INTEGER PRIMARY KEY AUTOINCREMENT,\n        nome TEXT NOT NULL,\n        turma_id INTEGER,\n        FOREIGN KEY (turma_id) REFERENCES turmas(id)\n    )\n\"\"\")\n\ncursor.executemany(\"INSERT INTO turmas (nome) VALUES (?)\", [(\"Manhã\",), (\"Noite\",)])\ncursor.executemany(\"INSERT INTO alunos (nome, turma_id) VALUES (?, ?)\",\n                   [(\"Lia\", 1), (\"Rui\", 2)])\nconexao.commit()\n\nfor linha in cursor.execute(\"SELECT * FROM alunos\"):\n    print(linha)  # (1, 'Lia', 1) e (2, 'Rui', 2)\n\ntry:\n    cursor.execute(\"INSERT INTO alunos (nome, turma_id) VALUES ('Fantasma', 9)\")\nexcept sqlite3.IntegrityError as erro:\n    print(\"Recusado:\", erro)  # FOREIGN KEY constraint failed\n\nconexao.close()"
+            }
+          ]
+        },
+        {
+          "n": 9,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Explique, com suas palavras e um exemplo, por que `UPDATE` e `DELETE` devem usar a chave primária no `WHERE`, e não o nome."
+          ],
+          "dica": "pense em duas pessoas com o mesmo nome.",
+          "solucao": [
+            "**Resposta esperada:** nomes podem se repetir, mas a chave primária é única. Um `DELETE ... WHERE nome = 'Maria Silva'` apagaria todas as Marias Silva da tabela, inclusive pessoas que não deveriam ser afetadas. Com `WHERE id = 7`, o comando atinge exatamente um registro. Por segurança, rode antes um `SELECT` com o mesmo `WHERE` para ver o que será alterado.",
+            {
+              "codigo": "-- Arriscado: pode apagar várias pessoas\nDELETE FROM alunos WHERE nome = 'Maria Silva';\n\n-- Seguro: apaga exatamente um registro\nSELECT * FROM alunos WHERE id = 7;\nDELETE FROM alunos WHERE id = 7;",
+              "linguagem": "sql"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

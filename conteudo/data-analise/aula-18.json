@@ -1,0 +1,973 @@
+{
+  "numero": 18,
+  "titulo": "Revisão: Manipulação de Dados com Python Puro",
+  "etapas": [
+    {
+      "id": "definicoes",
+      "tipo": "leitura",
+      "nome": "Definições",
+      "blocos": [
+        "Antes de analisar dados, é preciso lê-los, limpá-los e organizá-los. Nesta revisão fazemos todo esse caminho só com Python puro (sem Pandas): ler um CSV, guardar cada linha num dicionário, tratar ausentes e erros, padronizar textos, remover duplicatas, calcular estatísticas e exportar o resultado.",
+        {
+          "tabela": [
+            [
+              "Termo",
+              "O que significa"
+            ],
+            [
+              "CSV (Comma Separated Values)",
+              "Arquivo de texto em que cada linha é um registro e as colunas são separadas por vírgula"
+            ],
+            [
+              "Cabeçalho",
+              "A primeira linha do CSV, com os nomes das colunas"
+            ],
+            [
+              "Registro",
+              "Uma linha de dados (uma pessoa, um produto)"
+            ],
+            [
+              "`with open(...)`",
+              "Abre um arquivo e garante que ele seja fechado no fim"
+            ],
+            [
+              "`.strip()`",
+              "Remove espaços e quebras de linha do começo e do fim do texto"
+            ],
+            [
+              "`.split(\",\")`",
+              "Quebra o texto numa lista, usando a vírgula como separador"
+            ],
+            [
+              "Lista de listas",
+              "Cada linha vira uma lista; o acesso é por posição (`linha[2]`)"
+            ],
+            [
+              "Dicionário (`dict`)",
+              "Pares chave-valor; o acesso é pelo nome da coluna (`registro[\"Idade\"]`)"
+            ],
+            [
+              "`enumerate`",
+              "Percorre uma lista entregando posição e valor ao mesmo tempo"
+            ],
+            [
+              "Dado ausente",
+              "Campo vazio (`\"\"`)"
+            ],
+            [
+              "Dado inconsistente",
+              "Valor no formato errado, como `\"abc\"` numa coluna de salário"
+            ],
+            [
+              "Type casting",
+              "Converter o tipo: `int()`, `float()`, `str()`"
+            ],
+            [
+              "`ValueError`",
+              "Erro lançado quando a conversão é impossível (`float(\"abc\")`)"
+            ],
+            [
+              "`try / except`",
+              "Tenta executar; se der erro, executa o plano B"
+            ],
+            [
+              "`None`",
+              "Valor que representa \"nada\", usado para marcar ausentes"
+            ],
+            [
+              "Imputação",
+              "Preencher o ausente com uma estimativa (média, mediana)"
+            ],
+            [
+              "Case folding",
+              "Deixar textos no mesmo padrão de maiúsculas/minúsculas (`.lower()`)"
+            ],
+            [
+              "Duplicata",
+              "O mesmo registro aparecendo mais de uma vez"
+            ],
+            [
+              "`set`",
+              "Conjunto: guarda valores sem repetição"
+            ],
+            [
+              "Média",
+              "Soma ÷ quantidade"
+            ],
+            [
+              "Mediana",
+              "Valor do meio com os dados ordenados; resistente a outliers"
+            ],
+            [
+              "Moda",
+              "Valor mais frequente; serve também para texto"
+            ],
+            [
+              "Multimodal",
+              "Conjunto com mais de uma moda"
+            ],
+            [
+              "Amplitude",
+              "Máximo − mínimo"
+            ],
+            [
+              "Outlier",
+              "Valor muito distante dos demais"
+            ],
+            [
+              "Tabela de frequência",
+              "Quantos registros há em cada categoria"
+            ],
+            [
+              "Group by",
+              "Calcular uma estatística para cada grupo"
+            ],
+            [
+              "Campo derivado",
+              "Coluna nova calculada a partir de outras (faixa etária)"
+            ],
+            [
+              "Exportar",
+              "Gravar os dados limpos num novo arquivo"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "para-que-como-e-quando-usamos",
+      "tipo": "leitura",
+      "nome": "Para que, como e quando usamos",
+      "blocos": [
+        "**Para que:** quase nenhum dado chega pronto. Há campos vazios, números escritos como texto, nomes de cidade com grafias diferentes e linhas repetidas. Sem limpeza, as médias saem erradas e as contagens se dividem em categorias falsas.",
+        "**Como:** seguimos um fluxo fixo:",
+        {
+          "passos": [
+            "**Ler** o CSV e transformar cada linha num dicionário.",
+            "**Remover duplicatas.**",
+            "**Converter tipos** e marcar como `None` o que não for número válido.",
+            "**Imputar** os ausentes (ou descartar, conforme o caso).",
+            "**Padronizar textos** categóricos.",
+            "**Analisar:** média, mediana, moda, amplitude, frequências, grupos.",
+            "**Criar campos derivados** e **exportar**."
+          ]
+        },
+        "**Quando usar cada técnica:**",
+        {
+          "tabela": [
+            [
+              "Situação",
+              "Técnica"
+            ],
+            [
+              "Precisa acessar colunas pelo nome",
+              "Dicionário por registro"
+            ],
+            [
+              "Campo numérico vazio ou inválido",
+              "Converter com `try / except` e marcar `None`"
+            ],
+            [
+              "Poucos ausentes numa coluna numérica",
+              "Imputar pela mediana (ou média, se não houver outliers)"
+            ],
+            [
+              "Muitos ausentes no mesmo registro",
+              "Talvez descartar o registro"
+            ],
+            [
+              "\"São Paulo\", \"são paulo \" e \"SÃO PAULO\"",
+              "`.strip().lower()`"
+            ],
+            [
+              "ID repetido",
+              "Remover duplicata pelo ID"
+            ],
+            [
+              "Dados com valores extremos",
+              "Preferir a mediana à média"
+            ],
+            [
+              "Categorias de texto",
+              "Moda e tabela de frequência"
+            ],
+            [
+              "Comparar grupos",
+              "Group by"
+            ]
+          ]
+        },
+        "**Quando não usar Python puro:** para arquivos grandes ou análises do dia a dia, o Pandas faz tudo isso em poucas linhas, e o módulo `csv` lê arquivos com vírgulas dentro de campos entre aspas, que o `.split(\",\")` não consegue tratar. Fazer à mão serve para entender o que essas ferramentas fazem por baixo."
+      ]
+    },
+    {
+      "id": "estruturas",
+      "tipo": "leitura",
+      "nome": "Estruturas",
+      "blocos": [
+        {
+          "h": "3.1 Ler o CSV linha por linha"
+        },
+        {
+          "codigo": "with open(\"dados.csv\", encoding=\"utf-8\") as arquivo:\n    cabecalho = arquivo.readline().strip().split(\",\")\n    for linha in arquivo:\n        valores = linha.strip().split(\",\")"
+        },
+        {
+          "h": "3.2 Linha → dicionário"
+        },
+        {
+          "codigo": "registro = {}\nfor i, coluna in enumerate(cabecalho):\n    registro[coluna] = valores[i].strip()"
+        },
+        {
+          "h": "3.3 Conversão segura"
+        },
+        {
+          "codigo": "try:\n    salario = float(texto.replace(\",\", \".\"))\nexcept ValueError:\n    salario = None"
+        },
+        {
+          "h": "3.4 Contar ausentes"
+        },
+        {
+          "codigo": "faltando = sum(1 for r in registros if r[\"Idade\"] is None)"
+        },
+        {
+          "h": "3.5 Imputar pela mediana"
+        },
+        {
+          "codigo": "import statistics\nvalidos = [r[\"Idade\"] for r in registros if r[\"Idade\"] is not None]\nmediana = statistics.median(validos)"
+        },
+        {
+          "h": "3.6 Padronizar texto"
+        },
+        {
+          "codigo": "registro[\"Cidade\"] = registro[\"Cidade\"].strip().lower()"
+        },
+        {
+          "h": "3.7 Remover duplicatas com `set`"
+        },
+        {
+          "codigo": "vistos = set()\nunicos = []\nfor r in registros:\n    if r[\"ID\"] not in vistos:\n        vistos.add(r[\"ID\"])\n        unicos.append(r)"
+        },
+        {
+          "h": "3.8 Estatísticas"
+        },
+        {
+          "codigo": "statistics.mean(valores)       # média\nstatistics.median(valores)     # mediana\nstatistics.multimode(valores)  # moda(s)\nmax(valores) - min(valores)    # amplitude"
+        },
+        {
+          "h": "3.9 Frequência com `dict.get`"
+        },
+        {
+          "codigo": "contagem = {}\nfor r in registros:\n    contagem[r[\"Status\"]] = contagem.get(r[\"Status\"], 0) + 1"
+        },
+        {
+          "h": "3.10 Group by com `setdefault`"
+        },
+        {
+          "codigo": "grupos = {}\nfor r in registros:\n    grupos.setdefault(r[\"Cidade\"], []).append(r[\"Salario\"])"
+        },
+        {
+          "h": "3.11 Exportar"
+        },
+        {
+          "codigo": "with open(\"saida.csv\", \"w\", encoding=\"utf-8\") as arquivo:\n    arquivo.write(\",\".join(cabecalho) + \"\\n\")"
+        }
+      ]
+    },
+    {
+      "id": "sintaxe-e-simbolos",
+      "tipo": "leitura",
+      "nome": "Sintaxe e símbolos",
+      "blocos": [
+        {
+          "tabela": [
+            [
+              "Símbolo / comando",
+              "O que faz",
+              "Por que existe"
+            ],
+            [
+              "`with open(caminho, encoding=\"utf-8\")`",
+              "Abre e fecha o arquivo automaticamente",
+              "Evita arquivo aberto esquecido; `utf-8` lê acentos"
+            ],
+            [
+              "`\"w\"` em `open`",
+              "Abre para escrita (apaga o conteúdo antigo)",
+              "Criar o arquivo de saída"
+            ],
+            [
+              "`arquivo.readline()`",
+              "Lê uma linha",
+              "Pegar só o cabeçalho"
+            ],
+            [
+              "`for linha in arquivo`",
+              "Percorre as linhas restantes",
+              "Ler registro por registro"
+            ],
+            [
+              "`.strip()`",
+              "Tira espaços e o `\\n`",
+              "O fim de linha não pode ir junto do último campo"
+            ],
+            [
+              "`.split(\",\")`",
+              "Texto → lista",
+              "Separar os campos"
+            ],
+            [
+              "`\",\".join(lista)`",
+              "Lista → texto",
+              "O caminho inverso, para escrever o CSV"
+            ],
+            [
+              "`enumerate(lista)`",
+              "Dá `(posição, valor)`",
+              "Ligar cada valor à coluna certa"
+            ],
+            [
+              "`{}` / `dict[chave]`",
+              "Cria / acessa dicionário",
+              "Acesso pelo nome da coluna"
+            ],
+            [
+              "`.replace(\",\", \".\")`",
+              "Troca vírgula por ponto",
+              "`\"5500,00\"` vira `\"5500.00\"`, que o `float` entende"
+            ],
+            [
+              "`try / except ValueError`",
+              "Captura falhas de conversão",
+              "O programa não para por causa de um dado ruim"
+            ],
+            [
+              "`None` / `is None`",
+              "\"Sem valor\" / teste de ausência",
+              "Diferencia \"vazio\" de \"zero\""
+            ],
+            [
+              "`[x for x in lista if ...]`",
+              "List comprehension com filtro",
+              "Separar os valores válidos em uma linha"
+            ],
+            [
+              "`sum(1 for ...)`",
+              "Conta quantos itens atendem a uma condição",
+              "Contar ausentes"
+            ],
+            [
+              "`set()` / `.add()` / `in`",
+              "Conjunto sem repetição",
+              "Saber rápido se um ID já apareceu"
+            ],
+            [
+              "`dict.get(chave, 0)`",
+              "Valor da chave ou 0 se não existir",
+              "Contador sem `if`"
+            ],
+            [
+              "`dict.setdefault(chave, [])`",
+              "Cria a lista se a chave não existir",
+              "Agrupar sem `if`"
+            ],
+            [
+              "`import statistics`",
+              "Funções estatísticas prontas",
+              "`mean`, `median`, `multimode`"
+            ],
+            [
+              "`f\"{valor:.2f}\"`",
+              "Duas casas decimais",
+              "Mostrar valores monetários"
+            ],
+            [
+              "`f\"{texto:<15}\"`",
+              "Alinha à esquerda em 15 caracteres",
+              "Tabelas no terminal"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logica-por-tras",
+      "tipo": "leitura",
+      "nome": "Lógica por trás",
+      "blocos": [
+        "**Por que tudo chega como texto:** o CSV é um arquivo de texto. `\"3000.00\"` não é um número até ser convertido. Sem conversão, `\"3000.00\" + \"4500.50\"` dá `\"3000.004500.50\"` (junta os textos) em vez de somar.",
+        "**Por que dicionário em vez de lista:** em `[\"2\", \"Bruno\", \"35\", ...]` você precisa lembrar que a idade é a posição 2. Em `{\"Idade\": \"35\"}` o nome da coluna está escrito no próprio código. Se a ordem das colunas do arquivo mudar, o código com dicionário continua funcionando.",
+        "**Por que marcar com `None`:** o ausente não pode virar 0, porque um zero entraria na média como se fosse uma idade real e puxaria tudo para baixo. Com `None`, o valor fica de fora dos cálculos até ser imputado.",
+        "**Média x mediana:**",
+        {
+          "codigo": "tempos = [2, 2.5, 3, 3, 10]\nstatistics.mean(tempos)    # 4.1\nstatistics.median(tempos)  # 3"
+        },
+        "Um único atendimento de 10 minutos puxa a média para 4,1, embora quase todos tenham esperado 3 minutos ou menos. A mediana fica em 3. Com outliers, a mediana representa melhor o \"típico\", e por isso imputamos pela mediana nesta aula.",
+        "**A ordem das etapas importa:**",
+        {
+          "passos": [
+            "Duplicatas antes das estatísticas: senão, o mesmo salário conta duas vezes.",
+            "Conversão antes da imputação: a mediana só pode ser calculada com números.",
+            "Padronização antes da contagem: senão, \"SÃO PAULO\" e \"são paulo\" viram duas cidades."
+          ]
+        },
+        "**Cuidado com duplicatas \"parecidas\":** duas linhas com o mesmo nome e salário podem ser pessoas diferentes. Só remova por uma chave que realmente identifica o registro (como o ID). Se não houver chave confiável, investigue antes de apagar.",
+        "**Limites do `.split(\",\")`:** se um campo tiver vírgula dentro (`\"Silva, Ana\"` entre aspas), o split quebra no lugar errado. O módulo `csv` (`csv.DictReader`) trata esses casos e já entrega cada linha como dicionário."
+      ]
+    },
+    {
+      "id": "exemplo-a",
+      "tipo": "codigo",
+      "nome": "Exemplo A — Lendo o CSV em dicionários (ler_csv)",
+      "intro": [
+        "Todos os exemplos usam este `dados.csv` (note os problemas de propósito: idade vazia, salário \"abc\", cidades com grafias diferentes, status minúsculo e Bruno repetido):",
+        {
+          "codigo": "ID,Nome,Idade,Salario,Cidade,Status\n1,Ana,28,3000.00,São Paulo,Ativo\n2,Bruno,35,4500.50,Rio de Janeiro,Ativo\n3,Carla,,2200.75, são paulo ,Inativo\n4,Davi,41,abc,Campinas,Ativo\n5,Eva,22,5500.00,Porto Alegre,ativo\n6,Filipe,30,3800.00,SÃO PAULO,Ativo\n7,Gabi,38,6000.50,Campinas,Ativo\n2,Bruno,35,4500.50,Rio de Janeiro,Ativo"
+        }
+      ],
+      "codigo": [
+        "def ler_csv(caminho):",
+        "    with open(caminho, encoding=\"utf-8\") as arquivo:",
+        "        cabecalho = arquivo.readline().strip().split(\",\")",
+        "        registros = []",
+        "        for linha in arquivo:",
+        "            valores = linha.strip().split(\",\")",
+        "            registro = {}",
+        "            for i, coluna in enumerate(cabecalho):",
+        "                registro[coluna] = valores[i].strip()",
+        "            registros.append(registro)",
+        "    return registros",
+        "",
+        "dados = ler_csv(\"dados.csv\")",
+        "print(len(dados))",
+        "print(dados[2])"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Abre o arquivo; ao sair do bloco `with`, ele é fechado sozinho"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Lê só a primeira linha e transforma em `['ID', 'Nome', 'Idade', ...]`"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "O `for` continua a partir da segunda linha"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Tira o `\\n` e quebra a linha nas vírgulas"
+        },
+        {
+          "linhas": [
+            8,
+            9
+          ],
+          "texto": "`enumerate` dá a posição `i` e o nome da coluna; cada valor vai para a chave certa, sem espaços"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "Guarda o dicionário na lista"
+        },
+        {
+          "linhas": [
+            13,
+            13
+          ],
+          "texto": "Mostra 8 (o Bruno repetido ainda está lá)"
+        },
+        {
+          "linhas": [
+            14,
+            14
+          ],
+          "texto": "Mostra `{'ID': '3', 'Nome': 'Carla', 'Idade': '', 'Salario': '2200.75', 'Cidade': 'são paulo', 'Status': 'Inativo'}`: tudo texto, idade vazia"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-b",
+      "tipo": "codigo",
+      "nome": "Exemplo B — Removendo duplicatas pelo ID (remover_duplicatas)",
+      "codigo": [
+        "def remover_duplicatas(registros, chave=\"ID\"):",
+        "    vistos = set()",
+        "    unicos = []",
+        "    for registro in registros:",
+        "        if registro[chave] not in vistos:",
+        "            vistos.add(registro[chave])",
+        "            unicos.append(registro)",
+        "    return unicos",
+        "",
+        "dados = remover_duplicatas(dados)",
+        "print(len(dados))"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "A chave padrão é o ID, mas pode ser outra coluna"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Conjunto dos IDs já vistos; `in` num `set` é muito rápido"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Primeira vez que esse ID aparece?"
+        },
+        {
+          "linhas": [
+            6,
+            7
+          ],
+          "texto": "Registra o ID e guarda o registro"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "Mostra 7: a segunda linha do Bruno (ID 2) foi descartada"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-c",
+      "tipo": "codigo",
+      "nome": "Exemplo C — Conversão segura (para_numero)",
+      "codigo": [
+        "def para_numero(texto):",
+        "    try:",
+        "        return float(texto.replace(\",\", \".\"))",
+        "    except ValueError:",
+        "        return None",
+        "",
+        "print(para_numero(\"4500.50\"), para_numero(\"5500,00\"), para_numero(\"abc\"), para_numero(\"\"))"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            2,
+            3
+          ],
+          "texto": "Troca vírgula por ponto (padrão brasileiro) e tenta converter"
+        },
+        {
+          "linhas": [
+            4,
+            5
+          ],
+          "texto": "Se não for número, devolve `None` em vez de travar o programa"
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "Mostra `4500.5 5500.0 None None`: o \"abc\" e o vazio viraram `None`"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-d",
+      "tipo": "codigo",
+      "nome": "Exemplo D — Imputando pela mediana (imputar_mediana)",
+      "codigo": [
+        "import statistics",
+        "",
+        "def imputar_mediana(registros, campo):",
+        "    validos = [r[campo] for r in registros if r[campo] is not None]",
+        "    mediana = statistics.median(validos)",
+        "    for registro in registros:",
+        "        if registro[campo] is None:",
+        "            registro[campo] = mediana",
+        "    return mediana"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Só os valores que existem entram no cálculo"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Calcula a mediana dos válidos"
+        },
+        {
+          "linhas": [
+            6,
+            8
+          ],
+          "texto": "Substitui cada `None` pela mediana"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "Devolve o valor usado, para registrar o que foi feito"
+        }
+      ],
+      "fechamento": [
+        "Nos nossos dados, as idades válidas são 28, 35, 41, 22, 30 e 38; a mediana é 32.5, e a Carla recebe 32.5. O salário inválido do Davi recebe a mediana dos salários, R$ 4150.25. Depois, `int(32.5)` vira 32: o `int` corta as casas decimais."
+      ]
+    },
+    {
+      "id": "exemplo-e",
+      "tipo": "codigo",
+      "nome": "Exemplo E — Frequência e moda (contar)",
+      "codigo": [
+        "def contar(registros, campo):",
+        "    contagem = {}",
+        "    for registro in registros:",
+        "        valor = registro[campo]",
+        "        contagem[valor] = contagem.get(valor, 0) + 1",
+        "    return contagem",
+        "",
+        "cidades = contar(dados, \"Cidade\")",
+        "maior = max(cidades.values())",
+        "print([cidade for cidade, n in cidades.items() if n == maior])"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Se a cidade ainda não está no dicionário, `get` devolve 0; soma 1"
+        },
+        {
+          "linhas": [
+            8,
+            8
+          ],
+          "texto": "Com as cidades já em minúsculas, dá `{'são paulo': 3, 'rio de janeiro': 1, 'campinas': 2, 'porto alegre': 1}`"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "Maior frequência: 3"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "Mostra `['são paulo']`. A lista permite mais de uma moda, se houver empate"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-f",
+      "tipo": "codigo",
+      "nome": "Exemplo F — Média por grupo (media_por_grupo)",
+      "codigo": [
+        "def media_por_grupo(registros, grupo, campo):",
+        "    grupos = {}",
+        "    for registro in registros:",
+        "        grupos.setdefault(registro[grupo], []).append(registro[campo])",
+        "    return {chave: statistics.mean(valores) for chave, valores in grupos.items()}"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Dicionário: cidade → lista de salários"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Cria a lista da cidade na primeira vez e acrescenta o salário"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Para cada cidade, calcula a média da sua lista"
+        }
+      ],
+      "fechamento": [
+        "Resultado nos nossos dados: são paulo R$ 3000.25, rio de janeiro R$ 4500.50, campinas R$ 5075.38, porto alegre R$ 5500.00."
+      ]
+    },
+    {
+      "id": "como-aplicar",
+      "tipo": "leitura",
+      "nome": "Como aplicar: pipeline completo de limpeza",
+      "blocos": [
+        "Junta todas as etapas num script só. Crie o `dados.csv` da seção 6 na mesma pasta, salve como `pipeline.py` e rode com `python pipeline.py`.",
+        {
+          "codigo": "import statistics\n\ndef ler_csv(caminho):\n    with open(caminho, encoding=\"utf-8\") as arquivo:\n        cabecalho = arquivo.readline().strip().split(\",\")\n        registros = []\n        for linha in arquivo:\n            valores = linha.strip().split(\",\")\n            registro = {}\n            for i, coluna in enumerate(cabecalho):\n                registro[coluna] = valores[i].strip()\n            registros.append(registro)\n    return registros\n\n\ndef remover_duplicatas(registros, chave=\"ID\"):\n    vistos = set()\n    unicos = []\n    for registro in registros:\n        if registro[chave] not in vistos:\n            vistos.add(registro[chave])\n            unicos.append(registro)\n    return unicos\n\n\ndef para_numero(texto):\n    try:\n        return float(texto.replace(\",\", \".\"))\n    except ValueError:\n        return None\n\n\ndef limpar(registros):\n    for registro in registros:\n        registro[\"Idade\"] = para_numero(registro[\"Idade\"])\n        registro[\"Salario\"] = para_numero(registro[\"Salario\"])\n        registro[\"Cidade\"] = registro[\"Cidade\"].lower()\n        registro[\"Status\"] = registro[\"Status\"].capitalize()\n\n\ndef imputar_mediana(registros, campo):\n    validos = [r[campo] for r in registros if r[campo] is not None]\n    mediana = statistics.median(validos)\n    for registro in registros:\n        if registro[campo] is None:\n            registro[campo] = mediana\n    return mediana\n\n\ndef contar(registros, campo):\n    contagem = {}\n    for registro in registros:\n        valor = registro[campo]\n        contagem[valor] = contagem.get(valor, 0) + 1\n    return contagem\n\n\ndef media_por_grupo(registros, grupo, campo):\n    grupos = {}\n    for registro in registros:\n        grupos.setdefault(registro[grupo], []).append(registro[campo])\n    return {chave: statistics.mean(valores) for chave, valores in grupos.items()}\n\n\ndef exportar_csv(registros, caminho):\n    cabecalho = list(registros[0].keys())\n    with open(caminho, \"w\", encoding=\"utf-8\") as arquivo:\n        arquivo.write(\",\".join(cabecalho) + \"\\n\")\n        for registro in registros:\n            linha = [str(registro[coluna]) for coluna in cabecalho]\n            arquivo.write(\",\".join(linha) + \"\\n\")\n\n\n# 1. Leitura e duplicatas\ndados = ler_csv(\"dados.csv\")\nprint(f\"Registros lidos: {len(dados)}\")\ndados = remover_duplicatas(dados)\nprint(f\"Após remover duplicatas: {len(dados)}\")\n\n# 2. Limpeza e tipos\nlimpar(dados)\nfor campo in [\"Idade\", \"Salario\"]:\n    faltando = sum(1 for r in dados if r[campo] is None)\n    print(f\"Ausentes ou inválidos em {campo}: {faltando}\")\n\n# 3. Imputação pela mediana\nprint(f\"Idade imputada: {imputar_mediana(dados, 'Idade')}\")\nprint(f\"Salário imputado: {imputar_mediana(dados, 'Salario'):.2f}\")\nfor registro in dados:\n    registro[\"Idade\"] = int(registro[\"Idade\"])\n\n# 4. Estatística descritiva\nidades = [r[\"Idade\"] for r in dados]\nsalarios = [r[\"Salario\"] for r in dados]\nprint(f\"Idade  -> média {statistics.mean(idades):.1f} | mediana {statistics.median(idades)} | amplitude {max(idades) - min(idades)}\")\nprint(f\"Salário -> média R$ {statistics.mean(salarios):.2f} | mediana R$ {statistics.median(salarios):.2f} | amplitude R$ {max(salarios) - min(salarios):.2f}\")\n\ncidades = contar(dados, \"Cidade\")\nmaior = max(cidades.values())\nprint(f\"Moda de cidade: {[c for c, n in cidades.items() if n == maior]}\")\nprint(f\"Status: {contar(dados, 'Status')}\")\n\nfor cidade, media in media_por_grupo(dados, \"Cidade\", \"Salario\").items():\n    print(f\"  {cidade:<15} R$ {media:.2f}\")\n\n# 5. Campo derivado e exportação\nfor registro in dados:\n    registro[\"Faixa_Etaria\"] = \"Adulto\" if registro[\"Idade\"] >= 30 else \"Jovem\"\n\nexportar_csv(dados, \"dados_limpos.csv\")\nprint(\"Arquivo dados_limpos.csv criado.\")"
+        },
+        "**Saída esperada:**",
+        {
+          "codigo": "Registros lidos: 8\nApós remover duplicatas: 7\nAusentes ou inválidos em Idade: 1\nAusentes ou inválidos em Salario: 1\nIdade imputada: 32.5\nSalário imputado: 4150.25\nIdade  -> média 32.3 | mediana 32 | amplitude 19\nSalário -> média R$ 4164.57 | mediana R$ 4150.25 | amplitude R$ 3799.75\nModa de cidade: ['são paulo']\nStatus: {'Ativo': 6, 'Inativo': 1}\n  são paulo       R$ 3000.25\n  rio de janeiro  R$ 4500.50\n  campinas        R$ 5075.38\n  porto alegre    R$ 5500.00\nArquivo dados_limpos.csv criado."
+        },
+        "**Conteúdo de `dados_limpos.csv`:**",
+        {
+          "codigo": "ID,Nome,Idade,Salario,Cidade,Status,Faixa_Etaria\n1,Ana,28,3000.0,são paulo,Ativo,Jovem\n2,Bruno,35,4500.5,rio de janeiro,Ativo,Adulto\n3,Carla,32,2200.75,são paulo,Inativo,Adulto\n4,Davi,41,4150.25,campinas,Ativo,Adulto\n5,Eva,22,5500.0,porto alegre,Ativo,Jovem\n6,Filipe,30,3800.0,são paulo,Ativo,Adulto\n7,Gabi,38,6000.5,campinas,Ativo,Adulto"
+        },
+        "**Por que funciona:** cada etapa é uma função pequena, com uma única tarefa, o que facilita testar e reaproveitar. A ordem segue a lógica da seção 5: duplicatas primeiro, depois tipos, depois imputação e só então estatística. Os valores inválidos viram `None` e não entram nas medianas usadas para imputar. A padronização junta as três grafias de São Paulo, por isso a moda e a média por cidade saem corretas. No fim, o campo derivado é criado e tudo é exportado num CSV limpo, pronto para o Pandas, o Power BI ou outra análise."
+      ]
+    },
+    {
+      "id": "quiz",
+      "tipo": "quiz",
+      "nome": "Quiz de código",
+      "perguntas": [
+        {
+          "pergunta": "O que é impresso?",
+          "codigo": "a = \"3000.00\"\nb = \"4500.50\"\nprint(a + b)",
+          "opcoes": [
+            "7500.5",
+            "3000.004500.50",
+            "Erro",
+            "7500.50"
+          ],
+          "correta": 1,
+          "dica": "que tipo de dado está nas variáveis?",
+          "acerto": "Isso! Texto + texto concatena.",
+          "erro": "Sem float(), os valores são strings.",
+          "explicacao": "os valores vêm do CSV como texto; é preciso converter antes de somar."
+        },
+        {
+          "pergunta": "O que esta função devolve para `\"abc\"`?",
+          "codigo": "def para_numero(texto):\n    try:\n        return float(texto)\n    except ValueError:\n        return None",
+          "opcoes": [
+            "0",
+            "`\"abc\"`",
+            "`None`",
+            "O programa para com erro"
+          ],
+          "correta": 2,
+          "dica": "o `except` captura qual erro?",
+          "acerto": "Perfeito! O erro foi capturado.",
+          "erro": "O ValueError não interrompe o programa porque está no try.",
+          "explicacao": "`float(\"abc\")` lança `ValueError`, que cai no `except` e devolve `None`."
+        },
+        {
+          "pergunta": "Qual é mais resistente a um salário muito alto?",
+          "opcoes": [
+            "Média",
+            "Mediana",
+            "Soma",
+            "Amplitude"
+          ],
+          "correta": 1,
+          "dica": "qual medida usa só a posição do meio?",
+          "acerto": "Isso! A mediana não se move com um extremo.",
+          "erro": "Média, soma e amplitude mudam muito com um outlier.",
+          "explicacao": "a mediana depende da ordem, não do tamanho dos valores extremos."
+        },
+        {
+          "pergunta": "Quantas chaves terá `contagem`?",
+          "codigo": "cidades = [\"Recife\", \"recife \", \"RECIFE\"]\ncontagem = {}\nfor c in cidades:\n    contagem[c] = contagem.get(c, 0) + 1",
+          "opcoes": [
+            "1",
+            "2",
+            "3",
+            "0"
+          ],
+          "correta": 2,
+          "dica": "as três grafias são iguais para o Python?",
+          "acerto": "Exato! Sem padronizar, são três categorias.",
+          "erro": "Maiúsculas e espaços tornam os textos diferentes.",
+          "explicacao": "é preciso `c.strip().lower()` antes de contar para ter uma chave só."
+        },
+        {
+          "pergunta": "Por que marcamos ausentes com `None` em vez de 0?",
+          "opcoes": [
+            "Porque 0 dá erro em Python",
+            "Porque o 0 entraria nos cálculos como um valor real",
+            "Porque `None` ocupa menos memória",
+            "Não faz diferença"
+          ],
+          "correta": 1,
+          "dica": "o que acontece com a média se uma idade for 0?",
+          "acerto": "Isso! Um zero falso puxa a média para baixo.",
+          "erro": "O problema é estatístico, não de sintaxe.",
+          "explicacao": "`None` deixa o valor de fora até ser tratado; o 0 contaminaria média, mínimo e amplitude."
+        },
+        {
+          "pergunta": "O que `grupos` contém ao final?",
+          "codigo": "dados = [(\"SP\", 10), (\"RJ\", 20), (\"SP\", 30)]\ngrupos = {}\nfor cidade, valor in dados:\n    grupos.setdefault(cidade, []).append(valor)",
+          "opcoes": [
+            "`{\"SP\": 30, \"RJ\": 20}`",
+            "`{\"SP\": [10, 30], \"RJ\": [20]}`",
+            "`{\"SP\": [40], \"RJ\": [20]}`",
+            "`[10, 20, 30]`"
+          ],
+          "correta": 1,
+          "dica": "`setdefault` cria o quê na primeira vez?",
+          "acerto": "Mandou bem! Cada cidade tem sua lista.",
+          "erro": "Os valores são acumulados numa lista, não somados.",
+          "explicacao": "a primeira vez cria a lista vazia; as próximas só acrescentam."
+        }
+      ]
+    },
+    {
+      "id": "atividades",
+      "tipo": "atividades",
+      "nome": "Atividades",
+      "intro": [
+        "Escreva ou cole a sua tentativa no campo de cada atividade para liberar a solução. Outras soluções também valem, desde que passem nos testes do enunciado."
+      ],
+      "itens": [
+        {
+          "n": 1,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Leia o `dados.csv` com a função `ler_csv` e mostre o cabeçalho e quantos registros foram lidos."
+          ],
+          "dica": "o cabeçalho são as chaves do primeiro registro.",
+          "solucao": [
+            {
+              "codigo": "dados = ler_csv(\"dados.csv\")\nprint(list(dados[0].keys()))  # ['ID', 'Nome', 'Idade', 'Salario', 'Cidade', 'Status']\nprint(len(dados))             # 8"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie a função `para_inteiro(texto)` que devolve um `int` ou `None` se a conversão falhar. Teste com `\"28\"`, `\"\"`, `\"trinta\"` e `\"41\"`."
+          ],
+          "dica": "`try / except ValueError`.",
+          "solucao": [
+            {
+              "codigo": "def para_inteiro(texto):\n    try:\n        return int(texto)\n    except ValueError:\n        return None\n\nprint([para_inteiro(t) for t in [\"28\", \"\", \"trinta\", \"41\"]])\n# [28, None, None, 41]"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Padronize a lista `[\" Salvador\", \"salvador \", \"SALVADOR\", \"Recife\", \"recife\"]` e conte quantas vezes cada cidade aparece."
+          ],
+          "dica": "`.strip().lower()` e depois `dict.get`.",
+          "solucao": [
+            {
+              "codigo": "cidades = [\" Salvador\", \"salvador \", \"SALVADOR\", \"Recife\", \"recife\"]\ncontagem = {}\nfor cidade in cidades:\n    chave = cidade.strip().lower()\n    contagem[chave] = contagem.get(chave, 0) + 1\nprint(contagem)  # {'salvador': 3, 'recife': 2}"
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "nivel": "Médio",
+          "enunciado": [
+            "Para as notas `[7, 8, 6.5, 7.5, 0]`, calcule média e mediana e explique, num comentário, qual representa melhor a turma."
+          ],
+          "dica": "o 0 pode ser uma prova não entregue.",
+          "solucao": [
+            {
+              "codigo": "import statistics\nnotas = [7, 8, 6.5, 7.5, 0]\nprint(statistics.mean(notas))    # 5.8\nprint(statistics.median(notas))  # 7\n# A mediana (7) representa melhor a turma: o 0 é um outlier\n# que derruba a média para 5.8."
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "nivel": "Médio",
+          "enunciado": [
+            "Na lista `idades = [20, None, 30, 25, None]`, substitua os `None` pela média das idades válidas."
+          ],
+          "dica": "primeiro separe os válidos; depois monte a lista nova.",
+          "solucao": [
+            {
+              "codigo": "import statistics\nidades = [20, None, 30, 25, None]\nvalidas = [i for i in idades if i is not None]\nmedia = statistics.mean(validas)\nidades = [media if i is None else i for i in idades]\nprint(idades)  # [20, 25, 30, 25, 25]"
+            }
+          ]
+        },
+        {
+          "n": 6,
+          "nivel": "Médio",
+          "enunciado": [
+            "Usando os dados limpos do pipeline, mostre a tabela de frequência do campo `Faixa_Etaria`."
+          ],
+          "dica": "reaproveite a função `contar`.",
+          "solucao": [
+            {
+              "codigo": "frequencia = contar(dados, \"Faixa_Etaria\")\nprint(\"Faixa    | Contagem\")\nfor faixa, n in frequencia.items():\n    print(f\"{faixa:<8} | {n}\")\n# Jovem    | 2\n# Adulto   | 5"
+            }
+          ]
+        },
+        {
+          "n": 7,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Calcule a média salarial por `Status` (Ativo e Inativo) com a técnica de group by."
+          ],
+          "dica": "reaproveite `media_por_grupo` ou use `setdefault`.",
+          "solucao": [
+            {
+              "codigo": "for status, media in media_por_grupo(dados, \"Status\", \"Salario\").items():\n    print(f\"{status:<8} R$ {media:.2f}\")\n# Ativo    R$ 4491.88\n# Inativo  R$ 2200.75"
+            }
+          ]
+        },
+        {
+          "n": 8,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Crie o campo derivado `Faixa_Salarial` (\"Baixo\" abaixo de 3000, \"Médio\" de 3000 até 4999.99, \"Alto\" a partir de 5000) e mostre a contagem de cada faixa."
+          ],
+          "dica": "`if / elif / else` dentro do laço e, depois, `contar`.",
+          "solucao": [
+            {
+              "codigo": "for registro in dados:\n    salario = registro[\"Salario\"]\n    if salario < 3000:\n        registro[\"Faixa_Salarial\"] = \"Baixo\"\n    elif salario < 5000:\n        registro[\"Faixa_Salarial\"] = \"Médio\"\n    else:\n        registro[\"Faixa_Salarial\"] = \"Alto\"\n\nprint(contar(dados, \"Faixa_Salarial\"))\n# {'Médio': 4, 'Baixo': 1, 'Alto': 2}"
+            }
+          ]
+        },
+        {
+          "n": 9,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Explique, com suas palavras e um exemplo, por que é arriscado remover duplicatas usando só o nome da pessoa."
+          ],
+          "dica": "pense em duas pessoas chamadas \"Maria Souza\".",
+          "solucao": [
+            "**Resposta esperada:** nomes se repetem: duas pessoas diferentes podem se chamar \"Maria Souza\". Se a duplicata for removida pelo nome, uma pessoa real some dos dados e todas as estatísticas mudam. O correto é usar uma chave que identifique o registro de forma única, como o ID ou o CPF. Se não houver, investigue as linhas parecidas antes de apagar.",
+            {
+              "codigo": "registros = [\n    {\"ID\": \"10\", \"Nome\": \"Maria Souza\", \"Cidade\": \"Salvador\"},\n    {\"ID\": \"11\", \"Nome\": \"Maria Souza\", \"Cidade\": \"Recife\"},\n]\n# Pelo nome: sobraria 1 registro (errado).\n# Pelo ID: os 2 continuam (certo).\nprint(len(remover_duplicatas(registros, chave=\"Nome\")))  # 1\nprint(len(remover_duplicatas(registros, chave=\"ID\")))    # 2"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

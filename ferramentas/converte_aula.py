@@ -23,6 +23,16 @@ AVISO_ATIVIDADES = ("Escreva ou cole a sua tentativa no campo de cada atividade 
                     "Outras soluções também valem, desde que passem nos testes do enunciado.")
 
 
+LINGUAGENS_CONHECIDAS = {"python", "javascript", "sql", "lua", "html"}
+PADRAO = "python"   # linguagem da trilha; main() troca pelo valor do indice.json
+
+
+def linguagem_da_cerca(ln):
+    """'```sql' → 'sql'. Só devolve quando o site realça essa linguagem e ela difere da da trilha."""
+    tag = {"js": "javascript", "py": "python"}.get(ln.strip()[3:].strip().lower(), ln.strip()[3:].strip().lower())
+    return tag if tag in LINGUAGENS_CONHECIDAS and tag != PADRAO else None
+
+
 def slug(t):
     t = unicodedata.normalize("NFD", t.lower()).encode("ascii", "ignore").decode()
     return re.sub(r"[^a-z0-9]+", "-", t).strip("-")[:40]
@@ -33,7 +43,8 @@ def sem_crases(t):
 
 
 def celulas(ln):
-    return [c.strip() for c in ln.strip().strip("|").split("|")]
+    partes = re.split(r"(?<!\\)\|", ln.strip()[1:-1] if ln.strip().endswith("|") else ln.strip()[1:])
+    return [c.replace("\\|", "|").strip() for c in partes]
 
 
 def sem_notas_de_slide(linhas):
@@ -70,11 +81,11 @@ def blocos(linhas):
         s = linhas[i].strip()
         if s.startswith("```"):
             fecha_par()
-            cod, i = [], i + 1
+            lang, cod, i = linguagem_da_cerca(s), [], i + 1
             while not linhas[i].strip().startswith("```"):
                 cod.append(linhas[i])
                 i += 1
-            out.append({"codigo": "\n".join(cod)})
+            out.append({"codigo": "\n".join(cod), **({"linguagem": lang} if lang else {})})
             i += 1
             continue
         if s.startswith("### "):
@@ -121,12 +132,18 @@ def exemplos(linhas):
         ls, i, fences, explic, resto = e["linhas"], 0, [], [], []
         while i < len(ls):
             s = ls[i].strip()
+            if s.startswith("```text") and fences:   # saída do código: vai para o fechamento, não é o código explicado
+                resto.append(ls[i]); i += 1
+                while not ls[i].strip().startswith("```"):
+                    resto.append(ls[i]); i += 1
+                resto.append(ls[i]); i += 1
+                continue
             if s.startswith("```"):
-                bloco, i = [], i + 1
+                lang, bloco, i = linguagem_da_cerca(s), [], i + 1
                 while not ls[i].strip().startswith("```"):
                     bloco.append(ls[i]); i += 1
                 i += 1
-                fences.append(bloco); continue
+                fences.append((bloco, lang)); continue
             if s.startswith("|"):
                 while i < len(ls) and ls[i].strip().startswith("|"):
                     c = celulas(ls[i])
@@ -138,7 +155,7 @@ def exemplos(linhas):
             resto.append(ls[i]); i += 1
         # quando há mais de um bloco de código (ex.: HTML e depois o JavaScript), a tabela
         # de explicação se refere ao último: os anteriores entram como "intro" (contexto).
-        codigo = fences[-1] if fences else None
+        codigo, lang_codigo = fences[-1] if fences else (None, None)
         fences_intro = fences[:-1]
         fora = [x["linhas"] for x in explic if not (1 <= x["linhas"][0] <= x["linhas"][1] <= len(codigo or []))]
         if fora:
@@ -147,9 +164,11 @@ def exemplos(linhas):
         etapa = {"id": f"exemplo-{m.group(1).lower()}" if m else f"exemplo-{k + 1}", "tipo": "codigo",
                  "nome": sem_crases(e["titulo"])}
         intro = blocos(preambulo) if k == 0 else []
-        intro += [{"codigo": "\n".join(f)} for f in fences_intro]
+        intro += [{"codigo": "\n".join(f), **({"linguagem": lg} if lg else {})} for f, lg in fences_intro]
         if intro:
             etapa["intro"] = intro
+        if lang_codigo:
+            etapa["linguagem"] = lang_codigo
         etapa["codigo"], etapa["explicacoes"] = codigo or [], explic
         fim = blocos(resto)
         if fim:
@@ -165,14 +184,16 @@ def quiz(titulo, linhas):
         if not m:
             continue
         corpo = m.group(2)
-        cm = re.search(r"```[^\n]*\n(.*?)\n```", corpo, re.S)
+        cm = re.search(r"(```[^\n]*)\n(.*?)\n```", corpo, re.S)
         opcoes = re.findall(r"^([A-E])\)\s*(.*)$", corpo, re.M)
         rm = re.search(r'^Resposta:\s*([A-E])\s*·\s*Dica:\s*(.*?)\s*·\s*Acerto:\s*"(.*?)"\s*·\s*Erro:\s*"(.*?)"\s*·\s*Explicação:\s*(.*)$', corpo, re.M)
         if not rm:
             sys.exit(f"Quiz: não achei 'Resposta · Dica · Acerto · Erro · Explicação' na pergunta: {m.group(1)[:60]}")
         d = {"pergunta": m.group(1).strip()}
         if cm:
-            d["codigo"] = cm.group(1)
+            d["codigo"] = cm.group(2)
+            if linguagem_da_cerca(cm.group(1)):
+                d["linguagem"] = linguagem_da_cerca(cm.group(1))
         d.update({"opcoes": [o[1].strip() for o in opcoes], "correta": "ABCDE".index(rm.group(1)),
                   "dica": rm.group(2).strip(), "acerto": rm.group(3), "erro": rm.group(4),
                   "explicacao": rm.group(5).strip()})
@@ -379,14 +400,16 @@ def main():
         sys.exit("O nome do arquivo precisa ter 'aula-NN', ex.: aula-13-streamlit-ii.md")
     numero, aula_id = int(m.group(1)), f"aula-{int(m.group(1)):02d}"
 
-    titulo, etapas = converter(md_path)
-    aula = {"numero": numero, "titulo": titulo, "etapas": etapas}
-
     indice_path = RAIZ / "conteudo" / "indice.json"
     indice = json.loads(indice_path.read_text(encoding="utf-8"))
     T = next((t for t in indice["trilhas"] if t["id"] == trilha), None)
     if T is None:
         sys.exit(f"Trilha '{trilha}' não existe no indice.json. Trilhas: {[t['id'] for t in indice['trilhas']]}")
+    global PADRAO
+    PADRAO = T.get("linguagem", "python")
+
+    titulo, etapas = converter(md_path)
+    aula = {"numero": numero, "titulo": titulo, "etapas": etapas}
 
     destino = RAIZ / "conteudo" / T["pasta"] / f"{aula_id}.json"
     destino.write_text(json.dumps(aula, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")

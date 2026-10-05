@@ -47,7 +47,9 @@
       "titulo": "Data Análise",
       "descricao": "Dados na prática com Python: APIs financeiras, cotações e análise de informações reais.",
       "aulas": [
+        "aula-18",
         "aula-19",
+        "aula-21",
         "aula-25"
       ]
     },
