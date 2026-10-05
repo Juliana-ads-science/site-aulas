@@ -1,0 +1,1006 @@
+{
+  "numero": 6,
+  "titulo": "Revisão: Lógica e Estruturas Fundamentais",
+  "etapas": [
+    {
+      "id": "definicoes",
+      "tipo": "leitura",
+      "nome": "Definições",
+      "blocos": [
+        "Esta aula revisa as peças que usamos em quase todo programa: variáveis, condicionais, operadores, laços (`for` e `while`) e arrays. Também revisa as práticas que deixam o código fácil de ler: bons nomes, comentários, indentação, o princípio DRY e a refatoração.",
+        {
+          "tabela": [
+            [
+              "Termo",
+              "O que significa"
+            ],
+            [
+              "Variável",
+              "\"Caixa\" com nome que guarda um valor na memória"
+            ],
+            [
+              "`let`",
+              "Declara uma variável cujo valor pode mudar"
+            ],
+            [
+              "`const`",
+              "Declara uma variável que não pode receber outro valor"
+            ],
+            [
+              "Tipo de dado",
+              "A natureza do valor: número (`number`), texto (`string`), verdadeiro/falso (`boolean`)"
+            ],
+            [
+              "`typeof`",
+              "Operador que mostra o tipo de um valor"
+            ],
+            [
+              "Condicional",
+              "Estrutura que escolhe qual bloco executar: `if`, `else if`, `else`"
+            ],
+            [
+              "Operador de comparação",
+              "Compara dois valores e devolve `true` ou `false`: `===`, `!==`, `>`, `<`, `>=`, `<=`"
+            ],
+            [
+              "Operador lógico",
+              "Combina condições: `&&` (E), `||` (OU), `!` (NÃO)"
+            ],
+            [
+              "Laço (loop)",
+              "Estrutura que repete um bloco de código"
+            ],
+            [
+              "`for`",
+              "Laço com contador; ideal quando sabemos quantas vezes repetir"
+            ],
+            [
+              "`while`",
+              "Laço que repete enquanto uma condição for verdadeira; ideal quando não sabemos quantas vezes"
+            ],
+            [
+              "Loop infinito",
+              "Laço cuja condição nunca fica falsa"
+            ],
+            [
+              "Array",
+              "Lista ordenada de valores, acessados por índice a partir de 0"
+            ],
+            [
+              "`length`",
+              "Quantidade de itens de um array"
+            ],
+            [
+              "`push()`",
+              "Adiciona um item no fim do array"
+            ],
+            [
+              "Acumulador",
+              "Variável que vai somando valores dentro de um laço"
+            ],
+            [
+              "Contador",
+              "Variável que soma 1 sempre que uma condição acontece"
+            ],
+            [
+              "`break`",
+              "Encerra o laço na hora"
+            ],
+            [
+              "camelCase",
+              "Padrão de nomes de variáveis: `nomeDoCliente`"
+            ],
+            [
+              "UPPER_SNAKE_CASE",
+              "Padrão para constantes fixas do programa: `TAXA_PADRAO`"
+            ],
+            [
+              "Indentação",
+              "Recuo no início das linhas que mostra o que está dentro do quê"
+            ],
+            [
+              "DRY (Don't Repeat Yourself)",
+              "Princípio de não repetir código: use laços e funções"
+            ],
+            [
+              "WET (Write Everything Twice)",
+              "O contrário do DRY: código repetido"
+            ],
+            [
+              "Refatoração",
+              "Melhorar a organização do código sem mudar o que ele faz"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "para-que-como-e-quando-usamos",
+      "tipo": "leitura",
+      "nome": "Para que, como e quando usamos",
+      "blocos": [
+        "Essas estruturas são a base de qualquer programa: guardar dados, tomar decisões, repetir tarefas e organizar listas.",
+        "**Para que:** calcular médias e totais, classificar notas, verificar acesso, filtrar listas, buscar um item, contar quantos itens atendem a um critério.",
+        "**Como:** antes de escrever o código, seguimos o ciclo lógico:",
+        {
+          "passos": [
+            "**Entender o problema:** o que precisa ser feito?",
+            "**Planejar a lógica:** quais estruturas resolvem cada parte?",
+            "**Escrever o código.**",
+            "**Testar e revisar:** o resultado está certo? O código está claro?"
+          ]
+        },
+        "**Quando usar cada estrutura:**",
+        {
+          "tabela": [
+            [
+              "Situação",
+              "Estrutura"
+            ],
+            [
+              "Guardar um valor que vai mudar",
+              "`let`"
+            ],
+            [
+              "Guardar um valor fixo",
+              "`const`"
+            ],
+            [
+              "Escolher entre caminhos",
+              "`if / else if / else`"
+            ],
+            [
+              "Exigir duas condições ao mesmo tempo",
+              "`&&`"
+            ],
+            [
+              "Aceitar uma condição ou outra",
+              "`||`"
+            ],
+            [
+              "Repetir um número conhecido de vezes",
+              "`for`"
+            ],
+            [
+              "Repetir até algo acontecer",
+              "`while`"
+            ],
+            [
+              "Guardar vários valores do mesmo tipo",
+              "Array"
+            ],
+            [
+              "Processar todos os itens de uma lista",
+              "`for` com `i < lista.length`"
+            ],
+            [
+              "Parar ao encontrar o que procura",
+              "`break`"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "estruturas",
+      "tipo": "leitura",
+      "nome": "Estruturas",
+      "blocos": [
+        {
+          "h": "3.1 Variáveis"
+        },
+        {
+          "codigo": "const nomeDoAluno = \"Lia\";   // não muda\nlet pontuacao = 100;         // pode mudar\npontuacao = 150;"
+        },
+        {
+          "h": "3.2 Condicional simples"
+        },
+        {
+          "codigo": "if (idade >= 18) {\n  console.log(\"Acesso liberado.\");\n} else {\n  console.log(\"Acesso negado.\");\n}"
+        },
+        {
+          "h": "3.3 Condicional múltipla"
+        },
+        {
+          "codigo": "if (nota >= 9) {\n  console.log(\"Excelente\");\n} else if (nota >= 7) {\n  console.log(\"Aprovado\");\n} else {\n  console.log(\"Recuperação\");\n}"
+        },
+        {
+          "h": "3.4 Operadores lógicos"
+        },
+        {
+          "codigo": "if (temDinheiro && produtoEmEstoque) { /* os dois */ }\nif (temCupom || ehClienteVip) { /* pelo menos um */ }\nif (!estaBloqueado) { /* não está bloqueado */ }"
+        },
+        {
+          "h": "3.5 `for`"
+        },
+        {
+          "codigo": "for (let i = 0; i < 5; i++) {\n  console.log(i); // 0, 1, 2, 3, 4\n}"
+        },
+        {
+          "h": "3.6 `while`"
+        },
+        {
+          "codigo": "let tentativas = 0;\nwhile (tentativas < 3) {\n  tentativas++; // sem isso, loop infinito\n}"
+        },
+        {
+          "h": "3.7 Array"
+        },
+        {
+          "codigo": "const frutas = [\"maçã\", \"banana\"];\nfrutas[0];            // \"maçã\"\nfrutas.push(\"uva\");   // adiciona no fim\nfrutas.length;        // 3"
+        },
+        {
+          "h": "3.8 Percorrer um array"
+        },
+        {
+          "codigo": "for (let i = 0; i < frutas.length; i++) {\n  console.log(frutas[i]);\n}"
+        },
+        {
+          "h": "3.9 Acumulador e contador"
+        },
+        {
+          "codigo": "let total = 0;     // acumulador\nlet caros = 0;     // contador\nfor (let i = 0; i < precos.length; i++) {\n  total += precos[i];\n  if (precos[i] > 20) {\n    caros++;\n  }\n}"
+        },
+        {
+          "h": "3.10 Filtrar para um novo array"
+        },
+        {
+          "codigo": "const maiores = [];\nfor (let i = 0; i < idades.length; i++) {\n  if (idades[i] >= 18) {\n    maiores.push(idades[i]);\n  }\n}"
+        },
+        {
+          "h": "3.11 Buscar e parar"
+        },
+        {
+          "codigo": "for (let i = 0; i < lista.length; i++) {\n  if (lista[i] === procurado) {\n    console.log(\"Achei na posição \" + i);\n    break;\n  }\n}"
+        }
+      ]
+    },
+    {
+      "id": "sintaxe-e-simbolos",
+      "tipo": "leitura",
+      "nome": "Sintaxe e símbolos",
+      "blocos": [
+        {
+          "tabela": [
+            [
+              "Símbolo / comando",
+              "O que faz",
+              "Por que existe"
+            ],
+            [
+              "`let` / `const`",
+              "Declaram variáveis",
+              "`const` deixa claro que o valor não muda"
+            ],
+            [
+              "`=`",
+              "Atribui um valor",
+              "Guarda o valor na variável"
+            ],
+            [
+              "`===`",
+              "Igual em valor **e** tipo",
+              "Evita surpresas: `5 === \"5\"` é `false`"
+            ],
+            [
+              "`==`",
+              "Igual em valor, convertendo o tipo",
+              "`5 == \"5\"` é `true`; evite"
+            ],
+            [
+              "`!==`",
+              "Diferente em valor ou tipo",
+              "Versão estrita do \"diferente\""
+            ],
+            [
+              "`>=`, `<=`",
+              "Maior ou igual / menor ou igual",
+              "Atenção: `=>` é outra coisa (arrow function)"
+            ],
+            [
+              "`&&`",
+              "E: as duas condições verdadeiras",
+              "Exigir tudo"
+            ],
+            [
+              "`||`",
+              "OU: pelo menos uma verdadeira",
+              "Aceitar alternativas"
+            ],
+            [
+              "`!`",
+              "NÃO: inverte o booleano",
+              "`!true` é `false`"
+            ],
+            [
+              "`%`",
+              "Resto da divisão",
+              "`n % 2 === 0` testa se é par"
+            ],
+            [
+              "`++` / `--`",
+              "Soma / subtrai 1",
+              "Contadores e passos de laço"
+            ],
+            [
+              "`+=`",
+              "Soma ao valor atual",
+              "`total += preco`"
+            ],
+            [
+              "`( )` no `if`/`for`/`while`",
+              "Envolve a condição",
+              "Parte obrigatória da sintaxe"
+            ],
+            [
+              "`{ }`",
+              "Delimita um bloco",
+              "Tudo dentro executa junto"
+            ],
+            [
+              "`[ ]`",
+              "Cria array / acessa índice",
+              "`lista[0]` é o primeiro item"
+            ],
+            [
+              "`.length`",
+              "Tamanho do array",
+              "Condição de parada segura"
+            ],
+            [
+              "`` `${x}` ``",
+              "Template string",
+              "Junta texto e valores"
+            ],
+            [
+              "`//` e `/* */`",
+              "Comentário de uma linha / de várias",
+              "Explicar o porquê do código"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logica-por-tras",
+      "tipo": "leitura",
+      "nome": "Lógica por trás",
+      "blocos": [
+        "**`let` x `const`:** use `const` por padrão e troque para `let` só quando a variável realmente precisar receber outro valor. Quem lê o código entende na hora o que é fixo e o que muda.",
+        "**A ordem das condições importa:** o `if / else if` para na primeira condição verdadeira. Por isso, as mais específicas vêm primeiro:",
+        {
+          "codigo": "if (nota >= 5) { ... }        // pega o 9.5 aqui...\nelse if (nota >= 9) { ... }   // ...e esta linha nunca é alcançada"
+        },
+        "O certo é testar `nota >= 9` antes de `nota >= 5`.",
+        "**Por que `===`:** o `==` converte os tipos antes de comparar, e isso gera resultados estranhos (`0 == \"\"` é `true`). O `===` só dá `true` quando valor e tipo são iguais.",
+        "**`for` x `while`:**",
+        {
+          "tabela": [
+            [
+              "",
+              "`for`",
+              "`while`"
+            ],
+            [
+              "Quando usar",
+              "Sabemos quantas vezes repetir",
+              "Repetimos até algo acontecer"
+            ],
+            [
+              "Contador",
+              "Faz parte do cabeçalho",
+              "Precisa ser atualizado dentro do bloco"
+            ],
+            [
+              "Risco",
+              "Condição errada",
+              "Esquecer de atualizar a variável e cair em loop infinito"
+            ]
+          ]
+        },
+        "**O padrão de percorrer arrays:** `for (let i = 0; i < lista.length; i++)`. O índice começa em 0 e vai até `length - 1`. Com `<=`, a última volta tentaria ler um índice que não existe e receberia `undefined`.",
+        "**Acumulador x contador:** os dois começam em 0, fora do laço. O acumulador soma **valores** (`total += preco`); o contador soma **1** quando algo acontece (`caros++`).",
+        "**Código limpo:**",
+        {
+          "lista": [
+            "**Nomes claros:** `quantidadeEmEstoque` diz tudo; `q` não diz nada.",
+            "**Comentários:** explicam o **porquê**, não o óbvio. `// 10% de taxa exigida pelo contrato` ajuda; `// soma 1` não.",
+            "**Indentação:** abriu chave, recua; fechou, volta. Não muda o resultado, mas mostra a estrutura.",
+            "**DRY:** se você copiou e colou o mesmo trecho, provavelmente precisa de um laço ou de uma função.",
+            "**Refatoração:** depois que funciona, deixe mais claro. O comportamento continua igual."
+          ]
+        }
+      ]
+    },
+    {
+      "id": "exemplo-a",
+      "tipo": "codigo",
+      "nome": "Exemplo A — Variáveis e tipos (variaveis.js)",
+      "codigo": [
+        "const nomeDoAluno = \"Lia\";",
+        "let pontuacao = 100;",
+        "const aprovado = true;",
+        "console.log(typeof nomeDoAluno, typeof pontuacao, typeof aprovado);",
+        "pontuacao = pontuacao + 50;",
+        "console.log(`${nomeDoAluno} tem ${pontuacao} pontos.`);"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Texto que não vai mudar: `const`"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Número que vai mudar: `let`"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Booleano fixo"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Mostra `string number boolean`"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Atualiza a pontuação para 150 (só funciona porque é `let`)"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Mostra \"Lia tem 150 pontos.\""
+        }
+      ]
+    },
+    {
+      "id": "exemplo-b",
+      "tipo": "codigo",
+      "nome": "Exemplo B — Classificação com else if (classificacao.js)",
+      "codigo": [
+        "const nota = 6.5;",
+        "if (nota >= 9) {",
+        "  console.log(\"Excelente!\");",
+        "} else if (nota >= 7) {",
+        "  console.log(\"Aprovado.\");",
+        "} else if (nota >= 5) {",
+        "  console.log(\"Recuperação.\");",
+        "} else {",
+        "  console.log(\"Reprovado.\");",
+        "}"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "6.5 >= 9? Falso: pula o bloco"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "6.5 >= 7? Falso: pula"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "6.5 >= 5? Verdadeiro: entra"
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "Mostra \"Recuperação.\""
+        },
+        {
+          "linhas": [
+            8,
+            10
+          ],
+          "texto": "Ignorado, porque uma condição anterior já foi verdadeira"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-c",
+      "tipo": "codigo",
+      "nome": "Exemplo C — Operadores lógicos e === (operadores.js)",
+      "codigo": [
+        "const idade = 17;",
+        "const temAutorizacao = true;",
+        "const temIngresso = false;",
+        "console.log(idade >= 18 && temIngresso);",
+        "console.log(idade >= 18 || temAutorizacao);",
+        "console.log(!temIngresso);",
+        "console.log(5 == \"5\", 5 === \"5\");"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "`false && false` → `false`: o `&&` exige as duas"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "`false || true` → `true`: o `||` aceita uma"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "`!false` → `true`"
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "Mostra `true false`: o `==` converte \"5\" em número; o `===` compara também o tipo"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-d",
+      "tipo": "codigo",
+      "nome": "Exemplo D — for e while (lacos.js)",
+      "codigo": [
+        "for (let i = 3; i > 0; i--) {",
+        "  console.log(i);",
+        "}",
+        "",
+        "let saldo = 35;",
+        "const PRECO = 10;",
+        "let itens = 0;",
+        "while (saldo >= PRECO) {",
+        "  saldo -= PRECO;",
+        "  itens++;",
+        "}",
+        "console.log(`Comprou ${itens} itens e sobrou R$ ${saldo}.`);"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            3
+          ],
+          "texto": "Contagem regressiva: mostra 3, 2, 1"
+        },
+        {
+          "linhas": [
+            5,
+            7
+          ],
+          "texto": "Saldo inicial, preço fixo (constante em maiúsculas) e um contador"
+        },
+        {
+          "linhas": [
+            8,
+            8
+          ],
+          "texto": "Repete enquanto der para comprar"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "Desconta o preço: é o que faz a condição ficar falsa em algum momento"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "Conta a compra"
+        },
+        {
+          "linhas": [
+            12,
+            12
+          ],
+          "texto": "Saldo 35 → 25 → 15 → 5; mostra \"Comprou 3 itens e sobrou R$ 5.\""
+        }
+      ]
+    },
+    {
+      "id": "exemplo-e",
+      "tipo": "codigo",
+      "nome": "Exemplo E — Array percorrido com for (turma.js)",
+      "codigo": [
+        "const alunos = [\"Ana\", \"Bruno\", \"Carla\"];",
+        "alunos.push(\"Davi\");",
+        "for (let i = 0; i < alunos.length; i++) {",
+        "  console.log(`${i + 1}. ${alunos[i]}`);",
+        "}"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Array com 3 nomes (índices 0 a 2)"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Adiciona \"Davi\" no fim; agora `length` é 4"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Padrão de percurso: `i` vai de 0 a 3"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Mostra \"1. Ana\" até \"4. Davi\" (`i + 1` só deixa a numeração amigável)"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-f",
+      "tipo": "codigo",
+      "nome": "Exemplo F — De WET para DRY (media.js)",
+      "codigo": [
+        "// WET: repetitivo e frágil",
+        "// const soma = notas[0] + notas[1] + notas[2] + notas[3];",
+        "",
+        "const notas = [8, 6, 9, 7];",
+        "let soma = 0;",
+        "for (let i = 0; i < notas.length; i++) {",
+        "  soma += notas[i];",
+        "}",
+        "console.log(soma / notas.length);"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "A versão WET: se entrar uma 5ª nota, é preciso lembrar de mudar esta linha"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Acumulador começa em 0"
+        },
+        {
+          "linhas": [
+            6,
+            8
+          ],
+          "texto": "O laço soma qualquer quantidade de notas"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "Mostra 7.5. Com 10 notas, o código continua igual"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-g",
+      "tipo": "codigo",
+      "nome": "Exemplo G — Refatorando if aninhado (acesso.js)",
+      "codigo": [
+        "// Antes:",
+        "// if (ehAdmin) {",
+        "//   if (temPermissao) {",
+        "//     console.log(\"Acesso liberado ao painel.\");",
+        "//   }",
+        "// }",
+        "",
+        "const ehAdmin = true;",
+        "const temPermissao = true;",
+        "if (ehAdmin && temPermissao) {",
+        "  console.log(\"Acesso liberado ao painel.\");",
+        "}"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            2,
+            6
+          ],
+          "texto": "A versão antiga, com um `if` dentro do outro"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "A versão refatorada: um único `if` com `&&`; lê-se \"se for admin E tiver permissão\""
+        },
+        {
+          "linhas": [
+            11,
+            11
+          ],
+          "texto": "O resultado é o mesmo; só a leitura ficou mais simples"
+        }
+      ]
+    },
+    {
+      "id": "como-aplicar",
+      "tipo": "leitura",
+      "nome": "Como aplicar: boletim da turma",
+      "blocos": [
+        "Junta tudo: variáveis e constantes, arrays, `for` percorrendo a lista, `if / else if / else`, acumulador, contador, filtro com `push` e busca com `break`. Salve como `boletim.js` e rode com `node boletim.js` (ou cole no console do navegador).",
+        {
+          "codigo": "const alunos = [\"Ana\", \"Bruno\", \"Carla\", \"Davi\", \"Eva\"];\nconst notas = [9.5, 6.0, 7.5, 4.0, 8.0];\nconst MEDIA_APROVACAO = 7;\n\nlet soma = 0;          // acumulador\nlet aprovados = 0;     // contador\nconst destaques = [];  // filtro\n\nfor (let i = 0; i < alunos.length; i++) {\n  const nota = notas[i];\n  soma += nota;\n\n  let situacao;\n  if (nota >= 9) {\n    situacao = \"Excelente\";\n  } else if (nota >= MEDIA_APROVACAO) {\n    situacao = \"Aprovado\";\n  } else if (nota >= 5) {\n    situacao = \"Recuperação\";\n  } else {\n    situacao = \"Reprovado\";\n  }\n\n  if (nota >= MEDIA_APROVACAO) {\n    aprovados++;\n  }\n  if (nota >= 8) {\n    destaques.push(alunos[i]);\n  }\n\n  console.log(`${alunos[i]}: ${nota.toFixed(1)} - ${situacao}`);\n}\n\nconst media = soma / alunos.length;\nconsole.log(`Média da turma: ${media.toFixed(2)}`);\nconsole.log(`Aprovados: ${aprovados} de ${alunos.length}`);\nconsole.log(`Destaques: ${destaques.join(\", \")}`);\n\n// Busca com parada antecipada\nconst procurado = \"Davi\";\nlet posicao = -1;\nfor (let i = 0; i < alunos.length; i++) {\n  if (alunos[i] === procurado) {\n    posicao = i;\n    break;\n  }\n}\nif (posicao !== -1) {\n  console.log(`${procurado} está na posição ${posicao} com nota ${notas[posicao]}.`);\n} else {\n  console.log(`${procurado} não está na turma.`);\n}"
+        },
+        "**Saída esperada:**",
+        {
+          "codigo": "Ana: 9.5 - Excelente\nBruno: 6.0 - Recuperação\nCarla: 7.5 - Aprovado\nDavi: 4.0 - Reprovado\nEva: 8.0 - Aprovado\nMédia da turma: 7.00\nAprovados: 3 de 5\nDestaques: Ana, Eva\nDavi está na posição 3 com nota 4."
+        },
+        "**Por que funciona:** os dois arrays andam juntos pelo índice: `alunos[i]` e `notas[i]` são da mesma pessoa. Um único `for` faz tudo de uma vez: soma as notas (acumulador), conta os aprovados (contador), separa os destaques (filtro) e classifica cada aluno com `else if`, testando primeiro as faixas mais altas. A nota de aprovação fica numa constante (`MEDIA_APROVACAO`): para mudar a regra, basta trocar um número. A busca usa `-1` como sinal de \"não encontrado\" e o `break` evita percorrer o resto da lista depois de achar o aluno."
+      ]
+    },
+    {
+      "id": "quiz",
+      "tipo": "quiz",
+      "nome": "Quiz de código",
+      "perguntas": [
+        {
+          "pergunta": "O que acontece?",
+          "codigo": "const limite = 10;\nlimite = 20;",
+          "opcoes": [
+            "`limite` passa a valer 20",
+            "Dá erro, porque `const` não aceita outro valor",
+            "`limite` continua 10 sem erro",
+            "Cria uma segunda variável `limite`"
+          ],
+          "correta": 1,
+          "dica": "qual a diferença entre `let` e `const`?",
+          "acerto": "Isso! const não pode ser reatribuída.",
+          "erro": "Para mudar o valor, a variável precisa ser let.",
+          "explicacao": "o JavaScript lança `TypeError: Assignment to constant variable`."
+        },
+        {
+          "pergunta": "O que é mostrado para `nota = 9.5`?",
+          "codigo": "if (nota >= 5) {\n  console.log(\"Passou\");\n} else if (nota >= 9) {\n  console.log(\"Excelente\");\n}",
+          "opcoes": [
+            "Passou",
+            "Excelente",
+            "Passou e Excelente",
+            "Nada"
+          ],
+          "correta": 0,
+          "dica": "o `else if` para na primeira condição verdadeira.",
+          "acerto": "Perfeito! A ordem das condições está errada.",
+          "erro": "9.5 >= 5 já é verdadeiro, então o resto é ignorado.",
+          "explicacao": "a condição mais específica (`>= 9`) deveria vir primeiro."
+        },
+        {
+          "pergunta": "Qual é o resultado?",
+          "codigo": "console.log(10 === \"10\", 10 == \"10\");",
+          "opcoes": [
+            "`true true`",
+            "`false false`",
+            "`false true`",
+            "`true false`"
+          ],
+          "correta": 2,
+          "dica": "qual dos dois compara também o tipo?",
+          "acerto": "Isso! === compara valor e tipo.",
+          "erro": "O == converte o texto em número antes de comparar.",
+          "explicacao": "`\"10\"` é string; o `===` dá `false`, o `==` dá `true`."
+        },
+        {
+          "pergunta": "Qual é o problema?",
+          "codigo": "let i = 0;\nwhile (i < 5) {\n  console.log(i);\n}",
+          "opcoes": [
+            "Mostra 0 a 4",
+            "Mostra 0 a 5",
+            "Loop infinito",
+            "Erro de sintaxe"
+          ],
+          "correta": 2,
+          "dica": "`i` muda em algum momento?",
+          "acerto": "Exato! Faltou o i++.",
+          "erro": "Sem atualizar i, a condição nunca fica falsa.",
+          "explicacao": "`i` continua 0 para sempre e o laço não termina."
+        },
+        {
+          "pergunta": "Quantas vezes o corpo do laço roda?",
+          "codigo": "const cores = [\"azul\", \"verde\", \"roxo\", \"rosa\"];\nfor (let i = 0; i < cores.length; i++) { }",
+          "opcoes": [
+            "3",
+            "4",
+            "5",
+            "0"
+          ],
+          "correta": 1,
+          "dica": "`length` vale quanto?",
+          "acerto": "Mandou bem! i vai de 0 a 3.",
+          "erro": "Com i < 4, o laço roda para 0, 1, 2 e 3.",
+          "explicacao": "um array de 4 itens é percorrido em 4 voltas."
+        },
+        {
+          "pergunta": "Qual versão segue o princípio DRY?",
+          "opcoes": [
+            "`console.log(lista[0]); console.log(lista[1]); console.log(lista[2]);`",
+            "`for (let i = 0; i < lista.length; i++) { console.log(lista[i]); }`",
+            "`console.log(lista[0], lista[1], lista[2]);`",
+            "As três são iguais"
+          ],
+          "correta": 1,
+          "dica": "qual funciona com qualquer tamanho de lista?",
+          "acerto": "Isso! O laço evita repetição.",
+          "erro": "A e C repetem código e quebram se a lista mudar.",
+          "explicacao": "o `for` escreve a ação uma vez e se adapta ao tamanho do array."
+        }
+      ]
+    },
+    {
+      "id": "atividades",
+      "tipo": "atividades",
+      "nome": "Atividades",
+      "intro": [
+        "Escreva ou cole a sua tentativa no campo de cada atividade para liberar a solução. Outras soluções também valem, desde que passem nos testes do enunciado."
+      ],
+      "itens": [
+        {
+          "n": 1,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Dado um número, mostre \"Par\" ou \"Ímpar\"."
+          ],
+          "dica": "use o resto da divisão por 2.",
+          "solucao": [
+            {
+              "codigo": "const numero = 7;\nif (numero % 2 === 0) {\n  console.log(\"Par\");\n} else {\n  console.log(\"Ímpar\");\n}"
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Classifique uma temperatura: \"Quente\" (30 ou mais), \"Agradável\" (de 20 a 29) ou \"Frio\" (abaixo de 20)."
+          ],
+          "dica": "comece pela condição mais alta.",
+          "solucao": [
+            {
+              "codigo": "const temperatura = 28;\nif (temperatura >= 30) {\n  console.log(\"Quente\");\n} else if (temperatura >= 20) {\n  console.log(\"Agradável\");\n} else {\n  console.log(\"Frio\");\n}"
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Some apenas os números pares de 1 a 10 e mostre o resultado."
+          ],
+          "dica": "`for` + `if` + acumulador. O resultado é 30.",
+          "solucao": [
+            {
+              "codigo": "let soma = 0;\nfor (let i = 1; i <= 10; i++) {\n  if (i % 2 === 0) {\n    soma += i;\n  }\n}\nconsole.log(soma); // 30"
+            }
+          ]
+        },
+        {
+          "n": 4,
+          "nivel": "Médio",
+          "enunciado": [
+            "Refatore o código abaixo aplicando DRY, para que funcione com qualquer quantidade de produtos:",
+            {
+              "codigo": "const produtos = [\"caneta\", \"caderno\", \"mochila\"];\nconsole.log(\"Produto: \" + produtos[0]);\nconsole.log(\"Produto: \" + produtos[1]);\nconsole.log(\"Produto: \" + produtos[2]);"
+            }
+          ],
+          "dica": "troque as três linhas por um `for`.",
+          "solucao": [
+            {
+              "codigo": "const produtos = [\"caneta\", \"caderno\", \"mochila\"];\nfor (let i = 0; i < produtos.length; i++) {\n  console.log(\"Produto: \" + produtos[i]);\n}"
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "nivel": "Médio",
+          "enunciado": [
+            "Com `const precos = [12.5, 35, 8, 22.9, 50];`, calcule o total da compra e conte quantos produtos custam mais de R$ 20."
+          ],
+          "dica": "um acumulador e um contador no mesmo laço.",
+          "solucao": [
+            {
+              "codigo": "const precos = [12.5, 35, 8, 22.9, 50];\nlet total = 0;\nlet caros = 0;\nfor (let i = 0; i < precos.length; i++) {\n  total += precos[i];\n  if (precos[i] > 20) {\n    caros++;\n  }\n}\nconsole.log(`Total: R$ ${total.toFixed(2)}`); // 128.40\nconsole.log(`Acima de R$ 20: ${caros}`);      // 3"
+            }
+          ]
+        },
+        {
+          "n": 6,
+          "nivel": "Médio",
+          "enunciado": [
+            "Simule um login com no máximo 3 tentativas usando `while`. As tentativas digitadas estão em `const tentativas = [\"1234\", \"abcd\", \"js2026\"];` e a senha certa é `\"js2026\"`. Mostre se o login deu certo e em qual tentativa."
+          ],
+          "dica": "a condição do `while` precisa parar quando acertar **ou** quando acabarem as tentativas.",
+          "solucao": [
+            {
+              "codigo": "const SENHA = \"js2026\";\nconst tentativas = [\"1234\", \"abcd\", \"js2026\"];\nlet vez = 0;\nlet acertou = false;\n\nwhile (!acertou && vez < tentativas.length) {\n  if (tentativas[vez] === SENHA) {\n    acertou = true;\n  }\n  vez++;\n}\n\nif (acertou) {\n  console.log(`Login feito na tentativa ${vez}.`); // 3\n} else {\n  console.log(\"Conta bloqueada.\");\n}"
+            }
+          ]
+        },
+        {
+          "n": 7,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Com `const idades = [12, 18, 25, 15, 30];`, crie um novo array só com as idades a partir de 18 e mostre quantas pessoas são menores de idade."
+          ],
+          "dica": "`push` para o novo array e um contador para os menores.",
+          "solucao": [
+            {
+              "codigo": "const idades = [12, 18, 25, 15, 30];\nconst maiores = [];\nlet menores = 0;\n\nfor (let i = 0; i < idades.length; i++) {\n  if (idades[i] >= 18) {\n    maiores.push(idades[i]);\n  } else {\n    menores++;\n  }\n}\nconsole.log(maiores);                  // [18, 25, 30]\nconsole.log(`Menores: ${menores}`);    // 2"
+            }
+          ]
+        },
+        {
+          "n": 8,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Procure um produto em `const estoque = [\"caneta\", \"lápis\", \"borracha\", \"régua\"];`. Se encontrar, mostre a posição e pare a busca; se não, mostre \"Produto em falta\"."
+          ],
+          "dica": "use uma variável com `-1` para indicar \"não encontrado\" e `break`.",
+          "solucao": [
+            {
+              "codigo": "const estoque = [\"caneta\", \"lápis\", \"borracha\", \"régua\"];\nconst procurado = \"borracha\";\nlet posicao = -1;\n\nfor (let i = 0; i < estoque.length; i++) {\n  if (estoque[i] === procurado) {\n    posicao = i;\n    break;\n  }\n}\n\nif (posicao !== -1) {\n  console.log(`${procurado} está na posição ${posicao}.`); // 2\n} else {\n  console.log(\"Produto em falta.\");\n}"
+            }
+          ]
+        },
+        {
+          "n": 9,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Explique, com suas palavras e um exemplo, o que é refatoração e por que ela não deve mudar o resultado do programa."
+          ],
+          "dica": "pense em arrumar uma gaveta.",
+          "solucao": [
+            "**Resposta esperada:** refatorar é reorganizar o código para que ele fique mais claro, mais curto ou mais fácil de manter, sem mudar o que ele faz. Como numa gaveta arrumada, o conteúdo é o mesmo, mas fica mais fácil de achar as coisas. Se o resultado mudar, não foi uma refatoração: foi uma alteração de comportamento, e pode ter criado um erro.",
+            {
+              "codigo": "// Antes: nomes ruins e if aninhado\nlet x = 20;\nlet y = true;\nif (x >= 18) {\n  if (y) {\n    console.log(\"Pode dirigir\");\n  }\n}\n\n// Depois: mesmo resultado, leitura direta\nconst idade = 20;\nconst temCarteira = true;\nif (idade >= 18 && temCarteira) {\n  console.log(\"Pode dirigir\");\n}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
