@@ -1,0 +1,1157 @@
+{
+  "numero": 14,
+  "titulo": "Terminal e Shell Python",
+  "etapas": [
+    {
+      "id": "definicoes",
+      "tipo": "leitura",
+      "nome": "Definições",
+      "blocos": [
+        "Até agora você rodou Python pelo botão \"Run\" do editor. Nesta aula você vai usar o **terminal**: a mesma ferramenta que programadores usam para rodar scripts, passar informações para eles, criar ambientes isolados e instalar bibliotecas. No fim, vai construir uma pequena ferramenta de tarefas que funciona inteira pela linha de comando.",
+        {
+          "tabela": [
+            [
+              "Termo",
+              "O que significa"
+            ],
+            [
+              "Terminal (CLI)",
+              "Janela onde você digita comandos de texto para o sistema operacional"
+            ],
+            [
+              "Prompt do terminal",
+              "O texto antes do cursor (`$` no Linux/macOS, `>` no Windows): o terminal está esperando um comando"
+            ],
+            [
+              "Shell interativo do Python (REPL)",
+              "Modo em que o Python executa cada linha assim que você aperta Enter; o prompt é `>>>`"
+            ],
+            [
+              "Script",
+              "Arquivo `.py` com várias linhas de código, executado de uma vez com `python3 arquivo.py`"
+            ],
+            [
+              "Diretório",
+              "O mesmo que pasta"
+            ],
+            [
+              "Diretório atual",
+              "A pasta em que o terminal está \"parado\"; os comandos procuram arquivos nela"
+            ],
+            [
+              "`type()`",
+              "Mostra o tipo de um valor: `int`, `str`, `list`..."
+            ],
+            [
+              "`dir()`",
+              "Lista os atributos e métodos de um objeto"
+            ],
+            [
+              "`help()`",
+              "Mostra a documentação de uma função ou objeto"
+            ],
+            [
+              "Argumento de linha de comando",
+              "Texto que você escreve depois do nome do script: `python3 saudacao.py Mateus`"
+            ],
+            [
+              "`sys.argv`",
+              "Lista com o nome do script e os argumentos recebidos"
+            ],
+            [
+              "Ambiente virtual (venv)",
+              "Pasta com um Python e bibliotecas só daquele projeto"
+            ],
+            [
+              "Ativar / desativar",
+              "Fazer o terminal usar (ou parar de usar) o Python do ambiente virtual"
+            ],
+            [
+              "`pip`",
+              "Gerenciador de pacotes: instala, atualiza e remove bibliotecas"
+            ],
+            [
+              "PyPI",
+              "Repositório público de onde o `pip` baixa as bibliotecas (pypi.org)"
+            ],
+            [
+              "`requirements.txt`",
+              "Arquivo com a lista de bibliotecas (e versões) que o projeto precisa"
+            ],
+            [
+              "`pip freeze`",
+              "Lista os pacotes instalados no formato `nome==versão`"
+            ],
+            [
+              "stdout",
+              "Saída padrão: para onde vai o `print()` (normalmente, a tela)"
+            ],
+            [
+              "stdin",
+              "Entrada padrão: de onde vem o `input()` (normalmente, o teclado)"
+            ],
+            [
+              "Redirecionamento",
+              "`>` manda a saída para um arquivo; `<` lê a entrada de um arquivo; `>>` acrescenta no fim"
+            ],
+            [
+              "Código de saída",
+              "Número que o programa devolve ao terminar: `0` = deu certo, outro valor = erro"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "para-que-como-e-quando-usamos",
+      "tipo": "leitura",
+      "nome": "Para que, como e quando usamos",
+      "blocos": [
+        "**Para que:** o terminal é o \"painel de controle\" do programador. Com ele você:",
+        {
+          "lista": [
+            "testa uma ideia em segundos no shell interativo, sem criar arquivo;",
+            "roda scripts passando informações diferentes a cada vez (`python3 conversor.py 100`);",
+            "cria um ambiente virtual por projeto, para que as bibliotecas de um não quebrem o outro;",
+            "instala bibliotecas e registra as versões no `requirements.txt`, para qualquer pessoa reproduzir o projeto;",
+            "salva a saída de um programa em arquivo ou alimenta um programa com dados de um arquivo."
+          ]
+        },
+        "**Como:** você abre o terminal, vai até a pasta do projeto e digita comandos. Três \"lugares\" diferentes aparecem nesta aula, e é importante não confundir:",
+        {
+          "tabela": [
+            [
+              "Onde você está",
+              "Como reconhecer",
+              "O que você digita"
+            ],
+            [
+              "Terminal do sistema",
+              "`$` ou `C:\\...>`",
+              "Comandos como `cd`, `mkdir`, `python3 arquivo.py`, `pip install`"
+            ],
+            [
+              "Shell interativo do Python",
+              "`>>>`",
+              "Código Python: `2 + 3`, `type(42)`"
+            ],
+            [
+              "Terminal com venv ativo",
+              "`(venv) $`",
+              "Os mesmos comandos do terminal, mas usando o Python do projeto"
+            ]
+          ]
+        },
+        "**Quando usar cada um:**",
+        {
+          "tabela": [
+            [
+              "Situação",
+              "Ferramenta"
+            ],
+            [
+              "Testar uma expressão rápida ou descobrir um método",
+              "Shell interativo (`python3`)"
+            ],
+            [
+              "Programa com mais de algumas linhas, que você vai rodar de novo",
+              "Script (`python3 arquivo.py`)"
+            ],
+            [
+              "O mesmo script precisa de dados diferentes a cada execução",
+              "Argumentos (`sys.argv`)"
+            ],
+            [
+              "Projeto novo que vai usar bibliotecas externas",
+              "`python3 -m venv venv`"
+            ],
+            [
+              "Compartilhar o projeto ou subir para o GitHub",
+              "`pip freeze > requirements.txt`"
+            ],
+            [
+              "Guardar o resultado de um programa",
+              "`python3 programa.py > saida.txt`"
+            ],
+            [
+              "Rodar um programa com dados de teste sem digitar tudo de novo",
+              "`python3 programa.py < dados.txt`"
+            ]
+          ]
+        },
+        "**Terminal ou VS Code?** Não é uma escolha: o VS Code tem um terminal embutido (menu **Terminal → Novo Terminal**, ou `` Ctrl+` ``). O botão \"Run\" do editor roda `python arquivo.py` por você, mas não deixa passar argumentos nem redirecionar. Aprender o terminal é o que permite usar tudo isso."
+      ]
+    },
+    {
+      "id": "estruturas",
+      "tipo": "leitura",
+      "nome": "Estruturas",
+      "blocos": [
+        {
+          "h": "3.1 Abrir o shell interativo e sair"
+        },
+        {
+          "codigo": "python3",
+          "linguagem": "text"
+        },
+        {
+          "codigo": ">>> 2 + 3\n5\n>>> exit()",
+          "linguagem": "text"
+        },
+        "No Windows o comando costuma ser `python` (ou `py`). Para sair também vale `Ctrl+D` (Linux/macOS) ou `Ctrl+Z` e Enter (Windows).",
+        {
+          "h": "3.2 Investigar no shell"
+        },
+        {
+          "codigo": "type(valor)       # qual é o tipo?\ndir(objeto)       # quais métodos ele tem?\nhelp(funcao)      # como essa função funciona? (tecla q para sair)"
+        },
+        {
+          "h": "3.3 Rodar um script"
+        },
+        {
+          "codigo": "python3 nome_do_arquivo.py",
+          "linguagem": "text"
+        },
+        {
+          "h": "3.4 Passar argumentos"
+        },
+        {
+          "codigo": "python3 script.py argumento1 argumento2 \"argumento com espaço\"",
+          "linguagem": "text"
+        },
+        {
+          "codigo": "import sys\nsys.argv[0]   # nome do script\nsys.argv[1]   # primeiro argumento (sempre texto)\nsys.argv[1:]  # todos os argumentos"
+        },
+        {
+          "h": "3.5 Pastas e arquivos"
+        },
+        {
+          "tabela": [
+            [
+              "Ação",
+              "Linux / macOS",
+              "Windows (PowerShell)"
+            ],
+            [
+              "Onde estou?",
+              "`pwd`",
+              "`pwd`"
+            ],
+            [
+              "Listar arquivos",
+              "`ls`",
+              "`ls` ou `dir`"
+            ],
+            [
+              "Criar pasta",
+              "`mkdir projeto`",
+              "`mkdir projeto`"
+            ],
+            [
+              "Entrar na pasta",
+              "`cd projeto`",
+              "`cd projeto`"
+            ],
+            [
+              "Voltar uma pasta",
+              "`cd ..`",
+              "`cd ..`"
+            ],
+            [
+              "Criar arquivo vazio",
+              "`touch app.py`",
+              "`New-Item app.py`"
+            ]
+          ]
+        },
+        "No Prompt de Comando antigo (cmd), o arquivo vazio é criado com `type nul > app.py`.",
+        {
+          "h": "3.6 Ambiente virtual"
+        },
+        {
+          "codigo": "python3 -m venv venv          # cria (uma vez por projeto)\nsource venv/bin/activate      # ativa no Linux/macOS\ndeactivate                    # desativa (qualquer sistema)",
+          "linguagem": "text"
+        },
+        "No Windows a ativação é `venv\\Scripts\\activate` (cmd) ou `venv\\Scripts\\Activate.ps1` (PowerShell).",
+        {
+          "h": "3.7 pip"
+        },
+        {
+          "codigo": "pip install requests               # instala a versão mais recente\npip install requests==2.34.2       # instala uma versão exata\npip install --upgrade requests     # atualiza\npip uninstall requests             # remove\npip list                           # mostra o que está instalado\npip freeze > requirements.txt      # salva a lista com versões\npip install -r requirements.txt    # instala tudo o que está na lista",
+          "linguagem": "text"
+        },
+        {
+          "h": "3.8 Redirecionamento"
+        },
+        {
+          "codigo": "python3 programa.py > saida.txt     # print vai para o arquivo (sobrescreve)\npython3 programa.py >> saida.txt    # print vai para o fim do arquivo\npython3 programa.py < entrada.txt   # input lê do arquivo\npython3 programa.py < entrada.txt > saida.txt   # os dois ao mesmo tempo",
+          "linguagem": "text"
+        }
+      ]
+    },
+    {
+      "id": "sintaxe-e-simbolos",
+      "tipo": "leitura",
+      "nome": "Sintaxe e símbolos",
+      "blocos": [
+        {
+          "tabela": [
+            [
+              "Símbolo / comando",
+              "Nome",
+              "Para que serve"
+            ],
+            [
+              "`$`",
+              "Prompt do terminal (Linux/macOS)",
+              "Não se digita: só indica \"digite o comando aqui\""
+            ],
+            [
+              "`>>>`",
+              "Prompt do shell Python",
+              "Não se digita: indica que o Python espera código"
+            ],
+            [
+              "`...`",
+              "Prompt de continuação",
+              "Aparece dentro de `if`, `for`, `def` no shell; Enter vazio encerra o bloco"
+            ],
+            [
+              "`python3` / `python`",
+              "Interpretador",
+              "Sem nada depois: abre o shell. Com arquivo: roda o script"
+            ],
+            [
+              "`python3 --version`",
+              "Versão",
+              "Confere qual Python está instalado"
+            ],
+            [
+              "`python3 -c \"código\"`",
+              "Código direto",
+              "Roda uma linha sem abrir o shell nem criar arquivo"
+            ],
+            [
+              "`python3 -m módulo`",
+              "Rodar módulo",
+              "Executa um módulo como programa: `-m venv`, `-m pip`"
+            ],
+            [
+              "`import sys`",
+              "Módulo do sistema",
+              "Dá acesso a `sys.argv`, `sys.exit()`, `sys.stdin`"
+            ],
+            [
+              "`sys.argv`",
+              "Lista de argumentos",
+              "Sempre uma lista de **textos**"
+            ],
+            [
+              "`sys.exit(1)`",
+              "Encerrar com código",
+              "Para o programa e avisa o terminal que houve erro"
+            ],
+            [
+              "`.` / `..`",
+              "Pasta atual / pasta de cima",
+              "`cd ..` sobe um nível"
+            ],
+            [
+              "`/` e `\\`",
+              "Separador de pastas",
+              "`/` no Linux/macOS, `\\` no Windows"
+            ],
+            [
+              "`\" \"` no terminal",
+              "Aspas",
+              "Junta palavras com espaço em um argumento só"
+            ],
+            [
+              "`(venv)`",
+              "Indicador do ambiente",
+              "Aparece no começo do prompt quando o venv está ativo"
+            ],
+            [
+              "`==` no requirements",
+              "Versão exata",
+              "`requests==2.34.2`"
+            ],
+            [
+              "`#` no requirements",
+              "Comentário",
+              "A linha (ou o resto dela) é ignorada pelo pip"
+            ],
+            [
+              "`>`",
+              "Redireciona a saída",
+              "Cria ou **sobrescreve** o arquivo"
+            ],
+            [
+              "`>>`",
+              "Acrescenta a saída",
+              "Escreve no fim do arquivo, sem apagar"
+            ],
+            [
+              "`<`",
+              "Redireciona a entrada",
+              "O programa lê o arquivo como se fosse o teclado"
+            ],
+            [
+              "`Tab`",
+              "Autocompletar",
+              "Completa nomes de pastas e arquivos"
+            ],
+            [
+              "`↑`",
+              "Histórico",
+              "Repete os últimos comandos"
+            ],
+            [
+              "`Ctrl+C`",
+              "Interromper",
+              "Para um programa travado ou em loop"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logica-por-tras",
+      "tipo": "leitura",
+      "nome": "Lógica por trás",
+      "blocos": [
+        "**O terminal procura o programa pelo nome.** Quando você digita `python3`, o sistema procura um executável com esse nome em uma lista de pastas (o PATH) e usa o primeiro que encontrar. É por isso que, com o venv ativo, `python` passa a ser o do projeto: a ativação coloca a pasta `venv/bin` no início dessa lista. Testamos assim:",
+        {
+          "codigo": "$ which python\n/usr/bin/python\n$ source venv/bin/activate\n(venv) $ which python\n/home/aluno/projeto/venv/bin/python\n(venv) $ deactivate\n$ which python\n/usr/bin/python",
+          "linguagem": "text"
+        },
+        "No Windows o equivalente é `where python`.",
+        "**O diretório atual importa.** `python3 saudacao.py` só funciona se `saudacao.py` estiver na pasta em que o terminal está. O erro `can't open file ... No such file or directory` quase sempre significa \"você está na pasta errada\": use `pwd` e `ls` para conferir, e `cd` para ir até a pasta certa.",
+        "**`sys.argv` é uma lista de textos.** O terminal separa o que você digitou pelos espaços:",
+        {
+          "codigo": "python3 soma.py 10 20 30\n        ↓        ↓  ↓  ↓\nsys.argv = ['soma.py', '10', '20', '30']",
+          "linguagem": "text"
+        },
+        "Mesmo `10` chega como `'10'` (texto). Para fazer contas, converta com `int()` ou `float()`. Para mandar um texto com espaço como um argumento só, use aspas: `\"Ana Clara\"`.",
+        "**Por que ambiente virtual?** Sem venv, todas as bibliotecas vão para o mesmo lugar. Se o projeto A precisa da versão 1 de uma biblioteca e o projeto B da versão 2, um quebra o outro. Com um venv por projeto, cada um tem sua própria pasta de bibliotecas. A pasta `venv/` não vai para o GitHub (coloque-a no `.gitignore`); quem vai para o GitHub é o `requirements.txt`, e cada pessoa recria o ambiente com ele.",
+        "**O ciclo de um projeto com bibliotecas:**",
+        {
+          "passos": [
+            "`python3 -m venv venv` (uma vez)",
+            "Ativar (toda vez que abrir um terminal novo)",
+            "`pip install` do que precisar",
+            "`pip freeze > requirements.txt` (sempre que instalar algo novo)",
+            "Outra pessoa: clona, cria o venv, ativa e roda `pip install -r requirements.txt`"
+          ]
+        },
+        "**Por que `pip freeze` lista mais coisas do que você instalou?** Bibliotecas dependem de outras. Instalamos só `requests` e o `pip freeze` mostrou cinco pacotes:",
+        {
+          "codigo": "certifi==2026.7.22\ncharset-normalizer==3.5.2\nidna==3.20\nrequests==2.34.2\nurllib3==2.8.0",
+          "linguagem": "text"
+        },
+        "Os outros quatro são dependências do `requests`. Registrar todos com a versão exata garante que o projeto rode igual em qualquer máquina. (As versões que você vai ver serão as mais recentes no dia em que instalar.)",
+        "**stdin e stdout.** Todo programa tem uma entrada padrão e uma saída padrão. O `input()` lê da entrada e o `print()` escreve na saída. O redirecionamento só troca a tela e o teclado por arquivos: o código Python não muda nada. Um detalhe: quando a entrada vem de um arquivo, o texto da pergunta do `input()` também vai para a saída, e a resposta não aparece (ninguém digitou).",
+        "**Código de saída.** Ao terminar, todo programa devolve um número ao terminal. `0` significa sucesso. Usamos `sys.exit(1)` para avisar que algo deu errado (por exemplo, faltou argumento). No Linux, `echo $?` mostra o código do último comando. Ferramentas de automação usam esse número para saber se devem continuar."
+      ]
+    },
+    {
+      "id": "exemplo-a",
+      "tipo": "codigo",
+      "nome": "Exemplo A — Investigando no shell interativo",
+      "linguagem": "text",
+      "codigo": [
+        "$ python3",
+        ">>> type(42)",
+        "<class 'int'>",
+        ">>> type(3.14)",
+        "<class 'float'>",
+        ">>> type(\"Olá\")",
+        "<class 'str'>",
+        ">>> type([1, 2])",
+        "<class 'list'>",
+        ">>> [m for m in dir(\"texto\") if not m.startswith(\"_\")][:6]",
+        "['capitalize', 'casefold', 'center', 'count', 'encode', 'endswith']",
+        ">>> help(len)",
+        "Help on built-in function len in module builtins:",
+        "",
+        "len(obj, /)",
+        "    Return the number of items in a container.",
+        ">>> exit()"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Abre o shell interativo; o prompt muda para `>>>`"
+        },
+        {
+          "linhas": [
+            2,
+            9
+          ],
+          "texto": "Cada valor tem um tipo: inteiro, decimal, texto, lista"
+        },
+        {
+          "linhas": [
+            10,
+            11
+          ],
+          "texto": "`dir(\"texto\")` lista tudo o que um texto sabe fazer (47 métodos públicos). Os que começam com `_` são internos, por isso filtramos. O `[:6]` mostra só os 6 primeiros para não encher a tela"
+        },
+        {
+          "linhas": [
+            12,
+            16
+          ],
+          "texto": "`help(len)` abre a documentação. Em textos longos, use as setas e saia com `q`"
+        },
+        {
+          "linhas": [
+            17,
+            17
+          ],
+          "texto": "Volta para o terminal do sistema"
+        }
+      ],
+      "fechamento": [
+        "No shell você não precisa de `print()`: o valor de cada expressão aparece sozinho."
+      ]
+    },
+    {
+      "id": "exemplo-b",
+      "tipo": "codigo",
+      "nome": "Exemplo B — Argumentos com sys.argv (saudacao.py)",
+      "codigo": [
+        "import sys",
+        "",
+        "print(\"Argumentos recebidos:\", sys.argv)",
+        "",
+        "if len(sys.argv) > 1:",
+        "    nome = sys.argv[1]",
+        "else:",
+        "    nome = \"Usuário\"",
+        "",
+        "print(f\"Olá, {nome}!\")"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Importa o módulo `sys`, que traz a lista `argv`"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Mostra a lista inteira, para você ver o que chegou"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "`len(sys.argv) > 1`: além do nome do script, veio pelo menos um argumento?"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Usa o primeiro argumento como nome"
+        },
+        {
+          "linhas": [
+            7,
+            8
+          ],
+          "texto": "Sem argumento, usa um valor padrão (sem isso, `sys.argv[1]` daria `IndexError`)"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "Monta a saudação"
+        }
+      ],
+      "fechamento": [
+        {
+          "codigo": "$ python3 saudacao.py\nArgumentos recebidos: ['saudacao.py']\nOlá, Usuário!\n$ python3 saudacao.py Mateus\nArgumentos recebidos: ['saudacao.py', 'Mateus']\nOlá, Mateus!\n$ python3 saudacao.py \"Ana Clara\"\nArgumentos recebidos: ['saudacao.py', 'Ana Clara']\nOlá, Ana Clara!\n$ python3 saudacao.py Ana Clara\nArgumentos recebidos: ['saudacao.py', 'Ana', 'Clara']\nOlá, Ana!",
+          "linguagem": "text"
+        },
+        "Repare na última execução: sem aspas, \"Ana\" e \"Clara\" viraram dois argumentos e só o primeiro foi usado."
+      ]
+    },
+    {
+      "id": "exemplo-c",
+      "tipo": "codigo",
+      "nome": "Exemplo C — Convertendo argumentos e avisando erros (soma.py)",
+      "codigo": [
+        "import sys",
+        "",
+        "numeros = sys.argv[1:]",
+        "",
+        "if not numeros:",
+        "    print(\"Uso: python3 soma.py 10 20 30\")",
+        "    sys.exit(1)",
+        "",
+        "total = 0",
+        "for texto in numeros:",
+        "    total += float(texto)",
+        "",
+        "print(f\"Soma de {len(numeros)} números: {total}\")"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "`sys.argv[1:]` pula o nome do script e pega só os argumentos"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Lista vazia é \"falsa\": nenhum número foi passado"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Mensagem de uso: explica como rodar o programa"
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "Encerra com código 1 (erro); o resto não executa"
+        },
+        {
+          "linhas": [
+            10,
+            11
+          ],
+          "texto": "Converte cada texto em número antes de somar"
+        },
+        {
+          "linhas": [
+            13,
+            13
+          ],
+          "texto": "Mostra quantos números e a soma"
+        }
+      ],
+      "fechamento": [
+        {
+          "codigo": "$ python3 soma.py 10 20 30\nSoma de 3 números: 60.0\n$ python3 soma.py\nUso: python3 soma.py 10 20 30\n$ echo $?\n1",
+          "linguagem": "text"
+        },
+        "Se alguém passar `abc`, o `float()` gera `ValueError: could not convert string to float: 'abc'`. A atividade 7 trata esse caso."
+      ]
+    },
+    {
+      "id": "exemplo-d",
+      "tipo": "codigo",
+      "nome": "Exemplo D — Pastas, arquivos e ambiente virtual",
+      "linguagem": "text",
+      "codigo": [
+        "mkdir meu_projeto",
+        "cd meu_projeto",
+        "touch main.py",
+        "python3 -m venv venv",
+        "source venv/bin/activate",
+        "pip install requests",
+        "pip freeze > requirements.txt",
+        "cat requirements.txt",
+        "deactivate"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Cria a pasta do projeto"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Entra nela: tudo o que vier depois acontece aqui dentro"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Cria o arquivo vazio `main.py` (Windows PowerShell: `New-Item main.py`)"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "`-m venv` roda o módulo que cria ambientes; o último `venv` é o nome da pasta criada"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Ativa: o prompt ganha `(venv)` na frente (Windows: `venv\\Scripts\\activate`)"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Baixa o `requests` do PyPI e instala **só** dentro do venv"
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "Salva a lista de pacotes com versões no arquivo"
+        },
+        {
+          "linhas": [
+            8,
+            8
+          ],
+          "texto": "Mostra o conteúdo (Windows: `type requirements.txt`)"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "Volta ao Python do sistema"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-e",
+      "tipo": "codigo",
+      "nome": "Exemplo E — Usando a biblioteca instalada (main.py)",
+      "codigo": [
+        "import requests",
+        "",
+        "resposta = requests.get(\"https://api.github.com\", timeout=10)",
+        "",
+        "print(\"Status:\", resposta.status_code)",
+        "print(\"Tipo:\", resposta.headers[\"Content-Type\"])"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Importa a biblioteca externa. Só funciona com o venv ativo (onde ela foi instalada)"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Faz uma requisição GET ao site; `timeout=10` desiste depois de 10 segundos sem resposta"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "`200` é o código HTTP de sucesso"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "Os cabeçalhos dizem que a resposta veio em JSON"
+        }
+      ],
+      "fechamento": [
+        {
+          "codigo": "(venv) $ python main.py\nStatus: 200\nTipo: application/json; charset=utf-8",
+          "linguagem": "text"
+        },
+        "Se rodar com o venv desativado, aparece `ModuleNotFoundError: No module named 'requests'`. Esse é o erro mais comum desta aula: a solução é ativar o venv, não instalar de novo fora dele."
+      ]
+    },
+    {
+      "id": "exemplo-f",
+      "tipo": "codigo",
+      "nome": "Exemplo F — Redirecionando entrada e saída (tabuada.py e media.py)",
+      "intro": [
+        {
+          "codigo": "# tabuada.py\nnumero = int(input(\"Tabuada de qual número? \"))\nfor i in range(1, 6):\n    print(f\"{numero} x {i} = {numero * i}\")"
+        },
+        {
+          "codigo": "# media.py\nnotas = []\nfor _ in range(3):\n    notas.append(float(input()))\nprint(f\"Média: {sum(notas) / len(notas):.1f}\")"
+        },
+        "Arquivo `notas.txt`:",
+        {
+          "codigo": "7\n8.5\n9",
+          "linguagem": "text"
+        }
+      ],
+      "codigo": [
+        "$ python3 media.py < notas.txt",
+        "Média: 8.2",
+        "$ python3 tabuada.py < notas.txt > saida.txt",
+        "$ python3 media.py < notas.txt >> saida.txt",
+        "$ cat saida.txt",
+        "Tabuada de qual número? 7 x 1 = 7",
+        "7 x 2 = 14",
+        "7 x 3 = 21",
+        "7 x 4 = 28",
+        "7 x 5 = 35",
+        "Média: 8.2"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            2
+          ],
+          "texto": "`media.py < notas.txt`: cada `input()` lê uma linha do arquivo: 7, 8.5 e 9. A média 8.1666... aparece como 8.2"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "`tabuada.py < notas.txt > saida.txt`: o `input()` lê só a primeira linha (7); nada aparece na tela, tudo vai para `saida.txt`"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "`media.py < notas.txt >> saida.txt`: `>>` acrescenta no fim sem apagar a tabuada"
+        },
+        {
+          "linhas": [
+            5,
+            11
+          ],
+          "texto": "`cat saida.txt` mostra o arquivo (Windows: `type saida.txt`)"
+        }
+      ],
+      "fechamento": [
+        "Na primeira linha do arquivo, a pergunta \"Tabuada de qual número? \" está colada no resultado: como ninguém digitou, não houve o Enter que pularia a linha."
+      ],
+      "linguagem": "text"
+    },
+    {
+      "id": "como-aplicar",
+      "tipo": "leitura",
+      "nome": "Como aplicar: gerenciador de tarefas pela linha de comando",
+      "blocos": [
+        "Junta tudo: argumentos com `sys.argv`, mensagem de uso, códigos de saída e um arquivo de texto para guardar os dados. Crie a pasta `tarefas_cli`, entre nela pelo terminal e salve o código como `tarefas.py`. Ele usa só a biblioteca padrão, então não precisa de `pip install`.",
+        {
+          "codigo": "import sys\nfrom pathlib import Path\n\nARQUIVO = Path(\"tarefas.txt\")\n\n\ndef carregar():\n    if not ARQUIVO.exists():\n        return []\n    return ARQUIVO.read_text(encoding=\"utf-8\").splitlines()\n\n\ndef salvar(tarefas):\n    conteudo = \"\".join(tarefa + \"\\n\" for tarefa in tarefas)\n    ARQUIVO.write_text(conteudo, encoding=\"utf-8\")\n\n\ndef adicionar(texto):\n    tarefas = carregar()\n    tarefas.append(texto)\n    salvar(tarefas)\n    print(f\"Tarefa {len(tarefas)} adicionada: {texto}\")\n\n\ndef listar():\n    tarefas = carregar()\n    if not tarefas:\n        print(\"Nenhuma tarefa.\")\n        return\n    for numero, tarefa in enumerate(tarefas, start=1):\n        print(f\"{numero}. {tarefa}\")\n\n\ndef concluir(numero):\n    tarefas = carregar()\n    if not 1 <= numero <= len(tarefas):\n        print(f\"Não existe a tarefa {numero}.\")\n        return\n    feita = tarefas.pop(numero - 1)\n    salvar(tarefas)\n    print(f\"Concluída: {feita}\")\n\n\ndef ajuda():\n    print(\"Uso:\")\n    print('  python3 tarefas.py adicionar \"texto da tarefa\"')\n    print(\"  python3 tarefas.py listar\")\n    print(\"  python3 tarefas.py concluir NÚMERO\")\n\n\nif len(sys.argv) < 2:\n    ajuda()\n    sys.exit(1)\n\ncomando = sys.argv[1]\n\nif comando == \"adicionar\" and len(sys.argv) >= 3:\n    adicionar(\" \".join(sys.argv[2:]))\nelif comando == \"listar\":\n    listar()\nelif comando == \"concluir\" and len(sys.argv) == 3 and sys.argv[2].isdigit():\n    concluir(int(sys.argv[2]))\nelse:\n    ajuda()\n    sys.exit(1)"
+        },
+        "**Testando no terminal:**",
+        {
+          "codigo": "$ python3 tarefas.py\nUso:\n  python3 tarefas.py adicionar \"texto da tarefa\"\n  python3 tarefas.py listar\n  python3 tarefas.py concluir NÚMERO\n$ python3 tarefas.py listar\nNenhuma tarefa.\n$ python3 tarefas.py adicionar \"Estudar venv\"\nTarefa 1 adicionada: Estudar venv\n$ python3 tarefas.py adicionar Criar requirements.txt\nTarefa 2 adicionada: Criar requirements.txt\n$ python3 tarefas.py adicionar \"Subir projeto no GitHub\"\nTarefa 3 adicionada: Subir projeto no GitHub\n$ python3 tarefas.py listar\n1. Estudar venv\n2. Criar requirements.txt\n3. Subir projeto no GitHub\n$ python3 tarefas.py concluir 1\nConcluída: Estudar venv\n$ python3 tarefas.py concluir 9\nNão existe a tarefa 9.\n$ python3 tarefas.py listar > relatorio.txt\n$ cat relatorio.txt\n1. Criar requirements.txt\n2. Subir projeto no GitHub",
+          "linguagem": "text"
+        },
+        "**Por que funciona:** o primeiro argumento (`sys.argv[1]`) escolhe o comando e o resto é o dado. Em `adicionar`, o `\" \".join(sys.argv[2:])` junta as palavras, então a tarefa funciona com ou sem aspas (veja \"Criar requirements.txt\"). Em `concluir`, o `isdigit()` confere se veio um número antes de converter, e o `1 <= numero <= len(tarefas)` evita apagar uma posição que não existe. As tarefas ficam em `tarefas.txt`, uma por linha, então continuam lá na próxima execução. O `salvar` escreve cada tarefa seguida de `\\n`; com a lista vazia, o arquivo fica vazio de verdade (com `\"\\n\".join(...) + \"\\n\"`, sobraria uma linha em branco que seria lida como uma tarefa sem nome). Qualquer uso errado mostra a ajuda e termina com `sys.exit(1)`. E, como a saída é `print()`, o `>` gera um relatório sem mudar nada no código.",
+        "**Para subir no GitHub:** crie um `.gitignore` com as linhas `venv/` e `tarefas.txt` (as tarefas são dados pessoais de quem usa, não código)."
+      ]
+    },
+    {
+      "id": "quiz",
+      "tipo": "quiz",
+      "nome": "Quiz de código",
+      "perguntas": [
+        {
+          "pergunta": "O que aparece no terminal depois de `python3 ola.py Maria 25`?",
+          "codigo": "# ola.py\nimport sys\nprint(sys.argv)",
+          "opcoes": [
+            "`['Maria', '25']`",
+            "`['ola.py', 'Maria', 25]`",
+            "`['ola.py', 'Maria', '25']`",
+            "`Maria 25`"
+          ],
+          "correta": 2,
+          "dica": "o que fica na posição 0? E de que tipo são os argumentos?",
+          "acerto": "Isso! Nome do script primeiro, e tudo chega como texto.",
+          "erro": "Lembre: sys.argv[0] é o nome do script e todos os itens são textos.",
+          "explicacao": "`sys.argv` começa com o nome do script e todos os argumentos são strings, inclusive `'25'`."
+        },
+        {
+          "pergunta": "Qual comando cria um ambiente virtual chamado `venv`?",
+          "opcoes": [
+            "`pip install venv`",
+            "`python3 -m venv venv`",
+            "`source venv/bin/activate`",
+            "`mkdir venv`"
+          ],
+          "correta": 1,
+          "dica": "quem cria o ambiente é um módulo do próprio Python.",
+          "acerto": "Perfeito! -m venv cria, o último venv é o nome da pasta.",
+          "erro": "Esse comando ativa ou instala, mas não cria o ambiente.",
+          "explicacao": "`python3 -m venv venv` cria a pasta; o `source venv/bin/activate` só ativa um ambiente que já existe; `mkdir` cria uma pasta vazia, sem Python dentro."
+        },
+        {
+          "pergunta": "Você rodou `python main.py` e apareceu `ModuleNotFoundError: No module named 'requests'`, mas tem certeza de que instalou o requests no venv do projeto. O que fazer primeiro?",
+          "opcoes": [
+            "Reinstalar o Python",
+            "Rodar `pip install requests` fora do venv",
+            "Ativar o venv e rodar de novo",
+            "Apagar o `requirements.txt`"
+          ],
+          "correta": 2,
+          "dica": "olhe o começo do prompt: aparece `(venv)`?",
+          "acerto": "Isso! A biblioteca está no venv, então o venv precisa estar ativo.",
+          "erro": "A biblioteca já está instalada, só que em outro lugar.",
+          "explicacao": "sem ativar, o terminal usa o Python do sistema, que não tem o `requests`. Ativar resolve sem instalar nada de novo."
+        },
+        {
+          "pergunta": "O arquivo `saida.txt` tinha 10 linhas. Depois de `python3 relatorio.py > saida.txt`, o que acontece com ele?",
+          "opcoes": [
+            "As 10 linhas continuam e a saída é adicionada no fim",
+            "O conteúdo antigo é apagado e fica só a saída nova",
+            "Dá erro, porque o arquivo já existe",
+            "A saída aparece na tela e o arquivo não muda"
+          ],
+          "correta": 1,
+          "dica": "qual símbolo acrescenta no fim?",
+          "acerto": "Exato! Um > sobrescreve; >> acrescenta.",
+          "erro": "O > não acrescenta: ele começa o arquivo do zero.",
+          "explicacao": "`>` cria o arquivo ou apaga o que havia nele. Para manter as 10 linhas e escrever depois delas, use `>>`."
+        },
+        {
+          "pergunta": "Qual é a diferença entre `pip list` e `pip freeze`?",
+          "opcoes": [
+            "Nenhuma, são apelidos",
+            "`pip list` instala e `pip freeze` desinstala",
+            "Os dois mostram os pacotes, mas `pip freeze` usa o formato `nome==versão`, pronto para o `requirements.txt`",
+            "`pip freeze` só funciona no Windows"
+          ],
+          "correta": 2,
+          "dica": "qual formato o `pip install -r` entende?",
+          "acerto": "Isso! freeze gera exatamente o que o requirements.txt precisa.",
+          "erro": "Os dois listam pacotes; a diferença está no formato.",
+          "explicacao": "`pip list` mostra uma tabela para ler; `pip freeze` imprime `requests==2.34.2`, que pode ser redirecionado com `>` para o `requirements.txt`."
+        },
+        {
+          "pergunta": "Por que a pasta `venv/` não deve ir para o GitHub?",
+          "opcoes": [
+            "Porque ela tem senhas",
+            "Porque é grande, depende do sistema de quem criou e pode ser recriada com o `requirements.txt`",
+            "Porque o GitHub não aceita arquivos `.py`",
+            "Porque o venv só funciona uma vez"
+          ],
+          "correta": 1,
+          "dica": "o que outra pessoa precisa para montar o mesmo ambiente?",
+          "acerto": "Perfeito! Vai o requirements.txt; o venv cada um cria.",
+          "erro": "Pense no tamanho da pasta e em quem consegue recriá-la.",
+          "explicacao": "o venv tem centenas de arquivos e caminhos da sua máquina (um venv do Linux não funciona no Windows). O `requirements.txt` é pequeno e basta para recriar tudo com `pip install -r`."
+        }
+      ]
+    },
+    {
+      "id": "atividades",
+      "tipo": "atividades",
+      "nome": "Atividades",
+      "intro": [
+        "Faça as atividades pelo terminal (pode ser o terminal do VS Code). Os comandos estão no padrão Linux/macOS; as diferenças do Windows estão nas seções 3.5 e 3.6.",
+        "Escreva ou cole a sua tentativa no campo de cada atividade para liberar a solução. Outras soluções também valem, desde que passem nos testes do enunciado."
+      ],
+      "itens": [
+        {
+          "n": 1,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Abra o shell interativo do Python e descubra: (a) o tipo de `\"42\"`, `42`, `4.2`, `True` e `None`; (b) com `dir()`, o nome do método de lista que adiciona um item no fim; (c) com `help()`, o que faz a função `abs`. Depois saia do shell."
+          ],
+          "dica": "para listas, use `dir([])`. Lembre que no shell não precisa de `print()`.",
+          "solucao": [
+            {
+              "codigo": "$ python3\n>>> type(\"42\")\n<class 'str'>\n>>> type(42)\n<class 'int'>\n>>> type(4.2)\n<class 'float'>\n>>> type(True)\n<class 'bool'>\n>>> type(None)\n<class 'NoneType'>\n>>> [m for m in dir([]) if not m.startswith(\"_\")]\n['append', 'clear', 'copy', 'count', 'extend', 'index', 'insert', 'pop', 'remove', 'reverse', 'sort']\n>>> help(abs)\nHelp on built-in function abs in module builtins:\n\nabs(x, /)\n    Return the absolute value of the argument.\n>>> exit()",
+              "linguagem": "text"
+            },
+            "(a) `\"42\"` é texto (`str`) por causa das aspas; os outros são `int`, `float`, `bool` e `NoneType`. (b) O método é `append`. (c) `abs` devolve o valor absoluto: `abs(-7)` dá `7`."
+          ]
+        },
+        {
+          "n": 2,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Usando só o terminal, crie a estrutura abaixo e confira com `ls`:",
+            {
+              "codigo": "estudos_python/\n├── aula14/\n│   ├── ola.py\n│   └── notas.txt\n└── README.md",
+              "linguagem": "text"
+            }
+          ],
+          "dica": "`mkdir`, `cd`, `touch` e `cd ..`. No PowerShell, troque `touch` por `New-Item`.",
+          "solucao": [
+            {
+              "codigo": "mkdir estudos_python\ncd estudos_python\ntouch README.md\nmkdir aula14\ncd aula14\ntouch ola.py notas.txt\nls\ncd ..\nls",
+              "linguagem": "text"
+            },
+            {
+              "codigo": "notas.txt  ola.py\naula14  README.md",
+              "linguagem": "text"
+            },
+            "O primeiro `ls` roda dentro de `aula14`; o segundo, depois do `cd ..`, mostra a pasta `estudos_python`. No PowerShell: `New-Item README.md`, `New-Item ola.py, notas.txt`."
+          ]
+        },
+        {
+          "n": 3,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie `argumentos.py`, que mostra quantos argumentos recebeu (sem contar o nome do script) e lista cada um com a posição. Teste com `python3 argumentos.py banana 42 \"sorvete de uva\"`."
+          ],
+          "dica": "`sys.argv[1:]` e `enumerate(..., start=1)`.",
+          "solucao": [
+            {
+              "codigo": "import sys\n\nextras = sys.argv[1:]\nprint(f\"Você passou {len(extras)} argumento(s).\")\nfor posicao, valor in enumerate(extras, start=1):\n    print(f\"{posicao}: {valor}\")"
+            },
+            {
+              "codigo": "$ python3 argumentos.py\nVocê passou 0 argumento(s).\n$ python3 argumentos.py banana 42 \"sorvete de uva\"\nVocê passou 3 argumento(s).\n1: banana\n2: 42\n3: sorvete de uva",
+              "linguagem": "text"
+            },
+            "As aspas fizeram \"sorvete de uva\" chegar como um argumento só."
+          ]
+        },
+        {
+          "n": 4,
+          "nivel": "Médio",
+          "enunciado": [
+            "Crie `conversor.py`, que recebe uma temperatura em Celsius pela linha de comando e mostra em Fahrenheit (F = C × 9 / 5 + 32), com uma casa decimal. Se o número de argumentos estiver errado, mostre como usar e encerre com código 1."
+          ],
+          "dica": "confira `len(sys.argv) != 2` antes de converter com `float()`.",
+          "solucao": [
+            {
+              "codigo": "import sys\n\nif len(sys.argv) != 2:\n    print(\"Uso: python3 conversor.py TEMPERATURA_EM_CELSIUS\")\n    sys.exit(1)\n\ncelsius = float(sys.argv[1])\nfahrenheit = celsius * 9 / 5 + 32\nprint(f\"{celsius:.1f} °C = {fahrenheit:.1f} °F\")"
+            },
+            {
+              "codigo": "$ python3 conversor.py 100\n100.0 °C = 212.0 °F\n$ python3 conversor.py -40\n-40.0 °C = -40.0 °F\n$ python3 conversor.py 36.5\n36.5 °C = 97.7 °F\n$ python3 conversor.py\nUso: python3 conversor.py TEMPERATURA_EM_CELSIUS\n$ echo $?\n1",
+              "linguagem": "text"
+            }
+          ]
+        },
+        {
+          "n": 5,
+          "nivel": "Médio",
+          "enunciado": [
+            "Monte um projeto do zero: crie a pasta `clima`, um ambiente virtual dentro dela, ative, instale o `requests`, gere o `requirements.txt` e desative. Depois escreva os comandos que uma colega deve rodar para usar o seu projeto depois de baixar a pasta (sem o venv)."
+          ],
+          "dica": "siga o ciclo da seção 5. A colega não roda `pip install requests`: ela usa o arquivo.",
+          "solucao": [
+            "**Você:**",
+            {
+              "codigo": "mkdir clima\ncd clima\npython3 -m venv venv\nsource venv/bin/activate\npip install requests\npip freeze > requirements.txt\ndeactivate",
+              "linguagem": "text"
+            },
+            "**A colega, dentro da pasta `clima`:**",
+            {
+              "codigo": "python3 -m venv venv\nsource venv/bin/activate\npip install -r requirements.txt",
+              "linguagem": "text"
+            },
+            "No Windows, a ativação é `venv\\Scripts\\activate` (cmd) ou `venv\\Scripts\\Activate.ps1` (PowerShell). Com o `-r requirements.txt`, ela recebe exatamente as mesmas versões que você usou, incluindo as dependências do `requests`."
+          ]
+        },
+        {
+          "n": 6,
+          "nivel": "Médio",
+          "enunciado": [
+            "Crie `estatisticas.py`, que lê números da entrada padrão (um por linha, ignorando linhas vazias) até o fim e mostra quantos leu, a soma e a média com 2 casas. Crie `valores.txt` com `10`, `20`, uma linha vazia, `35.5` e `4`. Rode com `<` e depois salve o resultado em `resultado.txt` com `>`."
+          ],
+          "dica": "`for linha in sys.stdin:` lê linha por linha até o arquivo acabar, sem precisar saber quantas são. Use `strip()` para tirar o `\\n`.",
+          "solucao": [
+            {
+              "codigo": "import sys\n\nnumeros = []\nfor linha in sys.stdin:\n    linha = linha.strip()\n    if linha:\n        numeros.append(float(linha))\n\nprint(f\"Linhas lidas: {len(numeros)}\")\nprint(f\"Soma: {sum(numeros)}\")\nprint(f\"Média: {sum(numeros) / len(numeros):.2f}\")"
+            },
+            {
+              "codigo": "$ python3 estatisticas.py < valores.txt\nLinhas lidas: 4\nSoma: 69.5\nMédia: 17.38\n$ python3 estatisticas.py < valores.txt > resultado.txt\n$ cat resultado.txt\nLinhas lidas: 4\nSoma: 69.5\nMédia: 17.38",
+              "linguagem": "text"
+            },
+            "A linha vazia foi ignorada pelo `if linha:` (texto vazio é falso). Diferente do `input()`, o `sys.stdin` não precisa saber antes quantas linhas virão."
+          ]
+        },
+        {
+          "n": 7,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Crie `extremos.py`, que recebe vários números como argumentos e mostra o maior e o menor. Argumentos que não são números devem ser ignorados com um aviso. Se nenhum for válido, avise e encerre com código 1. Teste com `python3 extremos.py 8 -3 abc 15.5 2,5`."
+          ],
+          "dica": "`try`/`except ValueError` em volta do `float()`. Atenção: `2,5` com vírgula não é número para o Python.",
+          "solucao": [
+            {
+              "codigo": "import sys\n\nnumeros = []\nfor texto in sys.argv[1:]:\n    try:\n        numeros.append(float(texto))\n    except ValueError:\n        print(f\"Ignorado: '{texto}' não é número\")\n\nif numeros:\n    print(f\"Maior: {max(numeros)}\")\n    print(f\"Menor: {min(numeros)}\")\nelse:\n    print(\"Nenhum número válido.\")\n    sys.exit(1)"
+            },
+            {
+              "codigo": "$ python3 extremos.py 8 -3 abc 15.5 2,5\nIgnorado: 'abc' não é número\nIgnorado: '2,5' não é número\nMaior: 15.5\nMenor: -3.0\n$ python3 extremos.py x y\nIgnorado: 'x' não é número\nIgnorado: 'y' não é número\nNenhum número válido.\n$ echo $?\n1",
+              "linguagem": "text"
+            }
+          ]
+        },
+        {
+          "n": 8,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Acrescente ao `tarefas.py` da seção 7 o comando `limpar`, que apaga todas as tarefas depois de perguntar \"Apagar N tarefa(s)? (s/n)\". Só apaga se a resposta for `s` (aceite também `S`). Se a lista já estiver vazia, avise sem perguntar. Atualize a ajuda. Teste a pergunta sem digitar, usando `echo n |` e `echo s |` antes do comando."
+          ],
+          "dica": "`input(...).strip().lower()`. Para apagar tudo, basta `salvar([])`. O `echo s |` manda o texto \"s\" para a entrada padrão do programa, como o `<` faz com um arquivo.",
+          "solucao": [
+            "Nova função (coloque antes de `ajuda`):",
+            {
+              "codigo": "def limpar():\n    tarefas = carregar()\n    if not tarefas:\n        print(\"Nenhuma tarefa para apagar.\")\n        return\n    resposta = input(f\"Apagar {len(tarefas)} tarefa(s)? (s/n) \").strip().lower()\n    if resposta == \"s\":\n        salvar([])\n        print(\"Lista apagada.\")\n    else:\n        print(\"Nada foi apagado.\")"
+            },
+            "Na `ajuda`, acrescente:",
+            {
+              "codigo": "    print(\"  python3 tarefas.py limpar\")"
+            },
+            "No bloco de comandos, antes do `elif comando == \"concluir\"`:",
+            {
+              "codigo": "elif comando == \"limpar\":\n    limpar()"
+            },
+            {
+              "codigo": "$ python3 tarefas.py limpar\nNenhuma tarefa para apagar.\n$ python3 tarefas.py adicionar A\nTarefa 1 adicionada: A\n$ python3 tarefas.py adicionar B\nTarefa 2 adicionada: B\n$ echo n | python3 tarefas.py limpar\nApagar 2 tarefa(s)? (s/n) Nada foi apagado.\n$ python3 tarefas.py listar\n1. A\n2. B\n$ echo S | python3 tarefas.py limpar\nApagar 2 tarefa(s)? (s/n) Lista apagada.\n$ python3 tarefas.py listar\nNenhuma tarefa.",
+              "linguagem": "text"
+            },
+            "O `.lower()` faz o `S` maiúsculo valer. A pergunta e a resposta ficam na mesma linha porque a entrada veio do `echo`, não do teclado (como no Exemplo F)."
+          ]
+        },
+        {
+          "n": 9,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Um colega mandou este `requirements.txt` e disse: \"rodei `pip install -r requirements.txt`, não deu erro, mas o programa diz que não tem o requests\". Explique o problema, corrija o arquivo e diga como ele poderia ter gerado o arquivo sem digitar à mão.",
+            {
+              "codigo": "# Bibliotecas do projeto\n# requests==2.34.2\n# urllib3==2.8.0",
+              "linguagem": "text"
+            }
+          ],
+          "dica": "o que o `#` faz em um `requirements.txt`? Releia as Correções do material original.",
+          "solucao": [
+            "**Problema:** todas as linhas começam com `#`, então são comentários. O `pip install -r` lê o arquivo, não encontra nenhum pacote e termina sem erro e sem instalar nada (testamos: código de saída 0).",
+            "**Arquivo corrigido** (o comentário pode ficar na primeira linha ou no fim de uma linha):",
+            {
+              "codigo": "# Bibliotecas do projeto\nrequests==2.34.2   # chamadas HTTP\nurllib3==2.8.0",
+              "linguagem": "text"
+            },
+            "**Sem digitar à mão:** com o venv ativo e as bibliotecas instaladas, `pip freeze > requirements.txt` gera o arquivo no formato certo, com todas as dependências e versões exatas. Depois de corrigir, ele também precisa conferir se o venv está ativo antes de rodar `pip install -r requirements.txt` e o programa."
+          ]
+        }
+      ]
+    }
+  ]
+}
