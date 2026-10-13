@@ -1,0 +1,1238 @@
+{
+  "numero": 11,
+  "titulo": "Manipulação do DOM I: Seleção e Modificação",
+  "etapas": [
+    {
+      "id": "definicoes",
+      "tipo": "leitura",
+      "nome": "Definições",
+      "blocos": [
+        "Até agora o seu JavaScript rodava só no console. Nesta aula ele passa a mexer na página: encontrar elementos, trocar textos, mudar atributos e classes, criar elementos novos e colocá-los no lugar certo. Tudo isso acontece pelo **DOM**. Na Aula 12 você vai juntar isso com eventos (cliques, digitação, formulários).",
+        {
+          "tabela": [
+            [
+              "Termo",
+              "O que significa"
+            ],
+            [
+              "DOM (Document Object Model)",
+              "Representação da página que o navegador monta na memória, em forma de árvore de objetos que o JavaScript pode ler e alterar"
+            ],
+            [
+              "Nó",
+              "Qualquer ponto da árvore: um elemento, um texto, um comentário"
+            ],
+            [
+              "Elemento",
+              "Nó que corresponde a uma tag: `<p>`, `<div>`, `<li>`"
+            ],
+            [
+              "`document`",
+              "Objeto que representa a página inteira; ponto de partida de toda seleção"
+            ],
+            [
+              "Pai / filho / irmão",
+              "O elemento que contém outro / os elementos contidos diretamente nele / elementos com o mesmo pai"
+            ],
+            [
+              "Seletor CSS",
+              "Texto que descreve elementos: `#id`, `.classe`, `p`, `ul li`"
+            ],
+            [
+              "`getElementById()`",
+              "Busca **um** elemento pelo `id`"
+            ],
+            [
+              "`querySelector()`",
+              "Busca o **primeiro** elemento que combina com um seletor CSS"
+            ],
+            [
+              "`querySelectorAll()`",
+              "Busca **todos** os elementos que combinam; devolve uma NodeList"
+            ],
+            [
+              "NodeList",
+              "Lista de nós devolvida pelo `querySelectorAll`; tem `length`, índice e `forEach`"
+            ],
+            [
+              "HTMLCollection",
+              "Lista devolvida por `getElementsByClassName` e `getElementsByTagName`; atualiza sozinha e não tem `forEach`"
+            ],
+            [
+              "`null`",
+              "Valor que a busca devolve quando não encontra nada"
+            ],
+            [
+              "`textContent`",
+              "Lê ou troca o texto de um elemento; tags viram texto comum"
+            ],
+            [
+              "`innerHTML`",
+              "Lê ou troca o conteúdo HTML de um elemento; tags são interpretadas"
+            ],
+            [
+              "XSS (Cross-Site Scripting)",
+              "Ataque em que um texto digitado por alguém vira código executado na página de outra pessoa"
+            ],
+            [
+              "`getAttribute()` / `setAttribute()`",
+              "Lê / define um atributo (`href`, `src`, `alt`...)"
+            ],
+            [
+              "`classList`",
+              "Lista de classes do elemento, com `add`, `remove`, `toggle` e `contains`"
+            ],
+            [
+              "`style`",
+              "Estilo direto (inline) do elemento; propriedades em camelCase"
+            ],
+            [
+              "camelCase",
+              "Juntar palavras com a próxima começando em maiúscula: `background-color` vira `backgroundColor`"
+            ],
+            [
+              "`createElement()`",
+              "Cria um elemento novo, ainda fora da página"
+            ],
+            [
+              "`appendChild()`",
+              "Coloca um elemento como **último filho** de outro"
+            ],
+            [
+              "`insertAdjacentElement()`",
+              "Coloca um elemento numa de quatro posições em relação a outro"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "para-que-como-e-quando-usamos",
+      "tipo": "leitura",
+      "nome": "Para que, como e quando usamos",
+      "blocos": [
+        "**Para que:** é manipulando o DOM que a página muda sem recarregar. Exemplos: mostrar o nome do usuário logado, montar a lista de produtos que veio de uma API, marcar uma tarefa como feita, destacar um campo com erro, trocar a foto de um perfil, mostrar \"Esgotado\" num produto sem vagas.",
+        "**Como:** sempre o mesmo ciclo de três passos:",
+        {
+          "passos": [
+            "**Selecionar** o elemento (`getElementById`, `querySelector`, `querySelectorAll`).",
+            "**Ler ou alterar** o que interessa (`textContent`, `setAttribute`, `classList`, `style`).",
+            "Quando o elemento ainda não existe: **criar**, configurar e **inserir** (`createElement` → `textContent`/`classList` → `appendChild`)."
+          ]
+        },
+        "**Quando usar cada ferramenta:**",
+        {
+          "tabela": [
+            [
+              "Situação",
+              "Use"
+            ],
+            [
+              "O elemento tem `id`",
+              "`getElementById(\"id\")`"
+            ],
+            [
+              "Primeiro elemento de uma classe ou seletor mais específico",
+              "`querySelector(\".classe\")`, `querySelector(\"ul li.ativo\")`"
+            ],
+            [
+              "Todos os elementos de uma classe ou tag",
+              "`querySelectorAll(\".classe\")` + `forEach`"
+            ],
+            [
+              "Mostrar um texto, principalmente se veio do usuário ou de uma API",
+              "`textContent`"
+            ],
+            [
+              "Inserir HTML **fixo**, escrito por você",
+              "`innerHTML`"
+            ],
+            [
+              "Mudar link, imagem, texto alternativo",
+              "`setAttribute(\"href\" / \"src\" / \"alt\", ...)`"
+            ],
+            [
+              "Mudar a aparência de forma organizada (ativo, esgotado, erro)",
+              "`classList.add / remove / toggle`"
+            ],
+            [
+              "Um ajuste visual pontual",
+              "`style.propriedade`"
+            ],
+            [
+              "Adicionar um item no fim de uma lista",
+              "`createElement` + `appendChild`"
+            ],
+            [
+              "Inserir no começo, antes ou depois de um elemento",
+              "`insertAdjacentElement`"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "estruturas",
+      "tipo": "leitura",
+      "nome": "Estruturas",
+      "blocos": [
+        {
+          "h": "3.1 Onde colocar o script"
+        },
+        {
+          "codigo": "<body>\n  <h1 id=\"titulo\">Olá</h1>\n  <!-- conteúdo da página -->\n  <script src=\"app.js\"></script>   <!-- no FIM do body -->\n</body>",
+          "linguagem": "html"
+        },
+        "Ou no `<head>` com `defer`: `<script src=\"app.js\" defer></script>`. Os dois jeitos garantem que o HTML já foi lido quando o JavaScript procura os elementos.",
+        {
+          "h": "3.2 Selecionar"
+        },
+        {
+          "codigo": "const um = document.getElementById(\"id\");\nconst primeiro = document.querySelector(\".classe\");\nconst todos = document.querySelectorAll(\".classe\");"
+        },
+        {
+          "h": "3.3 Navegar na árvore"
+        },
+        {
+          "codigo": "elemento.parentElement           // pai\nelemento.children                // filhos (elementos)\nelemento.firstElementChild       // primeiro filho\nelemento.lastElementChild        // último filho\nelemento.previousElementSibling  // irmão anterior\nelemento.nextElementSibling      // próximo irmão"
+        },
+        {
+          "h": "3.4 Alterar conteúdo"
+        },
+        {
+          "codigo": "elemento.textContent = \"Texto\";       // texto puro\nelemento.innerHTML = \"<b>HTML</b>\";   // HTML interpretado"
+        },
+        {
+          "h": "3.5 Atributos, classes e estilo"
+        },
+        {
+          "codigo": "elemento.getAttribute(\"href\");\nelemento.setAttribute(\"href\", \"https://...\");\nelemento.classList.add(\"ativo\");\nelemento.classList.remove(\"ativo\");\nelemento.classList.toggle(\"ativo\");\nelemento.classList.contains(\"ativo\");  // true ou false\nelemento.style.backgroundColor = \"yellow\";"
+        },
+        {
+          "h": "3.6 Criar e inserir"
+        },
+        {
+          "codigo": "const novo = document.createElement(\"li\");  // 1. criar\nnovo.textContent = \"Item\";                  // 2. configurar\nlista.appendChild(novo);                    // 3. inserir"
+        },
+        {
+          "h": "3.7 Inserir numa posição"
+        },
+        {
+          "codigo": "referencia.insertAdjacentElement(\"beforebegin\", novo); // antes da referência\nreferencia.insertAdjacentElement(\"afterbegin\", novo);  // primeiro filho\nreferencia.insertAdjacentElement(\"beforeend\", novo);   // último filho\nreferencia.insertAdjacentElement(\"afterend\", novo);    // depois da referência"
+        }
+      ]
+    },
+    {
+      "id": "sintaxe-e-simbolos",
+      "tipo": "leitura",
+      "nome": "Sintaxe e símbolos",
+      "blocos": [
+        {
+          "tabela": [
+            [
+              "Código",
+              "Significado",
+              "Exemplo"
+            ],
+            [
+              "`document.`",
+              "Começa pela página inteira",
+              "`document.title`"
+            ],
+            [
+              "`\"#id\"`",
+              "Seletor de id (com `#`)",
+              "`querySelector(\"#menu\")`"
+            ],
+            [
+              "`\".classe\"`",
+              "Seletor de classe (com `.`)",
+              "`querySelector(\".card\")`"
+            ],
+            [
+              "`\"tag\"`",
+              "Seletor de tag (sem símbolo)",
+              "`querySelectorAll(\"li\")`"
+            ],
+            [
+              "`\"pai filho\"`",
+              "Filho em qualquer nível dentro do pai",
+              "`\"#tarefas li\"`"
+            ],
+            [
+              "`\".a.b\"`",
+              "Elemento com as duas classes",
+              "`\".produto.promocao\"`"
+            ],
+            [
+              "`\":not(.x)\"`",
+              "Elementos que **não** têm a classe",
+              "`\".card:not(.esgotado)\"`"
+            ],
+            [
+              "`getElementById(\"menu\")`",
+              "Sem `#`: o método já sabe que é id",
+              "Erro comum: `getElementById(\"#menu\")` devolve `null`"
+            ],
+            [
+              "`lista[0]`",
+              "Primeiro item de uma NodeList",
+              "`itens[1]` é o segundo"
+            ],
+            [
+              "`.length`",
+              "Quantidade de itens",
+              "`produtos.length`"
+            ],
+            [
+              "`forEach((item, i) => {...})`",
+              "Percorre cada item com o índice",
+              "Funciona na NodeList"
+            ],
+            [
+              "`Array.from(colecao)`",
+              "Transforma uma HTMLCollection em array",
+              "Para poder usar `forEach`"
+            ],
+            [
+              "`+=` em texto",
+              "Acrescenta no fim",
+              "`p.textContent += \" ✔\"`"
+            ],
+            [
+              "`` `${variavel}` ``",
+              "Template string: coloca valores no texto",
+              "`` `Você tem ${n} tarefas` ``"
+            ],
+            [
+              "`.style.fontSize`",
+              "camelCase para propriedades com hífen",
+              "`font-size` → `fontSize`"
+            ],
+            [
+              "`\"20px\"`",
+              "Valores de estilo são textos, com unidade",
+              "`style.width = \"200px\"`"
+            ],
+            [
+              "`.className`",
+              "Todas as classes num texto só",
+              "`\"card destaque\"`"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logica-por-tras",
+      "tipo": "leitura",
+      "nome": "Lógica por trás",
+      "blocos": [
+        "**HTML x DOM.** O HTML é o texto do arquivo. O DOM é o que o navegador constrói a partir dele, na memória. Quando o JavaScript troca um texto, ele muda o DOM, e a tela muda junto, mas o arquivo `.html` continua igual. Por isso, ao recarregar a página, tudo volta ao original.",
+        "**O navegador ajusta o HTML ao montar o DOM.** Testamos: uma tabela escrita sem `<tbody>` ganha um `<tbody>` no DOM, e um `<p>` sem fechamento é fechado antes do `<div>` seguinte. Mas ele não \"conserta\" tudo: um `<li>` solto, sem `<ul>`, continua solto. HTML correto continua sendo trabalho seu.",
+        "**A árvore.** Para este HTML:",
+        {
+          "codigo": "<div id=\"cardapio\">\n  <h2>Cardápio</h2>\n  <p id=\"cafe\">Café</p>\n  <p id=\"suco\">Suco</p>\n  <p id=\"bolo\">Bolo</p>\n</div>",
+          "linguagem": "html"
+        },
+        {
+          "codigo": "document\n└── html\n    └── body\n        └── div#cardapio          ← pai\n            ├── h2                ← filhos (4)\n            ├── p#cafe            ← irmão anterior do suco\n            ├── p#suco\n            └── p#bolo            ← próximo irmão do suco",
+          "linguagem": "text"
+        },
+        "**Por que o script vai no fim do `<body>`.** O navegador lê o HTML de cima para baixo e executa cada `<script>` assim que chega nele. Se o script estiver no `<head>`, o `<body>` ainda não foi lido, o elemento não existe e o `getElementById` devolve `null`. A linha seguinte quebra com `Cannot set properties of null` (testado na atividade 9). No fim do `<body>`, ou com `defer`, todos os elementos já existem.",
+        "**`null` é o sinal de \"não achei\".** As causas mais comuns: id escrito diferente (maiúsculas contam), `#` dentro do `getElementById`, ponto esquecido na classe do `querySelector`, ou script rodando antes do HTML.",
+        "**NodeList x HTMLCollection.** O `querySelectorAll` tira uma \"foto\" no momento da busca: se depois você criar um item novo, a NodeList não muda. O `getElementsByClassName` devolve uma coleção \"viva\", que acompanha a página. Testamos com uma lista de 2 itens, acrescentando um terceiro:",
+        {
+          "codigo": "Antes: 2 2\nDepois: 2 3",
+          "linguagem": "text"
+        },
+        "A NodeList tem `forEach`; a HTMLCollection não (`typeof viva.forEach` dá `undefined`), então para percorrê-la usamos `Array.from(viva).forEach(...)` ou um `for`.",
+        "**`textContent` x `innerHTML` e segurança.** O `textContent` sempre mostra o texto como texto: `<b>` aparece na tela com os sinais de menor e maior. O `innerHTML` interpreta as tags. Se o conteúdo vier de quem usa o site (um nome, um comentário), alguém pode digitar HTML com código escondido. Testamos com o \"comentário\" `<img src=\"x\" onerror=\"...\">`: com `innerHTML`, a imagem falha ao carregar e o código do `onerror` **roda**; com `textContent`, aparece só o texto. Regra: dado de usuário ou de API vai com `textContent`; `innerHTML` só com HTML fixo, escrito por você.",
+        "**`classList` em vez de `style`.** O `style` escreve no atributo `style=\"\"` do elemento, misturando aparência com lógica. Com classes, o CSS diz *como* fica um card \"esgotado\" e o JavaScript só diz *que* ele está esgotado. Para mudar o visual depois, você mexe só no CSS.",
+        "**`appendChild` move, não copia.** Se você chamar `appendChild` com um elemento que já está na página, ele sai de onde estava e vai para o fim do novo pai. No Exemplo F, movemos \"Leite\" para o fim e a lista virou \"Pão, Leite\"."
+      ]
+    },
+    {
+      "id": "exemplo-a",
+      "tipo": "codigo",
+      "nome": "Exemplo A — O document e a árvore (arvore.js)",
+      "intro": [
+        "Para testar: crie um `index.html` com o HTML do exemplo e, no fim do `<body>`, a linha `<script src=\"app.js\"></script>`; coloque o JavaScript no `app.js`. Abra o `index.html` no navegador e veja o resultado na página e no console (F12 → aba Console). A numeração das tabelas se refere ao JavaScript.",
+        {
+          "codigo": "<div id=\"cardapio\">\n  <h2>Cardápio</h2>\n  <p id=\"cafe\">Café</p>\n  <p id=\"suco\">Suco</p>\n  <p id=\"bolo\">Bolo</p>\n</div>",
+          "linguagem": "html"
+        }
+      ],
+      "codigo": [
+        "console.log(\"Título:\", document.title);",
+        "console.log(\"Body:\", document.body.tagName);",
+        "",
+        "const suco = document.getElementById(\"suco\");",
+        "console.log(\"Pai:\", suco.parentElement.id);",
+        "console.log(\"Irmão anterior:\", suco.previousElementSibling.textContent);",
+        "console.log(\"Próximo irmão:\", suco.nextElementSibling.textContent);",
+        "",
+        "const cardapio = document.getElementById(\"cardapio\");",
+        "console.log(\"Filhos:\", cardapio.children.length);",
+        "console.log(\"Primeiro filho:\", cardapio.firstElementChild.tagName);",
+        "console.log(\"Último filho:\", cardapio.lastElementChild.textContent);"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "`document.title` lê o texto da tag `<title>`"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "`document.body` é atalho para o `<body>`; `tagName` vem sempre em maiúsculas"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Seleciona o parágrafo \"Suco\" pelo id"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "`parentElement` sobe um nível: a `div#cardapio`"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "O irmão de cima é \"Café\""
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "O irmão de baixo é \"Bolo\""
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "`children` são só os elementos filhos: h2 e três p = 4"
+        },
+        {
+          "linhas": [
+            11,
+            12
+          ],
+          "texto": "O primeiro filho é o `<h2>` e o último é o parágrafo \"Bolo\""
+        }
+      ],
+      "fechamento": [
+        "**Console** (com `<title>Cardápio</title>` no `<head>`):",
+        {
+          "codigo": "Título: Cardápio\nBody: BODY\nPai: cardapio\nIrmão anterior: Café\nPróximo irmão: Bolo\nFilhos: 4\nPrimeiro filho: H2\nÚltimo filho: Bolo",
+          "linguagem": "text"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-b",
+      "tipo": "codigo",
+      "nome": "Exemplo B — As formas de selecionar (selecao.js)",
+      "intro": [
+        {
+          "codigo": "<h1 id=\"titulo\">Loja</h1>\n<div class=\"produto\">Caneca</div>\n<div class=\"produto promocao\">Camiseta</div>\n<div class=\"produto\">Boné</div>\n<p class=\"aviso\">Frete grátis</p>",
+          "linguagem": "html"
+        }
+      ],
+      "codigo": [
+        "const titulo = document.getElementById(\"titulo\");",
+        "console.log(\"1)\", titulo.textContent);",
+        "",
+        "const primeiro = document.querySelector(\".produto\");",
+        "console.log(\"2)\", primeiro.textContent);",
+        "",
+        "const promo = document.querySelector(\".produto.promocao\");",
+        "console.log(\"3)\", promo.textContent);",
+        "",
+        "const produtos = document.querySelectorAll(\".produto\");",
+        "console.log(\"4)\", produtos.length, \"produtos\");",
+        "produtos.forEach((produto, indice) => {",
+        "  console.log(`   ${indice}: ${produto.textContent}`);",
+        "});",
+        "",
+        "const fantasma = document.getElementById(\"nao-existe\");",
+        "console.log(\"5)\", fantasma);",
+        "",
+        "const avisos = document.getElementsByClassName(\"aviso\");",
+        "console.log(\"6)\", avisos.length, \"aviso:\", avisos[0].textContent);"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "Busca exata pelo id (sem `#`)"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "`querySelector(\".produto\")`: três elementos têm a classe, mas só o **primeiro** volta"
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "`.produto.promocao` (sem espaço): o elemento precisa ter as duas classes"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "`querySelectorAll` devolve os três"
+        },
+        {
+          "linhas": [
+            11,
+            11
+          ],
+          "texto": "`length` conta quantos vieram"
+        },
+        {
+          "linhas": [
+            12,
+            14
+          ],
+          "texto": "`forEach` percorre a NodeList; o índice começa em 0"
+        },
+        {
+          "linhas": [
+            16,
+            17
+          ],
+          "texto": "Id que não existe: o resultado é `null`. Usar `fantasma.textContent` aqui daria erro"
+        },
+        {
+          "linhas": [
+            19,
+            20
+          ],
+          "texto": "Método antigo, por classe (sem ponto); devolve uma HTMLCollection, acessada por índice"
+        }
+      ],
+      "fechamento": [
+        "**Console:**",
+        {
+          "codigo": "1) Loja\n2) Caneca\n3) Camiseta\n4) 3 produtos\n   0: Caneca\n   1: Camiseta\n   2: Boné\n5) null\n6) 1 aviso: Frete grátis",
+          "linguagem": "text"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-c",
+      "tipo": "codigo",
+      "nome": "Exemplo C — textContent e innerHTML (conteudo.js)",
+      "intro": [
+        {
+          "codigo": "<p id=\"saudacao\">Carregando...</p>\n<p id=\"seguro\"></p>\n<ul id=\"lista\"></ul>",
+          "linguagem": "html"
+        }
+      ],
+      "codigo": [
+        "const saudacao = document.getElementById(\"saudacao\");",
+        "console.log(\"Antes:\", saudacao.textContent);",
+        "saudacao.textContent = \"Olá, Ana!\";",
+        "",
+        "const nomeDigitado = \"<b>Ana</b>\";",
+        "document.getElementById(\"seguro\").textContent = \"Bem-vinda, \" + nomeDigitado;",
+        "",
+        "const lista = document.getElementById(\"lista\");",
+        "lista.innerHTML = \"<li>HTML</li><li><strong>JavaScript</strong></li>\";",
+        "console.log(\"innerHTML:\", lista.innerHTML);",
+        "console.log(\"textContent:\", lista.textContent);"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Lendo: `textContent` sem `=` devolve o texto atual"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Escrevendo: com `=`, o texto antigo é substituído"
+        },
+        {
+          "linhas": [
+            5,
+            6
+          ],
+          "texto": "Simula um nome digitado com tags: o `textContent` mostra as tags como texto, sem negrito. É o jeito seguro"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "`innerHTML` interpreta a string: cria dois `<li>`, o segundo com `<strong>`"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "Lendo o `innerHTML`, vem o HTML como texto"
+        },
+        {
+          "linhas": [
+            11,
+            11
+          ],
+          "texto": "Lendo o `textContent` da lista, vem só o texto de todos os filhos, colado: \"HTMLJavaScript\""
+        }
+      ],
+      "fechamento": [
+        "**Na página:**",
+        {
+          "codigo": "Olá, Ana!\nBem-vinda, <b>Ana</b>\n• HTML\n• JavaScript   (em negrito)",
+          "linguagem": "text"
+        },
+        "**Console:**",
+        {
+          "codigo": "Antes: Carregando...\ninnerHTML: <li>HTML</li><li><strong>JavaScript</strong></li>\ntextContent: HTMLJavaScript",
+          "linguagem": "text"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-d",
+      "tipo": "codigo",
+      "nome": "Exemplo D — Atributos e classes (atributos.js)",
+      "intro": [
+        {
+          "codigo": "<a id=\"link\" href=\"https://exemplo.com\">Documentação</a>\n<img id=\"foto\" src=\"gato.png\" alt=\"Gato\">\n<button id=\"enviar\">Enviar</button>\n<p id=\"status\" class=\"card\">Status</p>",
+          "linguagem": "html"
+        }
+      ],
+      "codigo": [
+        "const link = document.getElementById(\"link\");",
+        "console.log(\"href antigo:\", link.getAttribute(\"href\"));",
+        "link.setAttribute(\"href\", \"https://developer.mozilla.org/pt-BR/\");",
+        "link.setAttribute(\"target\", \"_blank\");",
+        "",
+        "const foto = document.getElementById(\"foto\");",
+        "foto.setAttribute(\"src\", \"cachorro.png\");",
+        "foto.setAttribute(\"alt\", \"Cachorro\");",
+        "",
+        "const enviar = document.getElementById(\"enviar\");",
+        "enviar.setAttribute(\"disabled\", \"\");",
+        "console.log(\"Botão desabilitado?\", enviar.disabled);",
+        "",
+        "const status = document.getElementById(\"status\");",
+        "status.classList.add(\"ativo\");",
+        "status.classList.add(\"destaque\");",
+        "status.classList.remove(\"card\");",
+        "status.classList.toggle(\"ativo\");",
+        "console.log(\"Classes:\", status.className);",
+        "console.log(\"Tem destaque?\", status.classList.contains(\"destaque\"));"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "`getAttribute` lê o valor atual do `href`"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "`setAttribute` troca o endereço do link"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "Cria um atributo que não existia: o link passa a abrir em nova aba"
+        },
+        {
+          "linhas": [
+            7,
+            8
+          ],
+          "texto": "Troca a imagem e o texto alternativo (lido por leitores de tela e mostrado se a imagem falhar)"
+        },
+        {
+          "linhas": [
+            11,
+            11
+          ],
+          "texto": "`disabled` é atributo booleano: basta existir, o valor `\"\"` não importa"
+        },
+        {
+          "linhas": [
+            12,
+            12
+          ],
+          "texto": "A propriedade `.disabled` confirma: `true`"
+        },
+        {
+          "linhas": [
+            15,
+            16
+          ],
+          "texto": "`add` acrescenta classes sem apagar as outras: `card ativo destaque`"
+        },
+        {
+          "linhas": [
+            17,
+            17
+          ],
+          "texto": "`remove` tira só a `card`: `ativo destaque`"
+        },
+        {
+          "linhas": [
+            18,
+            18
+          ],
+          "texto": "`toggle`: como `ativo` existia, ele **remove**. Se não existisse, adicionaria"
+        },
+        {
+          "linhas": [
+            19,
+            19
+          ],
+          "texto": "`className` mostra tudo num texto: sobrou só `destaque`"
+        },
+        {
+          "linhas": [
+            20,
+            20
+          ],
+          "texto": "`contains` responde `true` ou `false`"
+        }
+      ],
+      "fechamento": [
+        "**Console:**",
+        {
+          "codigo": "href antigo: https://exemplo.com\nBotão desabilitado? true\nClasses: destaque\nTem destaque? true",
+          "linguagem": "text"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-e",
+      "tipo": "codigo",
+      "nome": "Exemplo E — Estilo direto (estilo.js)",
+      "intro": [
+        {
+          "codigo": "<p id=\"aviso\">Atenção: prova na sexta!</p>",
+          "linguagem": "html"
+        }
+      ],
+      "codigo": [
+        "const aviso = document.getElementById(\"aviso\");",
+        "aviso.style.backgroundColor = \"lightyellow\";",
+        "aviso.style.fontSize = \"20px\";",
+        "aviso.style.border = \"2px solid orange\";",
+        "console.log(aviso.getAttribute(\"style\"));"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "`background-color` do CSS vira `backgroundColor` no JavaScript"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "`font-size` vira `fontSize`; o valor é um texto com unidade (`\"20px\"`)"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "`border` não tem hífen, fica igual"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "O resultado vai para o atributo `style` do elemento (estilo inline)"
+        }
+      ],
+      "fechamento": [
+        "**Console:**",
+        {
+          "codigo": "background-color: lightyellow; font-size: 20px; border: 2px solid orange;",
+          "linguagem": "text"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-f",
+      "tipo": "codigo",
+      "nome": "Exemplo F — Criar e inserir elementos (criar.js)",
+      "intro": [
+        {
+          "codigo": "<div id=\"caixa\">\n  <p id=\"meio\">Eu sou o parágrafo do meio.</p>\n</div>\n<ul id=\"compras\">\n  <li>Leite</li>\n</ul>",
+          "linguagem": "html"
+        }
+      ],
+      "codigo": [
+        "const compras = document.getElementById(\"compras\");",
+        "const novoItem = document.createElement(\"li\");",
+        "novoItem.textContent = \"Pão\";",
+        "novoItem.classList.add(\"novo\");",
+        "console.log(\"Está na página?\", document.body.contains(novoItem));",
+        "compras.appendChild(novoItem);",
+        "console.log(\"E agora?\", document.body.contains(novoItem));",
+        "",
+        "const meio = document.getElementById(\"meio\");",
+        "const posicoes = [\"beforebegin\", \"afterbegin\", \"beforeend\", \"afterend\"];",
+        "posicoes.forEach((posicao) => {",
+        "  const etiqueta = document.createElement(\"span\");",
+        "  etiqueta.textContent = `[${posicao}]`;",
+        "  meio.insertAdjacentElement(posicao, etiqueta);",
+        "});",
+        "",
+        "compras.appendChild(compras.firstElementChild);",
+        "const nomes = Array.from(compras.children).map((li) => li.textContent);",
+        "console.log(\"Ordem:\", nomes.join(\", \"));"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Cria um `<li>` na memória"
+        },
+        {
+          "linhas": [
+            3,
+            4
+          ],
+          "texto": "Configura texto e classe antes de inserir"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Ainda não está na página: `false`"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "`appendChild` coloca como último filho da lista: Leite, Pão"
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "Agora está: `true`"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "As quatro posições do `insertAdjacentElement`"
+        },
+        {
+          "linhas": [
+            11,
+            15
+          ],
+          "texto": "Para cada posição, cria um `<span>` com o nome dela e insere em relação ao parágrafo do meio"
+        },
+        {
+          "linhas": [
+            17,
+            17
+          ],
+          "texto": "`firstElementChild` é o \"Leite\". Como ele já está na página, o `appendChild` o **move** para o fim"
+        },
+        {
+          "linhas": [
+            18,
+            19
+          ],
+          "texto": "Lê o texto de cada item na ordem nova: Pão, Leite"
+        }
+      ],
+      "fechamento": [
+        "**Console:**",
+        {
+          "codigo": "Está na página? false\nE agora? true\nOrdem: Pão, Leite",
+          "linguagem": "text"
+        },
+        "**Como ficou o HTML da `#caixa` (visto no DOM):**",
+        {
+          "codigo": "<div id=\"caixa\">\n  <span>[beforebegin]</span>\n  <p id=\"meio\"><span>[afterbegin]</span>Eu sou o parágrafo do meio.<span>[beforeend]</span></p>\n  <span>[afterend]</span>\n</div>",
+          "linguagem": "html"
+        },
+        "Repare nas posições: `beforebegin` e `afterend` ficam **fora** do parágrafo (irmãos dele, ainda dentro da `#caixa`); `afterbegin` e `beforeend` ficam **dentro** dele (primeiro e último filho)."
+      ]
+    },
+    {
+      "id": "como-aplicar",
+      "tipo": "leitura",
+      "nome": "Como aplicar: vitrine de cursos montada pelo JavaScript",
+      "blocos": [
+        "Junta tudo: os dados ficam num array e o JavaScript monta a vitrine inteira, com seleção, criação, atributos, classes, estilo e inserção em posição. É assim que funcionam as páginas que mostram produtos vindos de uma API: o HTML traz só a \"moldura\" e o JavaScript preenche.",
+        "**`index.html`:**",
+        {
+          "codigo": "<!DOCTYPE html>\n<html lang=\"pt-BR\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>Vitrine de cursos</title>\n  <style>\n    .card { border: 1px solid #ccc; padding: 8px; margin: 8px 0; list-style: none; }\n    .destaque { border: 2px solid green; }\n    .gratis { color: green; font-weight: bold; }\n    .esgotado { opacity: 0.5; }\n  </style>\n</head>\n<body>\n  <h1>Cursos da semana</h1>\n  <p id=\"resumo\">Carregando cursos...</p>\n  <ul id=\"vitrine\"></ul>\n  <script src=\"app.js\"></script>\n</body>\n</html>",
+          "linguagem": "html"
+        },
+        "**`app.js`:**",
+        {
+          "codigo": "const cursos = [\n  { nome: \"HTML do zero\", preco: 0, vagas: 12, imagem: \"html.png\" },\n  { nome: \"JavaScript Essencial\", preco: 149.9, vagas: 3, imagem: \"js.png\" },\n  { nome: \"Python para Dados\", preco: 199.9, vagas: 0, imagem: \"python.png\" },\n  { nome: \"Git e GitHub\", preco: 59.9, vagas: 20, imagem: \"git.png\" },\n];\n\nconst vitrine = document.getElementById(\"vitrine\");\n\n// 1. Cria um card para cada curso\ncursos.forEach((curso) => {\n  const card = document.createElement(\"li\");\n  card.classList.add(\"card\");\n\n  const foto = document.createElement(\"img\");\n  foto.setAttribute(\"src\", curso.imagem);\n  foto.setAttribute(\"alt\", `Capa do curso ${curso.nome}`);\n  foto.setAttribute(\"width\", \"80\");\n\n  const titulo = document.createElement(\"h3\");\n  titulo.textContent = curso.nome;\n\n  const preco = document.createElement(\"p\");\n  if (curso.preco === 0) {\n    preco.textContent = \"Grátis\";\n    preco.classList.add(\"gratis\");\n  } else {\n    preco.textContent = `R$ ${curso.preco.toFixed(2).replace(\".\", \",\")}`;\n  }\n\n  const vagas = document.createElement(\"p\");\n  if (curso.vagas === 0) {\n    vagas.textContent = \"Esgotado\";\n    card.classList.add(\"esgotado\");\n  } else if (curso.vagas <= 5) {\n    vagas.textContent = `Últimas ${curso.vagas} vagas!`;\n    vagas.style.color = \"darkorange\";\n  } else {\n    vagas.textContent = `${curso.vagas} vagas`;\n  }\n\n  card.appendChild(foto);\n  card.appendChild(titulo);\n  card.appendChild(preco);\n  card.appendChild(vagas);\n  vitrine.appendChild(card);\n});\n\n// 2. Destaca o primeiro curso disponível\nconst disponiveis = document.querySelectorAll(\".card:not(.esgotado)\");\ndisponiveis[0].classList.add(\"destaque\");\n\nconst selo = document.createElement(\"strong\");\nselo.textContent = \"Mais procurado\";\ndisponiveis[0].insertAdjacentElement(\"afterbegin\", selo);\n\n// 3. Atualiza o resumo\nconst total = document.querySelectorAll(\".card\").length;\nconst gratis = document.querySelectorAll(\".gratis\").length;\ndocument.getElementById(\"resumo\").textContent =\n  `${total} cursos, ${disponiveis.length} com vagas, ${gratis} grátis.`;"
+        },
+        "**Na página** (as imagens não existem na pasta, então aparece o texto do `alt` no lugar delas; coloque arquivos com esses nomes se quiser ver as capas):",
+        {
+          "codigo": "Cursos da semana\n4 cursos, 3 com vagas, 1 grátis.\n\n[card com borda verde]\nMais procurado\nHTML do zero\nGrátis\n12 vagas\n\nJavaScript Essencial\nR$ 149,90\nÚltimas 3 vagas!        (em laranja)\n\n[card apagado]\nPython para Dados\nR$ 199,90\nEsgotado\n\nGit e GitHub\nR$ 59,90\n20 vagas",
+          "linguagem": "text"
+        },
+        "**Por que funciona:** o `forEach` cria um `<li>` por curso e monta as partes dele na memória (imagem, título, preço, vagas) antes de colocar o card na página. Todo dado do curso entra com `textContent` ou `setAttribute`, nunca com `innerHTML`, então um nome com tags não quebraria a página. A aparência é decidida por classes (`gratis`, `esgotado`, `destaque`) definidas no CSS; o `style` aparece só no ajuste pontual da cor das \"últimas vagas\". Depois da montagem, o `querySelectorAll(\".card:not(.esgotado)\")` encontra os cards com vaga, e o primeiro ganha a borda e o selo \"Mais procurado\", inserido com `afterbegin` para ficar no topo do card. O resumo é calculado contando elementos na página, então ele continua certo se você mudar o array. Por fim, o `toFixed(2)` com o `replace` mostra o preço no formato brasileiro (149,90)."
+      ]
+    },
+    {
+      "id": "quiz",
+      "tipo": "quiz",
+      "nome": "Quiz de código",
+      "perguntas": [
+        {
+          "pergunta": "O que aparece no console?",
+          "contexto": [
+            {
+              "codigo": "<p class=\"nota\">8</p>\n<p class=\"nota\">10</p>",
+              "linguagem": "html"
+            }
+          ],
+          "codigo": "console.log(document.querySelector(\".nota\").textContent);",
+          "opcoes": [
+            "`8`",
+            "`10`",
+            "`8 10`",
+            "`null`"
+          ],
+          "correta": 0,
+          "dica": "o `querySelector` devolve quantos elementos?",
+          "acerto": "Isso! querySelector devolve só o primeiro.",
+          "erro": "Para pegar todos, seria querySelectorAll.",
+          "explicacao": "com várias combinações, o `querySelector` devolve só a primeira na ordem do HTML, o parágrafo \"8\"."
+        },
+        {
+          "pergunta": "Por que este código devolve `null`?",
+          "contexto": [
+            {
+              "codigo": "<h1 id=\"titulo\">Olá</h1>",
+              "linguagem": "html"
+            }
+          ],
+          "codigo": "const titulo = document.getElementById(\"#titulo\");",
+          "opcoes": [
+            "Porque falta o `querySelector`",
+            "Porque `getElementById` recebe o id sem `#`",
+            "Porque o id precisa estar em maiúsculas",
+            "Porque `h1` não pode ter id"
+          ],
+          "correta": 1,
+          "dica": "o nome do método já diz o que ele procura.",
+          "acerto": "Exato! O # é só para seletores CSS.",
+          "erro": "O problema está no texto passado para o método.",
+          "explicacao": "`getElementById(\"titulo\")` funciona. O `#` só é usado em seletores CSS: `querySelector(\"#titulo\")`."
+        },
+        {
+          "pergunta": "Um usuário digitou o nome `<b>Ana</b>`. Qual linha mostra isso na tela exatamente como ele digitou, com segurança?",
+          "opcoes": [
+            "`p.innerHTML = nome;`",
+            "`p.textContent = nome;`",
+            "`p.setAttribute(\"html\", nome);`",
+            "`p.style = nome;`"
+          ],
+          "correta": 1,
+          "dica": "qual propriedade trata tags como texto comum?",
+          "acerto": "Perfeito! textContent nunca interpreta HTML.",
+          "erro": "O innerHTML interpretaria as tags, e dado de usuário nunca deve ir nele.",
+          "explicacao": "com `textContent` aparece `<b>Ana</b>` como texto, sem negrito e sem risco de código escondido."
+        },
+        {
+          "pergunta": "O elemento tinha `class=\"card\"`. Depois deste código, quais classes ele tem?",
+          "codigo": "el.classList.add(\"ativo\");\nel.classList.toggle(\"card\");\nel.classList.toggle(\"novo\");",
+          "opcoes": [
+            "`card ativo novo`",
+            "`ativo novo`",
+            "`ativo`",
+            "`card novo`"
+          ],
+          "correta": 1,
+          "dica": "o `toggle` tira o que existe e põe o que falta.",
+          "acerto": "Isso! card saiu, novo entrou.",
+          "erro": "Faça passo a passo: add, depois cada toggle.",
+          "explicacao": "`add` deixa `card ativo`; `toggle(\"card\")` remove `card` (existia); `toggle(\"novo\")` adiciona `novo` (não existia). Resultado: `ativo novo`."
+        },
+        {
+          "pergunta": "Como fica a lista depois do código?",
+          "contexto": [
+            {
+              "codigo": "<ul id=\"lista\">\n  <li>B</li>\n</ul>",
+              "linguagem": "html"
+            }
+          ],
+          "codigo": "const lista = document.getElementById(\"lista\");\nconst a = document.createElement(\"li\");\na.textContent = \"A\";\nlista.insertAdjacentElement(\"afterbegin\", a);\nconst c = document.createElement(\"li\");\nc.textContent = \"C\";\nlista.appendChild(c);",
+          "opcoes": [
+            "B, A, C",
+            "A, B, C",
+            "C, B, A",
+            "B, C, A"
+          ],
+          "correta": 1,
+          "dica": "`afterbegin` é o primeiro filho; `appendChild`, o último.",
+          "acerto": "Perfeito! A no começo, C no fim.",
+          "erro": "Releia as posições: afterbegin = logo depois da abertura do <ul>.",
+          "explicacao": "o \"A\" entra como primeiro filho e o \"C\" como último, então a lista fica A, B, C."
+        },
+        {
+          "pergunta": "Qual linha deixa o fundo do elemento azul?",
+          "opcoes": [
+            "`el.style.background-color = \"blue\";`",
+            "`el.style[\"background color\"] = \"blue\";`",
+            "`el.style.backgroundColor = \"blue\";`",
+            "`el.backgroundColor = \"blue\";`"
+          ],
+          "correta": 2,
+          "dica": "hífen em nome de propriedade no JavaScript é um problema.",
+          "acerto": "Isso! camelCase: backgroundColor.",
+          "erro": "O hífen seria lido como sinal de menos.",
+          "explicacao": "no JavaScript, `background-color` seria lido como `background - color` (uma subtração). A propriedade do `style` é `backgroundColor`, e ela fica dentro de `.style`."
+        }
+      ]
+    },
+    {
+      "id": "atividades",
+      "tipo": "atividades",
+      "nome": "Atividades",
+      "intro": [
+        "Para cada atividade, crie um `index.html` com o HTML dado e ligue um `app.js` no fim do `<body>`. Onde aparecem as classes `feita`, `destaque`, `caro` ou `alerta`, crie no `<style>` um visual simples para elas (por exemplo, `.caro { color: red; }`).",
+        "Escreva ou cole a sua tentativa no campo de cada atividade para liberar a solução. Outras soluções também valem, desde que passem nos testes do enunciado."
+      ],
+      "itens": [
+        {
+          "n": 1,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Com o HTML abaixo, troque o título para \"Portfólio da Ana\", o parágrafo para \"Desenvolvedora Full Stack em formação.\" e deixe o parágrafo roxo.",
+            {
+              "codigo": "<h1 id=\"titulo\">Meu site</h1>\n<p id=\"descricao\">Texto antigo</p>",
+              "linguagem": "html"
+            }
+          ],
+          "dica": "`getElementById`, `textContent` e `style.color`.",
+          "solucao": [
+            {
+              "codigo": "const titulo = document.getElementById(\"titulo\");\nconst descricao = document.getElementById(\"descricao\");\n\ntitulo.textContent = \"Portfólio da Ana\";\ndescricao.textContent = \"Desenvolvedora Full Stack em formação.\";\ndescricao.style.color = \"purple\";"
+            },
+            "O DOM fica `<p id=\"descricao\" style=\"color: purple;\">Desenvolvedora Full Stack em formação.</p>`."
+          ]
+        },
+        {
+          "n": 2,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Conte quantas tarefas existem e escreva no parágrafo `#contador`: \"Você tem 3 tarefas.\" O número deve vir do JavaScript, não escrito à mão.",
+            {
+              "codigo": "<ul>\n  <li class=\"tarefa\">Estudar DOM</li>\n  <li class=\"tarefa\">Fazer exercícios</li>\n  <li class=\"tarefa\">Revisar arrays</li>\n</ul>\n<p id=\"contador\"></p>",
+              "linguagem": "html"
+            }
+          ],
+          "dica": "`querySelectorAll(\".tarefa\").length` e template string.",
+          "solucao": [
+            {
+              "codigo": "const tarefas = document.querySelectorAll(\".tarefa\");\nconst contador = document.getElementById(\"contador\");\ncontador.textContent = `Você tem ${tarefas.length} tarefas.`;"
+            },
+            "Na página: \"Você tem 3 tarefas.\" Acrescente mais um `<li class=\"tarefa\">` no HTML e recarregue: o número muda sozinho."
+          ]
+        },
+        {
+          "n": 3,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Marque a **segunda** tarefa como feita: adicione a classe `feita` e acrescente \" ✔\" no fim do texto dela.",
+            {
+              "codigo": "<ul id=\"tarefas\">\n  <li>Estudar DOM</li>\n  <li>Fazer exercícios</li>\n  <li>Revisar arrays</li>\n</ul>",
+              "linguagem": "html"
+            }
+          ],
+          "dica": "`querySelectorAll(\"#tarefas li\")` e o índice 1 (a contagem começa em 0). Para acrescentar texto, `+=`.",
+          "solucao": [
+            {
+              "codigo": "const itens = document.querySelectorAll(\"#tarefas li\");\nconst segundo = itens[1];\nsegundo.classList.add(\"feita\");\nsegundo.textContent += \" ✔\";\nconsole.log(segundo.className, \"|\", segundo.textContent);"
+            },
+            "Console: `feita | Fazer exercícios ✔`. Com `.feita { text-decoration: line-through; }` no CSS, o item aparece riscado."
+          ]
+        },
+        {
+          "n": 4,
+          "nivel": "Médio",
+          "enunciado": [
+            "A partir do array `[\"Ana\", \"Bruno\", \"Carla\", \"Diego\"]`, crie um `<li>` para cada nome dentro da lista vazia `<ol id=\"alunos\"></ol>`. No fim, mostre no console quantos itens a lista tem."
+          ],
+          "dica": "`forEach` + `createElement(\"li\")` + `textContent` + `appendChild`.",
+          "solucao": [
+            {
+              "codigo": "const nomes = [\"Ana\", \"Bruno\", \"Carla\", \"Diego\"];\nconst lista = document.getElementById(\"alunos\");\n\nnomes.forEach((nome) => {\n  const item = document.createElement(\"li\");\n  item.textContent = nome;\n  lista.appendChild(item);\n});\n\nconsole.log(\"Itens na lista:\", lista.children.length);"
+            },
+            "Na página aparece a lista numerada 1. Ana a 4. Diego. Console: `Itens na lista: 4`."
+          ]
+        },
+        {
+          "n": 5,
+          "nivel": "Médio",
+          "enunciado": [
+            "Mostre no console o `href` do link e o `src` da imagem. Depois troque o link para `https://github.com/ana-dev`, faça ele abrir em nova aba, troque a imagem para `ana.png` e coloque o texto alternativo \"Foto da Ana\". Mostre os valores novos.",
+            {
+              "codigo": "<a id=\"perfil\" href=\"https://github.com\">Meu GitHub</a>\n<img id=\"avatar\" src=\"padrao.png\" alt=\"\">",
+              "linguagem": "html"
+            }
+          ],
+          "dica": "`getAttribute` para ler, `setAttribute` para trocar; nova aba é `target=\"_blank\"`.",
+          "solucao": [
+            {
+              "codigo": "const perfil = document.getElementById(\"perfil\");\nconst avatar = document.getElementById(\"avatar\");\n\nconsole.log(\"Link antes:\", perfil.getAttribute(\"href\"));\nconsole.log(\"Imagem antes:\", avatar.getAttribute(\"src\"));\n\nperfil.setAttribute(\"href\", \"https://github.com/ana-dev\");\nperfil.setAttribute(\"target\", \"_blank\");\navatar.setAttribute(\"src\", \"ana.png\");\navatar.setAttribute(\"alt\", \"Foto da Ana\");\n\nconsole.log(\"Link depois:\", perfil.getAttribute(\"href\"));\nconsole.log(\"Alt depois:\", avatar.getAttribute(\"alt\"));"
+            },
+            {
+              "codigo": "Link antes: https://github.com\nImagem antes: padrao.png\nLink depois: https://github.com/ana-dev\nAlt depois: Foto da Ana",
+              "linguagem": "text"
+            }
+          ]
+        },
+        {
+          "n": 6,
+          "nivel": "Médio",
+          "enunciado": [
+            "Destaque com a classe `caro` os produtos que custam mais de R$ 100 e escreva em `#aviso` quantos são. O preço está no próprio texto do item, depois de \": \".",
+            {
+              "codigo": "<ul>\n  <li class=\"preco\">Mouse: 49.90</li>\n  <li class=\"preco\">Monitor: 899.00</li>\n  <li class=\"preco\">Teclado: 129.90</li>\n  <li class=\"preco\">Cabo HDMI: 25.00</li>\n</ul>\n<p id=\"aviso\"></p>",
+              "linguagem": "html"
+            }
+          ],
+          "dica": "`textContent.split(\": \")` separa nome e preço; `parseFloat` transforma o texto em número.",
+          "solucao": [
+            {
+              "codigo": "const precos = document.querySelectorAll(\".preco\");\nlet caros = 0;\n\nprecos.forEach((item) => {\n  const partes = item.textContent.split(\": \");\n  const valor = parseFloat(partes[1]);\n  if (valor > 100) {\n    item.classList.add(\"caro\");\n    caros++;\n  }\n});\n\ndocument.getElementById(\"aviso\").textContent = `${caros} produto(s) acima de R$ 100.`;"
+            },
+            "Monitor e Teclado ganham a classe `caro`, e o aviso mostra \"2 produto(s) acima de R$ 100.\" Sem o `parseFloat`, a comparação seria entre texto e número; converter deixa a intenção clara e evita surpresas."
+          ]
+        },
+        {
+          "n": 7,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Sem usar outro `getElementById` além do `#atual`, destaque a etapa atual (classe `destaque`), marque a etapa anterior como `feita` e escreva em `#info`: \"Etapa atual: Testar (dentro de #etapas). Antes: Codar. Depois: Publicar.\"",
+            {
+              "codigo": "<ol id=\"etapas\">\n  <li>Planejar</li>\n  <li>Codar</li>\n  <li id=\"atual\">Testar</li>\n  <li>Publicar</li>\n</ol>\n<p id=\"info\"></p>",
+              "linguagem": "html"
+            }
+          ],
+          "dica": "navegue pela árvore: `previousElementSibling`, `nextElementSibling` e `parentElement.id`. (O `#info` pode ser pego com `getElementById`, ele não é etapa.)",
+          "solucao": [
+            {
+              "codigo": "const atual = document.getElementById(\"atual\");\nconst anterior = atual.previousElementSibling;\nconst proxima = atual.nextElementSibling;\n\natual.classList.add(\"destaque\");\nanterior.classList.add(\"feita\");\n\ndocument.getElementById(\"info\").textContent =\n  `Etapa atual: ${atual.textContent} (dentro de #${atual.parentElement.id}). ` +\n  `Antes: ${anterior.textContent}. Depois: ${proxima.textContent}.`;"
+            },
+            "Resultado testado: \"Codar\" ganha `feita`, \"Testar\" ganha `destaque` e o parágrafo mostra a frase pedida. A vantagem de navegar pela árvore: se você mover o `id=\"atual\"` para \"Codar\", tudo se ajusta sem mudar o JavaScript."
+          ]
+        },
+        {
+          "n": 8,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Monte as linhas de uma tabela a partir de um array de objetos. Cada aluno vira uma linha com nome, nota e situação (\"Aprovado\" se a nota for 7 ou mais; senão \"Recuperação\", e a linha ganha a classe `alerta`). No fim, mostre a média da turma com uma casa decimal.",
+            {
+              "codigo": "<table border=\"1\">\n  <caption>Notas</caption>\n  <thead>\n    <tr><th>Aluno</th><th>Nota</th><th>Situação</th></tr>\n  </thead>\n  <tbody id=\"corpo\"></tbody>\n</table>\n<p id=\"media\"></p>",
+              "linguagem": "html"
+            },
+            {
+              "codigo": "const alunos = [\n  { nome: \"Ana\", nota: 9 },\n  { nome: \"Bruno\", nota: 5.5 },\n  { nome: \"Carla\", nota: 7 },\n];"
+            }
+          ],
+          "dica": "para cada aluno, crie um `<tr>` e três `<td>`, coloque os `<td>` dentro do `<tr>` e o `<tr>` dentro do `<tbody>`. Some as notas numa variável fora do `forEach`.",
+          "solucao": [
+            {
+              "codigo": "const alunos = [\n  { nome: \"Ana\", nota: 9 },\n  { nome: \"Bruno\", nota: 5.5 },\n  { nome: \"Carla\", nota: 7 },\n];\nconst corpo = document.getElementById(\"corpo\");\nlet soma = 0;\n\nalunos.forEach((aluno) => {\n  const linha = document.createElement(\"tr\");\n\n  const celulaNome = document.createElement(\"td\");\n  celulaNome.textContent = aluno.nome;\n\n  const celulaNota = document.createElement(\"td\");\n  celulaNota.textContent = aluno.nota;\n\n  const celulaSituacao = document.createElement(\"td\");\n  if (aluno.nota >= 7) {\n    celulaSituacao.textContent = \"Aprovado\";\n  } else {\n    celulaSituacao.textContent = \"Recuperação\";\n    linha.classList.add(\"alerta\");\n  }\n\n  linha.appendChild(celulaNome);\n  linha.appendChild(celulaNota);\n  linha.appendChild(celulaSituacao);\n  corpo.appendChild(linha);\n  soma += aluno.nota;\n});\n\nconst media = soma / alunos.length;\ndocument.getElementById(\"media\").textContent = `Média da turma: ${media.toFixed(1)}`;"
+            },
+            "**Na página:**",
+            {
+              "codigo": "              Notas\nAluno   Nota   Situação\nAna     9      Aprovado\nBruno   5.5    Recuperação   (linha com a classe alerta)\nCarla   7      Aprovado\nMédia da turma: 7.2",
+              "linguagem": "text"
+            },
+            "A média é (9 + 5.5 + 7) ÷ 3 = 7.1666..., que o `toFixed(1)` arredonda para 7.2."
+          ]
+        },
+        {
+          "n": 9,
+          "nivel": "Difícil",
+          "enunciado": [
+            "O código abaixo tem **dois** problemas: um faz a página dar erro e o outro é uma falha de segurança. Encontre os dois e corrija. (O `nomeDoUsuario` simula um nome que veio de um cadastro.)",
+            "`index.html`:",
+            {
+              "codigo": "<!DOCTYPE html>\n<html lang=\"pt-BR\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>Painel</title>\n  <script src=\"app.js\"></script>\n</head>\n<body>\n  <h1 id=\"boas-vindas\">Olá!</h1>\n</body>\n</html>",
+              "linguagem": "html"
+            },
+            "`app.js`:",
+            {
+              "codigo": "const nomeDoUsuario = '<img src=\"x\" onerror=\"alert(\\'hackeado\\')\">';\nconst boasVindas = document.getElementById(\"boas-vindas\");\nboasVindas.innerHTML = `Olá, ${nomeDoUsuario}!`;"
+            }
+          ],
+          "dica": "abra o console. Em que momento o script roda, e o `<h1>` já existe? Depois de resolver o erro, o que acontece com esse \"nome\"?",
+          "solucao": [
+            "**Problema 1 (erro):** o script está no `<head>` e roda antes de o navegador ler o `<body>`. O `getElementById` devolve `null` e o console mostra `Uncaught TypeError: Cannot set properties of null (setting 'innerHTML')`. **Correção:** colocar `defer` no script (ou mover o `<script>` para o fim do `<body>`).",
+            "**Problema 2 (segurança):** com o erro corrigido, o `innerHTML` interpreta o \"nome\": a imagem falha e o `onerror` abre um alerta \"hackeado\". Num site real, esse código poderia roubar dados de quem vê a página (XSS). **Correção:** usar `textContent`.",
+            "`index.html` corrigido (só a linha do script muda):",
+            {
+              "codigo": "  <script src=\"app.js\" defer></script>",
+              "linguagem": "html"
+            },
+            "`app.js` corrigido:",
+            {
+              "codigo": "const nomeDoUsuario = '<img src=\"x\" onerror=\"alert(\\'hackeado\\')\">';\nconst boasVindas = document.getElementById(\"boas-vindas\");\nboasVindas.textContent = `Olá, ${nomeDoUsuario}!`;"
+            },
+            "Testamos as três versões: a original dá o erro de `null`; só com o `defer`, o alerta \"hackeado\" aparece; com `defer` e `textContent`, o título mostra o \"nome\" como texto comum, sem executar nada."
+          ]
+        }
+      ]
+    }
+  ]
+}
