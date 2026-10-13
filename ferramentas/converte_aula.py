@@ -23,13 +23,14 @@ AVISO_ATIVIDADES = ("Escreva ou cole a sua tentativa no campo de cada atividade 
                     "Outras soluções também valem, desde que passem nos testes do enunciado.")
 
 
-LINGUAGENS_CONHECIDAS = {"python", "javascript", "sql", "lua", "html"}
+LINGUAGENS_CONHECIDAS = {"python", "javascript", "sql", "lua", "html", "text"}
 PADRAO = "python"   # linguagem da trilha; main() troca pelo valor do indice.json
 
 
 def linguagem_da_cerca(ln):
-    """'```sql' → 'sql'. Só devolve quando o site realça essa linguagem e ela difere da da trilha."""
-    tag = {"js": "javascript", "py": "python"}.get(ln.strip()[3:].strip().lower(), ln.strip()[3:].strip().lower())
+    """'```sql' → 'sql'. Só devolve quando o site realça essa linguagem e ela difere da da trilha.
+    'text' (e bash/sh/shell/console) = sem realce: terminal e saídas não são código da linguagem da trilha."""
+    tag = {"js": "javascript", "py": "python", "bash": "text", "sh": "text", "shell": "text", "console": "text"}.get(ln.strip()[3:].strip().lower(), ln.strip()[3:].strip().lower())
     return tag if tag in LINGUAGENS_CONHECIDAS and tag != PADRAO else None
 
 
@@ -145,12 +146,19 @@ def exemplos(linhas):
                 i += 1
                 fences.append((bloco, lang)); continue
             if s.startswith("|"):
+                tab = []
                 while i < len(ls) and ls[i].strip().startswith("|"):
-                    c = celulas(ls[i])
-                    if re.match(r"^\d+(\s*[–-]\s*\d+)?$", c[0]):
-                        a, _, b = re.sub(r"\s", "", c[0]).replace("-", "–").partition("–")
-                        explic.append({"linhas": [int(a), int(b or a)], "texto": c[-1]})
-                    i += 1
+                    tab.append(ls[i]); i += 1
+                if sem_crases(celulas(tab[0])[0]).lower() != "linha":   # outra tabela (ex.: "O que testamos"): fica no fechamento
+                    resto.extend([""] + tab + [""])
+                    continue
+                for ln_tab in tab:
+                    c = celulas(ln_tab)
+                    # "5", "3–6", "3 e 5", "9, 11, 13": cada número ou faixa vira uma explicação
+                    if re.match(r"^\d+(\s*[–-]\s*\d+)?(\s*(,|e)\s*\d+(\s*[–-]\s*\d+)?)*$", c[0]):
+                        for parte in re.split(r"\s*(?:,|e)\s*", c[0]):
+                            a, _, b = re.sub(r"\s", "", parte).replace("-", "–").partition("–")
+                            explic.append({"linhas": [int(a), int(b or a)], "texto": c[-1]})
                 continue
             resto.append(ls[i]); i += 1
         # quando há mais de um bloco de código (ex.: HTML e depois o JavaScript), a tabela
@@ -384,7 +392,7 @@ def conferir(md_path, aula):
         for p in pedacos:
             if not p or p.lower().strip(":*") in ignorar:
                 continue
-            if not fence and re.match(r"^\d+(\s*[–-]\s*\d+)?$", p):   # nº de linha da tabela → vira faixa numérica
+            if not fence and re.match(r"^\d+(\s*[–-]\s*\d+)?(\s*(,|e)\s*\d+(\s*[–-]\s*\d+)?)*$", p):   # nº de linha da tabela → vira faixa numérica
                 continue
             if p not in tudo and sem_crases(p) not in tudo:
                 faltando.append((n, p))

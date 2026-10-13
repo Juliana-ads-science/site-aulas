@@ -1,0 +1,1295 @@
+{
+  "numero": 2,
+  "titulo": "Organização de Conteúdo: Listas, Tabelas e Formulários",
+  "etapas": [
+    {
+      "id": "definicoes",
+      "tipo": "leitura",
+      "nome": "Definições",
+      "blocos": [
+        "Na aula anterior você montou a estrutura básica de uma página. Agora vai organizar o conteúdo dela: **listas** para itens relacionados, **tabelas** para dados em linhas e colunas, e **formulários** para o usuário digitar, escolher e enviar informações. No fim, vai construir a página de inscrição de uma oficina usando os três.",
+        {
+          "tabela": [
+            [
+              "Termo",
+              "O que significa"
+            ],
+            [
+              "`<ul>`",
+              "Lista não ordenada (*unordered list*): a ordem dos itens não importa; aparece com marcadores (bolinhas)"
+            ],
+            [
+              "`<ol>`",
+              "Lista ordenada (*ordered list*): a ordem importa; aparece numerada"
+            ],
+            [
+              "`<li>`",
+              "Item de lista (*list item*): cada item, dentro de `<ul>` ou `<ol>`"
+            ],
+            [
+              "Lista aninhada",
+              "Uma lista dentro de um `<li>` de outra lista"
+            ],
+            [
+              "`<table>`",
+              "Tabela: dados organizados em linhas e colunas"
+            ],
+            [
+              "`<tr>`",
+              "Linha da tabela (*table row*)"
+            ],
+            [
+              "`<th>`",
+              "Célula de cabeçalho (*table header*): título de uma coluna ou linha, em negrito e centralizado"
+            ],
+            [
+              "`<td>`",
+              "Célula de dado (*table data*)"
+            ],
+            [
+              "`<thead>` / `<tbody>`",
+              "Agrupam as linhas de cabeçalho / as linhas de dados"
+            ],
+            [
+              "`<caption>`",
+              "Título da tabela"
+            ],
+            [
+              "`colspan` / `rowspan`",
+              "Fazem uma célula ocupar várias colunas / várias linhas"
+            ],
+            [
+              "`<form>`",
+              "Área do formulário: junta os campos e os envia"
+            ],
+            [
+              "`action`",
+              "Para onde os dados vão quando o formulário é enviado"
+            ],
+            [
+              "`method`",
+              "Como os dados vão: `get` (na URL) ou `post` (no corpo da requisição)"
+            ],
+            [
+              "`<input>`",
+              "Campo de entrada; o tipo é definido pelo atributo `type`"
+            ],
+            [
+              "`name`",
+              "Nome do campo no envio. Campo **sem** `name` não é enviado"
+            ],
+            [
+              "`value`",
+              "Valor enviado (em opções) ou valor inicial (em campos de texto)"
+            ],
+            [
+              "`id`",
+              "Identificador único do elemento na página"
+            ],
+            [
+              "`<label>`",
+              "Rótulo de um campo; ligado a ele pelo `for` igual ao `id` do campo"
+            ],
+            [
+              "`placeholder`",
+              "Texto de exemplo que some quando o usuário começa a digitar"
+            ],
+            [
+              "`<textarea>`",
+              "Campo de texto com várias linhas"
+            ],
+            [
+              "`radio`",
+              "Escolha **uma** opção de um grupo"
+            ],
+            [
+              "`checkbox`",
+              "Marque **zero, uma ou várias** opções"
+            ],
+            [
+              "`<select>` / `<option>`",
+              "Lista suspensa (*dropdown*) e cada opção dela"
+            ],
+            [
+              "`<optgroup>`",
+              "Grupo de opções dentro de um `<select>`, com título"
+            ],
+            [
+              "`required`",
+              "Campo obrigatório: o navegador não envia o formulário se ele estiver vazio"
+            ],
+            [
+              "Validação no navegador",
+              "Verificação feita antes do envio (campo vazio, e-mail sem @, número fora da faixa)"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "para-que-como-e-quando-usamos",
+      "tipo": "leitura",
+      "nome": "Para que, como e quando usamos",
+      "blocos": [
+        "**Para que:** quase toda página organiza informação. O menu de um site é uma lista; o horário de aulas é uma tabela; o login, o cadastro, a busca e o carrinho de compras são formulários. Usar a tag certa faz a página funcionar melhor para todo mundo: leitores de tela anunciam \"lista com 4 itens\" ou \"tabela com 3 colunas\", o Google entende a estrutura, e os formulários validam os dados antes de enviar.",
+        "**Como:** cada estrutura tem uma tag \"de fora\" que agrupa e tags \"de dentro\" para cada parte:",
+        {
+          "codigo": "<ul> → <li>\n<ol> → <li>\n<table> → <tr> → <th> ou <td>\n<form> → <label> + <input>, <textarea>, <select> → <option>"
+        },
+        "**Quando usar cada um:**",
+        {
+          "tabela": [
+            [
+              "Situação",
+              "Use"
+            ],
+            [
+              "Lista de compras, menu de navegação, características de um produto",
+              "`<ul>`"
+            ],
+            [
+              "Passo a passo, receita, ranking",
+              "`<ol>`"
+            ],
+            [
+              "Sumário com capítulos e subtópicos",
+              "Listas aninhadas"
+            ],
+            [
+              "Dados que se comparam por colunas: horários, notas, preços",
+              "`<table>`"
+            ],
+            [
+              "Nome, título, cidade (texto curto)",
+              "`<input type=\"text\">`"
+            ],
+            [
+              "E-mail",
+              "`<input type=\"email\">`"
+            ],
+            [
+              "Senha",
+              "`<input type=\"password\">`"
+            ],
+            [
+              "Idade, quantidade",
+              "`<input type=\"number\">`"
+            ],
+            [
+              "Data",
+              "`<input type=\"date\">`"
+            ],
+            [
+              "Uma escolha entre poucas opções (2 a 5)",
+              "`radio`"
+            ],
+            [
+              "Uma escolha entre muitas opções",
+              "`<select>`"
+            ],
+            [
+              "Várias escolhas ao mesmo tempo",
+              "`checkbox`"
+            ],
+            [
+              "Aceite de termos (\"Li e aceito\")",
+              "Um `checkbox` com `required`"
+            ],
+            [
+              "Comentário, mensagem, descrição",
+              "`<textarea>`"
+            ]
+          ]
+        },
+        "**Tabela não é para montar layout.** Antigamente sites inteiros eram feitos com tabelas para posicionar menus e colunas. Hoje, tabela é só para dados em linhas e colunas; a posição dos elementos é trabalho do CSS."
+      ]
+    },
+    {
+      "id": "estruturas",
+      "tipo": "leitura",
+      "nome": "Estruturas",
+      "blocos": [
+        {
+          "h": "3.1 Lista não ordenada"
+        },
+        {
+          "codigo": "<ul>\n  <li>Item</li>\n  <li>Item</li>\n</ul>"
+        },
+        {
+          "h": "3.2 Lista ordenada"
+        },
+        {
+          "codigo": "<ol type=\"1\">   <!-- 1, 2, 3 (padrão). Também: A, a, I, i -->\n  <li>Primeiro passo</li>\n  <li>Segundo passo</li>\n</ol>"
+        },
+        "`<ol start=\"5\">` começa a contagem no 5.",
+        {
+          "h": "3.3 Lista aninhada"
+        },
+        {
+          "codigo": "<ul>\n  <li>Item pai\n    <ul>\n      <li>Subitem</li>\n    </ul>\n  </li>   <!-- o </li> do pai fecha DEPOIS da sublista -->\n</ul>"
+        },
+        {
+          "h": "3.4 Tabela"
+        },
+        {
+          "codigo": "<table>\n  <caption>Título</caption>\n  <thead>\n    <tr>\n      <th>Coluna 1</th>\n      <th>Coluna 2</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>Dado</td>\n      <td>Dado</td>\n    </tr>\n  </tbody>\n</table>"
+        },
+        {
+          "h": "3.5 Formulário"
+        },
+        {
+          "codigo": "<form action=\"destino\" method=\"get\">\n  <label for=\"campo\">Rótulo:</label>\n  <input type=\"text\" id=\"campo\" name=\"campo\">\n  <button type=\"submit\">Enviar</button>\n</form>"
+        },
+        {
+          "h": "3.6 Grupo de opções"
+        },
+        {
+          "codigo": "<!-- radio: mesmo name = só uma marcada -->\n<input type=\"radio\" id=\"a\" name=\"grupo\" value=\"a\">\n<label for=\"a\">Opção A</label>\n\n<!-- checkbox: cada uma pode ser marcada -->\n<input type=\"checkbox\" id=\"b\" name=\"itens\" value=\"b\">\n<label for=\"b\">Opção B</label>"
+        },
+        {
+          "h": "3.7 Lista suspensa"
+        },
+        {
+          "codigo": "<select id=\"campo\" name=\"campo\" required>\n  <option value=\"\">-- Escolha --</option>\n  <optgroup label=\"Grupo\">\n    <option value=\"valor\">Texto que o usuário vê</option>\n  </optgroup>\n</select>"
+        },
+        {
+          "h": "3.8 Texto longo"
+        },
+        {
+          "codigo": "<textarea id=\"campo\" name=\"campo\" rows=\"4\" cols=\"40\"></textarea>"
+        }
+      ]
+    },
+    {
+      "id": "sintaxe-e-simbolos",
+      "tipo": "leitura",
+      "nome": "Sintaxe e símbolos",
+      "blocos": [
+        {
+          "tabela": [
+            [
+              "Elemento / atributo",
+              "Para que serve",
+              "Exemplo"
+            ],
+            [
+              "`<ul>`, `<ol>`, `<li>`",
+              "Listas e seus itens",
+              "`<li>Café</li>`"
+            ],
+            [
+              "`type` no `<ol>`",
+              "Estilo da numeração",
+              "`type=\"a\"` → a, b, c; `type=\"I\"` → I, II, III"
+            ],
+            [
+              "`start` no `<ol>`",
+              "Número inicial",
+              "`start=\"5\"`"
+            ],
+            [
+              "`<table>`, `<tr>`, `<th>`, `<td>`",
+              "Tabela, linha, cabeçalho, dado",
+              "`<td>19h</td>`"
+            ],
+            [
+              "`<caption>`",
+              "Título da tabela (primeiro filho do `<table>`)",
+              "`<caption>Notas</caption>`"
+            ],
+            [
+              "`colspan=\"2\"`",
+              "Célula ocupa 2 colunas",
+              "Mescla na horizontal"
+            ],
+            [
+              "`rowspan=\"2\"`",
+              "Célula ocupa 2 linhas",
+              "Mescla na vertical"
+            ],
+            [
+              "`border=\"1\"`",
+              "Borda simples na tabela",
+              "Atributo antigo, só para ver as células enquanto não aprendemos CSS"
+            ],
+            [
+              "`<form action=\"...\" method=\"...\">`",
+              "Destino e forma do envio",
+              "`method=\"post\"`"
+            ],
+            [
+              "`type` no `<input>`",
+              "Tipo do campo",
+              "`text`, `email`, `password`, `number`, `date`, `color`, `radio`, `checkbox`, `submit`"
+            ],
+            [
+              "`name`",
+              "Nome do dado no envio",
+              "`name=\"email\"`"
+            ],
+            [
+              "`id` + `for`",
+              "Liga o `<label>` ao campo",
+              "`<label for=\"email\">` + `<input id=\"email\">`"
+            ],
+            [
+              "`value`",
+              "Valor enviado ou valor inicial",
+              "`value=\"manha\"`"
+            ],
+            [
+              "`placeholder`",
+              "Exemplo dentro do campo",
+              "`placeholder=\"voce@email.com\"`"
+            ],
+            [
+              "`required`",
+              "Obrigatório",
+              "Atributo booleano: basta escrever, sem valor"
+            ],
+            [
+              "`checked`",
+              "Radio/checkbox já marcado",
+              "`<input type=\"radio\" ... checked>`"
+            ],
+            [
+              "`selected`",
+              "Opção já escolhida no `<select>`",
+              "`<option value=\"br\" selected>`"
+            ],
+            [
+              "`min` / `max`",
+              "Faixa permitida em `number` e `date`",
+              "`min=\"16\" max=\"99\"`"
+            ],
+            [
+              "`minlength` / `maxlength`",
+              "Mínimo / máximo de caracteres",
+              "`maxlength=\"300\"`"
+            ],
+            [
+              "`rows` / `cols`",
+              "Altura (linhas) e largura (caracteres) do `<textarea>`",
+              "`rows=\"4\" cols=\"40\"`"
+            ],
+            [
+              "`<button type=\"submit\">`",
+              "Botão de envio (o texto fica entre as tags)",
+              "`<button type=\"submit\">Enviar</button>`"
+            ],
+            [
+              "`<input type=\"submit\" value=\"...\">`",
+              "Outro jeito de fazer o botão de envio (o texto fica no `value`)",
+              "`<input type=\"submit\" value=\"Enviar\">`"
+            ],
+            [
+              "`<!-- -->`",
+              "Comentário em HTML",
+              "`<!-- não aparece na página -->`"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "logica-por-tras",
+      "tipo": "leitura",
+      "nome": "Lógica por trás",
+      "blocos": [
+        "**O navegador lê a estrutura, não só a aparência.** Uma lista feita com `<br>` e hífens parece uma lista, mas o leitor de tela lê como texto corrido. Com `<ul>`, ele anuncia \"lista, 3 itens\" e a pessoa pode pular de item em item. O mesmo vale para tabelas: com `<th>`, o leitor de tela repete o título da coluna ao ler cada célula.",
+        "**Aninhamento correto.** Toda tag aberta dentro de outra fecha antes dela. Na lista aninhada, a sublista é **conteúdo** do `<li>` pai, por isso o `</li>` do pai vem depois do `</ul>` da sublista. Um `<ul>` solto entre dois `<li>` está errado: só `<li>` pode ser filho direto de `<ul>` e `<ol>`.",
+        "**Como a tabela é montada:** a tabela é desenhada linha por linha. Cada `<tr>` é uma linha, e as células dentro dela (`<th>` ou `<td>`) vão da esquerda para a direita. Todas as linhas precisam \"somar\" o mesmo número de colunas: se o cabeçalho tem 3 colunas e uma linha tem uma célula com `colspan=\"2\"`, essa linha só precisa de mais 1 célula. Com `rowspan=\"2\"`, a célula também ocupa a linha de baixo, que então tem uma célula a menos.",
+        "**O que acontece quando você clica em enviar:**",
+        {
+          "passos": [
+            "O navegador confere as regras de validação (`required`, `type=\"email\"`, `min`, `max`, `minlength`...). Se alguma falhar, ele **não envia**, mostra um aviso no primeiro campo com problema e para aqui.",
+            "Ele junta os campos que têm `name` em pares `name=valor`. Campos sem `name`, radios e checkboxes desmarcados ficam de fora.",
+            "Ele envia esses pares para o endereço do `action`, do jeito definido no `method`."
+          ]
+        },
+        "Testamos o formulário de escolhas da seção 6 (turno \"Manhã\", HTML e JavaScript marcados) e o navegador abriu:",
+        {
+          "codigo": "resultado.html?turno=manha&linguagens=html&linguagens=js",
+          "linguagem": "text"
+        },
+        "Repare: o que vai é o `value` (`manha`), não o texto que o usuário vê (\"Manhã\"). Os dois checkboxes marcados mandaram o mesmo `name` duas vezes. Espaços viram `+` e caracteres especiais são codificados (`@` vira `%40`, `ó` vira `%C3%B3`).",
+        "**GET x POST:**",
+        {
+          "tabela": [
+            [
+              "",
+              "`get`",
+              "`post`"
+            ],
+            [
+              "Onde vão os dados",
+              "Na URL, depois do `?`",
+              "No corpo da requisição, fora da URL"
+            ],
+            [
+              "Aparece no histórico e pode ser salvo como favorito",
+              "Sim",
+              "Não"
+            ],
+            [
+              "Uso típico",
+              "Buscas e filtros (a URL pode ser compartilhada)",
+              "Login, cadastro, pedidos, qualquer dado pessoal"
+            ]
+          ]
+        },
+        "O `post` evita que a senha apareça na URL e no histórico, mas **não criptografa** nada: quem protege os dados no caminho até o servidor é o HTTPS (o cadeado do navegador).",
+        "**Por que o `name` dos radios precisa ser igual:** o navegador trata todos os radios com o mesmo `name` como um único grupo. Marcar um desmarca os outros do grupo. Se cada radio tiver um `name` diferente, cada um vira um grupo separado e o usuário consegue marcar todos (veja a atividade 4).",
+        "**Validação no navegador é ajuda, não segurança.** O `required` e o `type=\"email\"` evitam erros de digitação e economizam viagens ao servidor, mas qualquer pessoa pode desligar essas regras pelas ferramentas do navegador. Por isso o servidor sempre confere os dados de novo (isso você vai ver no back-end)."
+      ]
+    },
+    {
+      "id": "exemplo-a",
+      "tipo": "codigo",
+      "nome": "Exemplo A — Listas (listas.html)",
+      "intro": [
+        "Para testar: salve cada exemplo como `.html`, abra no navegador (duplo clique no arquivo ou, no VS Code, a extensão Live Server) e mexa nos campos. Os arquivos `resultado.html` e `obrigado.html` usados no `action` são fictícios: ao enviar, o navegador mostra \"arquivo não encontrado\", mas a barra de endereços mostra os dados enviados. Se quiser, crie esses arquivos com um `<p>Recebido!</p>`."
+      ],
+      "codigo": [
+        "<!DOCTYPE html>",
+        "<html lang=\"pt-BR\">",
+        "<head>",
+        "  <meta charset=\"UTF-8\">",
+        "  <title>Listas</title>",
+        "</head>",
+        "<body>",
+        "  <h2>Lista de compras</h2>",
+        "  <ul>",
+        "    <li>Arroz</li>",
+        "    <li>Feijão</li>",
+        "    <li>Café</li>",
+        "  </ul>",
+        "",
+        "  <h2>Como fazer café</h2>",
+        "  <ol>",
+        "    <li>Ferva a água.</li>",
+        "    <li>Coloque o pó no filtro.</li>",
+        "    <li>Despeje a água quente.</li>",
+        "    <li>Sirva na xícara.</li>",
+        "  </ol>",
+        "",
+        "  <h2>Pódio</h2>",
+        "  <ol type=\"I\">",
+        "    <li>Ana</li>",
+        "    <li>Bruno</li>",
+        "    <li>Carla</li>",
+        "  </ol>",
+        "</body>",
+        "</html>"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "`charset=\"UTF-8\"` garante que acentos (Feijão, Pódio) apareçam certos"
+        },
+        {
+          "linhas": [
+            9,
+            13
+          ],
+          "texto": "`<ul>`: a ordem dos itens de compra não importa, por isso aparecem com bolinhas"
+        },
+        {
+          "linhas": [
+            16,
+            21
+          ],
+          "texto": "`<ol>`: trocar a ordem dos passos estraga o café; o navegador numera 1, 2, 3, 4 sozinho"
+        },
+        {
+          "linhas": [
+            24,
+            24
+          ],
+          "texto": "`type=\"I\"`: numeração romana maiúscula (I, II, III), boa para pódio ou capítulos"
+        },
+        {
+          "linhas": [
+            25,
+            27
+          ],
+          "texto": "Cada `<li>` é um item; você não escreve os números, o navegador gera"
+        }
+      ],
+      "fechamento": [
+        "**Na tela:** \"Lista de compras\" com três bolinhas; \"Como fazer café\" com 1. a 4.; \"Pódio\" com I. Ana, II. Bruno, III. Carla."
+      ]
+    },
+    {
+      "id": "exemplo-b",
+      "tipo": "codigo",
+      "nome": "Exemplo B — Lista aninhada (aninhada.html, só o <body>)",
+      "codigo": [
+        "<h2>Trilha Full Stack</h2>",
+        "<ul>",
+        "  <li>Front-end",
+        "    <ol>",
+        "      <li>HTML</li>",
+        "      <li>CSS</li>",
+        "      <li>JavaScript</li>",
+        "    </ol>",
+        "  </li>",
+        "  <li>Back-end",
+        "    <ul>",
+        "      <li>Node.js</li>",
+        "      <li>Python</li>",
+        "    </ul>",
+        "  </li>",
+        "</ul>"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "Lista principal, não ordenada"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Abre o item \"Front-end\" **sem fechar** o `</li>` ainda"
+        },
+        {
+          "linhas": [
+            4,
+            8
+          ],
+          "texto": "A sublista ordenada fica dentro do item: HTML, CSS e JavaScript têm ordem de estudo"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "Só agora fecha o item \"Front-end\""
+        },
+        {
+          "linhas": [
+            10,
+            15
+          ],
+          "texto": "O item \"Back-end\" tem uma sublista não ordenada; o navegador usa um marcador diferente (círculo vazio) no segundo nível"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-c",
+      "tipo": "codigo",
+      "nome": "Exemplo C — Tabela (tabela.html, só o <body>)",
+      "codigo": [
+        "<table border=\"1\">",
+        "  <caption>Horário da semana</caption>",
+        "  <thead>",
+        "    <tr>",
+        "      <th>Dia</th>",
+        "      <th>Aula</th>",
+        "      <th>Horário</th>",
+        "    </tr>",
+        "  </thead>",
+        "  <tbody>",
+        "    <tr>",
+        "      <td>Segunda</td>",
+        "      <td>HTML</td>",
+        "      <td>19h</td>",
+        "    </tr>",
+        "    <tr>",
+        "      <td>Quarta</td>",
+        "      <td>CSS</td>",
+        "      <td>19h</td>",
+        "    </tr>",
+        "    <tr>",
+        "      <td>Sexta</td>",
+        "      <td colspan=\"2\">Revisão livre</td>",
+        "    </tr>",
+        "  </tbody>",
+        "</table>"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            1,
+            1
+          ],
+          "texto": "`border=\"1\"` desenha as bordas para você enxergar as células (depois isso será feito com CSS)"
+        },
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "`<caption>` aparece centralizado acima da tabela"
+        },
+        {
+          "linhas": [
+            3,
+            9
+          ],
+          "texto": "O `<thead>` tem uma linha (`<tr>`) com três `<th>`: os títulos das colunas, em negrito"
+        },
+        {
+          "linhas": [
+            10,
+            10
+          ],
+          "texto": "O `<tbody>` agrupa as linhas de dados"
+        },
+        {
+          "linhas": [
+            11,
+            15
+          ],
+          "texto": "Cada `<tr>` é uma linha; os três `<td>` preenchem Dia, Aula e Horário"
+        },
+        {
+          "linhas": [
+            23,
+            23
+          ],
+          "texto": "`colspan=\"2\"` faz \"Revisão livre\" ocupar as colunas Aula e Horário, então a linha tem só 2 células e ainda soma 3 colunas"
+        }
+      ],
+      "fechamento": [
+        "**Na tela:**",
+        {
+          "codigo": "         Horário da semana\n| Dia     | Aula   | Horário |\n| Segunda | HTML   | 19h     |\n| Quarta  | CSS    | 19h     |\n| Sexta   | Revisão livre    |",
+          "linguagem": "text"
+        }
+      ]
+    },
+    {
+      "id": "exemplo-d",
+      "tipo": "codigo",
+      "nome": "Exemplo D — Login com label, email e password (login.html, só o <body>)",
+      "codigo": [
+        "<h2>Entrar</h2>",
+        "<form action=\"/entrar\" method=\"post\">",
+        "  <label for=\"email\">E-mail:</label>",
+        "  <input type=\"email\" id=\"email\" name=\"email\" placeholder=\"voce@email.com\" required>",
+        "  <br><br>",
+        "  <label for=\"senha\">Senha:</label>",
+        "  <input type=\"password\" id=\"senha\" name=\"senha\" minlength=\"8\" required>",
+        "  <br><br>",
+        "  <input type=\"checkbox\" id=\"lembrar\" name=\"lembrar\" value=\"sim\">",
+        "  <label for=\"lembrar\">Lembrar de mim</label>",
+        "  <br><br>",
+        "  <input type=\"submit\" value=\"Entrar\">",
+        "</form>"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            2,
+            2
+          ],
+          "texto": "`action=\"/entrar\"`: endereço fictício do servidor. `method=\"post\"`: a senha não vai na URL"
+        },
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "O `for=\"email\"` liga o rótulo ao campo de `id=\"email\"`"
+        },
+        {
+          "linhas": [
+            4,
+            4
+          ],
+          "texto": "`type=\"email\"` valida o formato; `placeholder` mostra um exemplo; `required` impede envio vazio"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "`<br>` quebra a linha (por enquanto, para os campos não ficarem lado a lado)"
+        },
+        {
+          "linhas": [
+            7,
+            7
+          ],
+          "texto": "`type=\"password\"` mostra bolinhas no lugar das letras; `minlength=\"8\"` exige pelo menos 8 caracteres"
+        },
+        {
+          "linhas": [
+            9,
+            10
+          ],
+          "texto": "Checkbox com o rótulo **depois** do campo, como é costume em caixas de marcar"
+        },
+        {
+          "linhas": [
+            12,
+            12
+          ],
+          "texto": "Botão de envio; o texto do botão vem do `value`"
+        }
+      ],
+      "fechamento": [
+        "**O que testamos no navegador:**",
+        {
+          "tabela": [
+            [
+              "Você faz",
+              "Resultado"
+            ],
+            [
+              "Clica no texto \"Senha:\"",
+              "O cursor vai para o campo de senha"
+            ],
+            [
+              "Clica em \"Lembrar de mim\"",
+              "A caixa é marcada (área de clique maior, ótimo no celular)"
+            ],
+            [
+              "Envia com o e-mail vazio",
+              "Bloqueado: aviso pedindo para preencher o campo"
+            ],
+            [
+              "Digita `teste` no e-mail",
+              "Bloqueado: o e-mail precisa ter um `@`"
+            ],
+            [
+              "Digita `teste@x`",
+              "**Aceito.** O navegador só confere o formato básico; `x` não precisa ter ponto"
+            ],
+            [
+              "Digita a senha `123`",
+              "Bloqueado: menos de 8 caracteres"
+            ],
+            [
+              "Preenche certo e envia",
+              "Vão os dados `email=...&senha=...&lembrar=sim` (o `lembrar` só vai se estiver marcado)"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "id": "exemplo-e",
+      "tipo": "codigo",
+      "nome": "Exemplo E — radio e checkbox (escolhas.html, só o <body>)",
+      "codigo": [
+        "<form action=\"resultado.html\" method=\"get\">",
+        "  <p>Qual turno você prefere?</p>",
+        "  <input type=\"radio\" id=\"manha\" name=\"turno\" value=\"manha\">",
+        "  <label for=\"manha\">Manhã</label>",
+        "  <input type=\"radio\" id=\"noite\" name=\"turno\" value=\"noite\" checked>",
+        "  <label for=\"noite\">Noite</label>",
+        "",
+        "  <p>Quais linguagens você já conhece?</p>",
+        "  <input type=\"checkbox\" id=\"html\" name=\"linguagens\" value=\"html\">",
+        "  <label for=\"html\">HTML</label>",
+        "  <input type=\"checkbox\" id=\"css\" name=\"linguagens\" value=\"css\">",
+        "  <label for=\"css\">CSS</label>",
+        "  <input type=\"checkbox\" id=\"js\" name=\"linguagens\" value=\"js\">",
+        "  <label for=\"js\">JavaScript</label>",
+        "",
+        "  <br><br>",
+        "  <input type=\"submit\" value=\"Enviar\">",
+        "</form>"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "Os dois radios têm `name=\"turno\"`: formam um grupo, só um fica marcado"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "Os dois radios têm `name=\"turno\"`: formam um grupo, só um fica marcado"
+        },
+        {
+          "linhas": [
+            5,
+            5
+          ],
+          "texto": "`checked`: \"Noite\" já vem marcado quando a página abre"
+        },
+        {
+          "linhas": [
+            3,
+            6
+          ],
+          "texto": "Cada radio tem `id` diferente (o `id` é único na página) e um `label` próprio"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "Checkboxes com o mesmo `name`: cada um é marcado de forma independente"
+        },
+        {
+          "linhas": [
+            11,
+            11
+          ],
+          "texto": "Checkboxes com o mesmo `name`: cada um é marcado de forma independente"
+        },
+        {
+          "linhas": [
+            13,
+            13
+          ],
+          "texto": "Checkboxes com o mesmo `name`: cada um é marcado de forma independente"
+        },
+        {
+          "linhas": [
+            9,
+            14
+          ],
+          "texto": "O `value` é o que vai para o servidor: `html`, `css`, `js`"
+        }
+      ],
+      "fechamento": [
+        "**Testamos:** a página abre com \"Noite\" marcado; ao clicar em \"Manhã\", \"Noite\" é desmarcado sozinho. Marcando HTML e JavaScript e enviando, a URL fica `resultado.html?turno=manha&linguagens=html&linguagens=js`."
+      ]
+    },
+    {
+      "id": "exemplo-f",
+      "tipo": "codigo",
+      "nome": "Exemplo F — number, date, color, select, optgroup e textarea (cadastro.html, só o <body>)",
+      "codigo": [
+        "<form action=\"resultado.html\" method=\"get\">",
+        "  <label for=\"idade\">Idade:</label>",
+        "  <input type=\"number\" id=\"idade\" name=\"idade\" min=\"16\" max=\"99\" required>",
+        "  <br><br>",
+        "  <label for=\"nascimento\">Data de nascimento:</label>",
+        "  <input type=\"date\" id=\"nascimento\" name=\"nascimento\">",
+        "  <br><br>",
+        "  <label for=\"cor\">Cor favorita:</label>",
+        "  <input type=\"color\" id=\"cor\" name=\"cor\" value=\"#3366ff\">",
+        "  <br><br>",
+        "  <label for=\"cidade\">Cidade:</label>",
+        "  <select id=\"cidade\" name=\"cidade\" required>",
+        "    <option value=\"\">-- Escolha --</option>",
+        "    <optgroup label=\"Bahia\">",
+        "      <option value=\"ssa\">Salvador</option>",
+        "      <option value=\"fsa\">Feira de Santana</option>",
+        "    </optgroup>",
+        "    <optgroup label=\"Pernambuco\">",
+        "      <option value=\"rec\">Recife</option>",
+        "      <option value=\"olinda\">Olinda</option>",
+        "    </optgroup>",
+        "  </select>",
+        "  <br><br>",
+        "  <label for=\"sobre\">Conte um pouco sobre você:</label><br>",
+        "  <textarea id=\"sobre\" name=\"sobre\" rows=\"4\" cols=\"40\" maxlength=\"300\"></textarea>",
+        "  <br><br>",
+        "  <button type=\"submit\">Cadastrar</button>",
+        "</form>"
+      ],
+      "explicacoes": [
+        {
+          "linhas": [
+            3,
+            3
+          ],
+          "texto": "`type=\"number\"` com setinhas; `min` e `max` definem a faixa aceita"
+        },
+        {
+          "linhas": [
+            6,
+            6
+          ],
+          "texto": "`type=\"date\"` abre um calendário; o valor enviado fica sempre no formato `AAAA-MM-DD`"
+        },
+        {
+          "linhas": [
+            9,
+            9
+          ],
+          "texto": "`type=\"color\"` abre o seletor de cores; `value` define a cor inicial"
+        },
+        {
+          "linhas": [
+            12,
+            12
+          ],
+          "texto": "`<select>` com `required`"
+        },
+        {
+          "linhas": [
+            13,
+            13
+          ],
+          "texto": "A primeira opção tem `value=\"\"` (vazio): com o `required`, o navegador não aceita enviar com ela escolhida"
+        },
+        {
+          "linhas": [
+            14,
+            17
+          ],
+          "texto": "`<optgroup label=\"Bahia\">`: o título \"Bahia\" aparece na lista, mas não pode ser escolhido"
+        },
+        {
+          "linhas": [
+            15,
+            15
+          ],
+          "texto": "O usuário vê \"Salvador\"; o servidor recebe `ssa`"
+        },
+        {
+          "linhas": [
+            25,
+            25
+          ],
+          "texto": "`<textarea>` tem tag de fechamento; o que ficar entre as tags vira o texto inicial (aqui, nenhum)"
+        },
+        {
+          "linhas": [
+            27,
+            27
+          ],
+          "texto": "`<button type=\"submit\">`: o texto do botão fica entre as tags"
+        }
+      ],
+      "fechamento": [
+        "**Testamos:** com idade 15, o envio é bloqueado (abaixo do mínimo). Com idade 30, nascimento 20/05/1996, Salvador e o texto \"Quero criar meu portfólio\", a URL fica:",
+        {
+          "codigo": "resultado.html?idade=30&nascimento=1996-05-20&cor=%233366ff&cidade=ssa&sobre=Quero+criar+meu+portf%C3%B3lio",
+          "linguagem": "text"
+        },
+        "O `#` da cor virou `%23` e o `ó` virou `%C3%B3`: é a codificação de caracteres especiais na URL."
+      ]
+    },
+    {
+      "id": "como-aplicar",
+      "tipo": "leitura",
+      "nome": "Como aplicar: página de inscrição de uma oficina",
+      "blocos": [
+        "Junta tudo: uma lista aninhada com o conteúdo, uma tabela com as turmas e um formulário completo com validação. Salve como `inscricao.html`.",
+        {
+          "codigo": "<!DOCTYPE html>\n<html lang=\"pt-BR\">\n<head>\n  <meta charset=\"UTF-8\">\n  <title>Oficina de Programação</title>\n</head>\n<body>\n  <h1>Oficina de Programação Web</h1>\n\n  <h2>O que você vai aprender</h2>\n  <ul>\n    <li>Estrutura de uma página\n      <ol>\n        <li>Listas</li>\n        <li>Tabelas</li>\n        <li>Formulários</li>\n      </ol>\n    </li>\n    <li>Publicar o site na internet</li>\n  </ul>\n\n  <h2>Turmas</h2>\n  <table border=\"1\">\n    <caption>Turmas disponíveis</caption>\n    <thead>\n      <tr>\n        <th>Turma</th>\n        <th>Dias</th>\n        <th>Horário</th>\n        <th>Vagas</th>\n      </tr>\n    </thead>\n    <tbody>\n      <tr>\n        <td>A</td>\n        <td>Seg e Qua</td>\n        <td>9h às 11h</td>\n        <td>20</td>\n      </tr>\n      <tr>\n        <td>B</td>\n        <td>Ter e Qui</td>\n        <td>19h às 21h</td>\n        <td>15</td>\n      </tr>\n    </tbody>\n  </table>\n\n  <h2>Inscrição</h2>\n  <form action=\"obrigado.html\" method=\"get\">\n    <label for=\"nome\">Nome completo:</label>\n    <input type=\"text\" id=\"nome\" name=\"nome\" required>\n    <br><br>\n\n    <label for=\"email\">E-mail:</label>\n    <input type=\"email\" id=\"email\" name=\"email\" placeholder=\"voce@email.com\" required>\n    <br><br>\n\n    <label for=\"idade\">Idade:</label>\n    <input type=\"number\" id=\"idade\" name=\"idade\" min=\"14\" max=\"99\" required>\n    <br><br>\n\n    <p>Turma:</p>\n    <input type=\"radio\" id=\"turma_a\" name=\"turma\" value=\"A\" required>\n    <label for=\"turma_a\">A (manhã)</label>\n    <input type=\"radio\" id=\"turma_b\" name=\"turma\" value=\"B\">\n    <label for=\"turma_b\">B (noite)</label>\n\n    <p>Já estudou alguma destas?</p>\n    <input type=\"checkbox\" id=\"exp_html\" name=\"experiencia\" value=\"html\">\n    <label for=\"exp_html\">HTML</label>\n    <input type=\"checkbox\" id=\"exp_css\" name=\"experiencia\" value=\"css\">\n    <label for=\"exp_css\">CSS</label>\n    <input type=\"checkbox\" id=\"exp_js\" name=\"experiencia\" value=\"js\">\n    <label for=\"exp_js\">JavaScript</label>\n    <br><br>\n\n    <label for=\"origem\">Como soube da oficina?</label>\n    <select id=\"origem\" name=\"origem\" required>\n      <option value=\"\">-- Escolha --</option>\n      <optgroup label=\"Internet\">\n        <option value=\"instagram\">Instagram</option>\n        <option value=\"site\">Site da escola</option>\n      </optgroup>\n      <optgroup label=\"Pessoalmente\">\n        <option value=\"amigo\">Indicação de amigo</option>\n        <option value=\"cartaz\">Cartaz</option>\n      </optgroup>\n    </select>\n    <br><br>\n\n    <label for=\"objetivo\">O que você quer construir?</label><br>\n    <textarea id=\"objetivo\" name=\"objetivo\" rows=\"4\" cols=\"40\" maxlength=\"300\"></textarea>\n    <br><br>\n\n    <input type=\"checkbox\" id=\"termos\" name=\"termos\" value=\"aceito\" required>\n    <label for=\"termos\">Li e aceito as regras da oficina</label>\n    <br><br>\n\n    <button type=\"submit\">Quero me inscrever</button>\n  </form>\n</body>\n</html>"
+        },
+        "**Testando no navegador:**",
+        {
+          "passos": [
+            "Clique em \"Quero me inscrever\" sem preencher nada: o navegador para no \"Nome completo\". Os campos obrigatórios são nome, e-mail, idade, turma, origem e o aceite dos termos.",
+            "Preencha nome \"Ana Souza\", e-mail `ana@email.com`, idade 17, turma B, marque HTML e CSS, escolha \"Indicação de amigo\" e escreva \"Um site para minha loja\". Envie **sem** marcar os termos: ainda bloqueia, agora só no checkbox dos termos.",
+            "Clique no texto \"Li e aceito as regras da oficina\" (o label marca a caixa) e envie. A URL fica:"
+          ]
+        },
+        {
+          "codigo": "obrigado.html?nome=Ana+Souza&email=ana%40email.com&idade=17&turma=B&experiencia=html&experiencia=css&origem=amigo&objetivo=Um+site+para+minha+loja&termos=aceito",
+          "linguagem": "text"
+        },
+        "**Por que funciona:** cada parte usa a tag que combina com o tipo de conteúdo. A lista aninhada mostra que \"Estrutura de uma página\" se divide em três tópicos em ordem. A tabela compara as turmas lado a lado, com `<th>` nos títulos para o leitor de tela anunciar cada coluna. No formulário, todo campo tem `<label>` ligado pelo `for`/`id` e um `name` para ser enviado. O `required` em **um** dos radios já torna o grupo `turma` inteiro obrigatório. O `<select>` começa em uma opção de `value=\"\"`, então o `required` obriga uma escolha real. O checkbox dos termos com `required` só deixa enviar se estiver marcado. Os checkboxes de experiência não são obrigatórios: quem nunca estudou nada deixa todos desmarcados, e eles simplesmente não aparecem na URL. Usamos `get` para você enxergar os dados na barra de endereços; num site de verdade, com nome e e-mail, o certo seria `post`."
+      ]
+    },
+    {
+      "id": "quiz",
+      "tipo": "quiz",
+      "nome": "Quiz de código",
+      "perguntas": [
+        {
+          "pergunta": "Como o navegador mostra esta lista?",
+          "codigo": "<ol type=\"a\">\n  <li>Ligar o computador</li>\n  <li>Abrir o VS Code</li>\n</ol>",
+          "opcoes": [
+            "Com bolinhas",
+            "1. e 2.",
+            "a. e b.",
+            "A. e B."
+          ],
+          "correta": 2,
+          "dica": "`type` no `<ol>` diferencia maiúscula de minúscula.",
+          "acerto": "Isso! type=\\\"a\\\" usa letras minúsculas.",
+          "erro": "Olhe o valor do type: é \\\"a\\\" minúsculo.",
+          "explicacao": "`type=\"a\"` numera com letras minúsculas; `type=\"A\"` usaria maiúsculas e sem `type` seria 1, 2."
+        },
+        {
+          "pergunta": "Qual é o problema neste grupo de radios?",
+          "codigo": "<input type=\"radio\" id=\"sim\" name=\"r1\" value=\"sim\">\n<label for=\"sim\">Sim</label>\n<input type=\"radio\" id=\"nao\" name=\"r2\" value=\"nao\">\n<label for=\"nao\">Não</label>",
+          "opcoes": [
+            "Faltou `checked`",
+            "Os `name` são diferentes, então dá para marcar \"Sim\" e \"Não\" ao mesmo tempo",
+            "Os `id` deveriam ser iguais",
+            "Radio não pode ter `label`"
+          ],
+          "correta": 1,
+          "dica": "o que faz o navegador entender que os radios são do mesmo grupo?",
+          "acerto": "Perfeito! Mesmo name = mesmo grupo = uma escolha só.",
+          "erro": "O id precisa ser único; quem forma o grupo é o name.",
+          "explicacao": "com `name` diferentes, cada radio vira um grupo de um item só. O certo é `name=\"resposta\"` nos dois. Os `id` precisam continuar diferentes."
+        },
+        {
+          "pergunta": "O usuário escolhe \"Recife\" e envia o formulário com `method=\"get\"`. O que aparece na URL?",
+          "codigo": "<select name=\"cidade\">\n  <option value=\"ssa\">Salvador</option>\n  <option value=\"rec\">Recife</option>\n</select>",
+          "opcoes": [
+            "`?cidade=Recife`",
+            "`?cidade=rec`",
+            "`?select=rec`",
+            "`?rec=Recife`"
+          ],
+          "correta": 1,
+          "dica": "o servidor recebe o texto da opção ou o `value`?",
+          "acerto": "Isso! Vai o name do select e o value da opção.",
+          "erro": "O texto entre as tags é só o que o usuário vê.",
+          "explicacao": "o par enviado é `name=value`: `cidade=rec`."
+        },
+        {
+          "pergunta": "Um formulário tem `<input type=\"text\" placeholder=\"Cidade\">` sem `name`. O usuário digita \"Salvador\" e envia. O que acontece?",
+          "opcoes": [
+            "O navegador dá erro",
+            "Vai `Cidade=Salvador`",
+            "O campo não é enviado",
+            "Vai `text=Salvador`"
+          ],
+          "correta": 2,
+          "dica": "o que identifica o dado no envio?",
+          "acerto": "Exato! Sem name, o campo fica de fora do envio.",
+          "erro": "O placeholder é só um exemplo visual, não um nome.",
+          "explicacao": "só campos com `name` entram nos pares `name=valor`. O `placeholder` não substitui o `name`."
+        },
+        {
+          "pergunta": "A tabela tem 3 colunas. Quantas células (`<td>`) precisa ter esta linha?",
+          "codigo": "<tr>\n  <td colspan=\"2\">Feriado</td>\n  ...\n</tr>",
+          "opcoes": [
+            "Mais 1 célula",
+            "Mais 2 células",
+            "Mais 3 células",
+            "Nenhuma, o `colspan` preenche a linha toda"
+          ],
+          "correta": 0,
+          "dica": "quantas colunas o `colspan=\"2\"` já ocupa?",
+          "acerto": "Isso! 2 do colspan + 1 = 3 colunas.",
+          "erro": "Some as colunas: o colspan=\\\"2\\\" já conta como duas.",
+          "explicacao": "a célula com `colspan=\"2\"` ocupa 2 das 3 colunas, então falta 1 `<td>` para completar a linha."
+        },
+        {
+          "pergunta": "Qual combinação liga o rótulo ao campo?",
+          "opcoes": [
+            "`<label name=\"email\">` + `<input name=\"email\">`",
+            "`<label for=\"email\">` + `<input id=\"email\">`",
+            "`<label id=\"email\">` + `<input for=\"email\">`",
+            "`<label for=\"email\">` + `<input name=\"email\">`"
+          ],
+          "correta": 1,
+          "dica": "o `for` aponta para qual atributo do campo?",
+          "acerto": "Perfeito! for do label = id do campo.",
+          "erro": "O for procura o id, não o name.",
+          "explicacao": "o `for` do `<label>` precisa ser igual ao `id` do campo. O `name` serve para o envio, não para o rótulo."
+        }
+      ]
+    },
+    {
+      "id": "atividades",
+      "tipo": "atividades",
+      "nome": "Atividades",
+      "intro": [
+        "Para cada atividade, crie um arquivo `.html` com a estrutura básica (`<!DOCTYPE html>`, `<html lang=\"pt-BR\">`, `<head>` com `<meta charset=\"UTF-8\">` e `<title>`, e `<body>`) e abra no navegador para conferir.",
+        "Escreva ou cole a sua tentativa no campo de cada atividade para liberar a solução. Outras soluções também valem, desde que passem nos testes do enunciado."
+      ],
+      "itens": [
+        {
+          "n": 1,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie uma página com duas listas: \"O que levo na mochila\" (4 itens, ordem não importa) e \"Como chego ao curso\" (3 passos, numerados com algarismos romanos minúsculos: i, ii, iii)."
+          ],
+          "dica": "qual lista para cada caso? E qual valor do `type` gera i, ii, iii?",
+          "solucao": [
+            {
+              "codigo": "<!DOCTYPE html>\n<html lang=\"pt-BR\">\n<head><meta charset=\"UTF-8\"><title>Minha rotina</title></head>\n<body>\n  <h2>O que levo na mochila</h2>\n  <ul>\n    <li>Notebook</li>\n    <li>Carregador</li>\n    <li>Caderno</li>\n    <li>Garrafa de água</li>\n  </ul>\n\n  <h2>Como chego ao curso</h2>\n  <ol type=\"i\">\n    <li>Pego o ônibus no ponto.</li>\n    <li>Desço na estação.</li>\n    <li>Caminho até o prédio.</li>\n  </ol>\n</body>\n</html>"
+            },
+            "A mochila usa `<ul>` porque a ordem não muda nada; o caminho usa `<ol>` porque a ordem importa. `type=\"i\"` numera i., ii., iii."
+          ]
+        },
+        {
+          "n": 2,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Monte uma tabela \"Notas do 1º bimestre\" com as colunas Aluno, Prova, Projeto e Média, e três alunos: Ana (8 e 10), Bruno (6 e 7) e Carla (9 e 8). Calcule a média de cada um e escreva na tabela. Use `<caption>`, `<thead>` e `<tbody>`."
+          ],
+          "dica": "os títulos das colunas são `<th>`; cada aluno é uma `<tr>` com quatro `<td>`.",
+          "solucao": [
+            {
+              "codigo": "<table border=\"1\">\n  <caption>Notas do 1º bimestre</caption>\n  <thead>\n    <tr>\n      <th>Aluno</th>\n      <th>Prova</th>\n      <th>Projeto</th>\n      <th>Média</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td>Ana</td>\n      <td>8</td>\n      <td>10</td>\n      <td>9</td>\n    </tr>\n    <tr>\n      <td>Bruno</td>\n      <td>6</td>\n      <td>7</td>\n      <td>6.5</td>\n    </tr>\n    <tr>\n      <td>Carla</td>\n      <td>9</td>\n      <td>8</td>\n      <td>8.5</td>\n    </tr>\n  </tbody>\n</table>"
+            },
+            "Médias: Ana (8 + 10) ÷ 2 = 9; Bruno (6 + 7) ÷ 2 = 6.5; Carla (9 + 8) ÷ 2 = 8.5. O HTML só mostra os números; calcular sozinho é trabalho do JavaScript, mais adiante."
+          ]
+        },
+        {
+          "n": 3,
+          "nivel": "Fácil",
+          "enunciado": [
+            "Crie um formulário \"Fale conosco\" com nome, e-mail e mensagem (texto longo), todos obrigatórios e com `<label>`, e um botão \"Enviar\". Os dados vão para `/contato` sem aparecer na URL."
+          ],
+          "dica": "e-mail tem tipo próprio; mensagem longa é `<textarea>`; \"sem aparecer na URL\" decide o `method`.",
+          "solucao": [
+            {
+              "codigo": "<h2>Fale conosco</h2>\n<form action=\"/contato\" method=\"post\">\n  <label for=\"nome\">Nome:</label>\n  <input type=\"text\" id=\"nome\" name=\"nome\" required>\n  <br><br>\n  <label for=\"email\">E-mail:</label>\n  <input type=\"email\" id=\"email\" name=\"email\" placeholder=\"voce@email.com\" required>\n  <br><br>\n  <label for=\"mensagem\">Mensagem:</label><br>\n  <textarea id=\"mensagem\" name=\"mensagem\" rows=\"5\" cols=\"40\" required></textarea>\n  <br><br>\n  <input type=\"submit\" value=\"Enviar\">\n</form>"
+            },
+            "Testamos: com tudo vazio, os três campos ficam inválidos e o envio é bloqueado. `method=\"post\"` manda os dados fora da URL."
+          ]
+        },
+        {
+          "n": 4,
+          "nivel": "Médio",
+          "enunciado": [
+            "O formulário abaixo tem **três** erros. Teste no navegador, descubra quais são e corrija.",
+            {
+              "codigo": "<form action=\"resultado.html\" method=\"get\">\n  <p>Você gostou da aula?</p>\n  <input type=\"radio\" id=\"sim\" name=\"resposta1\" value=\"sim\">\n  <label for=\"sim\">Sim</label>\n  <input type=\"radio\" id=\"nao\" name=\"resposta2\" value=\"nao\">\n  <label for=\"Nao\">Não</label>\n\n  <p>O que você quer ver na próxima aula?</p>\n  <input type=\"checkbox\" id=\"css\" name=\"proxima\">\n  <label for=\"css\">CSS</label>\n  <input type=\"checkbox\" id=\"js\" name=\"proxima\">\n  <label for=\"js\">JavaScript</label>\n  <br><br>\n  <input type=\"submit\" value=\"Responder\">\n</form>"
+            }
+          ],
+          "dica": "tente marcar \"Sim\" e \"Não\" juntos; clique no texto \"Não\"; marque CSS, envie e olhe a URL.",
+          "solucao": [
+            "**Erros encontrados (testados):**",
+            {
+              "passos": [
+                "**Radios com `name` diferentes** (`resposta1` e `resposta2`): dá para marcar \"Sim\" e \"Não\" ao mesmo tempo.",
+                "**`for=\"Nao\"` com N maiúsculo**, mas o `id` é `nao`: o `id` diferencia maiúsculas de minúsculas, então clicar em \"Não\" não marca nada.",
+                "**Checkboxes sem `value`**: o navegador envia `proxima=on` e o servidor não sabe qual opção foi marcada. A URL com o código errado ficou `resultado.html?resposta1=sim&resposta2=nao&proxima=on`."
+              ]
+            },
+            "**Corrigido:**",
+            {
+              "codigo": "<form action=\"resultado.html\" method=\"get\">\n  <p>Você gostou da aula?</p>\n  <input type=\"radio\" id=\"sim\" name=\"gostou\" value=\"sim\">\n  <label for=\"sim\">Sim</label>\n  <input type=\"radio\" id=\"nao\" name=\"gostou\" value=\"nao\">\n  <label for=\"nao\">Não</label>\n\n  <p>O que você quer ver na próxima aula?</p>\n  <input type=\"checkbox\" id=\"css\" name=\"proxima\" value=\"css\">\n  <label for=\"css\">CSS</label>\n  <input type=\"checkbox\" id=\"js\" name=\"proxima\" value=\"js\">\n  <label for=\"js\">JavaScript</label>\n  <br><br>\n  <input type=\"submit\" value=\"Responder\">\n</form>"
+            },
+            "Agora, marcando \"Não\", CSS e JavaScript, a URL fica `resultado.html?gostou=nao&proxima=css&proxima=js`."
+          ]
+        },
+        {
+          "n": 5,
+          "nivel": "Médio",
+          "enunciado": [
+            "Crie o formulário \"Monte sua pizza\", que envia para `pedido.html` com `get`:",
+            {
+              "lista": [
+                "sabor em lista suspensa obrigatória, com os grupos \"Salgadas\" (Calabresa, Margherita) e \"Doces\" (Chocolate, Banana com canela);",
+                "tamanho Média ou Grande (só um, obrigatório);",
+                "adicionais opcionais: Borda recheada e Queijo extra (pode marcar os dois);",
+                "quantidade de 1 a 10, começando em 1."
+              ]
+            },
+            "Depois escolha Banana com canela, Grande, Borda recheada, quantidade 2, envie e anote a URL."
+          ],
+          "dica": "`<optgroup>` com `label`, radio para tamanho, checkbox para adicionais, `number` com `value`, `min` e `max`.",
+          "solucao": [
+            {
+              "codigo": "<h2>Monte sua pizza</h2>\n<form action=\"pedido.html\" method=\"get\">\n  <label for=\"sabor\">Sabor:</label>\n  <select id=\"sabor\" name=\"sabor\" required>\n    <option value=\"\">-- Escolha --</option>\n    <optgroup label=\"Salgadas\">\n      <option value=\"calabresa\">Calabresa</option>\n      <option value=\"margherita\">Margherita</option>\n    </optgroup>\n    <optgroup label=\"Doces\">\n      <option value=\"chocolate\">Chocolate</option>\n      <option value=\"banana\">Banana com canela</option>\n    </optgroup>\n  </select>\n\n  <p>Tamanho:</p>\n  <input type=\"radio\" id=\"media\" name=\"tamanho\" value=\"M\" required>\n  <label for=\"media\">Média</label>\n  <input type=\"radio\" id=\"grande\" name=\"tamanho\" value=\"G\">\n  <label for=\"grande\">Grande</label>\n\n  <p>Adicionais:</p>\n  <input type=\"checkbox\" id=\"borda\" name=\"adicional\" value=\"borda\">\n  <label for=\"borda\">Borda recheada</label>\n  <input type=\"checkbox\" id=\"queijo\" name=\"adicional\" value=\"queijo\">\n  <label for=\"queijo\">Queijo extra</label>\n  <br><br>\n\n  <label for=\"quantidade\">Quantidade:</label>\n  <input type=\"number\" id=\"quantidade\" name=\"quantidade\" value=\"1\" min=\"1\" max=\"10\">\n  <br><br>\n\n  <button type=\"submit\">Fazer pedido</button>\n</form>"
+            },
+            "URL gerada no teste:",
+            {
+              "codigo": "pedido.html?sabor=banana&tamanho=G&adicional=borda&quantidade=2",
+              "linguagem": "text"
+            },
+            "O Queijo extra, desmarcado, não aparece."
+          ]
+        },
+        {
+          "n": 6,
+          "nivel": "Médio",
+          "enunciado": [
+            "Monte o sumário de um curso com três níveis: uma lista numerada com \"Front-end\" e \"Back-end\"; dentro de Front-end, uma lista com letras (HTML, CSS); dentro de HTML, uma lista com bolinhas (Listas, Tabelas, Formulários); dentro de Back-end, uma lista com letras (Node.js, Banco de dados)."
+          ],
+          "dica": "cada sublista fica dentro do `<li>` do item pai, antes do `</li>`. Indente o código para não se perder.",
+          "solucao": [
+            {
+              "codigo": "<h2>Sumário do curso</h2>\n<ol>\n  <li>Front-end\n    <ol type=\"a\">\n      <li>HTML\n        <ul>\n          <li>Listas</li>\n          <li>Tabelas</li>\n          <li>Formulários</li>\n        </ul>\n      </li>\n      <li>CSS</li>\n    </ol>\n  </li>\n  <li>Back-end\n    <ol type=\"a\">\n      <li>Node.js</li>\n      <li>Banco de dados</li>\n    </ol>\n  </li>\n</ol>"
+            },
+            "**Na tela:**",
+            {
+              "codigo": "1. Front-end\n   a. HTML\n      • Listas\n      • Tabelas\n      • Formulários\n   b. CSS\n2. Back-end\n   a. Node.js\n   b. Banco de dados",
+              "linguagem": "text"
+            }
+          ]
+        },
+        {
+          "n": 7,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Monte a tabela \"Plantão de dúvidas\" com as colunas Dia, Horário e Monitor. Na segunda há dois horários (14h com Ana e 16h com Bruno), e a palavra \"Segunda\" deve aparecer **uma vez só**, ocupando as duas linhas. Na quarta não há plantão: depois de \"Quarta\", uma única célula \"Sem plantão (feriado)\" ocupa Horário e Monitor."
+          ],
+          "dica": "`rowspan=\"2\"` na célula \"Segunda\" (a linha seguinte fica com uma célula a menos) e `colspan=\"2\"` na célula do feriado.",
+          "solucao": [
+            {
+              "codigo": "<table border=\"1\">\n  <caption>Plantão de dúvidas</caption>\n  <thead>\n    <tr>\n      <th>Dia</th>\n      <th>Horário</th>\n      <th>Monitor</th>\n    </tr>\n  </thead>\n  <tbody>\n    <tr>\n      <td rowspan=\"2\">Segunda</td>\n      <td>14h</td>\n      <td>Ana</td>\n    </tr>\n    <tr>\n      <td>16h</td>\n      <td>Bruno</td>\n    </tr>\n    <tr>\n      <td>Quarta</td>\n      <td colspan=\"2\">Sem plantão (feriado)</td>\n    </tr>\n  </tbody>\n</table>"
+            },
+            "**Na tela:**",
+            {
+              "codigo": "|         | 14h | Ana               |\n| Segunda |-----|-------------------|\n|         | 16h | Bruno             |\n| Quarta  | Sem plantão (feriado)   |",
+              "linguagem": "text"
+            },
+            "A segunda linha de dados tem só 2 `<td>`, porque a coluna Dia já está ocupada pelo `rowspan` de cima. A linha da quarta também tem 2 células: \"Quarta\" + uma célula que vale por 2 colunas."
+          ]
+        },
+        {
+          "n": 8,
+          "nivel": "Difícil",
+          "enunciado": [
+            "Crie o formulário \"Reserva para o Hackathon\", enviado com `post` para `confirmacao.html`, com:",
+            {
+              "lista": [
+                "nome da equipe (obrigatório);",
+                "e-mail do líder (obrigatório, formato de e-mail);",
+                "dia preferido: uma data obrigatória **só em novembro de 2026**;",
+                "pessoas na equipe: obrigatório, de 2 a 5;",
+                "trilha obrigatória em lista suspensa com os grupos \"Web\" (Front-end, Back-end) e \"Dados\" (Inteligência Artificial, Dashboards);",
+                "cor da equipe (laranja `#ff6600` como padrão);",
+                "ideia do projeto: texto longo opcional, até 500 caracteres;",
+                "aceite do regulamento (obrigatório)."
+              ]
+            },
+            "Teste com a data 05/12/2026 e 6 pessoas: o que acontece?"
+          ],
+          "dica": "`min` e `max` também funcionam em `type=\"date\"`, no formato `AAAA-MM-DD`.",
+          "solucao": [
+            {
+              "codigo": "<h2>Reserva para o Hackathon</h2>\n<form action=\"confirmacao.html\" method=\"post\">\n  <label for=\"equipe\">Nome da equipe:</label>\n  <input type=\"text\" id=\"equipe\" name=\"equipe\" required>\n  <br><br>\n  <label for=\"email\">E-mail do líder:</label>\n  <input type=\"email\" id=\"email\" name=\"email\" required>\n  <br><br>\n  <label for=\"data\">Dia preferido:</label>\n  <input type=\"date\" id=\"data\" name=\"data\" min=\"2026-11-01\" max=\"2026-11-30\" required>\n  <br><br>\n  <label for=\"pessoas\">Pessoas na equipe:</label>\n  <input type=\"number\" id=\"pessoas\" name=\"pessoas\" min=\"2\" max=\"5\" required>\n  <br><br>\n  <label for=\"trilha\">Trilha:</label>\n  <select id=\"trilha\" name=\"trilha\" required>\n    <option value=\"\">-- Escolha --</option>\n    <optgroup label=\"Web\">\n      <option value=\"front\">Front-end</option>\n      <option value=\"back\">Back-end</option>\n    </optgroup>\n    <optgroup label=\"Dados\">\n      <option value=\"ia\">Inteligência Artificial</option>\n      <option value=\"dash\">Dashboards</option>\n    </optgroup>\n  </select>\n  <br><br>\n  <label for=\"cor\">Cor da equipe:</label>\n  <input type=\"color\" id=\"cor\" name=\"cor\" value=\"#ff6600\">\n  <br><br>\n  <label for=\"ideia\">Ideia do projeto:</label><br>\n  <textarea id=\"ideia\" name=\"ideia\" rows=\"5\" cols=\"40\" maxlength=\"500\"></textarea>\n  <br><br>\n  <input type=\"checkbox\" id=\"regras\" name=\"regras\" value=\"aceito\" required>\n  <label for=\"regras\">Aceito o regulamento</label>\n  <br><br>\n  <button type=\"submit\">Reservar vaga</button>\n</form>"
+            },
+            "**Teste:** com 05/12/2026 e 6 pessoas, o envio é bloqueado duas vezes: a data passa do máximo (30/11/2026) e o número passa de 5. Trocando para 14/11/2026 e 4 pessoas, o formulário é enviado. Como o método é `post`, a URL fica só `confirmacao.html`, sem os dados. Os dados enviados foram:",
+            {
+              "codigo": "equipe=Os Bugados, email=lider@email.com, data=2026-11-14, pessoas=4, trilha=ia, cor=#ff6600, ideia=(vazio), regras=aceito",
+              "linguagem": "text"
+            }
+          ]
+        },
+        {
+          "n": 9,
+          "nivel": "Difícil",
+          "enunciado": [
+            "**Sem rodar**, escreva a URL que o navegador vai abrir quando o usuário digitar \"html e css\" na busca, deixar a categoria como está, marcar \"Só grátis\", digitar \"Salvador\" no campo de cidade e clicar em Buscar. Depois rode e confira.",
+            {
+              "codigo": "<form action=\"busca.html\" method=\"get\">\n  <label for=\"q\">Buscar:</label>\n  <input type=\"text\" id=\"q\" name=\"q\">\n  <select name=\"categoria\">\n    <option value=\"todos\">Todos</option>\n    <option value=\"livros\" selected>Livros</option>\n    <option value=\"cursos\">Cursos</option>\n  </select>\n  <input type=\"checkbox\" id=\"gratis\" name=\"gratis\" value=\"1\">\n  <label for=\"gratis\">Só grátis</label>\n  <input type=\"text\" placeholder=\"Cidade\">\n  <input type=\"submit\" value=\"Buscar\">\n</form>"
+            }
+          ],
+          "dica": "siga as 3 etapas do envio da seção 5. Qual opção vem escolhida? Os espaços viram o quê? E o campo de cidade tem `name`?",
+          "solucao": [
+            {
+              "codigo": "busca.html?q=html+e+css&categoria=livros&gratis=1",
+              "linguagem": "text"
+            },
+            {
+              "lista": [
+                "`q=html+e+css`: os espaços viram `+`.",
+                "`categoria=livros`: a opção com `selected` já vem escolhida e o usuário não mudou.",
+                "`gratis=1`: o `value` do checkbox marcado.",
+                "**\"Salvador\" não aparece:** o campo de cidade não tem `name`, então não é enviado. O `placeholder` não serve de nome. Para corrigir: `<input type=\"text\" name=\"cidade\" placeholder=\"Cidade\">`."
+              ]
+            },
+            "Testamos no navegador e a URL foi exatamente essa."
+          ]
+        }
+      ]
+    }
+  ]
+}

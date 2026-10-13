@@ -55,6 +55,17 @@
       ]
     },
     {
+      "id": "html",
+      "pasta": "html",
+      "publico": "adulto",
+      "linguagem": "html",
+      "titulo": "HTML",
+      "descricao": "A estrutura das páginas web: tags, listas, tabelas e formulários para organizar o conteúdo.",
+      "aulas": [
+        "aula-02"
+      ]
+    },
+    {
       "id": "informatica-basica",
       "pasta": "informatica-basica",
       "publico": "adulto",

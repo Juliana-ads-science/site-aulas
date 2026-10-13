@@ -178,7 +178,7 @@ const LINGUAGENS = {
     re: /(--.*$)|("(?:[^"\\]|\\.)*"|'(?:[^'\\]|\\.)*')|(\b\d+(?:\.\d+)?\b)|([A-Za-z_]\w*)/g
   },
   html: {
-    kw: new Set("html head body title meta link style script div span p a h1 h2 h3 h4 ul ol li button input form label select option textarea img br hr nav table tr td th DOCTYPE".split(" ")),
+    kw: new Set("html head body title meta link style script div span p a h1 h2 h3 h4 ul ol li button input form label select option textarea img br hr nav table tr td th DOCTYPE caption thead tbody optgroup".split(" ")),
     fn: new Set(),
     re: /(<!--[\s\S]*?-->)|("[^"]*"|'[^']*')|(\b\d+(?:\.\d+)?\b)|([A-Za-z_][\w-]*)/g
   },
@@ -191,6 +191,7 @@ const LINGUAGENS = {
 };
 let linguagemAtual = "python";
 function hl(src, lang) {
+  if (lang === "text") return esc(src);   // terminal e saídas: texto simples, sem realce
   const L = LINGUAGENS[lang] || LINGUAGENS[linguagemAtual] || LINGUAGENS.python, KW = L.kw, FN = L.fn;
   const re = new RegExp(L.re.source, "g");
   let out = "", last = 0, m;
